@@ -1,0 +1,35 @@
+{
+  "__version__": "1.0.1",
+  "builder": {
+    "common": {
+      "polyfills": {
+        "asyncFunctions": true
+      },
+      "buildPath": "project://build",
+      "outputName": "web-627yangcheng",
+      "mainBundleCompressionType": "merge_dep",
+      "platform": "web-mobile",
+      "name": "yangcheng",
+      "startScene": "d9c6e90b-c3dc-4313-b72d-37f8c96a36d3",
+      "md5Cache": true,
+      "sourceMaps": false
+    },
+    "options": {
+      "web-mobile": {
+        "orientation": "portrait",
+        "embedWebDebugger": false,
+        "cullEngineAsmJsModule": false,
+        "__version__": "1.0.1"
+      }
+    },
+    "taskOptionsMap": {
+      "1751969082654": {
+        "orientation": "portrait",
+        "embedWebDebugger": false,
+        "cullEngineAsmJsModule": false,
+        "__version__": "1.0.1"
+      }
+    },
+    "__version__": "1.3.8"
+  }
+}

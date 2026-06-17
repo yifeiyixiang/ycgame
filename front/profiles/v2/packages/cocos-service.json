@@ -1,0 +1,38 @@
+{
+  "__version__": "3.0.7",
+  "builder": {
+    "options": {
+      "web-desktop": {
+        "configID": "957211",
+        "services": []
+      },
+      "web-mobile": {
+        "configID": "957211",
+        "services": []
+      },
+      "wechatgame": {
+        "configID": "957211",
+        "services": []
+      },
+      "android": {
+        "configID": "957211",
+        "services": []
+      }
+    },
+    "taskOptionsMap": {
+      "1751969082654": {
+        "configID": "957211",
+        "services": []
+      },
+      "1772258011491": {
+        "configID": "957211",
+        "services": []
+      }
+    },
+    "__version__": "1.3.8"
+  },
+  "builder-options": {
+    "configID": "957211",
+    "services": []
+  }
+}

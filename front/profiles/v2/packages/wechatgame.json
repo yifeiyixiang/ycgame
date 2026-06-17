@@ -1,0 +1,38 @@
+{
+  "builder": {
+    "common": {
+      "buildPath": "project://build",
+      "outputName": "wechatgame",
+      "mainBundleCompressionType": "merge_dep",
+      "platform": "wechatgame",
+      "md5Cache": true,
+      "sourceMaps": true,
+      "name": "毛茸茸大派对",
+      "server": "https://admin.petlove.top"
+    },
+    "options": {
+      "wechatgame": {
+        "orientation": "portrait",
+        "appid": "wxfe4ef6cf7fe178ee",
+        "buildOpenDataContextTemplate": "",
+        "separateEngine": false,
+        "highPerformanceMode": false,
+        "__version__": "1.0.4",
+        "wasmSubpackage": true
+      }
+    },
+    "taskOptionsMap": {
+      "1772258011491": {
+        "orientation": "portrait",
+        "appid": "wxfe4ef6cf7fe178ee",
+        "buildOpenDataContextTemplate": "",
+        "separateEngine": false,
+        "highPerformanceMode": false,
+        "__version__": "1.0.4",
+        "wasmSubpackage": true
+      }
+    },
+    "__version__": "1.3.8"
+  },
+  "__version__": "1.0.4"
+}

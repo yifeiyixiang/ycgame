@@ -1,0 +1,169 @@
+{
+  "__version__": "1.3.8",
+  "log": {
+    "level": 4
+  },
+  "common": {
+    "polyfills": {
+      "asyncFunctions": true
+    },
+    "buildPath": "project://build",
+    "outputName": "android",
+    "mainBundleCompressionType": "merge_dep",
+    "platform": "android",
+    "name": "毛茸茸大派对",
+    "startScene": "d9c6e90b-c3dc-4313-b72d-37f8c96a36d3",
+    "md5Cache": true,
+    "sourceMaps": true,
+    "server": "https://admin.petlove.top"
+  },
+  "BuildTaskManager": {
+    "taskMap": {
+      "1751969082654": {
+        "type": "build",
+        "id": "1751969082654",
+        "progress": 1,
+        "state": "success",
+        "stage": "build",
+        "message": "2026-5-11 10:13:13 build success in 2 min 50 s!",
+        "detailMessage": "// ---- build task cocos-service：onAfterCompressSettings ----\r",
+        "options": {
+          "name": "yangcheng",
+          "server": "",
+          "platform": "web-mobile",
+          "buildPath": "project://build",
+          "debug": false,
+          "md5Cache": true,
+          "skipCompressTexture": false,
+          "sourceMaps": false,
+          "polyfills": {
+            "asyncFunctions": true
+          },
+          "experimentalEraseModules": false,
+          "startSceneAssetBundle": false,
+          "bundleConfigs": [],
+          "useBuiltinServer": false,
+          "mainBundleIsRemote": false,
+          "mainBundleCompressionType": "merge_dep",
+          "useSplashScreen": true,
+          "bundleCommonChunk": false,
+          "packAutoAtlas": true,
+          "startScene": "d9c6e90b-c3dc-4313-b72d-37f8c96a36d3",
+          "outputName": "web-627yangcheng",
+          "taskName": "web-mobile",
+          "scenes": [
+            {
+              "url": "db://assets/scene/game.scene",
+              "uuid": "14f1dfee-9c75-4578-920d-f95f5ab15156",
+              "bundle": "db://assets/scene"
+            },
+            {
+              "url": "db://assets/scene/hotupdate.scene",
+              "uuid": "4b1c4e58-e6e3-4921-be8f-dc7180e09ff6",
+              "bundle": "db://assets/scene"
+            },
+            {
+              "url": "db://assets/loading.scene",
+              "uuid": "d9c6e90b-c3dc-4313-b72d-37f8c96a36d3"
+            },
+            {
+              "url": "db://assets/scene/scene.scene",
+              "uuid": "a5615f74-7162-4bb7-8e58-fe889542cc66",
+              "bundle": "db://assets/scene"
+            }
+          ],
+          "packages": {},
+          "__version__": "1.3.7",
+          "buildMode": "normal",
+          "logDest": "project://temp/builder/log/web-mobile7-8-2025 18-04.log",
+          "overwriteProjectSettings": {
+            "includeModules": {
+              "physics": "inherit-project-setting",
+              "physics-2d": "inherit-project-setting",
+              "gfx-webgl2": "inherit-project-setting"
+            },
+            "macroConfig": {
+              "cleanupImageCache": "inherit-project-setting"
+            }
+          },
+          "nativeCodeBundleMode": "both",
+          "wasmCompressionMode": false
+        },
+        "time": "5-11-2026 10:10:22",
+        "dirty": false
+      },
+      "1772258011491": {
+        "type": "build",
+        "id": "1772258011491",
+        "progress": 1,
+        "state": "success",
+        "stage": "build",
+        "message": "2026-4-11 15:40:55 build success in 2 min 50 s!",
+        "detailMessage": "// ---- build task cocos-service：onAfterBuild ----\r",
+        "options": {
+          "name": "毛茸茸大派对",
+          "server": "https://admin.petlove.top",
+          "platform": "wechatgame",
+          "buildPath": "project://build",
+          "debug": false,
+          "md5Cache": true,
+          "skipCompressTexture": false,
+          "sourceMaps": true,
+          "overwriteProjectSettings": {
+            "macroConfig": {
+              "cleanupImageCache": "on"
+            },
+            "includeModules": {
+              "physics": "inherit-project-setting",
+              "physics-2d": "inherit-project-setting",
+              "gfx-webgl2": "off"
+            }
+          },
+          "nativeCodeBundleMode": "wasm",
+          "polyfills": {
+            "asyncFunctions": false
+          },
+          "experimentalEraseModules": false,
+          "startSceneAssetBundle": false,
+          "bundleConfigs": [],
+          "useBuiltinServer": false,
+          "mainBundleIsRemote": false,
+          "mainBundleCompressionType": "merge_dep",
+          "useSplashScreen": true,
+          "bundleCommonChunk": false,
+          "packAutoAtlas": true,
+          "startScene": "d9c6e90b-c3dc-4313-b72d-37f8c96a36d3",
+          "outputName": "wechatgame",
+          "taskName": "wechatgame",
+          "scenes": [
+            {
+              "url": "db://assets/scene/scene.scene",
+              "uuid": "a5615f74-7162-4bb7-8e58-fe889542cc66",
+              "bundle": "db://assets/scene"
+            },
+            {
+              "url": "db://assets/scene/game.scene",
+              "uuid": "14f1dfee-9c75-4578-920d-f95f5ab15156",
+              "bundle": "db://assets/scene"
+            },
+            {
+              "url": "db://assets/scene/hotupdate.scene",
+              "uuid": "4b1c4e58-e6e3-4921-be8f-dc7180e09ff6",
+              "bundle": "db://assets/scene"
+            },
+            {
+              "url": "db://assets/loading.scene",
+              "uuid": "d9c6e90b-c3dc-4313-b72d-37f8c96a36d3"
+            }
+          ],
+          "wasmCompressionMode": false,
+          "packages": {},
+          "__version__": "1.3.8",
+          "logDest": "project://temp/builder/log/wechatgame2-28-2026 13-53.log"
+        },
+        "time": "4-11-2026 15:38:05",
+        "dirty": false
+      }
+    }
+  }
+}

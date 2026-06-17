@@ -1,0 +1,134 @@
+{
+  "ver": "1.0.27",
+  "importer": "image",
+  "imported": true,
+  "uuid": "1e56a515-4718-4964-9436-acc8851bd552",
+  "files": [
+    ".json",
+    ".png"
+  ],
+  "subMetas": {
+    "6c48a": {
+      "importer": "texture",
+      "uuid": "1e56a515-4718-4964-9436-acc8851bd552@6c48a",
+      "displayName": "通过看广告，可以抽取一个盲盒， 里面有一些宠物实物，服饰之类的等等。",
+      "id": "6c48a",
+      "name": "texture",
+      "userData": {
+        "wrapModeS": "clamp-to-edge",
+        "wrapModeT": "clamp-to-edge",
+        "minfilter": "linear",
+        "magfilter": "linear",
+        "mipfilter": "none",
+        "anisotropy": 0,
+        "isUuid": true,
+        "imageUuidOrDatabaseUri": "1e56a515-4718-4964-9436-acc8851bd552",
+        "visible": false
+      },
+      "ver": "1.0.22",
+      "imported": true,
+      "files": [
+        ".json"
+      ],
+      "subMetas": {}
+    },
+    "f9941": {
+      "importer": "sprite-frame",
+      "uuid": "1e56a515-4718-4964-9436-acc8851bd552@f9941",
+      "displayName": "通过看广告，可以抽取一个盲盒， 里面有一些宠物实物，服饰之类的等等。",
+      "id": "f9941",
+      "name": "spriteFrame",
+      "userData": {
+        "trimType": "auto",
+        "trimThreshold": 1,
+        "rotated": false,
+        "offsetX": 0,
+        "offsetY": 0.5,
+        "trimX": 0,
+        "trimY": 0,
+        "width": 359,
+        "height": 41,
+        "rawWidth": 359,
+        "rawHeight": 42,
+        "borderTop": 0,
+        "borderBottom": 0,
+        "borderLeft": 0,
+        "borderRight": 0,
+        "packable": true,
+        "pixelsToUnit": 100,
+        "pivotX": 0.5,
+        "pivotY": 0.5,
+        "meshType": 0,
+        "vertices": {
+          "rawPosition": [
+            -179.5,
+            -20.5,
+            0,
+            179.5,
+            -20.5,
+            0,
+            -179.5,
+            20.5,
+            0,
+            179.5,
+            20.5,
+            0
+          ],
+          "indexes": [
+            0,
+            1,
+            2,
+            2,
+            1,
+            3
+          ],
+          "uv": [
+            0,
+            42,
+            359,
+            42,
+            0,
+            1,
+            359,
+            1
+          ],
+          "nuv": [
+            0,
+            0.023809523809523808,
+            1,
+            0.023809523809523808,
+            0,
+            1,
+            1,
+            1
+          ],
+          "minPos": [
+            -179.5,
+            -20.5,
+            0
+          ],
+          "maxPos": [
+            179.5,
+            20.5,
+            0
+          ]
+        },
+        "isUuid": true,
+        "imageUuidOrDatabaseUri": "1e56a515-4718-4964-9436-acc8851bd552@6c48a",
+        "atlasUuid": ""
+      },
+      "ver": "1.0.12",
+      "imported": true,
+      "files": [
+        ".json"
+      ],
+      "subMetas": {}
+    }
+  },
+  "userData": {
+    "hasAlpha": true,
+    "type": "sprite-frame",
+    "fixAlphaTransparencyArtifacts": false,
+    "redirect": "1e56a515-4718-4964-9436-acc8851bd552@6c48a"
+  }
+}

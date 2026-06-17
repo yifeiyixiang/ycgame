@@ -1,0 +1,104 @@
+
+huama1.png
+size: 256,512
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+bozi1
+  rotate: false
+  xy: 2, 195
+  size: 101, 82
+  orig: 103, 83
+  offset: 0, 1
+  index: -1
+erduo1
+  rotate: false
+  xy: 195, 389
+  size: 56, 66
+  orig: 56, 66
+  offset: 0, 0
+  index: -1
+erduo2
+  rotate: true
+  xy: 137, 409
+  size: 46, 56
+  orig: 46, 57
+  offset: 0, 1
+  index: -1
+shenti2
+  rotate: true
+  xy: 2, 39
+  size: 154, 99
+  orig: 154, 99
+  offset: 0, 0
+  index: -1
+tou1
+  rotate: false
+  xy: 103, 2
+  size: 150, 128
+  orig: 150, 128
+  offset: 0, 0
+  index: -1
+tou2
+  rotate: false
+  xy: 105, 132
+  size: 149, 128
+  orig: 150, 128
+  offset: 1, 0
+  index: -1
+tui1
+  rotate: true
+  xy: 2, 353
+  size: 62, 85
+  orig: 62, 85
+  offset: 0, 0
+  index: -1
+tui2
+  rotate: true
+  xy: 89, 345
+  size: 62, 84
+  orig: 62, 84
+  offset: 0, 0
+  index: -1
+tui5
+  rotate: true
+  xy: 75, 417
+  size: 38, 60
+  orig: 39, 60
+  offset: 0, 0
+  index: -1
+tui6
+  rotate: true
+  xy: 19, 419
+  size: 36, 54
+  orig: 36, 54
+  offset: 0, 0
+  index: -1
+weiba1
+  rotate: false
+  xy: 2, 279
+  size: 138, 64
+  orig: 138, 64
+  offset: 0, 0
+  index: -1
+yanzhu1
+  rotate: true
+  xy: 2, 441
+  size: 14, 15
+  orig: 16, 16
+  offset: 1, 1
+  index: -1
+yanzhu2
+  rotate: true
+  xy: 2, 441
+  size: 14, 15
+  orig: 16, 16
+  offset: 1, 1
+  index: -1
+z
+  rotate: true
+  xy: 142, 262
+  size: 81, 84
+  orig: 81, 84
+  offset: 0, 0
+  index: -1
