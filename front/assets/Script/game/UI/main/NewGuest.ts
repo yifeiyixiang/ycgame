@@ -3,7 +3,7 @@ import { Const } from '../../../config/Const';
 import BaseView from '../../../easyFramework/mgr/BaseView';
 import { resourceUtil } from '../../../easyFramework/mgr/resourceUtil';
 import tables from '../../../easyFramework/other/tables';
-import { tyqSDK } from '../../../tyqSDK/SDK/tyqSDK';
+import { GamePlatform } from '../../platform/GamePlatform';
 const { ccclass, property } = _decorator;
 
 @ccclass('NewGuest')
@@ -31,7 +31,7 @@ export class NewGuest extends BaseView {
         this.titlelabel.string = guestData.name
         this.infoLabel.string = guestData.desc
 
-        tyqSDK.eventSendCustomEvent("解锁新肥鹅-" + guestData.name)
+        GamePlatform.track("解锁新肥鹅-" + guestData.name)
 
         resourceUtil.loadResWithBundle( guestData.sp, sp.SkeletonData, (err, skedata) => {
             this.guestSpine.skeletonData = skedata;

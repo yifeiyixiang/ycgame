@@ -6,8 +6,6 @@ import BaseView from '../../../easyFramework/mgr/BaseView';
 import { resourceUtil } from '../../../easyFramework/mgr/resourceUtil';
 import { uiManager } from '../../../easyFramework/mgr/uiManager';
 import tables from '../../../easyFramework/other/tables';
-import ServerCtr from '../../../tyqSDK/SDK/network/ServerCtr';
-import { tyqSDK } from '../../../tyqSDK/SDK/tyqSDK';
 import { aiRobot } from '../../comm/AIRobot';
 import { userData } from '../../comm/UserData';
 import { RechargeManager } from '../../../Util/RechargeManager';

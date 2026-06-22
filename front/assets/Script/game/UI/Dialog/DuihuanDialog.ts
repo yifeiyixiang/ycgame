@@ -6,8 +6,8 @@ import { uiManager } from '../../../easyFramework/mgr/uiManager';
 import { GNetCmd } from '../../../easyFramework/network/conf';
 import ServerCtrJSF from '../../../easyFramework/network/ServerCtrJSF';
 import GD from '../../../config/GD';
-import { tyqSDK } from '../../../tyqSDK/SDK/tyqSDK';
 import { audioManager } from '../../../easyFramework/mgr/audioManager';
+import { GamePlatform } from '../../platform/GamePlatform';
 
 const { ccclass, property } = _decorator;
 
@@ -60,7 +60,7 @@ export class DuihuanDialog extends BaseView {
     openDuihuanMa() {
         audioManager.instance.playSound(Const.Audio.btn)
         let code = this.codeEditBox.string
-        tyqSDK.eventSendCustomEvent("查看设置-兑换码兑换")
+        GamePlatform.track("查看设置-兑换码兑换")
         ServerCtrJSF.GetInstance().reqGetActiveCode(code)
 
     }

@@ -47,7 +47,7 @@ export class build_list_item extends comm {
 
     onLoad() {
         this.bindButton(this.gift, () => {
-            //弹出奖励提示框
+            //弹出奖励提示�?
             if (this.roomId > 0) {
                 let roomData = tables.ins().getTableValueByID(Const.Tables.scene_room, this.roomId)
                 let pos = UtilPub.convertToWorldSpace(this.gift)
@@ -88,7 +88,7 @@ export class build_list_item extends comm {
             if (SceneData.ins.getRoomLockInfoById(roomId) == GSceneRoomState.unlock) {
                 this.bar.active = true
 
-                //对应满足条件的场景道具，需要显示房间解锁进度，对应道具的解锁
+                //对应满足条件的场景道具，需要显示房间解锁进度，对应道具的解�?
                 let roomItems = tables.ins().getTableValuesByType2(Const.Tables.scene_item, "room", roomId + "", "eff", "1")
                 roomItems.sort((a, b) => {
                     return a.stars.split(",")[1] - b.stars.split(",")[1]
@@ -113,18 +113,18 @@ export class build_list_item extends comm {
                     this.buildId = item.id
                 }
 
-                //设置进度条信息
-                let val = UtilScene.getRoomBuildProgress(roomId)
+                //设置进度条信�?
+                let val = UtilScene.calcRoomCompletionRatio(roomId)
                 this.roomBar.progress = val
                 this.roomBarLabel.string = Math.round(val * 100) + "%"
                 if (val >= 1) {
-                    //如果满足了那么直接领取奖励
+                    //如果满足了那么直接领取奖�?
                     this.mid.active = false
                     this.giftReceive.active = true
                 }
 
-            } else {//如果未解锁，显示房间解锁需要的星星数
-                //隐藏进度条
+            } else {//如果未解锁，显示房间解锁需要的星星�?
+                //隐藏进度�?
                 this.buildType = GBuildType.room
                 this.buildId = this.roomId
                 this.bar.active = false
@@ -142,7 +142,7 @@ export class build_list_item extends comm {
         } else {
             this.bottom.active = true
             this.mid.active = false
-            //判断需要的解锁的等级
+            //判断需要的解锁的等�?
             this.lockLabel.string = '等级达到' + roomData.lv
         }
 

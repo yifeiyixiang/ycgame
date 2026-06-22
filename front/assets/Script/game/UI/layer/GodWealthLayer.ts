@@ -12,11 +12,10 @@ import ServerCtrJSF from '../../../easyFramework/network/ServerCtrJSF';
 import TimeCtrJSF from '../../../easyFramework/network/TimeCtrJSF';
 import tables from '../../../easyFramework/other/tables';
 import { UtilPub } from '../../../easyFramework/utils/UtilPub';
-import { Wechat } from '../../../tyqSDK/SDK/platform/wechat/wechat';
-import { tyqSDK } from '../../../tyqSDK/SDK/tyqSDK';
 import { RechargeManager } from '../../../Util/RechargeManager';
 import { composeModel } from '../../comm/composeModel';
 import { userData } from '../../comm/UserData';
+import { GamePlatform } from '../../platform/GamePlatform';
 const { ccclass, property } = _decorator;
 
 @ccclass('GodWealthLayer')
@@ -206,7 +205,7 @@ export class GodWealthLayer extends BaseView {
     initPropItem(id: number, item: Node, index: number) {
         let data = tables.ins().getTableValueByID(Const.Tables.prop, id)
         this.bindButton(find("btnPropInfo", item)!, () => {
-            uiManager.instance.showDialog(Const.Dialogs.PropDetailLayer, id);
+            uiManager.instance.showDialog(Const.Dialogs.ItemInsightLayer, id);
         })
         this.setSpriteFrame(find("icon", item)!.getComponent(Sprite)!, Const.resPath.icon + data.icon, () => { }, 120)
         find("val", item)!.getComponent(Label)!.string = data.name
@@ -309,11 +308,14 @@ export class GodWealthLayer extends BaseView {
         this.initBtns()
         if (GameStorage.getInt(Const.DataKeys.authSetting, 0) == 0) {
             if (WECHAT) {
-                Wechat.wxGetSetting().then((res: any) => {
+                GamePlatform.requestWechatUserInfo().then((res: any) => {
                     console.error("res = ", res)
-                    userData.roleAvatar = res.userInfo.avatarUrl
+                    let avatarUrl = res && (res.avatarUrl || (res.userInfo && res.userInfo.avatarUrl))
+                    if (avatarUrl) {
+                        userData.roleAvatar = avatarUrl
+                    }
                     console.error("userData.roleAvatar = ", userData.roleAvatar)
-                })
+                }).catch(() => { })
                 GameStorage.setInt(Const.DataKeys.authSetting, 1)
             }
         } else {
@@ -324,7 +326,7 @@ export class GodWealthLayer extends BaseView {
     videoRefreshSelectLayer() {
         // let timeData = tables.ins().getTableValueByKey(Const.Tables.privilege, "key", "10011")
         if (userData.getReceiveTime(this.timeData.dataKey + GodWealthLayer.key_reflesh, this.timeData.cdTime) >= Const.GodWealthRefleshTime) {
-            this.toast("刷新次数已用完")
+            this.toast("刷新次数已用�?)
             return
         }
         RechargeManager.showVideo("财神礼包刷新", () => {
@@ -334,14 +336,7 @@ export class GodWealthLayer extends BaseView {
     }
 
     onClickBtnShare() {
-        // params: { shareUserId: "443344673366511616", shareName: "胖胖的", propList: [40028, 50017, 50012, 40027, 50013, 20022] } 
-        // if (WECHAT) {
-        //     Wechat.wxGetSetting().then((res: any) => {
-        //         console.log("success res : ", res)
-        //     }).catch((res: any) => {
-        //         console.log("fail res : ", res)
-        //     })
-        // }
+        // params: { shareUserId: "443344673366511616", shareName: "胖胖�?, propList: [40028, 50017, 50012, 40027, 50013, 20022] } 
         this.wxScopeHead()
 
         let str = ""
@@ -352,7 +347,7 @@ export class GodWealthLayer extends BaseView {
             }
         }
         let args = "shareUserId=" + userData.roleID + "&shareName=" + userData.roleName + "&propList=" + str
-        tyqSDK.share(args)
+        GamePlatform.share(args)
     }
 
     receiveFuBag(event: any, data: any) {
@@ -365,11 +360,14 @@ export class GodWealthLayer extends BaseView {
 
     wxScopeHead() {
         if (WECHAT) {
-            Wechat.wxScopeHead().then((res: any) => {
+            GamePlatform.requestWechatUserInfo().then((res: any) => {
                 //  console.error("res = ", res)
-                userData.roleAvatar = res.avatarUrl
+                let avatarUrl = res && (res.avatarUrl || (res.userInfo && res.userInfo.avatarUrl))
+                if (avatarUrl) {
+                    userData.roleAvatar = avatarUrl
+                }
                 //    console.error("userData.roleAvatar = ", userData.roleAvatar)
-            })
+            }).catch(() => { })
         }
     }
 

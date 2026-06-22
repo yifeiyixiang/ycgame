@@ -3,10 +3,10 @@ import { Const } from '../../../config/Const';
 import GD from '../../../config/GD';
 import BaseView from '../../../easyFramework/mgr/BaseView';
 import { UtilPub } from '../../../easyFramework/utils/UtilPub';
-import { tyqSDK } from '../../../tyqSDK/SDK/tyqSDK';
 import { AnimationCtrl } from '../../comm/AnimationCtrl';
 import { composeModel } from '../../comm/composeModel';
 import { handData } from '../../data/handData';
+import { GamePlatform } from '../../platform/GamePlatform';
 const { ccclass, property } = _decorator;
 
 @ccclass('HandLayer')
@@ -242,7 +242,7 @@ export class HandLayer extends BaseView {
     onClickBtnOver() {
         let handIndex = composeModel.getHandIndex();
         for (let i = handIndex; i < handData.length; i++) {
-            tyqSDK.eventSendCustomEvent("完成新手教程" + i);
+            GamePlatform.track("完成新手教程" + i);
         }
         composeModel.setHandIndex(handData.length);
         this.close();

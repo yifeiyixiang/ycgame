@@ -8,10 +8,10 @@ import { comm } from '../../../easyFramework/mgr/comm';
 import { resourceUtil } from '../../../easyFramework/mgr/resourceUtil';
 import { uiManager } from '../../../easyFramework/mgr/uiManager';
 import tables from '../../../easyFramework/other/tables';
-import { tyqSDK } from '../../../tyqSDK/SDK/tyqSDK';
 import { ScrollViewUtil } from '../../comm/ScrollViewUtil';
 import { userData } from '../../comm/UserData';
 import { UtilGame } from '../../comm/UtilGame';
+import { GamePlatform } from '../../platform/GamePlatform';
 
 const { ccclass, property } = _decorator;
 
@@ -38,17 +38,17 @@ export class RoleDressUp extends BaseView {
     }
 
     selectWomen() {
-        let dressData = tables.ins().getTableValuesByType(Const.Tables.roleDressUp, "type", RoleSex.women)
+        let dressData = tables.ins().getTableValuesByType(Const.Tables.avatarStyle, "type", RoleSex.women)
         this.scrollViewSetData(this.scrollViewNode, dressData, this.initItem, this)
     }
 
     selectMen() {
-        let dressData = tables.ins().getTableValuesByType(Const.Tables.roleDressUp, "type", RoleSex.men)
+        let dressData = tables.ins().getTableValuesByType(Const.Tables.avatarStyle, "type", RoleSex.men)
         this.scrollViewSetData(this.scrollViewNode, dressData, this.initItem, this)
     }
 
     initInfo() {
-        let item = tables.ins().getTableValueByID(Const.Tables.roleDressUp, userData.roleDressUpId)
+        let item = tables.ins().getTableValueByID(Const.Tables.avatarStyle, userData.avatarLookId)
         resourceUtil.loadResWithBundle(Const.resPath.roleSpine + item.spine, sp.SkeletonData, (err, skedata) => {
             this.roleSpine.skeletonData = skedata;
             this.roleSpine.setSkin(item.spineSkin)
@@ -58,7 +58,7 @@ export class RoleDressUp extends BaseView {
 
     show(args: any) {
         super.show(args)
-        let item = tables.ins().getTableValueByID(Const.Tables.roleDressUp, userData.roleDressUpId)
+        let item = tables.ins().getTableValueByID(Const.Tables.avatarStyle, userData.avatarLookId)
         if (item.type == RoleSex.men) {
             this.selectMen()
         } else {
@@ -80,10 +80,10 @@ export class RoleDressUp extends BaseView {
         self.clearButtonHander(itemUI.getChildByName("gantan")!)
         self.addButtonHander(itemUI.getChildByName("gantan")!, self.node, "RoleDressUp", "openSkinDetail", item)
 
-        if (userData.isHaveDressUpId(item.id) || item.price == 0) {
+        if (userData.isAvatarLookOwned(item.id) || item.price == 0) {
             itemUI.getChildByName("btnBuy")!.active = false
             itemUI.getChildByName("hua1")!.active = false
-            if (userData.roleDressUpId == item.id) {
+            if (userData.avatarLookId == item.id) {
                 itemUI.getChildByName("btnWear")!.active = false
                 itemUI.getChildByName("wearlab")!.active = true
             } else {
@@ -123,7 +123,7 @@ export class RoleDressUp extends BaseView {
 
     onClickWear(event: any, data: any) {
         audioManager.instance.playSound(Const.Audio.btn)
-        userData.roleDressUpId = data.id
+        userData.avatarLookId = data.id
         this.updateDressUp()
         //  this.setSpriteFrame(find("root/RoleIcon", this.node)!.getComponent(Sprite)!, Const.resPath.icon + data.icon)
     }
@@ -137,8 +137,8 @@ export class RoleDressUp extends BaseView {
     onClickBuy(event: any, data: any) {
         audioManager.instance.playSound(Const.Audio.btn)
         if (data.price == 0 || userData.checkAndUseProp(data.price[0])) {
-            userData.buyDressUpId(data.id)
-            tyqSDK.eventSendCustomEvent("购买角色皮肤：" + data.name)
+            userData.unlockAvatarLook(data.id)
+            GamePlatform.track("购买角色皮肤�? + data.name)
             userData.dressValue += data.changeZhi
             find("root/dressbg1/Label", this.node)!.getComponent(Label)!.string = userData.dressValue + ""
             this.scrollViewNode.getComponent(ScrollViewUtil)!.refreshList()

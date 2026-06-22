@@ -10,8 +10,8 @@ import { composeModel } from '../../comm/composeModel';
 import { playerModel } from '../../comm/playerModel';
 const { ccclass, property } = _decorator;
 
-@ccclass('SeasonAwardLayer')
-export class SeasonAwardLayer extends BaseView {
+@ccclass('SeasonTrackLayer')
+export class SeasonTrackLayer extends BaseView {
 
     @property({ type: Node })
     btnClose: Node = null!;
@@ -211,7 +211,7 @@ export class SeasonAwardLayer extends BaseView {
     }
 
     onClickAward2(btn: Button) {
-        // TODO 是否已解锁高级奖励
+        // TODO 是否已解锁高级奖�?
 
         // @ts-ignore
         let row = btn.node.row;

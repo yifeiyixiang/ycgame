@@ -4,9 +4,9 @@ export interface GSceneItemData {
     id: number, //scene_item 表的id
     pos: Vec2, //当前的坐标点
     curFace: GCurFace, //当前的朝向，如果朝向超过faceMax，那么就等于faceMax
-    curGridPoint: Vec2, //当前坐标点
+    curGridPoint: Vec2, //当前坐标�?
     lockState: GLockState, //如果锁定状态，必须是皮肤ID
-    type: GSceneItemType, //场景的道具类型
+    type: GSceneItemType, //场景的道具类�?
     skin: number, //皮肤
 }
 
@@ -16,12 +16,12 @@ export interface GIGridData {
     point: Vec2, //x, y坐标
 }
 
-// //动画状态
+// //动画状�?
 // export enum GGuestAniState{
 //     idle="idle", //待机
 //     move="move", //移动
 //     work="work", //工作
-//     pose="pose", //姿态
+//     pose="pose", //姿�?
 // }
 
 //动画
@@ -42,51 +42,51 @@ export enum GPromptType {
     blockAccount = "blockAccount", //封号
     loginOccupy = "loginOccupy", //抢登
     loginExpired = "loginExpired", //登录过期
-    unkown = "unkown", //服务器未知错误
+    unkown = "unkown", //服务器未知错�?
     resNotNewest = "resNotNewest", //资源不是最新的
 }
 
-//订单状态
+//订单状�?
 export enum GOrderStatus {
-    noHandle = 1, //未处理
+    noHandle = 1, //未处�?
     cancelPay = 2, //取消支付
     paidWithoutGoods = 3, //已支付未发货
     success = 4, //成功
 }
 
-//账号方式--于后端对应
+//账号方式--于后端对�?
 export enum GAccountWay {
     guest = 0,
     facebook = 1,
     google = 2,
 }
 
-//账号方式--于后端对应
+//账号方式--于后端对�?
 export enum GPlatform {
     H5 = 0,
     Google = 1,
     WeChat = 2,
 }
 
-//客人状态
+//客人状�?
 export enum GGuestState {
     nothing = 0, //什么也不做 
     subway = 101, //从地铁口出来 
     subwaying = 102,
     streetWalk = 201,  //在街道上游走
     streetWalking = 202,
-    waitInQueueToRoom = 301,  //在街道上门口等待进入等待队列
-    waitInQueueToRooming = 302,
-    //房间内的状态切换是随机的
+    queueForRoomDoor = 301,  //在街道上门口等待进入等待队列
+    pathingToRoomQueue = 302,
+    //房间内的状态切换是随机�?
     roomDoorStay = 400, //在房间待着
-    roomWalk = 401,  //在房间里面游走
+    roomWalk = 401,  //在房间里面游�?
     roomWalking = 402,
-    goToWork = 501, //在对应的节点上进行游走
+    goToWork = 501, //在对应的节点上进行游�?
     goToWorking = 502,
-    work = 601, //在对应的节点上工作
+    work = 601, //在对应的节点上工�?
     working = 602,
-    back = 701, //在房间返回到出口，无法出去时，继续游走
-    backing = 702, //返回中
+    back = 701, //在房间返回到出口，无法出去时，继续游�?
+    backing = 702, //返回�?
 }
 
 export enum GResType {
@@ -94,18 +94,18 @@ export enum GResType {
     diamond = 102,
     strength = 103,
     exp = 104,
-    tick = 305, //装扮券
+    tick = 305, //装扮�?
 }
 
-//每个场景道具是否在播放状态
+//每个场景道具是否在播放状�?
 export enum GWorkState {
     isWorking = 1, //在工作中
     idle = 0, //待机
 }
 
 export enum GLockState {
-    locked = 0, //未解锁
-    unlock = 1, //已解锁
+    locked = 0, //未解�?
+    unlock = 1, //已解�?
 }
 export enum GGridType {
     green = "green", //绿色
@@ -114,64 +114,64 @@ export enum GGridType {
 }
 
 export enum GSceneItemType {
-    item = 1, //item就是跑步机那些
+    item = 1, //item就是跑步机那�?
     carpet = 2, //carpet就是地垫
-    pendant = 3, //pendant就是挂件，类似钟、镜子
+    pendant = 3, //pendant就是挂件，类似钟、镜�?
     wall = 4,  //wall就是墙体，不需要位置固定的
     floor = 5,  //floor就是地板，不需要位置固定的
-    street = 6,  //floor就是街道上面的建筑
+    street = 6,  //floor就是街道上面的建�?
     room = 7,  //room未解锁的房间，不能操作，但是参与碰撞计算。这样玩家不能在房间里面乱搞
     guest = 8,  //room未解锁的房间，不能操作，但是参与碰撞计算。这样玩家不能在房间里面乱搞
     other = 9, //其他
 }
 
 /**
- * 选中的道具的属性
+ * 选中的道具的属�?
  */
 export interface GISceneItemParent {
-    node: Node, //脚本所在节点
+    node: Node, //脚本所在节�?
     id: number, //唯一标识
     skin: number, //皮肤
-    faceMax: GFace, //有几个面，0是不能旋转，2是可以转，只能2下，4是可以转4下。
+    faceMax: GFace, //有几个面�?是不能旋转，2是可以转，只�?下，4是可以转4下�?
     curFace: GCurFace, //当前面向
     itemSize: Vec2, //x几格，y几格
-    curGridPoint: Vec2, //当前格子的位置, 房间为原点的偏移的情况
-    type: GSceneItemType, //道具的类型
+    curGridPoint: Vec2, //当前格子的位�? 房间为原点的偏移的情�?
+    type: GSceneItemType, //道具的类�?
     lockState: GLockState, //道具锁定类型
     row: any, //配表信息
-    workState: GWorkState, //工作状态
+    workState: GWorkState, //工作状�?
     guestNode: Node, //客人节点
-    initByConfigTable(row: any): void, //初始化场景方法
+    initByConfigTable(row: any): void, //初始化场景方�?
     getPointsArr(): Array<Array<number>>,//获得点位信息
     getCurIconNode(): Node, //返回当前图标节点
     rotateItem(): void, //旋转场景道具
-    setPendantFace(): void, //设置挂件的朝向
+    setPendantFace(): void, //设置挂件的朝�?
     setFace(curFace: GCurFace): void //设置朝向
     switchIcon(skinId: number): void //切换图片
-    flashOnce(): void, //闪白1次
+    flashOnce(): void, //闪白1�?
     flashForever(isShow: boolean): void, //一直闪
 }
 
 /**
- * 商店中商品的状态
+ * 商店中商品的状�?
  */
 export enum GStoreItemType {
-    new = 1, //新品，还未获得
-    gotted = 2, //已获得未用
+    new = 1, //新品，还未获�?
+    gotted = 2, //已获得未�?
     using = 3, //正在使用
 }
 export enum GSceneSkinState {
-    noGotted = "0", //未获得
-    gotted = "1", //已获得
+    noGotted = "0", //未获�?
+    gotted = "1", //已获�?
 }
 
 export enum GSceneRoomState {
-    locked = "0", //未解锁
+    locked = "0", //未解�?
     unlock = "1", //解锁
 }
 
 export enum GSceneRoomReceiveState {
-    unReceive = "0", //未解锁
+    unReceive = "0", //未解�?
     received = "1", //解锁
 }
 
@@ -183,17 +183,17 @@ export enum GBuildType {
 
 //街道排队的标记位
 export enum GStreetQueueFlag {
-    noOccupy = 0, //未占用
+    noOccupy = 0, //未占�?
     occupy = 1, //占用
 }
 
 export enum GFace {
-    face1 = 1, //不能转
-    face2 = 2, //拖动就取消
-    face4 = 4, //触发建筑中
+    face1 = 1, //不能�?
+    face2 = 2, //拖动就取�?
+    face4 = 4, //触发建筑�?
 }
-export enum GCurFace { //当前面
-    face1 = 1, //东，右下角
+export enum GCurFace { //当前�?
+    face1 = 1, //东，右下�?
     face2 = 2, //
     face3 = 3,
     face4 = 4,
@@ -201,10 +201,10 @@ export enum GCurFace { //当前面
 
 export enum GTouchState {
     noYet = "noYet", //还没点击
-    touchNewEmptyNewArea = "touchEmptyArea", //拖动就取消
-    touchBuildingReady = "touchBuildingReady", //触发建筑中
+    touchNewEmptyNewArea = "touchEmptyArea", //拖动就取�?
+    touchBuildingReady = "touchBuildingReady", //触发建筑�?
     touchBuildingArrow = "touchBuildingArrow", //触发箭头阶段
-    touchNewBuildingNewAlready = "touchBuildingAlready", //已触发建筑
+    touchNewBuildingNewAlready = "touchBuildingAlready", //已触发建�?
     touchOpsArea = "touchOpsArea", //触发操作领域
 }
 
@@ -245,7 +245,7 @@ export enum GoodsType {
 }
 
 
-// 设计支付。慎重修改
+// 设计支付。慎重修�?
 export enum PriceType {
     Free = 0,
     Video = 1,
@@ -258,13 +258,13 @@ export enum PriceType {
 export enum CodeState {
     reward = 1, // 奖励领取
     timeOut, //时间过期
-    receiced, //已经领取过
-    codeSame, // 已兑换过同类型
+    receiced, //已经领取�?
+    codeSame, // 已兑换过同类�?
 }
 
 export enum RoleSex {
-    men = 1, // 男
-    women = 2, //女
+    men = 1, // �?
+    women = 2, //�?
 }
 
 export enum GoodsType {
@@ -290,11 +290,11 @@ export interface GTypeNumNode {
 }
 
 /**
- * 活动开启类型
+ * 活动开启类�?
  */
 export enum ActivityLockType {
     type_Level = 1,   // 等级解锁
-    type_FixTime = 2, // 定时开启
+    type_FixTime = 2, // 定时开�?
 }
 
 /**
@@ -309,12 +309,12 @@ export enum EmailType {
  * 邮件奖励领取情况
  */
 export enum EmailRewardState {
-    unReceive = 1,  // 未领取
-    received = 2,  // 已领取
+    unReceive = 1,  // 未领�?
+    received = 2,  // 已领�?
 }
 
 /**
- * 邮件阅读状态
+ * 邮件阅读状�?
  */
 export enum EmailState {
     unRead = 1,   //未读
@@ -344,7 +344,7 @@ export interface GodWealthReceiveUser {
 export interface GodWealthData {
     "shareUserId": string,  // 发起分享用户ID
     "shareName": string,  // 发起分享用户名字
-    "propList": [] // 领取的道具列表
+    "propList": [] // 领取的道具列�?
     "receiveUser": GodWealthReceiveUser[]
     "shareTime": number  // 发起分享时间
 }
@@ -381,14 +381,14 @@ export const GRedPoint = Enum({
     menu1detailItem: 1002, //宠物详情升级
     menu1petDetailUpStar: 1003, //升星
     menu1petDetailUnlock: 1004, //解锁
-    menu1petDetailEquip: 1005, //装备龙
+    menu1petDetailEquip: 1005, //装备�?
     menu2UpGradeRole: 1011, //菜单升级
-    menu3Battle: 1021, //开始挑战
+    menu3Battle: 1021, //开始挑�?
     menu3BattleSwitchMap: 1022, //切换地图
-    menu4UpGradeSkill: 1031, //升级技能
+    menu4UpGradeSkill: 1031, //升级技�?
     menu4UpGradeSkillItem: 1032, //技能的选项
-    menu5tenFree: 1041, //免费十连抽提示
-    menu5Orangeten: 1042, //橙色十连抽提示
+    menu5tenFree: 1041, //免费十连抽提�?
+    menu5Orangeten: 1042, //橙色十连抽提�?
 
     //在线奖励
     online: 2001,
@@ -411,7 +411,7 @@ export enum GDailyTask {
     getOfflineReward = 3,
     killLittleMonster = 4,
     killSpecMonster = 5,
-    killBossMonster = 6,
+    defeatBossEncounter = 6,
     killDragon = 7,
     breakBox = 8,
     useHpItem = 9,
@@ -440,17 +440,17 @@ export enum GLoadPhase {
 
 //广告埋点文字
 export enum GBury {
-    step1EnterLoading = "a1进入加载页",
+    step1EnterLoading = "a1进入加载�?,
     step2EnterGame = "a2进入战斗界面",
     step3EnterUI = "a3进入UI界面",
-    guide1 = "b1新手进入战斗1层",
+    guide1 = "b1新手进入战斗1�?,
 
     clickChallengeBtn = "点击挑战",
     clickPet = "点击展示宠物-",
-    clickForTen = "点击普通十连",
-    showForHpAd = "展示欧米噶祝福",
+    clickForTen = "点击普通十�?,
+    showForHpAd = "展示欧米噶祝�?,
     noAdToShare = "无视频转分享",
-    videoForHead = "观看激励视频-头部",
-    videoForHeadDone = "观看完激励视频-头部",
+    videoForHead = "观看激励视�?头部",
+    videoForHeadDone = "观看完激励视�?头部",
 
 }

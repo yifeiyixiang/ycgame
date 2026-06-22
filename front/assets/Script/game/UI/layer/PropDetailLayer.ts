@@ -8,8 +8,8 @@ import { UtilPub } from '../../../easyFramework/utils/UtilPub';
 import { userData } from '../../comm/UserData';
 const { ccclass, property } = _decorator;
 
-@ccclass('PropDetailLayer')
-export class PropDetailLayer extends BaseView {
+@ccclass('ItemInsightLayer')
+export class ItemInsightLayer extends BaseView {
 
 
     @property({ type: Node })

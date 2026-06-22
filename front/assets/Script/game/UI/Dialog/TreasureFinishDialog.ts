@@ -4,7 +4,6 @@ import GD from '../../../config/GD';
 import BaseView from '../../../easyFramework/mgr/BaseView';
 import tables from '../../../easyFramework/other/tables';
 import { CdComponent, CDType } from '../../../easyFramework/utils/CdComponent';
-import { tyqSDK } from '../../../tyqSDK/SDK/tyqSDK';
 import { RechargeManager } from '../../../Util/RechargeManager';
 import { composeModel } from '../../comm/composeModel';
 import { userData } from '../../comm/UserData';

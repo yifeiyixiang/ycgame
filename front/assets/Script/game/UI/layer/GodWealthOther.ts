@@ -10,9 +10,9 @@ import { GNetCmd } from '../../../easyFramework/network/conf';
 import ServerCtrJSF from '../../../easyFramework/network/ServerCtrJSF';
 import TimeCtrJSF from '../../../easyFramework/network/TimeCtrJSF';
 import tables from '../../../easyFramework/other/tables';
-import { Wechat } from '../../../tyqSDK/SDK/platform/wechat/wechat';
 import { composeModel } from '../../comm/composeModel';
 import { userData } from '../../comm/UserData';
+import { GamePlatform } from '../../platform/GamePlatform';
 const { ccclass, property } = _decorator;
 
 @ccclass('GodWealthOther')
@@ -95,11 +95,14 @@ export class GodWealthOther extends BaseView {
         this.initBtns()
         if (GameStorage.getInt(Const.DataKeys.authSetting, 0) == 0) {
             if (WECHAT) {
-                Wechat.wxGetSetting().then((res: any) => {
+                GamePlatform.requestWechatUserInfo().then((res: any) => {
                     console.error("res = ", res)
-                    userData.roleAvatar = res.userInfo.avatarUrl
+                    let avatarUrl = res && (res.avatarUrl || (res.userInfo && res.userInfo.avatarUrl))
+                    if (avatarUrl) {
+                        userData.roleAvatar = avatarUrl
+                    }
                     console.error("userData.roleAvatar = ", userData.roleAvatar)
-                })
+                }).catch(() => { })
                 GameStorage.setInt(Const.DataKeys.authSetting, 1)
             }
         } else {
@@ -206,7 +209,7 @@ export class GodWealthOther extends BaseView {
         if (this._isReceived) {
             btnReceive.getComponent(Button)!.interactable = false
             btnReceive.getChildByName("bg")!.getComponent(Sprite)!.grayscale = true
-            btnReceive.getChildByName("text")!.getComponent(Label)!.string = "已领取"
+            btnReceive.getChildByName("text")!.getComponent(Label)!.string = "已领�?
             btnReceive.getChildByName("text")!.getComponent(LabelOutline)!.color = color(30, 30, 30, 255)
         } else {
             btnReceive.getComponent(Button)!.interactable = true
@@ -225,21 +228,21 @@ export class GodWealthOther extends BaseView {
             this.btnReceive.active = false
             this.receivedLabel.active = true
             if(userData.getIntervalData(this.timeData.dataKey + GodWealthOther.key_shareUserID + (0), this.timeData.cdTime, this._curShareUserID + "") == this._curShareUserID + "" ||userData.getIntervalData(this.timeData.dataKey + GodWealthOther.key_shareUserID + (1), this.timeData.cdTime, this._curShareUserID + "") == this._curShareUserID + ""){
-                this.receivedLabel.getComponent(Label)?.string +"已领取"
+                this.receivedLabel.getComponent(Label)?.string +"已领�?
             }else{
-                this.receivedLabel.getComponent(Label)?.string +"领取次数已用完"
+                this.receivedLabel.getComponent(Label)?.string +"领取次数已用�?
             }
         } else {
             if (curTime == 1 && userData.getIntervalData(this.timeData.dataKey + GodWealthOther.key_shareUserID + (curTime - 1), this.timeData.cdTime, this._curShareUserID + "") == this._curShareUserID + "") {
                 this.btnReceive.active = false
                 this.receivedLabel.active = true
-                this.receivedLabel.getComponent(Label)?.string +"已领取"
+                this.receivedLabel.getComponent(Label)?.string +"已领�?
             } else {
                 this.btnReceive.active = true
                 this.receivedLabel.active = false
             }
         }
-        this.receiveTimeLabel.string = "还可领取" + curTime + "/" + Const.GodWealthReceiveOtherTime + "次财神的礼物！"
+        this.receiveTimeLabel.string = "还可领取" + curTime + "/" + Const.GodWealthReceiveOtherTime + "次财神的礼物�?
     }
 
     refreshSelectLayer(force = false) {
@@ -257,7 +260,7 @@ export class GodWealthOther extends BaseView {
     initPropItem(id: number, item: Node, index: number) {
         let data = tables.ins().getTableValueByID(Const.Tables.prop, id)
         this.bindButton(find("btnPropInfo", item)!, () => {
-            uiManager.instance.showDialog(Const.Dialogs.PropDetailLayer, id);
+            uiManager.instance.showDialog(Const.Dialogs.ItemInsightLayer, id);
         })
         this.setSpriteFrame(find("icon", item)!.getComponent(Sprite)!, Const.resPath.icon + data.icon, () => { }, 120)
         find("val", item)!.getComponent(Label)!.string = data.name
@@ -290,7 +293,7 @@ export class GodWealthOther extends BaseView {
 
     onClickBtnReceive() {
         if (this._curSelectIndex < 0) {
-            this.toast("请先选择一个礼物")
+            this.toast("请先选择一个礼�?)
             return
         }
         ServerCtrJSF.GetInstance().reqReceiveGodWealth(this._curShareUserID + "", this._curSelectIndex)
@@ -314,11 +317,14 @@ export class GodWealthOther extends BaseView {
 
     wxScopeHead() {
         if (WECHAT) {
-            Wechat.wxScopeHead().then((res: any) => {
+            GamePlatform.requestWechatUserInfo().then((res: any) => {
                 //   console.error("res = ", res)
-                userData.roleAvatar = res.avatarUrl
+                let avatarUrl = res && (res.avatarUrl || (res.userInfo && res.userInfo.avatarUrl))
+                if (avatarUrl) {
+                    userData.roleAvatar = avatarUrl
+                }
                 //  console.error("userData.roleAvatar = ", userData.roleAvatar)
-            })
+            }).catch(() => { })
         }
     }
 

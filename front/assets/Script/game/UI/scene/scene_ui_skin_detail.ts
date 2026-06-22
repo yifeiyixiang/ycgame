@@ -4,11 +4,11 @@ import GD from '../../../config/GD';
 import { GResType, GSceneSkinState } from '../../../config/global';
 import BaseView from '../../../easyFramework/mgr/BaseView';
 import tables from '../../../easyFramework/other/tables';
-import { tyqSDK } from '../../../tyqSDK/SDK/tyqSDK';
 import { SceneData } from '../../comm/SceneData';
 import { userData } from '../../comm/UserData';
 import { UtilGame } from '../../comm/UtilGame';
 import { UtilScene } from '../../comm/UtilScene';
+import { GamePlatform } from '../../platform/GamePlatform';
 const { ccclass, property } = _decorator;
 
 @ccclass('scene_ui_skin_detail')
@@ -54,7 +54,7 @@ export class scene_ui_skin_detail extends BaseView {
                 // uiManager.instance.showDialog(Const.Dialogs.gold_no_enough, { cb: () => { } })
             } else { //购买成功
                 isBuySuccess = true
-                tyqSDK.eventSendCustomEvent("金币购买装扮: " + skinData.name)
+                GamePlatform.track("金币购买装扮: " + skinData.name)
             }
         } else if (type == GResType.diamond) {
             if (userData.checkAndUseDiamonds(val) == false) {
@@ -62,15 +62,15 @@ export class scene_ui_skin_detail extends BaseView {
                 // uiManager.instance.showDialog(Const.Dialogs.diamond_no_enough, { cb: () => { } })
             } else {
                 isBuySuccess = true
-                tyqSDK.eventSendCustomEvent("钻石购买装扮: " + skinData.name)
+                GamePlatform.track("钻石购买装扮: " + skinData.name)
             }
         } else if (type == GResType.tick) {
-            if (userData.checkAndUseDressMoney(val) == false) {
+            if (userData.checkAndUseStyleVoucher(val) == false) {
                 this.close()
                 // uiManager.instance.showDialog(Const.Dialogs.tick_no_enough, { cb: () => { } })
             } else {
                 isBuySuccess = true
-                tyqSDK.eventSendCustomEvent("装扮券购买装扮: " + skinData.name)
+                GamePlatform.track("装扮券购买装�? " + skinData.name)
             }
         }
 
@@ -116,10 +116,10 @@ export class scene_ui_skin_detail extends BaseView {
                 this.setSpriteFrame(this.resIcon, Const.resPath.icon + itemData.icon, undefined, 40)
                 this.resVal.string = "x" + this.dressData.price[0][1]
             }
-            if (this.dressData.price == 0 || userData.isHaveDressUpId(this.dressData.id)) {
+            if (this.dressData.price == 0 || userData.isAvatarLookOwned(this.dressData.id)) {
                 this.resIcon.node.active = false
                 this.resVal.string = "穿戴"
-                if (userData.roleDressUpId == this.dressData.id) {
+                if (userData.avatarLookId == this.dressData.id) {
                     this.buyBtn.active = false
                 } else {
                     this.buyBtn.active = true
@@ -132,14 +132,14 @@ export class scene_ui_skin_detail extends BaseView {
         if (this.dressData == null) {
             return
         }
-        if (userData.isHaveDressUpId(this.dressData.id) || this.dressData.price == 0) {
-            userData.roleDressUpId = this.dressData.id
+        if (userData.isAvatarLookOwned(this.dressData.id) || this.dressData.price == 0) {
+            userData.avatarLookId = this.dressData.id
             this.emit(GD.event.updateDressUp)
             this.popClose()
         } else {
             if (userData.checkAndUseProp(this.dressData.price[0])) {
-                userData.buyDressUpId(this.dressData.id)
-                tyqSDK.eventSendCustomEvent("购买店长装扮 id：" + this.dressData.id)
+                userData.unlockAvatarLook(this.dressData.id)
+                GamePlatform.track("购买店长装扮 id�? + this.dressData.id)
                 userData.dressValue += this.dressData.changeZhi
                 this.emit(GD.event.updateDressUp)
                 this.buyBtn.active = true

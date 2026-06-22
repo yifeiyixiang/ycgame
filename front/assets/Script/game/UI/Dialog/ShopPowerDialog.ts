@@ -10,11 +10,11 @@ import { GNetCmd } from '../../../easyFramework/network/conf';
 import ServerCtrJSF from '../../../easyFramework/network/ServerCtrJSF';
 import tables from '../../../easyFramework/other/tables';
 import { CdComponent, CDType } from '../../../easyFramework/utils/CdComponent';
-import { tyqSDK } from '../../../tyqSDK/SDK/tyqSDK';
 import { RechargeManager } from '../../../Util/RechargeManager';
 import { composeModel } from '../../comm/composeModel';
 import { userData } from '../../comm/UserData';
 import { MonthCard } from '../money/MonthCard';
+import { GamePlatform } from '../../platform/GamePlatform';
 
 const { ccclass, property } = _decorator;
 
@@ -152,7 +152,7 @@ export class ShopPowerDialog extends BaseView {
         audioManager.instance.playSound(Const.Audio.btn)
 
         if (userData.checkAndUseDiamonds(tables.ins().config[Const.config.diamonsPower][1] * userData.buyPowerTime)) {
-            tyqSDK.eventSendCustomEvent("钻石购买体力 " + (tables.ins().config[Const.config.diamonsPower][1] * userData.buyPowerTime) + "钻石")
+            GamePlatform.track("钻石购买体力 " + (tables.ins().config[Const.config.diamonsPower][1] * userData.buyPowerTime) + "钻石")
             userData.getProp([GoodsType.Power, tables.ins().config[Const.config.diamonsPower][0] + (this._MonthCardVal.have == 1 ? tables.ins().config[Const.config.CardAddPower] : 0)], this.node.getComponent(UITransform)!.convertToWorldSpaceAR(v3(0, 0, 0)), v3(0, 0, 0))
             userData.addBuyPowerTime()
             this.emit(GD.event.updateMoney)

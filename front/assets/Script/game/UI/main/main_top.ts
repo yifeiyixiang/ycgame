@@ -20,7 +20,7 @@ export class main_top extends BaseView {
     @property({ type: Label, displayName: "体力Label" }) powerLabel: Label = null!
     @property({ type: Label, displayName: "金币Label" }) coinLabel: Label = null!
     @property({ type: Label, displayName: "钻石Label" }) diamondsLabel: Label = null!
-    @property({ type: Label, displayName: "装扮券Label" }) dressMoneyLabel: Label = null!
+    @property({ type: Label, displayName: "装扮券Label" }) styleVoucherLabel: Label = null!
 
     @property({ type: Label, displayName: "等级Label" }) lvLabel: Label = null!
     @property({ type: Sprite, displayName: "等级bar" }) lvBar: Sprite = null!
@@ -176,7 +176,7 @@ export class main_top extends BaseView {
         this.petCountLab.string = "宠物数量: " + userData.pet_count + "";
         this.petScoreLab.string = "宠物积分: " + userData.pet_score + "";
 
-        this.lvLabelNew.string = userData.roleLv + "级"
+        this.lvLabelNew.string = userData.roleLv + "�?
     }
 
     updateMoney() {
@@ -185,7 +185,7 @@ export class main_top extends BaseView {
         //  this.coinLabel.string = userData.coin + ""
         // this.diamondsLabel.string = userData.diamonds + ""
         this.lvLabel2.string = userData.roleLv + ""
-        this.dressMoneyLabel.string = userData.dressMoney + ""
+        this.styleVoucherLabel.string = userData.styleVoucher + ""
         let lvdata = tables.ins().getTableValueByID(Const.Tables.herolevel, userData.roleLv)
         if (lvdata) {
             // this.lvBar2.fillRange = userData.roleExp / lvdata.exp
@@ -228,8 +228,8 @@ export class main_top extends BaseView {
         let powerCom = this.powerLabel.getComponent(numAction) || this.powerLabel.addComponent(numAction)
         powerCom!.setTargetNum(userData.power)
 
-        let dressMoneyCom = this.dressMoneyLabel.getComponent(numAction) || this.dressMoneyLabel.addComponent(numAction)
-        dressMoneyCom!.setTargetNum(userData.dressMoney)
+        let styleVoucherCom = this.styleVoucherLabel.getComponent(numAction) || this.styleVoucherLabel.addComponent(numAction)
+        styleVoucherCom!.setTargetNum(userData.styleVoucher)
     }
 
     addMoney(event: any, data: any) {
@@ -280,7 +280,7 @@ export class main_top extends BaseView {
     }
 
     expAddAnimation(exp:number){
-        // console.log("合成新道具");
+        // console.log("合成新道�?);
         userData.roleExp+=exp;
         this.updateMoney();
         this.addExpLab.string = "exp +" + exp;

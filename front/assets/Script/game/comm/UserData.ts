@@ -6,21 +6,20 @@ import { uiManager } from "../../easyFramework/mgr/uiManager";
 import { default as ServerCtr, default as ServerCtrJSF } from "../../easyFramework/network/ServerCtrJSF";
 import TimeCtrJSF from "../../easyFramework/network/TimeCtrJSF";
 import tables from "../../easyFramework/other/tables";
-import { tyqAdManager } from "../../tyqSDK/SDK/tyqAdManager";
-import { tyqSDK } from "../../tyqSDK/SDK/tyqSDK";
 import { aiRobot } from "./AIRobot";
 import { composeModel } from "./composeModel";
 import { GetAnimalLayer } from "./GetAnimalLayer";
 import { playerModel } from "./playerModel";
 import { AdPropCount, BagPropData, FriendData, petItemData, PropCountData, TaskStateData, UserInfoData } from "../../../typeScript/gameData";
 import { HttpClient } from "../../../typeScript/net/HttpClient";
+import { GamePlatform } from '../platform/GamePlatform';
 
 
 class UserData {
     private static _instance: UserData = null!
     private static _isMergeSave = false;
 
-    /**1.室外，2室内 */
+    /**1.室外�?室内 */
     public sceneStau:number = 1;
 
     /**用户信息 */
@@ -44,7 +43,7 @@ class UserData {
     /**好友信息数组 */
     public friendList:FriendData[] = [];
 
-    /**推荐好友，申请列表 数组 */
+    /**推荐好友，申请列�?数组 */
     public curFriendList:FriendData[] = [];
 
     /**任务数组 */
@@ -53,7 +52,7 @@ class UserData {
     /**商店物品广告统计 */
     public adProps:AdPropCount[] = [];
 
-    /**是否可以操作装饰品 */
+    /**是否可以操作装饰�?*/
     public goodIsCanOperate: boolean = false;
 
     public static getInstance() {
@@ -121,7 +120,7 @@ class UserData {
         GameStorage.setInt(Const.DataKeys.roleLv, lv)
         composeModel.addManagerVal(Const.ManagerTypes.roleLv);
 
-        // 玩家等级发生变化了
+        // 玩家等级发生变化�?
         playerModel.roleLvUp();
 
         this.checkActivityOpen()
@@ -173,15 +172,15 @@ class UserData {
     /**
      * -----店长装扮 ----------
      */
-    public get roleDressUpId() {
-        let curDressUpId = GameStorage.getInt(Const.DataKeys.roleDressUpId, 0)
+    public get avatarLookId() {
+        let curDressUpId = GameStorage.getInt(Const.DataKeys.avatarLookId, 0)
         if (curDressUpId == 0) {
-            let dressData = tables.ins().getTableValuesByType(Const.Tables.roleDressUp, "type", "2")
+            let dressData = tables.ins().getTableValuesByType(Const.Tables.avatarStyle, "type", "2")
             for (let index = 0; index < dressData.length; index++) {
                 const element = dressData[index];
                 if (element.price == 0) {
                     curDressUpId = element.id
-                    this.roleDressUpId = curDressUpId
+                    this.avatarLookId = curDressUpId
                     return curDressUpId
                 }
             }
@@ -189,16 +188,16 @@ class UserData {
         return curDressUpId
     }
 
-    public set roleDressUpId(id: number) {
-        GameStorage.setInt(Const.DataKeys.roleDressUpId, id)
+    public set avatarLookId(id: number) {
+        GameStorage.setInt(Const.DataKeys.avatarLookId, id)
     }
 
-    public isHaveDressUpId(id: number) {
-        return GameStorage.getInt(Const.DataKeys.roleDressUpId + id, 0) == 1
+    public isAvatarLookOwned(id: number) {
+        return GameStorage.getInt(Const.DataKeys.avatarLookId + id, 0) == 1
     }
 
-    public buyDressUpId(id: number) {
-        return GameStorage.setInt(Const.DataKeys.roleDressUpId + id, 1)
+    public unlockAvatarLook(id: number) {
+        return GameStorage.setInt(Const.DataKeys.avatarLookId + id, 1)
     }
     //---------------------
 
@@ -261,7 +260,7 @@ class UserData {
         return false
     }
 
-    //-----装扮值
+    //-----装扮�?
     public get dressValue() {
         return GameStorage.getInt(Const.DataKeys.dressValue, tables.ins().config[Const.config.basicDress])
     }
@@ -270,18 +269,18 @@ class UserData {
         GameStorage.setInt(Const.DataKeys.dressValue, num)
     }
 
-    //-----装扮券
-    public get dressMoney() {
-        return GameStorage.getInt(Const.DataKeys.dressMoney, tables.ins().config[Const.config.basicDressMoney])
+    //-----装扮�?
+    public get styleVoucher() {
+        return GameStorage.getInt(Const.DataKeys.styleVoucher, tables.ins().config[Const.config.basicDressMoney])
     }
 
-    public set dressMoney(num) {
-        GameStorage.setInt(Const.DataKeys.dressMoney, num)
+    public set styleVoucher(num) {
+        GameStorage.setInt(Const.DataKeys.styleVoucher, num)
     }
 
-    public checkAndUseDressMoney(num: number) {
-        if (this.dressMoney >= num) {
-            this.dressMoney -= num
+    public checkAndUseStyleVoucher(num: number) {
+        if (this.styleVoucher >= num) {
+            this.styleVoucher -= num
             return true
         }
         uiManager.instance.showDialog(Const.Dialogs.FreeGiftDialog, { type: "3" })
@@ -309,7 +308,7 @@ class UserData {
 
     /**
      * 获得道具
-     * @param args "101,1000" 或者 [101,1000] 或者[[101,1000] ,[102,1000]] 
+     * @param args "101,1000" 或�?[101,1000] 或者[[101,1000] ,[102,1000]] 
      */
     public getProp(args: any, starPos: Vec3 | null, endPos: Vec3 | null) {
         let fun = (propdata: any, num: number) => {
@@ -330,7 +329,7 @@ class UserData {
                     this.greenStar += num
                     break;
                 case GoodsType.DressMoney:
-                    this.dressMoney += num
+                    this.styleVoucher += num
                     break;
                 default:
                     break;
@@ -393,7 +392,7 @@ class UserData {
             } else if (propdata.type == GoodsType.Diamonds) {
                 return this.checkAndUseDiamonds(args[1])
             } else if (propdata.type == GoodsType.DressMoney) {
-                return this.checkAndUseDressMoney(args[1])
+                return this.checkAndUseStyleVoucher(args[1])
             } else if (propdata.type == GoodsType.GreenStar) {
                 return this.checkAndUseGreenStar(args[1])
             } else if (propdata.type == GoodsType.Power) {
@@ -410,7 +409,7 @@ class UserData {
         } else if (propdata.type == GoodsType.Diamonds) {
             return this.diamonds
         } else if (propdata.type == GoodsType.DressMoney) {
-            return this.dressMoney
+            return this.styleVoucher
         } else if (propdata.type == GoodsType.GreenStar) {
             return this.greenStar
         } else if (propdata.type == GoodsType.Power) {
@@ -627,7 +626,7 @@ class UserData {
     /**
      *  循环间隔 时间 CD
      * @param key 
-     * @param time  cd 时间 单位秒
+     * @param time  cd 时间 单位�?
      * @returns 
      */
     public checkCDTime(key: string, time: number, startTime: number = 0) {
@@ -667,7 +666,7 @@ class UserData {
     public checkLimitTime(key: string, limitTime: number) {
         let startTime = GameStorage.getInt(key + "_time", 0)
         if (startTime <= 0) {
-            return 0 //活动未开启
+            return 0 //活动未开�?
         }
         let endTime = startTime + limitTime
         let curTime = Math.floor(TimeCtrJSF.GetInstance().ServerTime)
@@ -675,7 +674,7 @@ class UserData {
     }
 
     /**
-     * 返回当前已经领取的次数
+     * 返回当前已经领取的次�?
      * @param key 活动key
      * @param interval  间隔多少时间刷新次数  单位分钟
      * @returns 
@@ -698,7 +697,7 @@ class UserData {
 
 
     /**
- * 返回当前活动已经领取的次数
+ * 返回当前活动已经领取的次�?
  * @param key 活动key
  * @param interval  
  * @returns 
@@ -756,7 +755,7 @@ class UserData {
     }
 
     /**
-  * 返回当前暂时的数据
+  * 返回当前暂时的数�?
   * @param key 活动key
   * @param interval  间隔多少时间刷新次数  单位分钟
   * @returns 
@@ -785,7 +784,7 @@ class UserData {
 
     public showGodWealthOther() {
         if (composeModel.isHandDone()) {
-            let params = tyqAdManager.getEnterUrlQuery()
+            let params = GamePlatform.getLaunchQuery()
             console.error("params = ", params)
             // let params: any = { propList: "20011,30055,20022,20013,30057,20013", shareName: "胖啾啾啊", shareUserId: "444456302229491712" }
             if (params && params.shareUserId) {
@@ -821,7 +820,7 @@ class UserData {
             
         // });
 
-        // 远程 url 不带图片后缀名，此时必须指定远程图片文件的类型
+        // 远程 url 不带图片后缀名，此时必须指定远程图片文件的类�?
         assetManager.loadRemote<ImageAsset>(remoteUrl, {ext: '.png'}, function (err, imageAsset) {
             const spriteFrame = new SpriteFrame();
             const texture = new Texture2D();

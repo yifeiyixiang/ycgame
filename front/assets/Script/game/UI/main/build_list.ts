@@ -5,12 +5,12 @@ import BaseView from '../../../easyFramework/mgr/BaseView';
 import { poolManager } from '../../../easyFramework/mgr/poolManager';
 import { uiManager } from '../../../easyFramework/mgr/uiManager';
 import { UtilPub } from '../../../easyFramework/utils/UtilPub';
-import { tyqSDK } from '../../../tyqSDK/SDK/tyqSDK';
 import { composeModel } from '../../comm/composeModel';
 import { userData } from '../../comm/UserData';
 import { UtilScene } from '../../comm/UtilScene';
 import { handIndexs } from '../../data/handData';
 import { build_list_item } from './build_list_item';
+import { GamePlatform } from '../../platform/GamePlatform';
 const { ccclass, property } = _decorator;
 
 @ccclass('build_list')
@@ -37,7 +37,7 @@ export class build_list extends BaseView {
     show(args: any) {
         super.show(args)
         this.reload()
-        tyqSDK.eventSendCustomEvent("查看建造清单")
+        GamePlatform.track("查看建造清单")
     }
 
     reload() {

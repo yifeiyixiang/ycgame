@@ -6,7 +6,6 @@ import BaseView from '../../../easyFramework/mgr/BaseView';
 import { uiManager } from '../../../easyFramework/mgr/uiManager';
 import tables from '../../../easyFramework/other/tables';
 import { UtilPub } from '../../../easyFramework/utils/UtilPub';
-import { tyqSDK } from '../../../tyqSDK/SDK/tyqSDK';
 import { redPointManager, RPointEvent } from '../../comm/RedPointManager';
 import { SceneData } from '../../comm/SceneData';
 import { userData } from '../../comm/UserData';
@@ -14,6 +13,7 @@ import { UtilScene } from '../../comm/UtilScene';
 import { PropItem, PropItemFlag } from './PropItem';
 import { ScrollViewUtil } from "../../comm/ScrollViewUtil";
 import { PropReceive } from './PropReceive';
+import { GamePlatform } from '../../platform/GamePlatform';
 
 const { ccclass, property } = _decorator;
 
@@ -49,7 +49,7 @@ export class TujianDialog extends BaseView {
         this.bindButton(find("root/btnClose", this.node)!, this.popClose)
 
         this.initElementArr()
-        tyqSDK.eventSendCustomEvent("查看道具图鉴")
+        GamePlatform.track("查看道具图鉴")
         redPointManager.setRedpoint(this.btnItem, RPointEvent.RPM_TujianProp, false)
         redPointManager.setRedpoint(this.btndress, RPointEvent.RPM_TujianScene, false)
         //userData.setGetPropTujian(10005, TujianState.geted)

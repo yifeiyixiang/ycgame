@@ -21,7 +21,7 @@ export class PropItem extends BaseView {
     @property({ type: Node, tooltip: "背景" }) bg: Node = null!;
     @property({ type: Node, tooltip: "icon" }) icon: Node = null!;
     @property({ type: Label, tooltip: "名字" }) nameLab: Label = null!;
-    @property({ type: Node, tooltip: "感叹号" }) gantan: Node = null!;
+    @property({ type: Node, tooltip: "感叹�? }) gantan: Node = null!;
     @property({ type: Node, tooltip: "等级" }) lvLabel: Node = null!;
 
     @property({ type: Label, tooltip: "数量" }) numLabel: Label = null!;
@@ -161,7 +161,7 @@ export class PropItem extends BaseView {
 
     onOpenPropInfo() {
         if (this._propdata.type <= 6 || this._propdata.type > 100 || this._propdata.type == 15 || this._propdata.type == 16 || this._propdata.type == 17 || this._propdata.type == 18) {
-            uiManager.instance.showDialog(Const.Dialogs.PropDetailLayer, this._propdata.id);
+            uiManager.instance.showDialog(Const.Dialogs.ItemInsightLayer, this._propdata.id);
         } else {
             uiManager.instance.showDialog(Const.Dialogs.PropItemInfo, { propdata: this._propdata })
         }

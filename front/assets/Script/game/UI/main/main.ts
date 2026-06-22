@@ -8,8 +8,6 @@ import { GNetCmd } from '../../../easyFramework/network/conf';
 import ServerCtrJSF from '../../../easyFramework/network/ServerCtrJSF';
 import { CdComponent, CDType } from '../../../easyFramework/utils/CdComponent';
 import { UtilPub } from '../../../easyFramework/utils/UtilPub';
-import { tyqAdManager } from '../../../tyqSDK/SDK/tyqAdManager';
-import { tyqSDK } from '../../../tyqSDK/SDK/tyqSDK';
 import { aiRobot } from '../../comm/AIRobot';
 import { composeModel } from '../../comm/composeModel';
 import { playerModel } from '../../comm/playerModel';
@@ -19,6 +17,7 @@ import { userData } from '../../comm/UserData';
 import { handIndexs } from '../../data/handData';
 import { TreasureModel } from '../Dialog/TreasureModel';
 import { main_top } from './main_top';
+import { GamePlatform } from '../../platform/GamePlatform';
 const { ccclass, property } = _decorator;
 
 @ccclass('main')
@@ -27,13 +26,13 @@ export class main extends BaseView {
     //星星
     get starNode() { return find("root/LayoutLeft/buildList/star", this.node)! }
 
-    //场景父节点
+    //场景父节�?
     get sceneNode() { return find("root/sceneNode", this.node)! }
 
     //进入合成按钮
     get menuBtnForCompose() { return find("root/bottom/compose", this.node)! }
 
-    //建造清单节点
+    //建造清单节�?
     get buildListNode() { return find("root/LayoutLeft/buildList", this.node)! }
     get buildListStarLabel() { return find("root/LayoutLeft/buildList/starLabel", this.node)!.getComponent(Label)! }
 
@@ -148,13 +147,13 @@ export class main extends BaseView {
             // }
             uiManager.instance.showDialog(Const.Dialogs.SignDialog)
             //   uiManager.instance.showDialog(Const.Dialogs.GodWealthLayer);
-            //   uiManager.instance.showDialog(Const.Dialogs.GodWealthOther, { params: { shareUserId: "443344673366511616", shareName: "胖胖的", propList: [40028, 50017, 50012, 40027, 50013, 20022] } });
+            //   uiManager.instance.showDialog(Const.Dialogs.GodWealthOther, { params: { shareUserId: "443344673366511616", shareName: "胖胖�?, propList: [40028, 50017, 50012, 40027, 50013, 20022] } });
         })
 
         find("root/top/btnSign", this.node)!.active = SignUtil.getInstance().getCurSignDay() > 0
 
         this.bindButton(find("root/btnsRight/btnSeasonAward", this.node)!, () => {
-            // uiManager.instance.showDialog(Const.Dialogs.SeasonAwardLayer);
+            // uiManager.instance.showDialog(Const.Dialogs.SeasonTrackLayer);
             uiManager.instance.showDialog(Const.Dialogs.SeasonAwardAdLayer);
         });
 
@@ -168,7 +167,7 @@ export class main extends BaseView {
 
     onEnable() {
         this.chgGreenStar()
-        console.log("onMessageEvent --- 开始监听")
+        console.log("onMessageEvent --- 开始监�?)
         director.off(GNetCmd.GetUserDataByKey.toString(), this.onMessageEvent, this);
         director.on(GNetCmd.GetUserDataByKey.toString(), this.onMessageEvent, this);
 
@@ -187,7 +186,7 @@ export class main extends BaseView {
 
         redPointManager.setRedpoint(find("root/LayoutRight/btnEmail", this.node)!, RPointEvent.RPM_Email, false)
         redPointManager.setRedpoint(find("root/LayoutRight/btnTujian", this.node)!, RPointEvent.RPM_Tujian, false)
-        tyqSDK.eventSendCustomEvent("进入主界面")
+        GamePlatform.track("进入主界�?)
 
         this.scheduleOnce(() => {
             composeModel.btnComposePos = UtilPub.convertToWorldSpace(find("root/bottom/compose", this.node)!);

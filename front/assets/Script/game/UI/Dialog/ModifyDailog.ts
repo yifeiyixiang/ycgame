@@ -13,7 +13,7 @@ const { ccclass, property } = _decorator;
 @ccclass('ModifyDailog')
 export class ModifyDailog extends BaseView {
 
-    @property({ type: Node, tooltip: "名字输入框" }) nameEditBox: Node = null!;
+    @property({ type: Node, tooltip: "名字输入�? }) nameEditBox: Node = null!;
 
 
 
@@ -25,7 +25,7 @@ export class ModifyDailog extends BaseView {
 
     show(args: any) {
         super.show(args)
-        //  let item = tables.ins().getTableValueByID(Const.Tables.roleDressUp, userData.roleDressUpId)
+        //  let item = tables.ins().getTableValueByID(Const.Tables.avatarStyle, userData.avatarLookId)
     }
 
     onClickModifyBtn() {

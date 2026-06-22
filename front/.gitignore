@@ -1,0 +1,15 @@
+build/*
+!build/wechatgame/
+build/wechatgame/*
+!build/wechatgame/.wechatignore
+library/
+temp/
+
+*.log
+*.map
+.DS_Store
+*.meta~*
+
+assets/Script/tyqSDK/
+assets/Script/tyqSDK.meta
+third_party_unused/

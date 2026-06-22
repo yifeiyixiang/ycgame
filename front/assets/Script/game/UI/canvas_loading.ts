@@ -9,16 +9,14 @@ import CronCtrJSF from '../../easyFramework/network/CronCtrJSF';
 import ServerCtrJSF from '../../easyFramework/network/ServerCtrJSF';
 import tables from '../../easyFramework/other/tables';
 import { UtilPub } from '../../easyFramework/utils/UtilPub';
-import { tyqSDK } from '../../tyqSDK/SDK/tyqSDK';
 import { RechargeManager } from '../../Util/RechargeManager';
 import { composeModel } from '../comm/composeModel';
 import { userData } from '../comm/UserData';
 import GD from '../../config/GD';
-import { Wechat } from '../../tyqSDK/SDK/platform/wechat/wechat';
 import { WmSocketJSF } from '../../easyFramework/network/WmSocketJSF';
-import { H5AdSdk4399 } from '../../tyqSDK/SDK/H5AdSdk4399';
 import { Notifications } from '../../easyFramework/mgr/notifications';
 import { HttpClient } from '../../../typeScript/net/HttpClient';
+import { GamePlatform } from '../platform/GamePlatform';
 const { ccclass, property } = _decorator;
 
 @ccclass('canvas_loading')
@@ -117,9 +115,7 @@ export class canvas_loading extends BaseView {
         this.bar.progress = 0
         this.loadPkg();
         RechargeManager.initManager()
-        if (WECHAT) {
-            Wechat.checkUpdate()
-        }
+        GamePlatform.checkWechatUpdate()
         if (NATIVE) {
             console.log(" Window.toastInfo")
 
@@ -138,7 +134,7 @@ export class canvas_loading extends BaseView {
 
         }
 
-        H5AdSdk4399.instance.checkDownUrl()
+        GamePlatform.checkH5DownUrl()
     }
 
     start() {
@@ -169,8 +165,8 @@ export class canvas_loading extends BaseView {
 
         console.log("-----------loading 场景--加载游戏--start---------")
         //初始化态有趣SDK
-        tyqSDK.initGame()
-        tyqSDK.eventSendCustomEvent("进入登录")
+        GamePlatform.init()
+        GamePlatform.track("进入登录")
     }
 
     onEnable() {

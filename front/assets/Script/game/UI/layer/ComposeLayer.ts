@@ -12,7 +12,6 @@ import { GNetCmd } from '../../../easyFramework/network/conf';
 import ServerCtrJSF from '../../../easyFramework/network/ServerCtrJSF';
 import tables from '../../../easyFramework/other/tables';
 import { UtilPub } from '../../../easyFramework/utils/UtilPub';
-import { tyqSDK } from '../../../tyqSDK/SDK/tyqSDK';
 import { AnimationCtrl } from '../../comm/AnimationCtrl';
 import { composeModel, nineAroundArr, propIds, roomStatus } from '../../comm/composeModel';
 import { MovePath } from '../../comm/MovePath';
@@ -26,6 +25,7 @@ import { TreasureModel } from '../Dialog/TreasureModel';
 import { main_top } from '../main/main_top';
 import { MonthCard } from '../money/MonthCard';
 import { EventManger } from '../../../../typeScript/EventManger';
+import { GamePlatform } from '../../platform/GamePlatform';
 const { ccclass, property } = _decorator;
 
 @ccclass('ComposeLayer')
@@ -61,7 +61,7 @@ export class ComposeLayer extends BaseView {
 
     // 单个房间尺寸，正方形
     roomWidth: number = 0;
-    // 圆点偏移量
+    // 圆点偏移�?
     dPos: Vec2 = v2(0, 0);
 
     choseRoomItem: any;
@@ -69,7 +69,7 @@ export class ComposeLayer extends BaseView {
     moveRoomItem: any;
     touchMoveCount: number = 0;
 
-    // 正在提示可以合成的房间
+    // 正在提示可以合成的房�?
     roomItemComposeHintArr: any = [];
 
     @property({ type: Node })
@@ -107,7 +107,7 @@ export class ComposeLayer extends BaseView {
     @property({ type: Node })
     btnTaskList: Node = null!;
 
-    // 记录提交后剩余的的任务列表，用于做动画
+    // 记录提交后剩余的的任务列表，用于做动�?
     lastTaskArr: any;
 
     @property({ type: Node })
@@ -228,7 +228,7 @@ export class ComposeLayer extends BaseView {
         UtilGame.sceneClose();
         console.log(" show 2")
 
-        // 加载所有房间数据
+        // 加载所有房间数�?
         composeModel.loadData();
         this.moveItemLayer.destroyAllChildren();
         this.composeSpineLayer.destroyAllChildren();
@@ -253,7 +253,7 @@ export class ComposeLayer extends BaseView {
         console.log(" show 4")
 
         this.on(GD.event.composeRoomNew, this.composeRoomNewRet, this);
-        this.on(GD.event.composeRoomBubbleBomb, this.composeRoomBubbleBombRet, this);
+        this.on(GD.event.roomBubbleBurst, this.roomBubbleBurstRet, this);
         this.on(GD.event.composeGetOutFromBag, this.composeGetOutFromBagRet, this);
         this.on(GD.event.composeManagerRefresh, this.composeManagerRefreshRet, this);
         this.on(GD.event.composeCardLayerRefresh, this.composeCardLayerRefreshRet, this);
@@ -306,7 +306,7 @@ export class ComposeLayer extends BaseView {
         audioManager.instance.playSound(Const.Audio.sceneChange);
 
         this.off(GD.event.composeRoomNew, this.composeRoomNewRet);
-        this.off(GD.event.composeRoomBubbleBomb, this.composeRoomBubbleBombRet);
+        this.off(GD.event.roomBubbleBurst, this.roomBubbleBurstRet);
         this.off(GD.event.composeGetOutFromBag, this.composeGetOutFromBagRet);
         this.off(GD.event.composeManagerRefresh, this.composeManagerRefreshRet);
         this.off(GD.event.composeCardLayerRefresh, this.composeCardLayerRefreshRet);
@@ -768,7 +768,7 @@ export class ComposeLayer extends BaseView {
         let col = this.choseRoomItem.col;
         let roomData = this.getRoomDataByItemUI(this.choseRoomItem);
         if (!roomData.id) {
-            // 空位置
+            // 空位�?
             this.choseRoomItem = null;
             this.infoHintNode.active = true;
             return;
@@ -876,7 +876,7 @@ export class ComposeLayer extends BaseView {
 
         itemUI.active = true;
 
-        // 选中状态
+        // 选中状�?
         let choseNode = find("chose", itemUI)!;
         if (itemUI == this.choseRoomItem) {
             let choseIcon = "chose_pink";
@@ -898,7 +898,7 @@ export class ComposeLayer extends BaseView {
         iconNode.scale = v3(1, 1, 1);
         this.setSpriteFrame2(iconNode.getComponent(Sprite)!, Const.resPath.icon + propRow.icon);
 
-        // 背包感叹号
+        // 背包感叹�?
         let bagHint = find("bagHint", itemUI)!;
         if (roomData.id == propIds.bag) {
             if (!bagHint) {
@@ -918,7 +918,7 @@ export class ComposeLayer extends BaseView {
             bagHint.destroy();
         }
 
-        // 全能升级卡特效
+        // 全能升级卡特�?
         let superCard = find("superCard", itemUI);
         if (roomData.id == propIds.superCard) {
             if (!superCard) {
@@ -952,7 +952,7 @@ export class ComposeLayer extends BaseView {
             lockNode.active = false;
         }
 
-        // 房间状态
+        // 房间状�?
         let statusNode = find("roomStatus", itemUI)!;
         if (roomData.st > 0) {
             if (!statusNode) {
@@ -985,7 +985,7 @@ export class ComposeLayer extends BaseView {
         this.refreshSpeedUpSpine(itemUI);
 
     }
-    // 加速装置
+    // 加速装�?
     refreshSpeedUpSpine(itemUI: any) {
         let row = itemUI.row;
         let col = itemUI.col;
@@ -1000,7 +1000,7 @@ export class ComposeLayer extends BaseView {
         if (this.touching) {
             return;
         }
-        // 周围九宫加速特效
+        // 周围九宫加速特�?
         nineAroundArr.forEach((posArr: any) => {
             let r = row + posArr[0];
             let c = col + posArr[1];
@@ -1015,7 +1015,7 @@ export class ComposeLayer extends BaseView {
                         node.removeFromParent();
                     }
                 } else {
-                    // 可以加速，没有要新增
+                    // 可以加速，没有要新�?
                     if (!node) {
                         this.addSpine(this.jsqSpinePath, this.composeSpineLayer, (err, aniCtrl: AnimationCtrl) => {
                             aniCtrl.playAnimation("animation", true);
@@ -1026,7 +1026,7 @@ export class ComposeLayer extends BaseView {
                             if (angle % 10 == 0) {
                                 aniCtrl.node.scale = v3(1, 1, 1);
                             } else {
-                                // 斜边，要放大一些
+                                // 斜边，要放大一�?
                                 aniCtrl.node.scale = v3(1.3, 1.3, 1);
                             }
                         });
@@ -1048,7 +1048,7 @@ export class ComposeLayer extends BaseView {
                 return;
             }
         }
-        // 周围九宫加速特效
+        // 周围九宫加速特�?
         nineAroundArr.forEach((posArr: any) => {
             let r = row + posArr[0];
             let c = col + posArr[1];
@@ -1069,7 +1069,7 @@ export class ComposeLayer extends BaseView {
         let cdNode = find("cd", roomItem)!;
         let roomData = this.getRoomDataByItemUI(roomItem);
 
-        // 吐东西特效处理
+        // 吐东西特效处�?
         let itemSpineNode = find("itemSpine", roomItem)!;
         if (!roomData.id) {
             cdNode.active = false;
@@ -1084,7 +1084,7 @@ export class ComposeLayer extends BaseView {
 
         let propRow = tables.ins().getTableValueByID(Const.Tables.prop, roomData.id);
 
-        // 点击吐东西特效
+        // 点击吐东西特�?
         let isClickSpine = false;
         if (propRow.mdt == 1 && !roomData.unlock) {
             isClickSpine = false;
@@ -1122,7 +1122,7 @@ export class ComposeLayer extends BaseView {
             this.setProgressBar(cdNode, dt / sum);
         }
 
-        // 自动吐东西特效
+        // 自动吐东西特�?
         let isAutoSpine = false;
         if (propRow.fair > 0 && !roomData.cdAuto && roomData.timesAuto > 0) {
             isAutoSpine = true;
@@ -1207,7 +1207,7 @@ export class ComposeLayer extends BaseView {
         let roomData = composeModel.roomArr[row][col];
         let propRow = tables.ins().getTableValueByID(Const.Tables.prop, roomData.id);
 
-        // 处理拆分器特效
+        // 处理拆分器特�?
         let isShow = false;
         if (propRow.mdt == 4 && targetRoomItem) {
             let targetRoomData = this.getRoomDataByItemUI(targetRoomItem);
@@ -1260,21 +1260,21 @@ export class ComposeLayer extends BaseView {
             }
             let tmpPropRow = tables.ins().getTableValueByID(Const.Tables.prop, tmpRoomData.id);
             if (!isMaxLv && propRow.id == tmpPropRow.id) {
-                // 可以合成的
+                // 可以合成�?
                 arr.push(roomItem);
                 return;
             }
 
             switch (propRow.mdt) {
                 case 3:
-                    // 充能器
+                    // 充能�?
                     if (tmpPropRow.chongneng && tmpPropRow.anc) {
                         arr.push(roomItem);
                         roomItem.maskSpine = "4";
                     }
                     break;
                 case 4:
-                    // 拆分器
+                    // 拆分�?
                     if (tmpPropRow.jiandao && tmpPropRow.luna > 1 && tmpPropRow.luna <= propRow.p1) {
                         arr.push(roomItem);
                         roomItem.maskSpine = "2";
@@ -1302,14 +1302,14 @@ export class ComposeLayer extends BaseView {
                     }
                     break;
                 case 9:
-                    // 超级升级卡
+                    // 超级升级�?
                     if (!composeModel.propIsMaxLv(tmpRoomData.id) && !tmpPropRow.nochaoji) {
                         arr.push(roomItem);
                         roomItem.maskSpine = "";
                     }
                     break;
                 case 10:
-                    // 全能层级卡
+                    // 全能层级�?
                     if (!composeModel.propIsMaxLv(tmpRoomData.id) && tmpPropRow.quanneng) {
                         arr.push(roomItem);
                         roomItem.maskSpine = "";
@@ -1460,7 +1460,7 @@ export class ComposeLayer extends BaseView {
         this.moveRoomItem.position = p;
 
         let propRow = tables.ins().getTableValueByID(Const.Tables.prop, moveRoomData.id);
-        // 目标房间物品可以合成，显示合成特效
+        // 目标房间物品可以合成，显示合成特�?
         let isShowComposeEffect = false;
         let targetRoomItem = this.getRoomItemByPos(pos);
         if (!composeModel.isRoomBubble(row, col) && propRow.blessId > 0 && targetRoomItem) {
@@ -1540,7 +1540,7 @@ export class ComposeLayer extends BaseView {
             let endRoomItem = this.getRoomItemByPos(event.getUILocation());
             let endRoomData = this.getRoomDataByItemUI(endRoomItem);
             if (row == endRoomItem.row && col == endRoomItem.col) {
-                // 目标位置是自己
+                // 目标位置是自�?
                 this.moveRoomItemToRowCol(this.moveRoomItem, row, col, () => {
                     composeModel.refreshRoomAutoNew(row, col);
                 });
@@ -1559,7 +1559,7 @@ export class ComposeLayer extends BaseView {
                 if (endRoomData.id == propIds.bag) {
                     console.log("roomListTouchEnd  5")
 
-                    // 拖到背包，是放进去物品
+                    // 拖到背包，是放进去物�?
                     if (composeModel.putDataInRoomBag(row, col, endRoomItem.row, endRoomItem.col)) {
                         // 放入成功
                         this.refreshRoomItemUIByRowCol(row, col);
@@ -1568,7 +1568,7 @@ export class ComposeLayer extends BaseView {
                         this.moveRoomItem.destroy();
                         this.moveRoomItem = null;
                     } else {
-                        // 放入失败，返回原来位置
+                        // 放入失败，返回原来位�?
                         this.moveRoomItemToRowCol(this.moveRoomItem, row, col);
                     }
                 } else {
@@ -1603,7 +1603,7 @@ export class ComposeLayer extends BaseView {
                     }
 
                     if (propRow && propRow.mdt == 3 && composeModel.canAddTimes(endRoomData.id) && !endRoomIsBubble) {
-                        // 充能器
+                        // 充能�?
                         this.moveRoomItem.destroy();
                         this.moveRoomItem = null;
                         composeModel.roomAddTimes(row, col, endRoomItem.row, endRoomItem.col, propRow.p1);
@@ -1621,7 +1621,7 @@ export class ComposeLayer extends BaseView {
                     }
 
                     if (propRow && propRow.mdt == 4 && composeModel.canSplitProp(propRow.id, endRoomData.id) && !endRoomIsBubble) {
-                        // 拆分器
+                        // 拆分�?
                         this.moveRoomItem.destroy();
                         this.moveRoomItem = null;
                         let retObj = composeModel.roomPropSplit(row, col, endRoomItem.row, endRoomItem.col);
@@ -1642,7 +1642,7 @@ export class ComposeLayer extends BaseView {
 
                     if (propRow && (propRow.mdt == 6 || propRow.mdt == 7 || propRow.mdt == 8 || propRow.mdt == 9 || propRow.mdt == 10)
                         && composeModel.canLvUpProp(propRow.id, endRoomData.id) && !endRoomIsBubble) {
-                        // 升级卡
+                        // 升级�?
                         this.moveRoomItem.destroy();
                         this.moveRoomItem = null;
                         composeModel.roomPropLvUp(row, col, endRoomItem.row, endRoomItem.col);
@@ -1670,7 +1670,7 @@ export class ComposeLayer extends BaseView {
                         this.refreshRoomNineAroundAutoNew(row, col);
                     });
                     if (endRoomData.id) {
-                        // 目标位置不为空，也无法合成，该物品自动跑回触摸开始位置
+                        // 目标位置不为空，也无法合成，该物品自动跑回触摸开始位�?
                         endRoomItem.active = false;
                         this.addNewMoveNewItemRoomToRowCol(endRoomItem, row, col, 0, () => {
                             composeModel.refreshRoomAutoNew(row, col);
@@ -1683,9 +1683,9 @@ export class ComposeLayer extends BaseView {
             if (roomData.id == endRoomData.id) {
                 console.log("roomListTouchEnd  9")
 
-                // 相同物品，进行合成
+                // 相同物品，进行合�?
                 if (propRow.blessId) {
-                    console.log("合成新道具");
+                    console.log("合成新道�?);
                     EventManger.eventTarget.emit(EventManger.EEventName.ADD_EXP_ANIMATION,1)
                     let handIndex = composeModel.getHandIndex();
                     if (handIndex == handIndexs.firstCompose && propRow.blessId == 10002) {
@@ -1763,7 +1763,7 @@ export class ComposeLayer extends BaseView {
                         });
                     }
                 } else {
-                    // 已达到最高级，无法合成
+                    // 已达到最高级，无法合�?
                     this.moveRoomItemToRowCol(this.moveRoomItem, row, col);
                 }
                 this.refreshComposeHint();
@@ -1774,7 +1774,7 @@ export class ComposeLayer extends BaseView {
 
         // 选中房间的逻辑
         if (this.choseRoomItem == this.startRoomItem) {
-            // 点击了房间
+            // 点击了房�?
             this.onClickRoomItem(this.startRoomItem);
             let handIndex = composeModel.getHandIndex();
             if (handIndex == handIndexs.clickRoomNew || handIndex == handIndexs.clickRoomNew2) {
@@ -1811,7 +1811,7 @@ export class ComposeLayer extends BaseView {
 
         let row = this.moveRoomItem.row;
         let col = this.moveRoomItem.col;
-        // 返回去
+        // 返回�?
         this.moveRoomItemToRowCol(this.moveRoomItem, row, col);
     }
 
@@ -1838,7 +1838,7 @@ export class ComposeLayer extends BaseView {
     }
 
     /**
-     * 清除拖动状态
+     * 清除拖动状�?
      * @param row 改变的房间行索引
      * @param col 改变的房间列索引
      */
@@ -1864,7 +1864,7 @@ export class ComposeLayer extends BaseView {
                 composeModel.rommDataCdBubbleOver(row, col);
             } else {
                 // TODO 弹窗提示购买月卡
-                UtilPub.log("提示购买权益卡");
+                UtilPub.log("提示购买权益�?);
             }
         }
 
@@ -1920,14 +1920,14 @@ export class ComposeLayer extends BaseView {
         });
     }
 
-    composeRoomBubbleBombRet(data: any) {
-        UtilPub.log("composeRoomBubbleBombRet", data);
+    roomBubbleBurstRet(data: any) {
+        UtilPub.log("roomBubbleBurstRet", data);
         let row = data.row;
         let col = data.col;
         let roomItem = this.roomItemUIArr[row][col];
         this.refreshRoomItemUIByRowCol(row, col);
         this.showChoseTween(roomItem);
-        // 清除拖动状态
+        // 清除拖动状�?
         this.clearTouchStatus(row, col);
         if (this.choseRoomItem == roomItem) {
             this.refreshBottomLayer();
@@ -1961,11 +1961,11 @@ export class ComposeLayer extends BaseView {
     }
 
     /**
-     * 添加一个移动物品
-     * @param roomItem 动画开始房间位置
-     * @param row 目标行索引
-     * @param col 目标列索引
-     * @param aniType 动画模式  默认(0)：直线  1：直线带跳动
+     * 添加一个移动物�?
+     * @param roomItem 动画开始房间位�?
+     * @param row 目标行索�?
+     * @param col 目标列索�?
+     * @param aniType 动画模式  默认(0)：直�? 1：直线带跳动
      * @param cb 动画结束回调
      */
     addNewMoveNewItemRoomToRowCol(roomItem: Node, row: number, col: number, aniType: number = 0, cb?: Function) {
@@ -2012,7 +2012,7 @@ export class ComposeLayer extends BaseView {
     /**
      * 创建一个图标，从startWorldPos移动到endWorldPos
      * @param propId 道具id
-     * @param startWorldPos 开始世界坐标 
+     * @param startWorldPos 开始世界坐�?
      * @param endWorldPos 结束世界坐标
      * @param cb 结束回调
      */
@@ -2093,7 +2093,7 @@ export class ComposeLayer extends BaseView {
 
         }
     }
-    // 房间物品线性移动动画
+    // 房间物品线性移动动�?
     moveRoomItemToRowCol(moveRoomItem: Node, row: number, col: number, cb?: Function) {
         let roomItem = this.roomItemUIArr[row][col];
         let wpos = UtilPub.convertToWorldSpace(roomItem);
@@ -2106,7 +2106,7 @@ export class ComposeLayer extends BaseView {
             }
         }).start();
     }
-    // 点中房间的动画
+    // 点中房间的动�?
     showChoseTween(node: Node) {
         if (!node) {
             return;
@@ -2126,7 +2126,7 @@ export class ComposeLayer extends BaseView {
             .to(0.1, { scale: v3(1, 1, 1) })
             .start();
     }
-    // 合成结束的动画
+    // 合成结束的动�?
     showComposeEndTween(node: Node) {
         let tag = 101;
         let iconNode = find("icon", node)!;
@@ -2139,7 +2139,7 @@ export class ComposeLayer extends BaseView {
             .to(0.05, { scale: v3(1, 1, 1) })
             .start();
     }
-    // 提示可以合成的动画
+    // 提示可以合成的动�?
     showComposeHintTween(node: Node) {
         let tag = 102;
         let iconNode = find("icon", node)!;
@@ -2169,7 +2169,7 @@ export class ComposeLayer extends BaseView {
     }
     // 显示有东西可以生成的动画
     showItemCreateTween(node: Node) {
-        // 如果正在显示合成提示动画，直接丢弃
+        // 如果正在显示合成提示动画，直接丢�?
         // @ts-ignore
         if (node.composeHintTween) {
             this.stopItemCreateTween(node);
@@ -2297,7 +2297,7 @@ export class ComposeLayer extends BaseView {
         let row = roomItem.row;
         let col = roomItem.col;
         let roomData = this.getRoomDataByItemUI(roomItem);
-        UtilPub.log("点击了房间 row:%d,col:%d".format(row, col), roomData);
+        UtilPub.log("点击了房�?row:%d,col:%d".format(row, col), roomData);
 
         if (roomData.id == propIds.bag) {
             // 点击背包，打开背包界面
@@ -2312,7 +2312,7 @@ export class ComposeLayer extends BaseView {
         let propRow = tables.ins().getTableValueByID(Const.Tables.prop, roomData.id);
 
         if (composeModel.isRoomBubble(row, col)) {
-            // 有气泡
+            // 有气�?
             let aniCtrl = find("bubble", roomItem)!.getComponent(AnimationCtrl)!;
             aniCtrl.playAnimationOnce("2", () => {
                 aniCtrl.playAnimation("1", true);
@@ -2373,7 +2373,7 @@ export class ComposeLayer extends BaseView {
         }
 
         if (!propRow.atom || !propRow.matic) {
-            // 不可以生成物品
+            // 不可以生成物�?
             return;
         }
 
@@ -2384,7 +2384,7 @@ export class ComposeLayer extends BaseView {
         }
 
         if (roomData.times <= 0) {
-            // 点击次数已用完
+            // 点击次数已用�?
             return;
         }
 
@@ -2406,7 +2406,7 @@ export class ComposeLayer extends BaseView {
         this.refreshRoomItemUI(roomItem);
         roomData = this.getRoomDataByItemUI(roomItem);
         if (!roomData.id) {
-            UtilPub.log("=========点击物品已消失");
+            UtilPub.log("=========点击物品已消�?);
             this.choseRoomItem = null;
         }
 
@@ -2512,7 +2512,7 @@ export class ComposeLayer extends BaseView {
         if (!this.choseRoomItem) {
             return;
         }
-        tyqSDK.showRewardedAd("气泡免费跳过", (st) => {
+        GamePlatform.showRewardVideo("气泡免费跳过", (st) => {
             if (st == 1) {
                 let row = this.choseRoomItem.row;
                 let col = this.choseRoomItem.col;
@@ -2525,7 +2525,7 @@ export class ComposeLayer extends BaseView {
 
     updateTaskLayerLayout() {
         let layout = this.taskLayer.getComponent(Layout)!;
-        // 引擎版本3.7.1，调用updateLayout没效果，只能暂时这么处理了
+        // 引擎版本3.7.1，调用updateLayout没效果，只能暂时这么处理�?
         layout.enabled = false;
         layout.enabled = true;
     }
@@ -2669,13 +2669,13 @@ export class ComposeLayer extends BaseView {
         }
     }
 
-    // 建造清单
+    // 建造清�?
     onClickBtnBuild() {
         composeModel.closeHandLayer();
         uiManager.instance.showDialog(Const.Dialogs.build_list);
     }
 
-    // 店长值班日
+    // 店长值班�?
     onClickBtnManager() {
         // // test
         // uiManager.instance.showDialog(Const.Dialogs.GodWealthLayer);

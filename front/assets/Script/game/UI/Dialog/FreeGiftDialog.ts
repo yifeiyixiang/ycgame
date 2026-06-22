@@ -8,10 +8,10 @@ import { GameStorage } from '../../../easyFramework/mgr/gameStorage';
 import { GNetCmd } from '../../../easyFramework/network/conf';
 import ServerCtrJSF from '../../../easyFramework/network/ServerCtrJSF';
 import tables from '../../../easyFramework/other/tables';
-import { tyqSDK } from '../../../tyqSDK/SDK/tyqSDK';
 import { RechargeManager } from '../../../Util/RechargeManager';
 import { userData } from '../../comm/UserData';
 import { MonthCard } from '../money/MonthCard';
+import { GamePlatform } from '../../platform/GamePlatform';
 
 const { ccclass, property } = _decorator;
 
@@ -31,13 +31,13 @@ export class FreeGiftDialog extends BaseView {
         let giftData = tables.ins().getTableValuesByType2ByOne(Const.Tables.giftFree, "type", "1", "typeson", this._layerData.type)
         this.initItem(find("root/Node", this.node)!, giftData)
 
-        tyqSDK.eventSendCustomEvent("主页资源获得免费礼物")
+        GamePlatform.track("主页资源获得免费礼物")
     }
 
     initItem(itemUI: Node, item: any) {
         itemUI.getChildByName("infoLabel")!.getComponent(Label)!.string = item.info
         let receiveTime = userData.getReceiveTime(item.dataKey, item.cdTime)
-        find("numLabel", itemUI)!.getComponent(Label)!.string = "已领取次数" + receiveTime
+        find("numLabel", itemUI)!.getComponent(Label)!.string = "已领取次�? + receiveTime
         find("titleLabel", itemUI)!.getComponent(Label)!.string = item.typename
         find("titleLabel", itemUI)!.getComponent(LabelOutline)!.color = item.fontColor.parseColor()
         //  find("infoLabel", itemUI)!.getComponent(LabelOutline)!.color = item.fontColor.parseColor()
@@ -47,7 +47,7 @@ export class FreeGiftDialog extends BaseView {
 
         if (item.typeson == 3) {
             find("numNode", itemUI)!.active = true
-            find("numNode/numLabel", itemUI)!.getComponent(Label)!.string = "x" + userData.dressMoney
+            find("numNode/numLabel", itemUI)!.getComponent(Label)!.string = "x" + userData.styleVoucher
         } else {
             find("numNode", itemUI)!.active = false
         }
@@ -86,7 +86,7 @@ export class FreeGiftDialog extends BaseView {
     dealClickItem() {
         //等待接入广告
         let receiveTime = userData.getReceiveTime(this._clickItem.dataKey, this._clickItem.cdTime)
-        RechargeManager.showVideo(this._clickItem!.info + "" + receiveTime + "次", () => {
+        RechargeManager.showVideo(this._clickItem!.info + "" + receiveTime + "�?, () => {
             this.onVideoBack(this._clickItem)
         })
     }

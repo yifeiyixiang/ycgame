@@ -3,9 +3,9 @@ import { Const } from '../../../config/Const';
 import { Email, EmailRewardState, EmailState } from '../../../config/global';
 import BaseView from '../../../easyFramework/mgr/BaseView';
 import { uiManager } from '../../../easyFramework/mgr/uiManager';
-import { tyqSDK } from '../../../tyqSDK/SDK/tyqSDK';
 import { EmailManager } from '../../comm/EmailManager';
 import { PropItem, PropItemFlag } from './PropItem';
+import { GamePlatform } from '../../platform/GamePlatform';
 
 const { ccclass, property } = _decorator;
 
@@ -30,7 +30,7 @@ export class EmailInfoDialog extends BaseView {
         this.initItem(find("root/Email", this.node)!, this._layerData.email)
         this.initBtns()
 
-        tyqSDK.eventSendCustomEvent("查看邮件")
+        GamePlatform.track("查看邮件")
 
     }
 

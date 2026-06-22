@@ -6,11 +6,11 @@ import { audioManager } from '../../../easyFramework/mgr/audioManager';
 import BaseView from '../../../easyFramework/mgr/BaseView';
 import { uiManager } from '../../../easyFramework/mgr/uiManager';
 import tables from '../../../easyFramework/other/tables';
-import { tyqSDK } from '../../../tyqSDK/SDK/tyqSDK';
 import { composeModel } from '../../comm/composeModel';
 import { userData } from '../../comm/UserData';
 import { handIndexs } from '../../data/handData';
 import { PropItem, PropItemFlag } from './PropItem';
+import { GamePlatform } from '../../platform/GamePlatform';
 const { ccclass, property } = _decorator;
 
 @ccclass('LevelDialog')
@@ -101,7 +101,7 @@ export class LevelDialog extends BaseView {
             }
 
             userData.roleLv++
-            tyqSDK.eventSendCustomEvent(userData.roleLv + "等级的玩家");
+            GamePlatform.track(userData.roleLv + "等级的玩家");
 
             this.initData()
             this.emit(GD.event.updateMoney)

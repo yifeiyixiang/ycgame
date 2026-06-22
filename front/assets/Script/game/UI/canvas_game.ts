@@ -12,8 +12,6 @@ import ServerCtrJSF from '../../easyFramework/network/ServerCtrJSF';
 import { audioManager } from '../../easyFramework/mgr/audioManager';
 import { composeModel } from '../comm/composeModel';
 import { UtilScene } from '../comm/UtilScene';
-import { tyqSDK } from '../../tyqSDK/SDK/tyqSDK';
-import { tyqAdManager } from '../../tyqSDK/SDK/tyqAdManager';
 import { userData } from '../comm/UserData';
 const { ccclass, property } = _decorator;
 

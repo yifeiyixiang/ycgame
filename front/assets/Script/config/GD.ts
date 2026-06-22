@@ -5,7 +5,7 @@ class GD {
 
     public event = {
         showTip: "showTip",
-        /**开始游戏 */
+        /**开始游�?*/
         gameStart: "gameStart",
         /**结束游戏 */
         gameStop: "gameStop",
@@ -13,7 +13,7 @@ class GD {
         gameResume: "gameResume",
         /**结束游戏 */
         gameOver: "gameOver",
-        /**重新开始挂机 */
+        /**重新开始挂�?*/
         restartMainGame: "restartMainGame",
 
          /**刷新界面 */
@@ -35,7 +35,7 @@ class GD {
         buyDressSuccess: "buyDressSuccess", //购买成功
         intoTheWaitQueue: "intoTheWaitQueue", //排队到队伍中
         guestLeave: "guestLeave", //客人离开
-        goToBuildScene: "goToBuildScene", //去建造场景
+        goToBuildScene: "goToBuildScene", //去建造场�?
         chgGreenStar: "chgGreenStar", //改变绿色星星时的事件
         popOpsWindow: "popOpsWindow", //弹出操作界面
         loadAll: "loadAll",
@@ -43,22 +43,22 @@ class GD {
         // 房间生成新物品了
         composeRoomNew: "composeRoomNew",
         // 房间气泡破了
-        composeRoomBubbleBomb: "composeRoomBubbleBomb",
+        roomBubbleBurst: "roomBubbleBurst",
         // 从背包中取出物品
         composeGetOutFromBag: "composeGetOutFromBag",
-        // 店长值班日-解锁新任务
+        // 店长值班�?解锁新任�?
         managerCreateTask: "managerCreateTask",
-        // 店长值班日-入口刷新
+        // 店长值班�?入口刷新
         composeManagerRefresh: "composeManagerRefresh",
         // 刷新卡片列表
         composeCardLayerRefresh: "composeCardLayerRefresh",
-        // 获得新元素
+        // 获得新元�?
         composeGetNewItem: "composeGetNewItem",
         // 刷新新手引导
         refreshHandLayer: "refreshHandLayer",
         // 刷新订单任务
         refreshTask: "refreshTask",
-        // 加速装置时间到了
+        // 加速装置时间到�?
         composeTimeSpeedUpEnd: "composeTimeSpeedUpEnd",
 
         // 显示toast
@@ -66,9 +66,9 @@ class GD {
 
         // 解锁新系统了
         unlockSystem: "unlockSystem",
-        // 跨天了
+        // 跨天�?
         overDay: "overDay",
-        // 跨月了
+        // 跨月�?
         overMonth: "overMonth",
 
         updateShopItem: "updateShopItem",

@@ -4,8 +4,8 @@ import { GSceneSkinState } from '../../../config/global';
 import BaseView from '../../../easyFramework/mgr/BaseView';
 import { comm } from '../../../easyFramework/mgr/comm';
 import tables from '../../../easyFramework/other/tables';
-import { tyqSDK } from '../../../tyqSDK/SDK/tyqSDK';
 import { SceneData } from '../../comm/SceneData';
+import { GamePlatform } from '../../platform/GamePlatform';
 const { ccclass, property } = _decorator;
 
 
@@ -25,7 +25,7 @@ export class FeijiuDialog extends BaseView {
         super.show(args)
         this.bindButton(find("root/btnClose", this.node)!, this.popClose)
         this.openTujianArr()
-        tyqSDK.eventSendCustomEvent("查看肥啾图鉴")
+        GamePlatform.track("查看肥啾图鉴")
     }
 
     openTujianArr() {

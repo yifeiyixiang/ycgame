@@ -4,8 +4,8 @@ import { GoodsType, TujianState } from '../../../config/global';
 import { audioManager } from '../../../easyFramework/mgr/audioManager';
 import BaseView from '../../../easyFramework/mgr/BaseView';
 import tables from '../../../easyFramework/other/tables';
-import { tyqSDK } from '../../../tyqSDK/SDK/tyqSDK';
 import { userData } from '../../comm/UserData';
+import { GamePlatform } from '../../platform/GamePlatform';
 const { ccclass, property } = _decorator;
 
 
@@ -57,11 +57,11 @@ export class PropReceive extends BaseView {
         userData.setGetPropTujian(this._layerData.propId, TujianState.received, this._layerData.key);
         userData.getProp(this._propReward, pos, v3(0, 0, 0))
         if (this._propReward[0] == GoodsType.Coin) {
-            tyqSDK.eventSendCustomEvent("图鉴-获得金币")
+            GamePlatform.track("图鉴-获得金币")
         } else if (this._propReward[0] == GoodsType.Diamonds) {
-            tyqSDK.eventSendCustomEvent("图鉴-获得钻石")
+            GamePlatform.track("图鉴-获得钻石")
         } else if (this._propReward[0] == GoodsType.Power) {
-            tyqSDK.eventSendCustomEvent("图鉴-获得体力")
+            GamePlatform.track("图鉴-获得体力")
         }
 
         this.node.removeFromParent()

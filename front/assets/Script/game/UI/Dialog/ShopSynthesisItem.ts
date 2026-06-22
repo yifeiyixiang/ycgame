@@ -6,12 +6,12 @@ import { audioManager } from '../../../easyFramework/mgr/audioManager';
 import BaseView from '../../../easyFramework/mgr/BaseView';
 import { uiManager } from '../../../easyFramework/mgr/uiManager';
 import tables from '../../../easyFramework/other/tables';
-import { tyqSDK } from '../../../tyqSDK/SDK/tyqSDK';
 import { RechargeManager } from '../../../Util/RechargeManager';
 import { composeModel } from '../../comm/composeModel';
 import { userData } from '../../comm/UserData';
 import { handIndexs } from '../../data/handData';
 import { PropItem, PropItemFlag } from './PropItem';
+import { GamePlatform } from '../../platform/GamePlatform';
 const { ccclass, property } = _decorator;
 
 
@@ -167,7 +167,7 @@ export class ShopSynthesisItem extends BaseView {
         }
 
         if (this._priceType == PriceType.Free) {
-            tyqSDK.eventSendCustomEvent("免费领取肥啾存钱罐")
+            GamePlatform.track("免费领取肥啾存钱罐")
             this.onBuySuccessCB(targetPos)
         } else if (this._priceType == PriceType.Video) {
             //等待广告接入
@@ -224,11 +224,11 @@ export class ShopSynthesisItem extends BaseView {
             let propRow = tables.ins().getTableValueByID(Const.Tables.prop, item[0]);
             if (propRow) {
                 if (this._priceType == PriceType.Coin) {
-                    tyqSDK.eventSendCustomEvent("金币-购买" + propRow.name)
+                    GamePlatform.track("金币-购买" + propRow.name)
                 } else if (this._priceType == PriceType.Diamonds) {
-                    tyqSDK.eventSendCustomEvent("钻石-购买" + propRow.name)
+                    GamePlatform.track("钻石-购买" + propRow.name)
                 } else if (this._priceType == PriceType.Free) {
-                    tyqSDK.eventSendCustomEvent("免费领取" + propRow.name)
+                    GamePlatform.track("免费领取" + propRow.name)
                 }
             }
 

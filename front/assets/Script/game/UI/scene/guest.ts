@@ -27,7 +27,7 @@ export class guest extends scene_item_parent {
     speed: number = 0
     quickSpeed: number = 880 * Const.GuestSpeedTime //当轮到它排队的时候速度过来
     private star = new AStar();
-    path: AStarNode[] = [] //角色的路径数据
+    path: AStarNode[] = [] //角色的路径数�?
     curGridPoint: Vec2 = v2(0, 0)
     targetPoint: Vec2 = v2(0, 0)
     isMoving: boolean = true
@@ -35,8 +35,8 @@ export class guest extends scene_item_parent {
     aniState: GSpineAni | string = null!
     aniScaleX: number = 1
 
-    failCnt: number = 0 //失败的次数
-    maxFailCnt: number = 15 //连续失败15次，那么就销毁自己
+    failCnt: number = 0 //失败的次�?
+    maxFailCnt: number = 15 //连续失败15次，那么就销毁自�?
     calEnterRoomTime: number = 0
 
     guestData: any = null! //配表数据
@@ -45,21 +45,21 @@ export class guest extends scene_item_parent {
     targetSceneItemScript: GISceneItemParent = null! //目标场景道具
 
     calWorkTime: number = 0
-    workTime: number = 30 //工作的时间
+    workTime: number = 30 //工作的时�?
 
 
-    isSelOps: boolean = false  //客人是否被拉起
+    isSelOps: boolean = false  //客人是否被拉�?
     calTimeForOps: number = 0 //操作判断
-    calTimeWorkRest: number = 0 //工作后休息时间不再进入工作状态
+    calTimeWorkRest: number = 0 //工作后休息时间不再进入工作状�?
 
     poseRate: number = 3
     defaultSkin: string = "skin1"
-    curSceneItemFace: number = 0  //当前工作中的道具的朝向
+    curSceneItemFace: number = 0  //当前工作中的道具的朝�?
     isGodWealthShow: boolean = false //财神是否已经出现
 
     //客人配置信息
     maxRoomTime: number = 20
-    toWorkRate: number = 50 //不能是100%否者找不到工作就发呆
+    toWorkRate: number = 50 //不能�?00%否者找不到工作就发�?
     workTimeBaseVal: number = 30
 
     onLoad() {
@@ -79,10 +79,10 @@ export class guest extends scene_item_parent {
             guestData = tables.ins().getTableValueByID(Const.Tables.scene_guest, guestId)
         }
         let spineName = UtilScene.getResSpineIcon(guestData.sp)
-        //如果是男女
+        //如果是男�?
         if (guestData.id == 88801) {
-            let item = tables.ins().getTableValueByID(Const.Tables.roleDressUp, userData.roleDressUpId)
-            if (item.type == 1) {//男
+            let item = tables.ins().getTableValueByID(Const.Tables.avatarStyle, userData.avatarLookId)
+            if (item.type == 1) {//�?
                 spineName = UtilScene.getResSpineIcon(guestData.sp)
             } else {
                 spineName = UtilScene.getResSpineIcon(guestData.sp2)
@@ -91,7 +91,7 @@ export class guest extends scene_item_parent {
         //动态设置spine文件
         resourceUtil.loadResWithBundle(spineName, sp.SkeletonData, (err, skedata) => {
             if (err) {
-                console.error("--------客人spine 资源未找到", guestData, err)
+                console.error("--------客人spine 资源未找�?, guestData, err)
             }
             this.spineAni.skeletonData = skedata;
             // UtilPub.log("--xxxxxxxxxxxx--", guestData)
@@ -109,11 +109,11 @@ export class guest extends scene_item_parent {
     }
 
     /**
-     * 得到客人对应的空闲的场景道具。TODO 白鹅特殊处理！！！
+     * 得到客人对应的空闲的场景道具。TODO 白鹅特殊处理！！�?
      * @returns 
      */
     getIdleSceneItem() {
-        //每个客人都有自己的目标，通过皮肤表的预制体进行搜索
+        //每个客人都有自己的目标，通过皮肤表的预制体进行搜�?
         let skinDataArr = tables.ins().getTableValuesByType(Const.Tables.scene_skin, "prefab", this.sceneNewItemNewSkinData.prefab)
         //如果是白鹅，那么增加动作表的皮肤ID
         if (this.guestData.id == 88001) {
@@ -128,18 +128,18 @@ export class guest extends scene_item_parent {
 
         let pickOne: GISceneItemParent = null!
         let map: Map<string, GISceneItemParent> = new Map()
-        // UtilPub.log("检查1-----RRRRRRRR------", this.sceneItemSkinData.prefab, skinDataArr)
+        // UtilPub.log("检�?-----RRRRRRRR------", this.sceneItemSkinData.prefab, skinDataArr)
         for (let i = 0; i < skinDataArr.length; i++) {
             let item = skinDataArr[i]
-            //如果未获得皮肤直接跳过
+            //如果未获得皮肤直接跳�?
             if (SceneData.ins.getSceneSkinById(item.id) == GSceneSkinState.noGotted) {
                 continue
             }
             let script: GISceneItemParent = UtilScene.getSceneItemNodeById(item.scene)!
-            // UtilPub.log("找到场景对应的道具----xxxxxxxx------", script.id, script.guestNode==null)
+            // UtilPub.log("找到场景对应的道�?---xxxxxxxx------", script.id, script.guestNode==null)
 
             if (Const.IsShowOpsDialog == true && Const.SelSceneNode != null && UtilScene.getSceneNodeScript(Const.SelSceneNode).id == script.id) {
-                //避开被选中的那个场景道具
+                //避开被选中的那个场景道�?
                 continue
             }
             if (script != null && script.guestNode == null && SceneData.ins.getSceneSkinById(script.skin) == GSceneSkinState.gotted) {
@@ -180,7 +180,7 @@ export class guest extends scene_item_parent {
     }
 
     init(state: GGuestState = GGuestState.subway) {
-        //随机初始化客人信息，查找客人对应的皮肤是否解锁
+        //随机初始化客人信息，查找客人对应的皮肤是否解�?
         this.btn.active = false
         let res = this.getOneGuest()
 
@@ -191,13 +191,13 @@ export class guest extends scene_item_parent {
         let val = 100 * Const.GuestSpeedTime
         this.speed = UtilPub.ranInt(Math.round(val * 0.8), Math.round(val * 1.5))
 
-        //如果是店长
+        //如果是店�?
         if (this.guestData.id == 88801) {
             state = GGuestState.roomWalk
             this.node.parent = Const.ItemParent
         }
         this.state = state
-        //有些是从地铁口出现，有些是随机位置
+        //有些是从地铁口出现，有些是随机位�?
         if (this.state == GGuestState.streetWalk) {
             this.node.parent = Const.StreetFixedNode
             this.curGridPoint = this.getEmptyStreetTargetPoint()
@@ -218,7 +218,7 @@ export class guest extends scene_item_parent {
         this.node.active = true
         this.calEnterRoomTime = 0
         Const.Guests.push(this.node)
-        // UtilPub.log("@@@@------初始化客人3", this.curGridPoint, this.node.worldPosition)
+        // UtilPub.log("@@@@------初始化客�?", this.curGridPoint, this.node.worldPosition)
     }
 
     setAniState(scaleX: number, aniState: GSpineAni | string, isLoop: boolean = true) {
@@ -285,7 +285,7 @@ export class guest extends scene_item_parent {
         this.star.run()
         this.path = this.star.getPath()
         this.isMoving = true
-        // UtilPub.log("@@@@@@@@----有没有路走", this.path.length, this.path, startPos, endPos)
+        // UtilPub.log("@@@@@@@@----有没有路�?, this.path.length, this.path, startPos, endPos)
         if (this.path.length == 1 && this.path[0].x == endPos.x && this.path[0].y == endPos.y) {
             return true
         }
@@ -293,10 +293,10 @@ export class guest extends scene_item_parent {
     }
 
     checkStandy() {
-        //11,0为地铁出口的位置， 16,22为街区入口位置， 12,0 为房间开始位置
+        //11,0为地铁出口的位置�?16,22为街区入口位置， 12,0 为房间开始位�?
         if (this.state == GGuestState.subway) {
             this.state = GGuestState.subwaying
-            this.node.parent = Const.StreetFixedNode //自动切换父节点
+            this.node.parent = Const.StreetFixedNode //自动切换父节�?
             this.node.worldPosition = Const.GuestStartPos.worldPosition
 
             this.curGridPoint = v2(UtilScene.subway.x, UtilScene.subway.y)
@@ -305,9 +305,9 @@ export class guest extends scene_item_parent {
 
             this.spineAni.setAnimation(0, GSpineAni.walk1, true);
             this.aniTween.stop()
-            // UtilPub.log("----------速度如何：", this.getWalkTime(), this.spineAni.getCurrent(1))
+            // UtilPub.log("----------速度如何�?, this.getWalkTime(), this.spineAni.getCurrent(1))
             this.aniTween = tween(this.node).to(this.getWalkTime(), { worldPosition: this.targetPos }).call(() => {
-                //开始
+                //开�?
                 this.state = GGuestState.streetWalk
             }).start()
         }
@@ -316,16 +316,16 @@ export class guest extends scene_item_parent {
     checkStreet() {
         if (this.state == GGuestState.streetWalk) {
             //一定概率进入到排队区域
-            if (UtilPub.ranInt(0, 100) < 30 && this.guestData && this.guestData.id != 88014) { //不是财神其他人都可以去
-                this.state = GGuestState.waitInQueueToRoom
+            if (UtilPub.ranInt(0, 100) < 30 && this.guestData && this.guestData.id != 88014) { //不是财神其他人都可以�?
+                this.state = GGuestState.queueForRoomDoor
                 // UtilPub.log("--------进入房间等待队列--", this.state )
             } else if (this.curGridPoint) {
 
-                this.node.parent = Const.StreetFixedNode //自动切换父节点
+                this.node.parent = Const.StreetFixedNode //自动切换父节�?
                 //随机获得目标格子
                 this.targetPoint = this.getEmptyStreetTargetPoint() //v2(UtilPub.ranInt(0, Const.MaxStreetX), UtilPub.ranInt(0, Const.MaxStreetY))
                 // this.targetPoint = v2(22,8)
-                //使用AStar找到路径，然后开始循环的走
+                //使用AStar找到路径，然后开始循环的�?
                 this.star.init(v2(Const.MaxStreetX, Const.MaxStreetY - 1), this.curGridPoint, this.targetPoint, UtilScene.streetObstacles)
                 this.star.run()
                 this.path = this.star.getPath()
@@ -343,53 +343,53 @@ export class guest extends scene_item_parent {
             }
 
             // let targetPoint = this.path.shift()!
-            // UtilPub.log("--------设定的路径--", this.curPoint)
+            // UtilPub.log("--------设定的路�?-", this.curPoint)
             // this.path.forEach(item=>{
-            //     UtilPub.log("--------设定的路径--", item.x," ", item.y)
+            //     UtilPub.log("--------设定的路�?-", item.x," ", item.y)
             // })
         }
     }
 
-    checkWaitInQueueToRoom() {
-        //在队列中的对象，由管理器来进行控制
-        if (this.state == GGuestState.waitInQueueToRoom) {
+    checkQueueApproachPath() {
+        //在队列中的对象，由管理器来进行控�?
+        if (this.state == GGuestState.queueForRoomDoor) {
             this.aniTween.stop()
-            this.node.parent = Const.StreetFixedNode //自动切换父节点
+            this.node.parent = Const.StreetFixedNode //自动切换父节�?
             //随机获得目标格子
             // this.targetPoint = this.getEmptyTargetPoint() //v2(UtilPub.ranInt(0, Const.MaxStreetX), UtilPub.ranInt(0, Const.MaxStreetY))
             // this.targetPoint = v2(22,8)
-            //使用AStar找到路径，然后开始循环的走
+            //使用AStar找到路径，然后开始循环的�?
             this.star.init(v2(Const.MaxStreetX, Const.MaxStreetY), this.curGridPoint, this.targetPoint, UtilScene.streetObstacles)
             this.star.run()
             this.path = this.star.getPath()
             //查看路径信息是否正确
-            // UtilPub.log(this.path.length,"@@@跑去排队-------当前点----", this.curGridPoint, "----终点--",  this.targetPoint)
+            // UtilPub.log(this.path.length,"@@@跑去排队-------当前�?---", this.curGridPoint, "----终点--",  this.targetPoint)
             // for(let i=0;i<this.path.length; i++){
             //     UtilPub.log("-------路径是否错误----", this.path[i].x, ", ",this.path[i].y)
             // }
             if (this.path.length == 1) {
                 this.failCnt += 1
-                this.state = GGuestState.waitInQueueToRoom
+                this.state = GGuestState.queueForRoomDoor
             } else {
                 this.failCnt = 0
                 this.isMoving = false
                 this.isMovingEnd = true
-                this.state = GGuestState.waitInQueueToRooming
-                // UtilPub.log(this.path.length,"@@@跑去排队2----是否移动中--", this.isMoving, "----状态--",  this.state)
+                this.state = GGuestState.pathingToRoomQueue
+                // UtilPub.log(this.path.length,"@@@跑去排队2----是否移动�?-", this.isMoving, "----状�?-",  this.state)
             }
         }
     }
 
     checkRoomWalk() {
         if (this.state == GGuestState.roomWalk) {
-            //有概率去工作的那个点，切换为工作状态。
+            //有概率去工作的那个点，切换为工作状态�?
             if (this.calEnterRoomTime > this.maxRoomTime) {
                 this.calEnterRoomTime = 0
                 this.state = GGuestState.back
                 UtilPub.log("-------选择离开----")
-            } else if (UtilPub.ranInt(0, 100) < this.toWorkRate && this.calTimeWorkRest <= 0 && this.guestData.id != 88011 && this.guestData.id != 88801) { //如果是建筑工时不会去工作的
+            } else if (UtilPub.ranInt(0, 100) < this.toWorkRate && this.calTimeWorkRest <= 0 && this.guestData.id != 88011 && this.guestData.id != 88801) { //如果是建筑工时不会去工作�?
                 this.state = GGuestState.goToWork
-                // UtilPub.log("-------去工作----")
+                // UtilPub.log("-------去工�?---")
             } else {
                 let pos = UtilScene.getBottomGridPos(this.curGridPoint.x, this.curGridPoint.y)
                 this.node.worldPosition = this.node.parent!.getComponent(UITransform)!.convertToWorldSpaceAR(pos)
@@ -400,7 +400,7 @@ export class guest extends scene_item_parent {
                 this.path = this.star.getPath()
 
                 //查看路径信息是否正确
-                // UtilPub.log("-------当前点----", this.curGridPoint, "----终点--",  endPoint)
+                // UtilPub.log("-------当前�?---", this.curGridPoint, "----终点--",  endPoint)
                 // for(let i=0;i<this.path.length; i++){
                 //     UtilPub.log("-------路径是否错误----", this.path[i].x, ", ",this.path[i].y)
                 // }
@@ -425,20 +425,20 @@ export class guest extends scene_item_parent {
             this.path = this.star.getPath()
 
             //查看路径信息是否正确
-            // UtilPub.log("-------xx当前点----", this.curGridPoint, "----终点--",  endPoint)
+            // UtilPub.log("-------xx当前�?---", this.curGridPoint, "----终点--",  endPoint)
             // for(let i=0;i<this.path.length; i++){
             //     UtilPub.log("-------路径是否错误----", this.path[i].x, ", ",this.path[i].y)
             // }
             if (this.path.length == 1) {
                 this.failCnt += 1
                 this.state = GGuestState.back
-                //出不去就不出去
-                // UtilPub.log("-------出不去就不出去----", this.failCnt)
+                //出不去就不出�?
+                // UtilPub.log("-------出不去就不出�?---", this.failCnt)
                 if (this.failCnt > this.maxFailCnt / 3) {
                     this.state = GGuestState.roomWalk
                 }
             } else {
-                // UtilPub.log("-------开始回家----", this.failCnt)
+                // UtilPub.log("-------开始回�?---", this.failCnt)
                 this.failCnt = 0
                 this.isMoving = false
                 this.isMovingEnd = true
@@ -449,7 +449,7 @@ export class guest extends scene_item_parent {
 
     /**
      * 找到目标周围的点，目标就是障碍物
-     * 寻路目标点不能是障碍物
+     * 寻路目标点不能是障碍�?
      */
     getTargetRoundEmptyGrid() {
         let startPos = v2(this.targetSceneItemScript.curGridPoint.x - 1, this.targetSceneItemScript.curGridPoint.y - 1)
@@ -474,10 +474,10 @@ export class guest extends scene_item_parent {
             if (this.targetSceneItemScript != null) {
                 this.targetSceneItemScript.guestNode = this.node
                 UtilPub.log("-------找到工作----", this.targetSceneItemScript)
-                //设定item为目标
+                //设定item为目�?
                 let endPoint = this.getTargetRoundEmptyGrid()
                 if (endPoint == null) {
-                    // UtilPub.log("-------无法到达工作区----", this.targetSceneItemScript)
+                    // UtilPub.log("-------无法到达工作�?---", this.targetSceneItemScript)
                     this.state = GGuestState.roomWalk
                     return
                 }
@@ -486,7 +486,7 @@ export class guest extends scene_item_parent {
                 this.path = this.star.getPath()
 
                 //查看路径信息是否正确
-                // UtilPub.log("-------当前点----", this.curGridPoint, "----终点--",  endPoint)
+                // UtilPub.log("-------当前�?---", this.curGridPoint, "----终点--",  endPoint)
                 // for(let i=0;i<this.path.length; i++){
                 //     UtilPub.log("-------路径是否错误----", this.path[i].x, ", ",this.path[i].y)
                 // }
@@ -506,7 +506,7 @@ export class guest extends scene_item_parent {
                 }
 
             } else {
-                // UtilPub.log("-------目标家具未找到，找工作失败，继续走----", this.targetSceneItemScript)
+                // UtilPub.log("-------目标家具未找到，找工作失败，继续�?---", this.targetSceneItemScript)
                 this.isMoving = false
                 this.isMovingEnd = true
                 this.state = GGuestState.roomWalk
@@ -519,17 +519,17 @@ export class guest extends scene_item_parent {
     }
 
     setWorkingAni() {
-        //播放对应的动画
+        //播放对应的动�?
         let selIconNode = this.targetSceneItemScript.node.getChildByName("icon" + this.targetSceneItemScript.curFace)!
         selIconNode.active = false
         //通过客人ID和场景道具皮肤ID确定对应的动画皮肤ID
         let aniData = tables.ins().getTableValuesByType2(Const.Tables.scene_guest_ani, "guest", this.guestData.id, "skin", this.targetSceneItemScript.skin + "")[0]
-        // UtilPub.log("###-----家具的朝向", this.targetSceneItemScript.curFace)
+        // UtilPub.log("###-----家具的朝�?, this.targetSceneItemScript.curFace)
         //根据目标家具朝向调用对应动画
         let delta = v2(0, 0)
         //设置皮肤
         this.setSkin(aniData)
-        if (this.targetSceneItemScript.curFace == GCurFace.face1) { //右下角
+        if (this.targetSceneItemScript.curFace == GCurFace.face1) { //右下�?
             this.setAniState(-1, aniData.ani + "1", true)
             delta = v2(aniData.offset1[0], aniData.offset1[1])
 
@@ -561,9 +561,9 @@ export class guest extends scene_item_parent {
     }
 
     runPath() {
-        // UtilPub.log("为什么没进1---------", this.path.length, this.isMoving, this.state%2, this.state)
+        // UtilPub.log("为什么没�?---------", this.path.length, this.isMoving, this.state%2, this.state)
         if (this.path.length > 0 && this.isMoving == false && this.state % 2 == 0) {
-            // UtilPub.log("为什么没进2---------", this.path.length, this.isMoving, this.state%2, this.state)
+            // UtilPub.log("为什么没�?---------", this.path.length, this.isMoving, this.state%2, this.state)
             this.isMoving = true
             this.isMovingEnd = false
 
@@ -593,11 +593,11 @@ export class guest extends scene_item_parent {
                     if (this.state == GGuestState.goToWorking) {
                         this.state = GGuestState.roomWalk
                     } else {
-                        // UtilPub.warn("-------当前点----", this.curGridPoint, "----终点--",  this.targetPoint)
+                        // UtilPub.warn("-------当前�?---", this.curGridPoint, "----终点--",  this.targetPoint)
                         // for(let i=0;i<this.path.length; i++){
                         //     UtilPub.warn("-------路径是否错误----", this.path[i].x, ", ",this.path[i].y)
                         // }
-                        this.state = this.state - 1 //切换到对应的准备状态
+                        this.state = this.state - 1 //切换到对应的准备状�?
                     }
                     this.failCnt += this.maxFailCnt
 
@@ -616,8 +616,8 @@ export class guest extends scene_item_parent {
                 let deltaY = this.curGridPoint.y - targetPoint.y
 
                 if (Math.abs(deltaX) > 1 || Math.abs(deltaY) > 1) {
-                    //异常情况直接飞过去
-                    UtilPub.error("-------异常情况直接飞过去----", this.curGridPoint, "----终点--", this.targetPoint)
+                    //异常情况直接飞过�?
+                    UtilPub.error("-------异常情况直接飞过�?---", this.curGridPoint, "----终点--", this.targetPoint)
                     for (let i = 0; i < this.path.length; i++) {
                         UtilPub.error("-------路径是否错误----", this.path[i].x, ", ", this.path[i].y)
                     }
@@ -628,21 +628,21 @@ export class guest extends scene_item_parent {
                     this.node.worldPosition = this.node.parent!.getComponent(UITransform)!.convertToWorldSpaceAR(pos)
                 }
 
-                if (deltaX > 0 && deltaY == 0) { // 16,2 左上角
-                    // UtilPub.log("--------1左上角", deltaX, deltaY)
+                if (deltaX > 0 && deltaY == 0) { // 16,2 左上�?
+                    // UtilPub.log("--------1左上�?, deltaX, deltaY)
                     this.setAniState(-1, GSpineAni.walk2, true)
 
-                } else if (deltaX < 0 && deltaY == 0) { //14,2 往右下走
-                    // UtilPub.log("--------2往右下走", deltaX, deltaY)
+                } else if (deltaX < 0 && deltaY == 0) { //14,2 往右下�?
+                    // UtilPub.log("--------2往右下�?, deltaX, deltaY)
                     this.setAniState(-1, GSpineAni.walk1, true)
 
-                } else if (deltaX == 0 && deltaY < 0) { //15,3 往左下走
-                    // UtilPub.log("--------3往左下走", deltaX, deltaY)
+                } else if (deltaX == 0 && deltaY < 0) { //15,3 往左下�?
+                    // UtilPub.log("--------3往左下�?, deltaX, deltaY)
                     this.spineAni.node.scale = v3(1, 1, 1)
                     this.setAniState(1, GSpineAni.walk1, true)
 
-                } else if (deltaX == 0 && deltaY > 0) { //15,1 往右上走
-                    // UtilPub.log("--------4往右上走", deltaX, deltaY)
+                } else if (deltaX == 0 && deltaY > 0) { //15,1 往右上�?
+                    // UtilPub.log("--------4往右上�?, deltaX, deltaY)
                     this.spineAni.node.scale = v3(1, 1, 1)
                     this.setAniState(1, GSpineAni.walk2, true)
                 } else {
@@ -674,17 +674,17 @@ export class guest extends scene_item_parent {
         if (this.path.length == 0) {
             this.isMovingEnd = true
             this.isMoving = false
-            //走完状态回收
+            //走完状态回�?
             if (this.state == GGuestState.streetWalking) {
                 this.state = GGuestState.streetWalk
-            } else if (this.state == GGuestState.waitInQueueToRooming) {
-                // UtilPub.log("--------去排队", this.curGridPoint, this.state, this.path.length)
+            } else if (this.state == GGuestState.pathingToRoomQueue) {
+                // UtilPub.log("--------去排�?, this.curGridPoint, this.state, this.path.length)
                 this.setAniState(this.node.scale.x, GSpineAni.idle1, true)
                 this.state = GGuestState.roomDoorStay
             } else if (this.state == GGuestState.roomWalking) {
                 this.state = GGuestState.roomWalk //roomWalk有概率切换到work //到时间会选择离开
             } else if (this.state == GGuestState.goToWorking) {
-                this.state = GGuestState.work //开始工作
+                this.state = GGuestState.work //开始工�?
             } else if (this.state == GGuestState.backing) {
                 // UtilPub.log("--------走完结束---当前节点", this.curGridPoint, this.state, this.path.length)
                 this.leaveAway()
@@ -715,13 +715,13 @@ export class guest extends scene_item_parent {
             // UtilPub.log("-----当前节点信息", this.node.scale.x , this.aniState, this.node.children[0].scale)
         }
 
-        //工作倒计时
+        //工作倒计�?
         if (this.state == GGuestState.working) {
             if (this.targetSceneItemScript != null) {
-                if (this.isSelOps) { //客人被拉起
+                if (this.isSelOps) { //客人被拉�?
                     this.targetSceneItemScript.setFace(this.targetSceneItemScript.curFace)
                     this.spineAni.node.active = false
-                } else {//客人是放下的状态
+                } else {//客人是放下的状�?
                     let selIconNode = this.targetSceneItemScript.node.getChildByName("icon" + this.targetSceneItemScript.curFace)!
                     selIconNode.active = false
                     this.spineAni.node.active = true
@@ -744,7 +744,7 @@ export class guest extends scene_item_parent {
                 this.calWorkTime = 0
                 this.targetSceneItemScript.guestNode = null!
                 this.node.parent = Const.ItemParent
-                //如果是工作状态，当前点必须找一个空地的格子，找不到直接处理掉
+                //如果是工作状态，当前点必须找一个空地的格子，找不到直接处理�?
                 let curPos = this.getTargetRoundEmptyGrid()
                 if (curPos == null) {
                     this.leaveAway()

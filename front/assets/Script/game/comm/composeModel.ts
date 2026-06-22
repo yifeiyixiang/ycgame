@@ -9,13 +9,13 @@ import { uiManager } from "../../easyFramework/mgr/uiManager";
 import TimeCtrJSF from "../../easyFramework/network/TimeCtrJSF";
 import tables from "../../easyFramework/other/tables";
 import { UtilPub } from "../../easyFramework/utils/UtilPub";
-import { tyqSDK } from "../../tyqSDK/SDK/tyqSDK";
 import { handData } from "../data/handData";
 import { ComposeLayer } from "../UI/layer/ComposeLayer";
 import { HandLayer } from "../UI/layer/HandLayer";
 import { aiRobot } from "./AIRobot";
 import { playerModel } from "./playerModel";
 import { userData } from "./UserData";
+import { GamePlatform } from '../platform/GamePlatform';
 
 
 export const nineAroundArr = [
@@ -53,26 +53,26 @@ export const propIds = {
 };
 export const roomStatus = {
     normal: 0,
-    // 蜘蛛网
+    // 蜘蛛�?
     spider: 1,
     // 纸箱
     carton: 2,
 }
 
 export const managerInfoTypeArr = [
-    "达到%d级",
-    "发射任意发生器%d次",
-    "完成%d个订单",
+    "达到%d�?,
+    "发射任意发生�?d�?,
+    "完成%d个订�?,
     "解锁%d次蓝色手提包",
-    "在棋盘合成%d次",
-    "为健身房建造%d次",
-    "消耗钻石购买%d次能量",
-    "在棋盘上出售%d次任意物品",
-    "加速%d次发射器",
-    "累计消耗%d能量",
-    "合成%d个最高等级金币",
+    "在棋盘合�?d�?,
+    "为健身房建�?d�?,
+    "消耗钻石购�?d次能�?,
+    "在棋盘上出售%d次任意物�?,
+    "加�?d次发射器",
+    "累计消�?d能量",
+    "合成%d个最高等级金�?,
     "合成%d个最高等级能量球",
-    "累计消耗%d金币",
+    "累计消�?d金币",
 ];
 
 class ComposeModule {
@@ -101,7 +101,7 @@ class ComposeModule {
     taskArr: any;
     taskDataKey: string = "";
 
-    // 店长值班日
+    // 店长值班�?
     managerArr: any;
     // 卡片列表
     cardArr: any;
@@ -178,7 +178,7 @@ class ComposeModule {
                 tmpObj[key] = roomData;
             }
 
-            // 将初始化的数据上传
+            // 将初始化的数据上�?
             GameStorage.setObjectMulti(tmpObj);
             UtilPub.log("本地初始化棋盘数据：", this.roomArr);
         } else {
@@ -214,7 +214,7 @@ class ComposeModule {
             console.log("loadData 4")
 
             if (!ret) {
-                // 本地初始化
+                // 本地初始�?
                 if (aiRobot.isRobot()) {
                     let retTask = aiRobot.createTask();
                     this.taskArr = [retTask];
@@ -222,7 +222,7 @@ class ComposeModule {
                     let retTask = this.createHandTask(1);
                     this.taskArr = [retTask];
                 }
-                // 将初始化的数据上传
+                // 将初始化的数据上�?
                 this.sendTaskArrToServer();
                 UtilPub.log("本地初始化任务列表：", this.taskArr);
 
@@ -239,12 +239,12 @@ class ComposeModule {
         }
         console.log("loadData 6")
 
-        // 店长值班日
+        // 店长值班�?
         this.managerArr = [];
         let ret = GameStorage.getObjectArrayByKey(this.roomDataKey);
         ret = GameStorage.getObjectArrayByKey(Const.DataKeys.composeManagerArr);
         if (!ret.values || ret.values.length <= 0) {
-            // 本地初始化
+            // 本地初始�?
             this.createNextManager();
             UtilPub.log("本地初始化店长值班日：", this.managerArr);
         } else {
@@ -255,7 +255,7 @@ class ComposeModule {
                 let arr = key.split("_");
                 this.managerArr[arr[1]] = val;
             }
-            UtilPub.log("从服务端加载店长值班日", this.managerArr);
+            UtilPub.log("从服务端加载店长值班�?, this.managerArr);
         }
         console.log("loadData 7")
 
@@ -299,7 +299,7 @@ class ComposeModule {
             // 主动点击cd
             if (roomData.cd && timestamp >= roomData.cd) {
                 if (propRow.mdt == 11) {
-                    // 加速装置 时间到了，自动消失
+                    // 加速装�?时间到了，自动消�?
                     this.setRoomData(row, col, {});
                     let info = {
                         row: row,
@@ -309,19 +309,19 @@ class ComposeModule {
                 } else {
                     delete roomData.cd;
                     delete roomData.cdSum;
-                    // cd到了，补充库存
+                    // cd到了，补充库�?
                     roomData.times = propRow.times;
                     this.sendRoomDataToServer(row, col);
                 }
             }
 
-            // 自动吐东西
+            // 自动吐东�?
             if (propRow.fair && roomData.timesAuto > 0) {
                 this.refreshRoomAutoNew(row, col);
             }
             // 自动吐物品cd
             if (roomData.cdAuto && timestamp >= roomData.cdAuto && !this.isRoomBubble(row, col)) {
-                // cd到了，补充库存
+                // cd到了，补充库�?
                 delete roomData.cdAuto;
                 roomData.timesAuto = propRow.kishu;
                 this.sendRoomDataToServer(row, col);
@@ -332,14 +332,14 @@ class ComposeModule {
             if (roomData.cdBubble > 0 && timestamp >= roomData.cdBubble) {
                 roomData = this.initRoomData(designConfig.bubbleBombPropId);
                 this.setRoomData(row, col, roomData);
-                this.sendToUIRoomBubbleBomb(row, col);
+                this.sendToUIRoomBubbleBurst(row, col);
             }
 
             if (propRow.mdt == 11 && roomData.startTime) {
-                // 加速装置
+                // 加速装�?
                 let speedTime = timestamp - roomData.startTime;
                 roomData.startTime = timestamp;
-                // 九宫周围可加速房间
+                // 九宫周围可加速房�?
                 for (let i = 0, len = nineAroundArr.length; i < len; i++) {
                     let posArr = nineAroundArr[i];
                     let r = row + posArr[0];
@@ -390,7 +390,7 @@ class ComposeModule {
         }
 
         if (clickPropId) {
-            // 指定点击生成的道具
+            // 指定点击生成的道�?
             data.clickPropId = clickPropId;
         }
 
@@ -422,7 +422,7 @@ class ComposeModule {
             }
 
             if (propRow.kishu > 0) {
-                // 自动生成次数，首次改成只生成一个
+                // 自动生成次数，首次改成只生成一�?
                 // data.timesAuto = propRow.kishu;
                 data.timesAuto = 1;
             }
@@ -439,14 +439,14 @@ class ComposeModule {
                     roomArr.push({});
                 }
                 data.roomArr = roomArr;
-                UtilPub.log("背包初始化结束", data);
+                UtilPub.log("背包初始化结�?, data);
             }
 
             if (propRow.lock) {
-                // 初始cd状态
+                // 初始cd状�?
                 data.cd = this.getCurrentTimestamp() + propRow.milo * 1000;
                 data.cdSum = propRow.milo * 1000;
-                UtilPub.log("初始cd状态", data);
+                UtilPub.log("初始cd状�?, data);
             }
         }
 
@@ -459,9 +459,9 @@ class ComposeModule {
     }
 
     /**
-     * 寻找棋盘下的同子类物品的最高等级+lvAdd，溢出就取最高等级
+     * 寻找棋盘下的同子类物品的最高等�?lvAdd，溢出就取最高等�?
      * @param id 物品id
-     * @param lvAdd 等级增加值，为0，不作处理，返回传入的id本身
+     * @param lvAdd 等级增加值，�?，不作处理，返回传入的id本身
      * @returns 
      */
     getRoomPropIdByIdLvUp(id: number, lvAdd: number) {
@@ -475,7 +475,7 @@ class ComposeModule {
             }
             let tmpRow = tables.ins().getTableValueByID(Const.Tables.prop, roomData.id);
             if (propRow.type != tmpRow.type || propRow.typeson != tmpRow.typeson) {
-                // 不是同子类
+                // 不是同子�?
                 return;
             }
             if (propRow.luna > tmpRow.luna) {
@@ -509,9 +509,9 @@ class ComposeModule {
     }
 
     /**
-     * 物品等级+lvAdd，溢出就取最高等级
+     * 物品等级+lvAdd，溢出就取最高等�?
      * @param id 物品id
-     * @param lvAdd 等级增加值，为0，不作处理，返回传入的id本身
+     * @param lvAdd 等级增加值，�?，不作处理，返回传入的id本身
      */
     getPropIdByIdLvUp(id: number, lvAdd: number) {
         if (!lvAdd) {
@@ -533,7 +533,7 @@ class ComposeModule {
     }
 
     /**
-     * 是否已解锁 某道具的子类，有解锁1个，就算解锁了整个子类
+     * 是否已解�?某道具的子类，有解锁1个，就算解锁了整个子�?
      * @param id 
      */
     hasUnlockPropType(id: number) {
@@ -550,12 +550,12 @@ class ComposeModule {
         return false;
     }
 
-    // 解锁新任务到下一个卡点
+    // 解锁新任务到下一个卡�?
     createNextManager() {
         let tmpObj: any = {};
         let id = this.managerArr.length;
         if (id >= tables.ins().getTableLastOne(Const.Tables.manager).id) {
-            // 已全部解锁
+            // 已全部解�?
             return;
         }
         let row = null;
@@ -579,7 +579,7 @@ class ComposeModule {
             id++;
         }
         GameStorage.setObjectMulti(tmpObj);
-        UtilPub.log("解锁新任务", tmpObj);
+        UtilPub.log("解锁新任�?, tmpObj);
         Notifications.emit(GD.event.managerCreateTask);
     }
 
@@ -827,23 +827,23 @@ class ComposeModule {
                     });
                     break;
                 case 3:
-                    // 已解锁，但是未拥有的最高等级
+                    // 已解锁，但是未拥有的最高等�?
                     let tmpInfo: any = {};
                     UtilPub.forArr(propTb, (propRow: any) => {
                         if (propRow.lunc > retRow.quality) {
                             // 过滤道具品质
                             return;
                         }
-                        // 过滤掉未解锁的
+                        // 过滤掉未解锁�?
                         if (userData.isGetPropTujian(propRow.id) == TujianState.unGet) {
                             return;
                         }
-                        // 过滤掉已拥有的
+                        // 过滤掉已拥有�?
                         let hasInfo = this.getRoomDataHasInfoById(propRow.id);
                         if (hasInfo.num > 0) {
                             return;
                         }
-                        // 同子类道具取最高等级
+                        // 同子类道具取最高等�?
                         let key = propRow.type * 1000 + propRow.typeson;
                         let info = tmpInfo[key];
                         if (info) {
@@ -869,11 +869,11 @@ class ComposeModule {
                             // 过滤道具品质
                             return;
                         }
-                        // 过滤掉已解锁的
+                        // 过滤掉已解锁�?
                         if (userData.isGetPropTujian(propRow.id) != TujianState.unGet) {
                             return;
                         }
-                        // 过滤掉未解锁的子类
+                        // 过滤掉未解锁的子�?
                         let unlockKey = propRow.type * 1000 + propRow.typeson;
                         let hasUnlock = unlockInfo[unlockKey];
                         if (hasUnlock == undefined) {
@@ -887,17 +887,17 @@ class ComposeModule {
                     });
                     break;
                 case 5:
-                    // 未解锁子类，并且也未解锁的道具
+                    // 未解锁子类，并且也未解锁的道�?
                     UtilPub.forArr(propTb, (propRow: any) => {
                         if (propRow.lunc > retRow.quality) {
                             // 过滤道具品质
                             return;
                         }
-                        // 过滤掉已解锁的
+                        // 过滤掉已解锁�?
                         if (userData.isGetPropTujian(propRow.id) != TujianState.unGet) {
                             return;
                         }
-                        // 过滤掉已解锁的子类
+                        // 过滤掉已解锁的子�?
                         let unlockKey = propRow.type * 1000 + propRow.typeson;
                         let hasUnlock = unlockInfo[unlockKey];
                         if (hasUnlock == undefined) {
@@ -940,7 +940,7 @@ class ComposeModule {
                 while (true) {
                     let retId = UtilPub.getRandomItemByArr(idArr, true);
                     if (retId > 0) {
-                        // 等级增加，按照类型区分
+                        // 等级增加，按照类型区�?
                         switch (res1) {
                             case 2:
                                 retId = this.getRoomPropIdByIdLvUp(retId, lvUp);
@@ -955,7 +955,7 @@ class ComposeModule {
                         if (propArr.length > 0 && retId == propArr[0].id) {
                             res1 = 2;
                             lvUp = 0;
-                            UtilPub.log("任务道具重复了:" + retId);
+                            UtilPub.log("任务道具重复�?" + retId);
                             continue;
                         }
                         let num = this.getValByDesignWeight("1,2,3", retRow.num);
@@ -975,11 +975,11 @@ class ComposeModule {
                 taskArr.push(task);
             }
 
-            // UtilPub.log("任务类型：" + retRow.res1);
+            // UtilPub.log("任务类型�? + retRow.res1);
         }
 
         if (taskArr.length <= 0) {
-            // 如果没有任务了，要生成一个保底任务
+            // 如果没有任务了，要生成一个保底任�?
             let leastTaskArr = tables.ins().getTable(Const.Tables.leastTask);
             let leastTaskRow = UtilPub.getRandomItemByArr(leastTaskArr);
             let propArr = [{
@@ -994,7 +994,7 @@ class ComposeModule {
             UtilPub.log("生成保底任务", leastTask);
         }
 
-        UtilPub.log("生成任务：", taskArr);
+        UtilPub.log("生成任务�?, taskArr);
 
         return taskArr;
     }
@@ -1041,10 +1041,10 @@ class ComposeModule {
                 }
             }
 
-            // 将数据批量上传给服务端
+            // 将数据批量上传给服务�?
             GameStorage.setObjectMulti(tmpObj);
 
-            // 通知UI层
+            // 通知UI�?
             this.sendToUIComposeRoomNew(row, col, newPosArr, true);
 
         }
@@ -1054,7 +1054,7 @@ class ComposeModule {
      * 通知UI层，有新的物品生成了
      * @param row 开始行
      * @param col 开始列
-     * @param newPosArr 生成的物品位置数组 [[row,col],...]
+     * @param newPosArr 生成的物品位置数�?[[row,col],...]
      */
     sendToUIComposeRoomNew(row: number, col: number, newPosArr: any, isAuto: boolean = false) {
         let data: any = {};
@@ -1064,15 +1064,15 @@ class ComposeModule {
         data.isAuto = isAuto;
         Notifications.emit(GD.event.composeRoomNew, data);
     }
-    // 通知UI层气泡破了
-    sendToUIRoomBubbleBomb(row: number, col: number) {
+    // 通知UI层气泡破�?
+    sendToUIRoomBubbleBurst(row: number, col: number) {
         let data: any = {};
         data.row = row;
         data.col = col;
-        Notifications.emit(GD.event.composeRoomBubbleBomb, data);
+        Notifications.emit(GD.event.roomBubbleBurst, data);
     }
 
-    // 拖动：交换位置
+    // 拖动：交换位�?
     roomDataExchange(srcRow: number, srcCol: number, targetRow: number, targetCol: number) {
         let srcData = this.roomArr[srcRow][srcCol];
         let targetData = this.roomArr[targetRow][targetCol];
@@ -1080,7 +1080,7 @@ class ComposeModule {
         this.setRoomData(targetRow, targetCol, srcData);
     }
 
-    // 拖动：进行合成
+    // 拖动：进行合�?
     roomDataCompose(srcRow: number, srcCol: number, targetRow: number, targetCol: number) {
         let srcData = this.roomArr[srcRow][srcCol];
         let targetData = this.roomArr[targetRow][targetCol];
@@ -1089,7 +1089,7 @@ class ComposeModule {
         this.setRoomData(srcRow, srcCol, {});
         // 目标房间生成合成后的物品
         if (userData.isGetPropTujian(propRow.blessId) == TujianState.unGet) {
-            // 通知UI显示获得新元素
+            // 通知UI显示获得新元�?
             let blessRow = tables.ins().getTableValueByID(Const.Tables.prop, propRow.blessId);
             if (blessRow.anc) {
                 Notifications.emit(GD.event.composeGetNewItem, propRow.blessId);
@@ -1108,7 +1108,7 @@ class ComposeModule {
         }
         this.setRoomData(targetRow, targetCol, roomData);
 
-        // 按照十字型戳破周围的纸箱子，变成蜘蛛网包住
+        // 按照十字型戳破周围的纸箱子，变成蜘蛛网包�?
         let retObj: any = {};
         retObj.cartonArr = [];
         for (let i in tenAroundArr) {
@@ -1135,9 +1135,9 @@ class ComposeModule {
 
         return retObj;
     }
-    // 合成后，优先有概率生成额外东西
+    // 合成后，优先有概率生成额外东�?
     roomDataComposeAfter(targetRow: number, targetCol: number) {
-        // 新手阶段不出新东西
+        // 新手阶段不出新东�?
         if (!this.isHandDone() || aiRobot.isRobot()) {
             return;
         }
@@ -1151,7 +1151,7 @@ class ComposeModule {
         // let emptyPos = this.getEmptyRoomPos();
         // if (emptyPos) {
         //     let newRoom = null;
-        //     // 生成相同等级的气泡物品
+        //     // 生成相同等级的气泡物�?
         //     // newRoom = this.initRoomData(roomData.id);
         //     // 金币
         //     newRoom = this.initRoomData(201);
@@ -1169,7 +1169,7 @@ class ComposeModule {
             if (emptyPos) {
                 let newRoom = null;
                 if (retRow.propId == -1) {
-                    // 生成相同等级的气泡物品
+                    // 生成相同等级的气泡物�?
                     newRoom = this.initRoomData(roomData.id);
                     newRoom.cdBubble = this.getCurrentTimestamp() + designConfig.bubbleTime;
                 } else if (retRow.propId > 0) {
@@ -1185,12 +1185,12 @@ class ComposeModule {
     }
 
     /**
-     * 将物品放入背包
-     * 返回值：true 放入成功   false 放入失败，背包已满
-     * @param row 物品行索引
-     * @param col 物品列索引
-     * @param bagRow 背包行索引
-     * @param bagCol 背包列索引
+     * 将物品放入背�?
+     * 返回值：true 放入成功   false 放入失败，背包已�?
+     * @param row 物品行索�?
+     * @param col 物品列索�?
+     * @param bagRow 背包行索�?
+     * @param bagCol 背包列索�?
      */
     putDataInRoomBag(row: number, col: number, bagRow: number, bagCol: number) {
         if (this.isRoomBubble(row, col)) {
@@ -1203,7 +1203,7 @@ class ComposeModule {
             UtilPub.log("还未解锁背包");
             return;
         }
-        // 寻找空位置
+        // 寻找空位�?
         let index = -1;
         for (let i = bagRoomData.roomArr.length - 1; i >= 0; i--) {
             let room = bagRoomData.roomArr[i];
@@ -1245,8 +1245,8 @@ class ComposeModule {
      * 从背包中取出物品
      * 返回值：{row,col}取出成功  否则取出失败，棋盘没空房间了
      * @param index 要取出的物品索引
-     * @param bagRow 背包行索引
-     * @param bagCol 背包列索引
+     * @param bagRow 背包行索�?
+     * @param bagCol 背包列索�?
      */
     getOutDataFromRoomBag(index: number, bagRow: number, bagCol: number) {
         let emptyPos = composeModel.getEmptyRoomPos();
@@ -1257,7 +1257,7 @@ class ComposeModule {
         let bagRoomData = this.roomArr[bagRow][bagCol];
         let roomData = bagRoomData.roomArr[index];
 
-        // 放入背包的物品，是不走cd的
+        // 放入背包的物品，是不走cd�?
         let dt = this.getCurrentTimestamp() - roomData.putTime;
         if (roomData.cd > 0) {
             roomData.cd += dt;
@@ -1274,7 +1274,7 @@ class ComposeModule {
 
         return emptyPos;
     }
-    // 整理背包物品，重新排序
+    // 整理背包物品，重新排�?
     sortBagRoomArr(row: number, col: number) {
         let bagRoomData = this.roomArr[row][col];
         let arr = [];
@@ -1326,19 +1326,19 @@ class ComposeModule {
         if (roomData.times <= 0) {
             // 全部点击完了
             if (propRow.wsb) {
-                // 点击完消失
+                // 点击完消�?
                 this.roomArr[row][col] = {};
             } else if (propRow.doge > 0) {
-                // 点击完变成另外一个物品
+                // 点击完变成另外一个物�?
                 let roomData2 = this.initRoomData(propRow.doge);
                 this.roomArr[row][col] = roomData2;
             } else {
-                // 要开始显示cd了，记录下分母大小，用于显示冷却进度条
+                // 要开始显示cd了，记录下分母大小，用于显示冷却进度�?
                 roomData.cdSum = roomData.cd - this.getCurrentTimestamp();
             }
         }
         this.sendRoomDataToServer(row, col);
-        UtilPub.log("剩余次数：" + roomData.times);
+        UtilPub.log("剩余次数�? + roomData.times);
 
         let propId = 0;
         if (roomData.clickPropId && roomData.clickPropId.length > 0) {
@@ -1358,7 +1358,7 @@ class ComposeModule {
 
         this.addManagerVal(Const.ManagerTypes.roomClickAdd);
         let newPropRow = tables.ins().getTableValueByID(Const.Tables.prop, propId);
-        UtilPub.log("生成新物品 id:%d,name:%s".format(propId, newPropRow.name));
+        UtilPub.log("生成新物�?id:%d,name:%s".format(propId, newPropRow.name));
 
     }
 
@@ -1386,7 +1386,7 @@ class ComposeModule {
             }
         });
         if (unlocking) {
-            // 同时只能有一个
+            // 同时只能有一�?
             composeModel.showToast(localText.unlocking);
             return;
         }
@@ -1451,9 +1451,9 @@ class ComposeModule {
                     }
 
                     if (rData.cdAuto) {
-                        // 自动吐东西
+                        // 自动吐东�?
                         rData.cdAuto -= subCd;
-                        // 统一交给update里面去执行
+                        // 统一交给update里面去执�?
                         this.update();
                     }
 
@@ -1466,7 +1466,7 @@ class ComposeModule {
                 return ret;
                 break;
             case 11:
-                // 加速装置
+                // 加速装�?
                 if (!roomData.cd) {
                     let duration = propRow.p1 * 60 * 60 * 1000;
                     // test
@@ -1516,7 +1516,7 @@ class ComposeModule {
 
         this.subPropNum(propIds.coin, sellData.coin);
         if (roomData.id) {
-            // 再尝试找其他空位置
+            // 再尝试找其他空位�?
             let emptyPos = this.getEmptyRoomPos();
             if (emptyPos) {
                 this.setRoomData(emptyPos.row, emptyPos.col, sellData.roomData);
@@ -1560,7 +1560,7 @@ class ComposeModule {
         return true;
     }
 
-    // 主动戳破气泡，获得气泡里的东西
+    // 主动戳破气泡，获得气泡里的东�?
     roomDataBubbleGet(row: number, col: number) {
         let roomData = this.roomArr[row][col];
         if (!roomData.cdBubble) {
@@ -1662,7 +1662,7 @@ class ComposeModule {
         // 删除任务
         composeModel.taskArr.splice(index, 1);
 
-        // 生成新任务
+        // 生成新任�?
         if (aiRobot.isRobot()) {
             composeModel.taskArr.push(aiRobot.createTask());
         } else {
@@ -1684,11 +1684,11 @@ class ComposeModule {
 
                 let maxNum = tables.ins().config.taskMax - composeModel.taskArr.length;
                 if (num > maxNum) {
-                    // 保证最多有tables.ins().config.taskMax个任务
+                    // 保证最多有tables.ins().config.taskMax个任�?
                     num = maxNum;
                 }
                 if (composeModel.taskArr.length == 0 && num <= 0) {
-                    // 保证至少有一个任务
+                    // 保证至少有一个任�?
                     num = 1;
                 }
                 if (num > 0) {
@@ -1696,7 +1696,7 @@ class ComposeModule {
                     composeModel.taskArr = retArr//composeModel.taskArr.concat(retArr);
                 }
             }
-            tyqSDK.eventSendCustomEvent("玩家完成任务");
+            GamePlatform.track("玩家完成任务");
         }
 
         this.sendTaskArrToServer();
@@ -1719,8 +1719,8 @@ class ComposeModule {
     }
 
     /**
-     * 根据策划配表数据格式，按照权重取出一个值
-     * @param valStr 值,值,...
+     * 根据策划配表数据格式，按照权重取出一个�?
+     * @param valStr �?�?...
      * @param weightStr 权重,权重,...
      * @returns 
      */
@@ -1754,7 +1754,7 @@ class ComposeModule {
         return emptyPos;
     }
 
-    // 房间是否被纸箱包住
+    // 房间是否被纸箱包�?
     isRoomCarton(row: number, col: number) {
         let roomData = this.roomArr[row][col];
         if (roomData.st == roomStatus.carton) {
@@ -1770,7 +1770,7 @@ class ComposeModule {
         }
         return false;
     }
-    // 房间是否被汽包罩住
+    // 房间是否被汽包罩�?
     isRoomBubble(row: number, col: number) {
         let roomData = this.roomArr[row][col];
         if (!roomData.cdBubble) {
@@ -1819,7 +1819,7 @@ class ComposeModule {
             }
         });
         if (roomDataBag) {
-            // 背包里的物品也要算
+            // 背包里的物品也要�?
             for (let i = 0; i < roomDataBag.roomArr.length; i++) {
                 let bagRoom = roomDataBag.roomArr[i];
                 if (!bagRoom || !bagRoom.id) {
@@ -1835,10 +1835,10 @@ class ComposeModule {
     }
 
     /**
-     * 店长值班日里的任务统计
+     * 店长值班日里的任务统�?
      * composeModel.addManagerVal(Const.ManagerTypes.roomSpeedUp);
      * @param type 任务类型
-     * @param val 增加值，默认为1
+     * @param val 增加值，默认�?
      */
     addManagerVal(type: number, val: number = 1) {
         if (this.isManagerAllGet() || !this.managerArr) {
@@ -1875,7 +1875,7 @@ class ComposeModule {
         return val;
     }
     /**
-     * 店长值班日 领取完成奖励
+     * 店长值班�?领取完成奖励
      * @param index 任务索引
      */
     managerGetAward(index: number, startPos: Vec3) {
@@ -1888,13 +1888,13 @@ class ComposeModule {
         let row = tables.ins().getTableValueByID(Const.Tables.manager, manager.id);
         this.addPropNum(row.price[0], row.price[1], startPos);
 
-        tyqSDK.eventSendCustomEvent("完成店长值班日任务" + manager.id);
+        GamePlatform.track("完成店长值班日任�? + manager.id);
 
         let allGet = true;
         for (let i = 0; i < this.managerArr.length; i++) {
             let man = this.managerArr[i];
             if (!man.get) {
-                // 有未完成的任务
+                // 有未完成的任�?
                 allGet = false;
                 break;
             }
@@ -1926,8 +1926,8 @@ class ComposeModule {
 
     /**
      * 提供的行列索引，是否在棋盘内
-     * @param row 行索引
-     * @param col 列索引
+     * @param row 行索�?
+     * @param col 列索�?
      */
     rowColInComposeLayer(row: number, col: number) {
         if (row >= 0 && row <= this.rowNum - 1 && col >= 0 && col <= this.colNum - 1) {
@@ -1956,7 +1956,7 @@ class ComposeModule {
 
 
     /**
-     * 道具是否是能放到棋盘里的，并且可以产出东西
+     * 道具是否是能放到棋盘里的，并且可以产出东�?
      * @param id 
      * @returns 
      */
@@ -1970,7 +1970,7 @@ class ComposeModule {
         return false;
     }
     /**
-     * 判断道具是否是玩棋盘的卡片列表加入
+     * 判断道具是否是玩棋盘的卡片列表加�?
      * @param id 
      * @returns 
      */
@@ -2055,13 +2055,13 @@ class ComposeModule {
         userData.checkAndUseProp([propId, propNum]);
         Notifications.emit(GD.event.updateMoney);
     }
-    // 返回对应id的道具数量
+    // 返回对应id的道具数�?
     getPropNumById(propId: number) {
         return userData.curPropNum(propId);
     }
 
     /**
-     * 删除当前合成模块的所有数据
+     * 删除当前合成模块的所有数�?
      */
     deleteAllRoomData() {
         // 棋盘数据
@@ -2074,7 +2074,7 @@ class ComposeModule {
         // 任务数据
         GameStorage.removeItem(this.taskDataKey);
 
-        // 店长值班日
+        // 店长值班�?
         keyArr = [];
         UtilPub.forArr(this.managerArr, (manager: any, index: number) => {
             keyArr.push(this.getManagerDataKey(index));
@@ -2094,7 +2094,7 @@ class ComposeModule {
         GameStorage.setObject(this.taskDataKey, this.taskArr);
     }
 
-    // 同步店长订单表数据给服务器
+    // 同步店长订单表数据给服务�?
     sendManagerToServer(index: number) {
         let manager = this.managerArr[index];
         let key = this.getManagerDataKey(index);
@@ -2108,8 +2108,8 @@ class ComposeModule {
 
     /**
      * 同步房间数据给服务端
-     * @param row 房间行索引
-     * @param col 房间列索引
+     * @param row 房间行索�?
+     * @param col 房间列索�?
      * @param roomData 房间数据对象
      */
     sendRoomDataToServer(row: number, col: number, roomData?: any) {
@@ -2119,7 +2119,7 @@ class ComposeModule {
         GameStorage.setObject(this.getRoomDataKey(row, col), roomData);
     }
 
-    // 获取当前时间戳，单位：毫秒
+    // 获取当前时间戳，单位：毫�?
     getCurrentTimestamp() {
         // let timestamp = new Date().getTime();
         let timestamp = TimeCtrJSF.GetInstance().ServerTime;
@@ -2188,7 +2188,7 @@ class ComposeModule {
     }
     addHandIndex() {
         let index = this.getHandIndex();
-        tyqSDK.eventSendCustomEvent("完成新手教程" + index);
+        GamePlatform.track("完成新手教程" + index);
         index++;
         this.setHandIndex(index);
     }
@@ -2241,7 +2241,7 @@ class ComposeModule {
         return false;
     }
 
-    // 打开激励视频
+    // 打开激励视�?
     openAd(info: string, cb?: Function) {
         if (Const.isDebug) {
             if (cb) {
@@ -2249,7 +2249,7 @@ class ComposeModule {
             }
             return;
         }
-        tyqSDK.showRewardedAd(info, (st) => {
+        GamePlatform.showRewardVideo(info, (st) => {
             if (st == 1) {
                 if (cb) {
                     cb(true);
@@ -2273,7 +2273,7 @@ class ComposeModule {
         if (propRow.tan) {
             uiManager.instance.showDialog(Const.Dialogs.PropItemInfo, { propdata: propRow });
         } else {
-            uiManager.instance.showDialog(Const.Dialogs.PropDetailLayer, propId);
+            uiManager.instance.showDialog(Const.Dialogs.ItemInsightLayer, propId);
         }
     }
 
@@ -2300,13 +2300,13 @@ class ComposeModule {
         return false;
     }
 
-    // 充能器
+    // 充能�?
     roomAddTimes(row: number, col: number, targetRow: number, targetCol: number, val: number) {
         this.setRoomData(row, col, {});
         let roomData = this.roomArr[targetRow][targetCol];
         delete roomData.cdSum;
         roomData.times += val;
-        UtilPub.log("增加次数：" + val, roomData.times);
+        UtilPub.log("增加次数�? + val, roomData.times);
         this.setRoomData(targetRow, targetRow);
     }
 
@@ -2320,7 +2320,7 @@ class ComposeModule {
         return false;
     }
 
-    // 拆分器
+    // 拆分�?
     roomPropSplit(row: number, col: number, targetRow: number, targetCol: number) {
         this.setRoomData(row, col, {});
         let roomData = this.roomArr[targetRow][targetCol];

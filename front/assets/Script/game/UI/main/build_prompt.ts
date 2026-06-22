@@ -28,12 +28,12 @@ export class build_prompt extends BaseView {
     //顶部道具标题
     get titleLabel() { return find("root/titleLabel", this.node)!.getComponent(Label)! }
 
-    //礼物按钮，建造进度
+    //礼物按钮，建造进�?
     get gift() { return find("root/topBg/gift", this.node)! }
     get roomBar() { return find("root/topBg/roomBar", this.node)!.getComponent(ProgressBar)! }
     get roomBarLabel() { return find("root/topBg/roomBar/roomBarLabel", this.node)!.getComponent(Label)! }
 
-    //右边奖励和建造按钮
+    //右边奖励和建造按�?
     get rewards() { return find("root/bgIcon/rewards", this.node)! }
     get btnBuild() { return find("root/bgIcon/btnBuild", this.node)! }
     get goToCompose() { return find("root/bgIcon/goToCompose", this.node)! }
@@ -59,7 +59,7 @@ export class build_prompt extends BaseView {
         })
 
         this.bindButton(this.gift, () => {
-            //弹出奖励提示框
+            //弹出奖励提示�?
             let roomData = tables.ins().getTableValueByID(Const.Tables.scene_room, this.sceneItemData.room)
             let pos = UtilPub.convertToWorldSpace(this.gift)
             uiManager.instance.showDialog(Const.Dialogs.pop_reward_item, { rewardData: roomData.resAll, pos: pos })
@@ -89,7 +89,7 @@ export class build_prompt extends BaseView {
                 audioManager.instance.playSound(Const.Audio.flash_show)
                 let script = UtilScene.getSceneItemNodeById(this.sceneItemData.id)!
 
-                //如果道具是地毯，家具，挂机，那么调用一次性动画
+                //如果道具是地毯，家具，挂机，那么调用一次性动�?
                 if (this.type != GBuildType.room) {
                     this.emit(GD.event.popOpsWindow, UtilScene.getSceneItemNodeById(this.sceneItemData.id)!.node)
                     //在目标节点上展示星星动画
@@ -133,13 +133,13 @@ export class build_prompt extends BaseView {
 
         this.titleLabel.string = roomData.name
         this.starLabel.string = userData.greenStar + ""
-        this.btnBuildLabel.string = "建造"
+        this.btnBuildLabel.string = "建�?
 
         this.sceneItemNameLabel.string = "搭建" + itemSkinData.name
 
         let val = 0
         if (this.type != GBuildType.room) {
-            val = UtilScene.getRoomBuildProgress(this.sceneItemData.room)
+            val = UtilScene.calcRoomCompletionRatio(this.sceneItemData.room)
         }
         this.roomBar.progress = val
         this.roomBarLabel.string = Math.round(val * 100) + "%"
@@ -229,7 +229,7 @@ export class build_prompt extends BaseView {
                 })
 
             } else {
-                //解锁场景的道具
+                //解锁场景的道�?
                 let script = UtilScene.getSceneItemNodeById(this.sceneItemData.id)!
                 SceneData.ins.setSceneSkinById(this.sceneItemData.unlockSkin, GSceneSkinState.gotted)
                 this.setScript(script, this.sceneItemData.unlockSkin)
@@ -243,14 +243,14 @@ export class build_prompt extends BaseView {
             //赋予奖励
             composeModel.addPropNum(this.sceneItemData.reward[0], this.sceneItemData.reward[1], v3(), v3(), true)
 
-            //进度条动画
+            //进度条动�?
             if (this.type != GBuildType.room) {
-                let val = UtilScene.getRoomBuildProgress(this.sceneItemData.room)
+                let val = UtilScene.calcRoomCompletionRatio(this.sceneItemData.room)
                 tween(this.roomBar).to(0.3, { progress: val }).start()
                 this.roomBarLabel.string = Math.round(val * 100) + "%"
             }
 
-            //监听spine完成的事件进行结束
+            //监听spine完成的事件进行结�?
         }
     }
 

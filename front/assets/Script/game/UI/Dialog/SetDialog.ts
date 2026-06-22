@@ -6,11 +6,10 @@ import BaseView from '../../../easyFramework/mgr/BaseView';
 import { resourceUtil } from '../../../easyFramework/mgr/resourceUtil';
 import { uiManager } from '../../../easyFramework/mgr/uiManager';
 import tables from '../../../easyFramework/other/tables';
-import ServerCtr from '../../../tyqSDK/SDK/network/ServerCtr';
-import { tyqSDK } from '../../../tyqSDK/SDK/tyqSDK';
 import { aiRobot } from '../../comm/AIRobot';
 import { userData } from '../../comm/UserData';
 import { GameStorage } from '../../../easyFramework/mgr/gameStorage';
+import { GamePlatform } from '../../platform/GamePlatform';
 
 const { ccclass, property } = _decorator;
 
@@ -56,7 +55,7 @@ export class SetDialog extends BaseView {
         this.initSoundBtn()
         this.nameLabel.getComponent(Label)!.string = userData.roleName
         this.IDLabel.getComponent(Label)!.string = "ID:" + userData.roleID
-        tyqSDK.eventSendCustomEvent("查看设置")
+        GamePlatform.track("查看设置")
 
         this.verLabel.string = "版本号：" + Const.appBuildVersion + "_" + Const.hotupdateVersion
 
@@ -65,7 +64,7 @@ export class SetDialog extends BaseView {
             resourceUtil.setRemoteImage(userData.roleAvatar, this.avatarNode.getComponent(Sprite)!, () => { })
         }
 
-        let item = tables.ins().getTableValueByID(Const.Tables.roleDressUp, userData.roleDressUpId)
+        let item = tables.ins().getTableValueByID(Const.Tables.avatarStyle, userData.avatarLookId)
         if (item.type == RoleSex.men) {
             this.avatarBg.getComponent(Sprite)!.spriteFrame = this.avatarBg1
         } else {
@@ -82,7 +81,7 @@ export class SetDialog extends BaseView {
         this.nameLabel.getComponent(Label)!.string = userData.roleName
         this.IDLabel.getComponent(Label)!.string = "ID:" + userData.roleID
 
-        let item = tables.ins().getTableValueByID(Const.Tables.roleDressUp, userData.roleDressUpId)
+        let item = tables.ins().getTableValueByID(Const.Tables.avatarStyle, userData.avatarLookId)
         if (item.type == RoleSex.men) {
             this.avatarBg.getComponent(Sprite)!.spriteFrame = this.avatarBg1
         } else {
@@ -127,7 +126,7 @@ export class SetDialog extends BaseView {
     openDuihuanMa() {
         audioManager.instance.playSound(Const.Audio.btn)
 
-        tyqSDK.eventSendCustomEvent("查看设置-兑换码")
+        GamePlatform.track("查看设置-兑换�?)
         uiManager.instance.pushShowDialog(Const.Dialogs.CodeDialog)
     }
 

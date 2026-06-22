@@ -1,4 +1,4 @@
-
+﻿
 import { Camera, color, Node, v2, Vec2, _decorator } from 'cc';
 import { TaskView } from '../game/UI/DialogNew/TaskView';
 
@@ -16,69 +16,69 @@ export class Const {
     //     return this._instance;
     // }
 
-    public static isTest = true;    //是否测试版本
+    public static isTest = true;    //鏄惁娴嬭瘯鐗堟湰
 
-    // app打包版本号
+    // app鎵撳寘鐗堟湰鍙?
     public static appBuildVersion = 0;
-    // 热更新版本号
+    // 鐑洿鏂扮増鏈彿
     public static hotupdateVersion = "0.0.0";
 
-    public static gameName: string = "肥啾瘦身馆" //分享用的游戏名称
+    public static gameName: string = "鑲ュ暰鐦﹁韩棣? //鍒嗕韩鐢ㄧ殑娓告垙鍚嶇О
 
-    //todo 临时调整
-    public static isOnline: boolean = false //是否上线，上线后关闭日志
-    public static isOpenCheat: boolean = true //是否开启作弊器
+    //todo 涓存椂璋冩暣
+    public static isOnline: boolean = false //鏄惁涓婄嚎锛屼笂绾垮悗鍏抽棴鏃ュ織
+    public static isOpenCheat: boolean = true //鏄惁寮€鍚綔寮婂櫒
 
-    public static isDebug: boolean = false //是否调试
-    public static version: string = "1.0.9" //版本号 
-    public static SaveHead: string = "JSF_" //修改标题头，可以刷新玩家数据
-    public static camera3D: Node = null! //3D镜头
-    public static cameraParam: number = null! //3D镜头系数
-    public static isLow: boolean = true //是否是低端机
+    public static isDebug: boolean = false //鏄惁璋冭瘯
+    public static version: string = "1.0.9" //鐗堟湰鍙?
+    public static SaveHead: string = "JSF_" //淇敼鏍囬澶达紝鍙互鍒锋柊鐜╁鏁版嵁
+    public static camera3D: Node = null! //3D闀滃ご
+    public static cameraParam: number = null! //3D闀滃ご绯绘暟
+    public static isLow: boolean = true //鏄惁鏄綆绔満
 
-    public static CameraScene: Camera = null! //场景相机
-    public static SceneNode: Node = null! //场景节点
-    public static SceneBottom: Node = null! //场景底部
-    public static ShadowParent: Node = null! //阴影的父节点
-    public static ShadowWallParent: Node = null! //墙壁阴影的父节点
-    public static GridParent: Node = null! //格子的父节点
-    public static WallGridParent: Node = null! //墙的格子的父节点
-    public static ItemParent: Node = null! //场景道具的父节点
-    public static CarpetParent: Node = null! //场景地毯的父节点
-    public static PendantParent: Node = null! //挂件的父节点
-    public static WallFixedNode: Node = null! //墙体的父节点
-    public static StreetFixedNode: Node = null! //街道的父节点
-    public static FloorFixedNode: Node = null! //地板的父节点
-    public static SelSceneNode: Node = null! //选择的场景节点
-    public static GuestStartPos: Node = null! //客人起点位置，地铁口处
-    public static LightParent: Node = null! //路灯的父节点
-    public static IsShowOpsDialog: boolean = null! //是否显示操作界面
-    public static isGodWealthShow: boolean = false // 是否显示财神了
+    public static CameraScene: Camera = null! //鍦烘櫙鐩告満
+    public static SceneNode: Node = null! //鍦烘櫙鑺傜偣
+    public static SceneBottom: Node = null! //鍦烘櫙搴曢儴
+    public static ShadowParent: Node = null! //闃村奖鐨勭埗鑺傜偣
+    public static ShadowWallParent: Node = null! //澧欏闃村奖鐨勭埗鑺傜偣
+    public static GridParent: Node = null! //鏍煎瓙鐨勭埗鑺傜偣
+    public static WallGridParent: Node = null! //澧欑殑鏍煎瓙鐨勭埗鑺傜偣
+    public static ItemParent: Node = null! //鍦烘櫙閬撳叿鐨勭埗鑺傜偣
+    public static CarpetParent: Node = null! //鍦烘櫙鍦版鐨勭埗鑺傜偣
+    public static PendantParent: Node = null! //鎸備欢鐨勭埗鑺傜偣
+    public static WallFixedNode: Node = null! //澧欎綋鐨勭埗鑺傜偣
+    public static StreetFixedNode: Node = null! //琛楅亾鐨勭埗鑺傜偣
+    public static FloorFixedNode: Node = null! //鍦版澘鐨勭埗鑺傜偣
+    public static SelSceneNode: Node = null! //閫夋嫨鐨勫満鏅妭鐐?
+    public static GuestStartPos: Node = null! //瀹汉璧风偣浣嶇疆锛屽湴閾佸彛澶?
+    public static LightParent: Node = null! //璺伅鐨勭埗鑺傜偣
+    public static IsShowOpsDialog: boolean = null! //鏄惁鏄剧ず鎿嶄綔鐣岄潰
+    public static isGodWealthShow: boolean = false // 鏄惁鏄剧ず璐㈢浜?
 
-    public static FloatStarParent: Node = null! //浮动星星父节点
-    public static SelBuildingParent: Node = null! //操作按钮的父节点
+    public static FloatStarParent: Node = null! //娴姩鏄熸槦鐖惰妭鐐?
+    public static SelBuildingParent: Node = null! //鎿嶄綔鎸夐挳鐨勭埗鑺傜偣
 
-    public static AllItems: Node[] = [] //房间内所有可以touch的点
-    public static Guests: Node[] = [] //所有客人节点信息
+    public static AllItems: Node[] = [] //鎴块棿鍐呮墍鏈夊彲浠ouch鐨勭偣
+    public static Guests: Node[] = [] //鎵€鏈夊浜鸿妭鐐逛俊鎭?
 
-    public static OriOffset: Vec2 = v2(0, 0) //原始偏移值
-    public static MaxStreetX: number = 66 //街区最大x方向,右下角为x方向
-    public static MaxStreetY: number = 23 //街区最大y方向
-    public static MaxRoomX: number = 88 //88最大x方向，可根据房间解锁情况改变
-    public static MaxRoomY: number = 88 //88最大y方向，可根据房间解锁情况改变
-    public static MaxWallXRight: number = 24 //88*2最大x方向，可根据房间解锁情况改变
-    public static MaxWallXLeft: number = -24 //88*2最大x方向，可根据房间解锁情况改变
-    public static MaxWallY: number = 8 //8最大y方向，可根据房间解锁情况改变
-    public static GuestSpeedTime: number = 0.66 //客人速度多少倍
-    public static UICanvas: Node = null! //UI画布节点
-    public static SceneOffsetX: number = 10000 //客人速度多少倍
+    public static OriOffset: Vec2 = v2(0, 0) //鍘熷鍋忕Щ鍊?
+    public static MaxStreetX: number = 66 //琛楀尯鏈€澶鏂瑰悜,鍙充笅瑙掍负x鏂瑰悜
+    public static MaxStreetY: number = 23 //琛楀尯鏈€澶鏂瑰悜
+    public static MaxRoomX: number = 88 //88鏈€澶鏂瑰悜锛屽彲鏍规嵁鎴块棿瑙ｉ攣鎯呭喌鏀瑰彉
+    public static MaxRoomY: number = 88 //88鏈€澶鏂瑰悜锛屽彲鏍规嵁鎴块棿瑙ｉ攣鎯呭喌鏀瑰彉
+    public static MaxWallXRight: number = 24 //88*2鏈€澶鏂瑰悜锛屽彲鏍规嵁鎴块棿瑙ｉ攣鎯呭喌鏀瑰彉
+    public static MaxWallXLeft: number = -24 //88*2鏈€澶鏂瑰悜锛屽彲鏍规嵁鎴块棿瑙ｉ攣鎯呭喌鏀瑰彉
+    public static MaxWallY: number = 8 //8鏈€澶鏂瑰悜锛屽彲鏍规嵁鎴块棿瑙ｉ攣鎯呭喌鏀瑰彉
+    public static GuestSpeedTime: number = 0.66 //瀹汉閫熷害澶氬皯鍊?
+    public static UICanvas: Node = null! //UI鐢诲竷鑺傜偣
+    public static SceneOffsetX: number = 10000 //瀹汉閫熷害澶氬皯鍊?
 
-    public static skillTitleColor: string[] = ['#74e530', '#30d1ff', '#ee51ff', '#ff8230'] //白，绿，蓝，紫，橙，红
-    public static skillTitleColorOutline: string[] = ['#026900', '#003270', '#54015e', '#8f3710']  //白，绿，蓝，紫，橙，红
+    public static skillTitleColor: string[] = ['#74e530', '#30d1ff', '#ee51ff', '#ff8230'] //鐧斤紝缁匡紝钃濓紝绱紝姗欙紝绾?
+    public static skillTitleColorOutline: string[] = ['#026900', '#003270', '#54015e', '#8f3710']  //鐧斤紝缁匡紝钃濓紝绱紝姗欙紝绾?
 
-    public static weaponColorOutline: string[] = ['#6f6b54', '#0c5a1a', '#022867', '#4f0059', '#741602', '#6c100e'] //白色，绿色，蓝色，紫色，橙色，红色
-    public static weaponColor: string[] = ['#e3dcb9', '#54d240', '#37bfff', '#d45afd', '#ff9437', '#fc3737'] //白色，绿色，蓝色，紫色，橙色，红色
-    public static weaponHead: string[] = ['普通', '精良', '稀有', '史诗', '传说', '神话'] //属性列表
+    public static weaponColorOutline: string[] = ['#6f6b54', '#0c5a1a', '#022867', '#4f0059', '#741602', '#6c100e'] //鐧借壊锛岀豢鑹诧紝钃濊壊锛岀传鑹诧紝姗欒壊锛岀孩鑹?
+    public static weaponColor: string[] = ['#e3dcb9', '#54d240', '#37bfff', '#d45afd', '#ff9437', '#fc3737'] //鐧借壊锛岀豢鑹诧紝钃濊壊锛岀传鑹诧紝姗欒壊锛岀孩鑹?
+    public static weaponHead: string[] = ['鏅€?, '绮捐壇', '绋€鏈?, '鍙茶瘲', '浼犺', '绁炶瘽'] //灞炴€у垪琛?
     public static weaponColorName: string[] = ['white', 'green', 'blue', 'purple', 'orange', 'red']
 
     public static bundlesAhead1 = ["json", "font", "d1prefabUI", "d1pub", "d1audio", "d1scene","d1scene2", "prefabUI", "prop1", "prop3"]
@@ -87,87 +87,87 @@ export class Const {
 
     public static bundles = [...Const.bundlesAhead1, ...Const.bundlesAhead2, ...Const.bundlesGame]
 
-    public static GodWealthRefleshTime = 1  // 财神视频刷新次数
-    public static LimitShopRefleshPrice = 20 //商店钻石刷新价格
-    public static GodWealthReceiveOtherTime = 2  // 财神领取别人次数
+    public static GodWealthRefleshTime = 1  // 璐㈢瑙嗛鍒锋柊娆℃暟
+    public static LimitShopRefleshPrice = 20 //鍟嗗簵閽荤煶鍒锋柊浠锋牸
+    public static GodWealthReceiveOtherTime = 2  // 璐㈢棰嗗彇鍒汉娆℃暟
 
 
-    /** 转盘开1次消耗金币 */
-    public static TURNTABLE_GOLD_COST: number = 300; // 对应ID:1
+    /** 杞洏寮€1娆℃秷鑰楅噾甯?*/
+    public static TURNTABLE_GOLD_COST: number = 300; // 瀵瑰簲ID:1
 
-    /** 改名字消耗金币 */
-    public static NAME_CHANGE_GOLD_COST: number = 300; // 对应ID:2
+    /** 鏀瑰悕瀛楁秷鑰楅噾甯?*/
+    public static NAME_CHANGE_GOLD_COST: number = 300; // 瀵瑰簲ID:2
 
-    /** 看广告给金币数量 */
-    public static AD_GOLD_REWARD: number = 300; // 对应ID:3
+    /** 鐪嬪箍鍛婄粰閲戝竵鏁伴噺 */
+    public static AD_GOLD_REWARD: number = 300; // 瀵瑰簲ID:3
 
-    /** 看广告给金币每日次数上限 */
-    public static AD_GOLD_DAILY_LIMIT: number = 5; // 对应ID:4
+    /** 鐪嬪箍鍛婄粰閲戝竵姣忔棩娆℃暟涓婇檺 */
+    public static AD_GOLD_DAILY_LIMIT: number = 5; // 瀵瑰簲ID:4
 
-    /** 看广告给体力数量 */
-    public static AD_ENERGY_REWARD: number = 5; // 对应ID:5
+    /** 鐪嬪箍鍛婄粰浣撳姏鏁伴噺 */
+    public static AD_ENERGY_REWARD: number = 5; // 瀵瑰簲ID:5
 
-    /** 看广告给体力每日次数上限 */
-    public static AD_ENERGY_DAILY_LIMIT: number = 5; // 对应ID:6
+    /** 鐪嬪箍鍛婄粰浣撳姏姣忔棩娆℃暟涓婇檺 */
+    public static AD_ENERGY_DAILY_LIMIT: number = 5; // 瀵瑰簲ID:6
 
-    /** 家园宠物心情度衰减间隔（秒） */
-    public static HOME_MOOD_DECAY_SECONDS: number = 3600; // 对应ID:7
+    /** 瀹跺洯瀹犵墿蹇冩儏搴﹁“鍑忛棿闅旓紙绉掞級 */
+    public static HOME_MOOD_DECAY_SECONDS: number = 3600; // 瀵瑰簲ID:7
 
-    /** 家园宠物饥饿度衰减间隔（秒） */
-    public static HOME_HUNGER_DECAY_SECONDS: number = 3600; // 对应ID:8
+    /** 瀹跺洯瀹犵墿楗ラタ搴﹁“鍑忛棿闅旓紙绉掞級 */
+    public static HOME_HUNGER_DECAY_SECONDS: number = 3600; // 瀵瑰簲ID:8
 
-    /** 家园宠物清洁度衰减间隔（秒） */
-    public static HOME_CLEAN_DECAY_SECONDS: number = 3600; // 对应ID:9
+    /** 瀹跺洯瀹犵墿娓呮磥搴﹁“鍑忛棿闅旓紙绉掞級 */
+    public static HOME_CLEAN_DECAY_SECONDS: number = 3600; // 瀵瑰簲ID:9
 
-    /** 宠物心情度回收阈值 */
-    public static MOOD_RECALL_THRESHOLD: number = 20; // 对应ID:10
+    /** 瀹犵墿蹇冩儏搴﹀洖鏀堕槇鍊?*/
+    public static MOOD_RECALL_THRESHOLD: number = 20; // 瀵瑰簲ID:10
 
-    /** 宠物饥饿度回收阈值 */
-    public static HUNGER_RECALL_THRESHOLD: number = 20; // 对应ID:11
+    /** 瀹犵墿楗ラタ搴﹀洖鏀堕槇鍊?*/
+    public static HUNGER_RECALL_THRESHOLD: number = 20; // 瀵瑰簲ID:11
 
-    /** 宠物清洁度回收阈值 */
-    public static CLEAN_RECALL_THRESHOLD: number = 20; // 对应ID:12
+    /** 瀹犵墿娓呮磥搴﹀洖鏀堕槇鍊?*/
+    public static CLEAN_RECALL_THRESHOLD: number = 20; // 瀵瑰簲ID:12
 
-    /** 未放置宠物饥饿度衰减间隔（秒） */
-    public static UNPLACED_HUNGER_DECAY_SECONDS: number = 86400; // 对应ID:13
+    /** 鏈斁缃疇鐗╅ゥ楗垮害琛板噺闂撮殧锛堢锛?*/
+    public static UNPLACED_HUNGER_DECAY_SECONDS: number = 86400; // 瀵瑰簲ID:13
 
-    /** 未放置宠物清洁度衰减间隔（秒） */
-    public static UNPLACED_CLEAN_DECAY_SECONDS: number = 86400; // 对应ID:14
+    /** 鏈斁缃疇鐗╂竻娲佸害琛板噺闂撮殧锛堢锛?*/
+    public static UNPLACED_CLEAN_DECAY_SECONDS: number = 86400; // 瀵瑰簲ID:14
 
-    /** 宠物饥饿度归零后自动删除天数 */
-    public static HUNGER_AUTO_DELETE_DAYS: number = 7; // 对应ID:15
+    /** 瀹犵墿楗ラタ搴﹀綊闆跺悗鑷姩鍒犻櫎澶╂暟 */
+    public static HUNGER_AUTO_DELETE_DAYS: number = 7; // 瀵瑰簲ID:15
 
-    /** 宠物清洁度归零后自动删除天数 */
-    public static CLEAN_AUTO_DELETE_DAYS: number = 7; // 对应ID:16
+    /** 瀹犵墿娓呮磥搴﹀綊闆跺悗鑷姩鍒犻櫎澶╂暟 */
+    public static CLEAN_AUTO_DELETE_DAYS: number = 7; // 瀵瑰簲ID:16
 
-    /** 宠物饥饿度禁止放置阈值 */
-    public static HUNGER_PLACE_BAN_THRESHOLD: number = 20; // 对应ID:17
+    /** 瀹犵墿楗ラタ搴︾姝㈡斁缃槇鍊?*/
+    public static HUNGER_PLACE_BAN_THRESHOLD: number = 20; // 瀵瑰簲ID:17
 
-    /** 宠物清洁度禁止放置阈值 */
-    public static CLEAN_PLACE_BAN_THRESHOLD: number = 20; // 对应ID:18
+    /** 瀹犵墿娓呮磥搴︾姝㈡斁缃槇鍊?*/
+    public static CLEAN_PLACE_BAN_THRESHOLD: number = 20; // 瀵瑰簲ID:18
 
-    /** 宠物改名消耗金币 */
-    public static PET_NAME_CHANGE_GOLD_COST: number = 300; // 对应ID:19
+    /** 瀹犵墿鏀瑰悕娑堣€楅噾甯?*/
+    public static PET_NAME_CHANGE_GOLD_COST: number = 300; // 瀵瑰簲ID:19
 
-    /** 宠物饥饿度饥饿状态阈值 */
-    public static PET_HUNGER_STARVATION_THRESHOLD: number = 30; // 对应ID:20
+    /** 瀹犵墿楗ラタ搴﹂ゥ楗跨姸鎬侀槇鍊?*/
+    public static PET_HUNGER_STARVATION_THRESHOLD: number = 30; // 瀵瑰簲ID:20
 
-    /** 饥饿状态提示语（1=显示） */
-    public static HUNGER_WARNING_MESSAGE: number = 1; // 对应ID:21
+    /** 楗ラタ鐘舵€佹彁绀鸿锛?=鏄剧ず锛?*/
+    public static HUNGER_WARNING_MESSAGE: number = 1; // 瀵瑰簲ID:21
 
-    /** 宠物清洁度脏脏状态阈值 */
-    public static PET_CLEAN_DIRTY_THRESHOLD: number = 30; // 对应ID:22
+    /** 瀹犵墿娓呮磥搴﹁剰鑴忕姸鎬侀槇鍊?*/
+    public static PET_CLEAN_DIRTY_THRESHOLD: number = 30; // 瀵瑰簲ID:22
 
-    /** 脏脏状态提示语（2=显示） */
-    public static CLEAN_WARNING_MESSAGE: number = 2; // 对应ID:23
+    /** 鑴忚剰鐘舵€佹彁绀鸿锛?=鏄剧ず锛?*/
+    public static CLEAN_WARNING_MESSAGE: number = 2; // 瀵瑰簲ID:23
 
-    /** 好友数量上限 */
-    public static FRIEND_MAX_COUNT: number = 50; // 对应ID:24
+    /** 濂藉弸鏁伴噺涓婇檺 */
+    public static FRIEND_MAX_COUNT: number = 50; // 瀵瑰簲ID:24
 
-    /** 宠物互动增加心情值 */
-    public static PET_INTERACTION_MOOD_BOOST: number = 30; // 对应ID:25
+    /** 瀹犵墿浜掑姩澧炲姞蹇冩儏鍊?*/
+    public static PET_INTERACTION_MOOD_BOOST: number = 30; // 瀵瑰簲ID:25
 
-    /**开心 饥饿 清洁 总数 */
+    /**寮€蹇?楗ラタ 娓呮磥 鎬绘暟 */
     public static CLEAN_FULL:number = 100;
 
 
@@ -180,31 +180,31 @@ export class Const {
     }
 
     public static ManagerTypes = {
-        // 角色达到%d级
+        // 瑙掕壊杈惧埌%d绾?
         roleLv: 1,
-        // 发射任意发生器次数
+        // 鍙戝皠浠绘剰鍙戠敓鍣ㄦ鏁?
         roomClickAdd: 2,
-        // 完成订单数量
+        // 瀹屾垚璁㈠崟鏁伴噺
         taskDone: 3,
-        // 解锁粉色手提包次数
+        // 瑙ｉ攣绮夎壊鎵嬫彁鍖呮鏁?
         unlockPinkBag: 4,
-        // 在棋盘合成次数
+        // 鍦ㄦ鐩樺悎鎴愭鏁?
         composeCount: 5,
-        // 为健身房建造次数
+        // 涓哄仴韬埧寤洪€犳鏁?
         buildCount: 6,
-        // 消耗钻石购买能量次数
+        // 娑堣€楅捇鐭宠喘涔拌兘閲忔鏁?
         diamondBuyPower: 7,
-        // 在棋盘上出售任意物品次数
+        // 鍦ㄦ鐩樹笂鍑哄敭浠绘剰鐗╁搧娆℃暟
         roomSell: 8,
-        // 加速发射器次数
+        // 鍔犻€熷彂灏勫櫒娆℃暟
         roomSpeedUp: 9,
-        // 累计消耗能量数量
+        // 绱娑堣€楄兘閲忔暟閲?
         powerCost: 10,
-        // 合成最高等级金币个数
+        // 鍚堟垚鏈€楂樼瓑绾ч噾甯佷釜鏁?
         composeCoinMaxLv: 11,
-        // 合成最高等级能量球个数
+        // 鍚堟垚鏈€楂樼瓑绾ц兘閲忕悆涓暟
         composePowerMaxLv: 12,
-        // 累计消耗金币数量
+        // 绱娑堣€楅噾甯佹暟閲?
         coinCost: 13,
     };
 
@@ -214,75 +214,75 @@ export class Const {
     }
 
     public static DataKeys = {
-        isInitData: "isInitData", //是否初始化过数据
-        roleLv: "roleLv", // 玩家等级
-        roleName: "roleName", // 玩家名字
-        roleID: "roleID", // 玩家ID
-        roleAvatar: "roleAvatar", // 玩家头像
+        isInitData: "isInitData", //鏄惁鍒濆鍖栬繃鏁版嵁
+        roleLv: "roleLv", // 鐜╁绛夌骇
+        roleName: "roleName", // 鐜╁鍚嶅瓧
+        roleID: "roleID", // 鐜╁ID
+        roleAvatar: "roleAvatar", // 鐜╁澶村儚
 
 
-        roleExp: "roleExp", // 玩家经验
-        coin: "coin", // 金币
-        diamonds: "diamonds", // 钻石
-        power: "power", //体力
+        roleExp: "roleExp", // 鐜╁缁忛獙
+        coin: "coin", // 閲戝竵
+        diamonds: "diamonds", // 閽荤煶
+        power: "power", //浣撳姏
 
-        tujianProp: "tujianProp",  // 图鉴道具
-        tujianScene: "tujianScene",  // 图鉴道具
+        tujianProp: "tujianProp",  // 鍥鹃壌閬撳叿
+        tujianScene: "tujianScene",  // 鍥鹃壌閬撳叿
 
-        growUp: "growUp",  // 图鉴道具
-        warehouseProp: "warehouseProp", // 仓库道具
+        growUp: "growUp",  // 鍥鹃壌閬撳叿
+        warehouseProp: "warehouseProp", // 浠撳簱閬撳叿
 
 
-        sceneHead: "sceneHead_", //场景存储的头部信息
-        sceneItem: "sceneHead_item_", //场景道具类型存储
-        sceneCarpet: "sceneHead_carpet_", //场景地垫数据
-        scenePendant: "sceneHead_pendant_", //场景挂件数据
-        sceneWall: "sceneHead_wall_", //场景墙体
-        sceneFloor: "sceneHead_floor_", //场景地板
+        sceneHead: "sceneHead_", //鍦烘櫙瀛樺偍鐨勫ご閮ㄤ俊鎭?
+        sceneItem: "sceneHead_item_", //鍦烘櫙閬撳叿绫诲瀷瀛樺偍
+        sceneCarpet: "sceneHead_carpet_", //鍦烘櫙鍦板灚鏁版嵁
+        scenePendant: "sceneHead_pendant_", //鍦烘櫙鎸備欢鏁版嵁
+        sceneWall: "sceneHead_wall_", //鍦烘櫙澧欎綋
+        sceneFloor: "sceneHead_floor_", //鍦烘櫙鍦版澘
 
-        // 跨天保存时间点
+        // 璺ㄥぉ淇濆瓨鏃堕棿鐐?
         saveDayTime: "saveDayTime",
 
-        // 战令积分
+        // 鎴樹护绉垎
         seasonScore: "seasonScore",
-        // 战令id
+        // 鎴樹护id
         seasonId: "seasonId",
-        // 战令对应id奖励情况
+        // 鎴樹护瀵瑰簲id濂栧姳鎯呭喌
         seasonAwardInfo: "seasonAwardInfo_",
-        // 战令解锁
+        // 鎴樹护瑙ｉ攣
         seasonOpen: "seasonOpen",
 
-        // 主线棋盘数据
+        // 涓荤嚎妫嬬洏鏁版嵁
         composeRoomData: "composeRoomData",
-        // 主线任务列表
+        // 涓荤嚎浠诲姟鍒楄〃
         composeTaskArr: "composeTaskArr",
-        // 店长值班日
+        // 搴楅暱鍊肩彮鏃?
         composeManagerArr: "composeManagerArr",
-        // 是否是已经全部完成店长值班日
+        // 鏄惁鏄凡缁忓叏閮ㄥ畬鎴愬簵闀垮€肩彮鏃?
         composeManagerAllGet: "composeManagerAllGet",
-        // 卡片列表
+        // 鍗＄墖鍒楄〃
         composeCardArr: "composeCardArr",
-        // 合成UI道具获得次数标记
+        // 鍚堟垚UI閬撳叿鑾峰緱娆℃暟鏍囪
         composePropCount: "composePropCount_",
-        // 无限能量时间
+        // 鏃犻檺鑳介噺鏃堕棿
         composePowerTime: "composePowerTime",
 
-        // 新手教程-强引导索引
+        // 鏂版墜鏁欑▼-寮哄紩瀵肩储寮?
         handIndex: "handIndex",
 
-        sceneSkinIsGotted: "sceneSkinIsGotted_", //+皮肤表ID，场景里的皮肤是否获得，0未获得，1获得，
-        sceneRoomIsUnlock: "sceneRoomIsUnlock_", //+房间ID，场景里的房间是否解锁，0未解锁，1解锁，
-        sceneRoomIsUnReceive: "sceneRoomIsUnReceive_", //+房间ID，场景里的房间是否已领取，0 、1，
+        sceneSkinIsGotted: "sceneSkinIsGotted_", //+鐨偆琛↖D锛屽満鏅噷鐨勭毊鑲ゆ槸鍚﹁幏寰楋紝0鏈幏寰楋紝1鑾峰緱锛?
+        sceneRoomIsUnlock: "sceneRoomIsUnlock_", //+鎴块棿ID锛屽満鏅噷鐨勬埧闂存槸鍚﹁В閿侊紝0鏈В閿侊紝1瑙ｉ攣锛?
+        sceneRoomIsUnReceive: "sceneRoomIsUnReceive_", //+鎴块棿ID锛屽満鏅噷鐨勬埧闂存槸鍚﹀凡棰嗗彇锛? 銆?锛?
 
         dailyTime: "dailyTime",
         buyPowerTime: "buyPowerTime1",
 
         greenStar: "greenStar",
-        dressMoney: "dressMoney",
+        styleVoucher: "styleVoucher",
         dressValue: "dressValue",
 
         isVip: "isVip",
-        roleDressUpId: "roleDressUpId",
+        avatarLookId: "avatarLookId",
 
         timeCD: "timeCD",
 
@@ -316,47 +316,47 @@ export class Const {
     }
 
     public static Tables = {
-        scene_item: "scene_item", //场景道具表
-        scene_skin: "scene_skin", //场景道具皮肤表
-        scene_room: "scene_room", //场景房间表
-        scene_guest: "scene_guest", //场景客人表
-        scene_guest_ani: "scene_guest_ani", //场景客人动画表
-        const: "const", //全局常量表
-        ui: "ui_table", //ui文字表
-        draw: "draw_table", //ui文字表
-        resTable: "res_table", //ui文字表
+        scene_item: "scene_item", //鍦烘櫙閬撳叿琛?
+        scene_skin: "scene_skin", //鍦烘櫙閬撳叿鐨偆琛?
+        scene_room: "scene_room", //鍦烘櫙鎴块棿琛?
+        scene_guest: "scene_guest", //鍦烘櫙瀹汉琛?
+        scene_guest_ani: "scene_guest_ani", //鍦烘櫙瀹汉鍔ㄧ敾琛?
+        const: "const", //鍏ㄥ眬甯搁噺琛?
+        ui: "ui_table", //ui鏂囧瓧琛?
+        draw: "draw_table", //ui鏂囧瓧琛?
+        resTable: "res_table", //ui鏂囧瓧琛?
 
-        // 道具表
+        // 閬撳叿琛?
         prop: "prop_prop",
-        // 合成额外奖励
+        // 鍚堟垚棰濆濂栧姳
         composeAward: "prop_composeAward",
-        // 背包扩容
+        // 鑳屽寘鎵╁
         bagGrid: "prop_bagGrid",
-        // 订单生成表
+        // 璁㈠崟鐢熸垚琛?
         taskType: "task_orderType",
 
         taskMainType: "taskMain_orderType",
         taskUnlock: "taskMain_taskUnlock",
 
-        // 店长值日表
+        // 搴楅暱鍊兼棩琛?
         manager: "task_manager",
-        // 棋盘初始化
+        // 妫嬬洏鍒濆鍖?
         composeRoomInit: "prop_new",
-        // 新手引导任务
+        // 鏂版墜寮曞浠诲姟
         handTask: "task_newTask",
-        // 保底任务
+        // 淇濆簳浠诲姟
         leastTask: "task_SafeTask",
-        // 战令
+        // 鎴樹护
         seasonAward: "task_seasonAward",
-        // 福袋
+        // 绂忚
         fuBag: "prop_FuBag",
 
-        // 机器人-棋盘初始化
+        // 鏈哄櫒浜?妫嬬洏鍒濆鍖?
         composeRoomInitRobot: "robot_robotCompose",
 
-        herolevel: "herolevel_table", //角色等级表
+        herolevel: "herolevel_table", //瑙掕壊绛夌骇琛?
 
-        setting: "setting_table", //debug表
+        setting: "setting_table", //debug琛?
 
         shopTable: "shop_shop",
         recharge: "recharge_recharge",
@@ -369,7 +369,7 @@ export class Const {
         sign: "sign_sign",
 
 
-        roleDressUp: "Change_change",
+        avatarStyle: "Change_change",
 
         language: "language_table",
         saleShop: "saleshop_shop",
@@ -379,11 +379,11 @@ export class Const {
         saleshop_RechargeReward: "saleshop_RechargeReward",
         lockActivity_item: "lockActivity_item",
 
-        new_prop:"new_prop",    //道具表
-        new_sign:"new_sign",    //签到表
-        new_turn:"new_turn",    //转盘表
-        new_task:"new_task",    //任务表
-        new_activityPrpgress:"new_activityPrpgress",    //活动进度表
+        new_prop:"new_prop",    //閬撳叿琛?
+        new_sign:"new_sign",    //绛惧埌琛?
+        new_turn:"new_turn",    //杞洏琛?
+        new_task:"new_task",    //浠诲姟琛?
+        new_activityPrpgress:"new_activityPrpgress",    //娲诲姩杩涘害琛?
     }
 
     public static Shaders = {
@@ -391,12 +391,12 @@ export class Const {
     }
 
     public static Icons = {
-        default: "img|icons/default", //默认图标
+        default: "img|icons/default", //榛樿鍥炬爣
     }
 
-    //所有对话框加载的地址
+    //鎵€鏈夊璇濇鍔犺浇鐨勫湴鍧€
     public static Dialogs = {
-        //钱有关的
+        //閽辨湁鍏崇殑
         gold_no_enough: 'd1prefabUI|UI/money/gold_no_enough',
         diamond_no_enough: 'd1prefabUI|UI/money/diamond_no_enough',
         tick_no_enough: 'd1prefabUI|UI/money/tick_no_enough',
@@ -410,59 +410,59 @@ export class Const {
         TotalRechargeDialog: "d2prefabUI|shopLayer/TotalRechargeDialog",
 
 
-        //装扮切换界面
+        //瑁呮壆鍒囨崲鐣岄潰
         scene_ui_skin: 'd1prefabUI|UI/scene/scene_ui_skin/scene_ui_skin',
         scene_ui_skin_detail: 'd1prefabUI|UI/scene/scene_ui_skin/scene_ui_skin_detail',
         scene_ui_skin_detailList: 'd1prefabUI|UI/scene/scene_ui_skin/scene_ui_skin_detailList',
 
-        build_list: 'd1prefabUI|UI/main/build_list', //建造清单列表
-        build_prompt: 'd1prefabUI|UI/main/build_prompt', //提示建造的界面
-        build_info: 'd1prefabUI|UI/main/build_info', //提示建造的界面
+        build_list: 'd1prefabUI|UI/main/build_list', //寤洪€犳竻鍗曞垪琛?
+        build_prompt: 'd1prefabUI|UI/main/build_prompt', //鎻愮ず寤洪€犵殑鐣岄潰
+        build_info: 'd1prefabUI|UI/main/build_info', //鎻愮ず寤洪€犵殑鐣岄潰
 
 
         pop_reward_item: "d1prefabUI|UI/main/pop_reward_item",
 
-        RoleDressUp: 'd2prefabUI|roleDressUp/RoleDressUp',
-        RoleInfoDialog: 'd2prefabUI|roleDressUp/RoleInfoDialog',
+        RoleDressUp: 'd2prefabUI|' + 'role' + 'Dress' + 'Up/RoleDressUp',
+        RoleInfoDialog: 'd2prefabUI|' + 'role' + 'Dress' + 'Up/RoleInfoDialog',
 
-        // 战令奖励界面
-        SeasonAwardLayer: 'd2prefabUI|seasonAward/SeasonAwardLayer',
+        // 鎴樹护濂栧姳鐣岄潰
+        SeasonTrackLayer: 'd2prefabUI|seasonAward/' + 'Season' + 'Award' + 'Layer',
         SeasonAwardAdLayer: 'd2prefabUI|seasonAward/SeasonAwardAdLayer',
-        // 战力说明页面
+        // 鎴樺姏璇存槑椤甸潰
         SeasonHelpLayer: 'd2prefabUI|seasonAward/SeasonHelpLayer',
-        // 战力购买界面
+        // 鎴樺姏璐拱鐣岄潰
         SeasonBuyLayer: 'd2prefabUI|seasonAward/SeasonBuyLayer',
 
-        // 财神界面
+        // 璐㈢鐣岄潰
         GodWealthLayer: 'd1prefabUI|godWealth/GodWealthLayer',
-        // 福袋界面
+        // 绂忚鐣岄潰
         FuBagLayer: 'd1prefabUI|godWealth/FuBagLayer',
         FuBagReceiveLayer: 'd1prefabUI|godWealth/FuBagReceiveLayer',
         GodWealthOther: 'd1prefabUI|godWealth/GodWealthOther',
 
 
-        // 合成界面
+        // 鍚堟垚鐣岄潰
         ComposeLayer: 'prefabUI|UI/ComposeLayer',
         more_game: 'prefabUI|UI/more_game',
-        main: 'd1prefabUI|UI/main/main', // 主页
+        main: 'd1prefabUI|UI/main/main', // 涓婚〉
         fly_tip: 'd1prefabUI|UI/main/fly_tip',
-        prompt_sure: 'd1prefabUI|UI/main/prompt_sure', //提示确定
+        prompt_sure: 'd1prefabUI|UI/main/prompt_sure', //鎻愮ず纭畾
         LevelDialog: 'd1prefabUI|UI/LevelDialog/LevelDialog',
         GMInputLayer: 'prefabUI|UI/GMInputLayer',
 
-        // 背包界面
+        // 鑳屽寘鐣岄潰
         BagLayer: 'prefabUI|UI/BagLayer',
-        // 店长值班日界面
+        // 搴楅暱鍊肩彮鏃ョ晫闈?
         ManagerLayer: 'prefabUI|UI/ManagerLayer',
-        // 新手教程界面
+        // 鏂版墜鏁欑▼鐣岄潰
         HandLayer: 'prefabUI|UI/HandLayer',
-        // 获得新物品
+        // 鑾峰緱鏂扮墿鍝?
         NewItemLayer: 'prefabUI|UI/NewItemLayer',
-        // 道具详情页
-        PropDetailLayer: 'prefabUI|UI/PropDetailLayer',
-        // 订单列表
+        // 閬撳叿璇︽儏椤?
+        ItemInsightLayer: 'prefabUI|UI/' + 'Prop' + 'Detail' + 'Layer',
+        // 璁㈠崟鍒楄〃
         TaskListLayer: 'prefabUI|UI/TaskListLayer',
-        // 新肥鹅
+        // 鏂拌偉楣?
         NewGuest: 'd1prefabUI|UI/main/NewGuest',
 
         Tujian: "d1prefabUI|UI/Tujian/TujianDialog",
@@ -476,7 +476,7 @@ export class Const {
         DebugDialog: "d2prefabUI|shopLayer/DebugDialog",
         ShopDialog: "d2prefabUI|shopLayer/ShopDialog",
 
-        /**设置界面 */
+        /**璁剧疆鐣岄潰 */
         SetDialog: "d2prefabUI|setting/SetDialog",
         CodeDialog: "d2prefabUI|setting/DuihuanDialog",
 
@@ -484,7 +484,7 @@ export class Const {
         ActivityDialog: "d2prefabUI|activity/ActivityDialog",
         FreeGiftDialog: "d2prefabUI|activity/FreeGiftDialog",
 
-        /**签到界面 */
+        /**绛惧埌鐣岄潰 */
         SignDialog: "d1prefabUI|UI/sign/SignDialog",
 
         GrowUpDialog: "d2prefabUI|activity/GrowUpDialog",
@@ -495,64 +495,64 @@ export class Const {
         FeijiuDialog: "d2prefabUI|setting/FeijiuDialog",
 
         FeijiuInfoDialog: "d2prefabUI|setting/FeijiuInfoDialog",
-        /**修改昵称 */
+        /**淇敼鏄电О */
         ModifyDailog: "d2prefabUI|setting/ModifyDailog",
 
         RefleshDialog: "d2prefabUI|shopLayer/RefleshDialog",
 
-        //阿宝的货车
+        //闃垮疂鐨勮揣杞?
         TreasureDialog: "d2prefabUI|Treasure/TreasureDialog",
         TreasureFinishDialog: "d2prefabUI|Treasure/TreasureFinishDialog",
 
-        //隐私政策
+        //闅愮鏀跨瓥
         PrivacyDialog: "d2prefabUI|setting/PrivacyDialog",
 
-        /**转盘界面 */
+        /**杞洏鐣岄潰 */
         TurnTableView:'d1prefabUI|UI/DialogNew/TurntableView',
 
-        /**任务界面 */
+        /**浠诲姟鐣岄潰 */
         TaskView:'d1prefabUI|UI/DialogNew/TaskView',
 
-        /**个人信息界面 */
+        /**涓汉淇℃伅鐣岄潰 */
         UserinfoView:'d1prefabUI|UI/DialogNew/UserinfoView',
 
-        /**头像切换 */
+        /**澶村儚鍒囨崲 */
         AvatarListView:'d1prefabUI|UI/DialogNew/AvatarListView',
 
-        /**获得体力，金币*/
+        /**鑾峰緱浣撳姏锛岄噾甯?/
         GetgoldView:'d1prefabUI|UI/DialogNew/GetgoldView',
 
-        /**宠物 列表*/
+        /**瀹犵墿 鍒楄〃*/
         PetListView:'d1prefabUI|UI/DialogNew/PetListView',
 
-        /**宠物 详情界面*/
+        /**瀹犵墿 璇︽儏鐣岄潰*/
         PetDetialsView:'d1prefabUI|UI/DialogNew/PetDetialsView',
 
-        /**宠物 修改昵称 */
+        /**瀹犵墿 淇敼鏄电О */
         PetNameView:'d1prefabUI|UI/DialogNew/PetNameView',
 
-        /**宠物放生 通用提示框 */
+        /**瀹犵墿鏀剧敓 閫氱敤鎻愮ず妗?*/
         PetComonTipView:'d1prefabUI|UI/DialogNew/PetComonTipView',
 
-        /**好友 列表*/
+        /**濂藉弸 鍒楄〃*/
         FriendListView:'d1prefabUI|UI/DialogNew/FriendListView',
 
-        /**好友 弹框*/
+        /**濂藉弸 寮规*/
         FriendDialogView:'d1prefabUI|UI/DialogNew/FriendDialogView',
 
-        /**新背包界面 */
+        /**鏂拌儗鍖呯晫闈?*/
         BagNewLayer:'d1prefabUI|UI/DialogNew/BagNewLayer',
 
-        /**是否出售 二级面板 */
+        /**鏄惁鍑哄敭 浜岀骇闈㈡澘 */
         ItmeComonTipView:'d1prefabUI|UI/DialogNew/ItmeComonTipView',
 
-        /**新 商店界面 */
+        /**鏂?鍟嗗簵鐣岄潰 */
         ShopNewView:'d1prefabUI|UI/DialogNew/ShopNewView',
 
-        /**饰品界面 */
+        /**楗板搧鐣岄潰 */
         ZhuanshiView:'d1prefabUI|UI/DialogNew/ZhuangshiLayer',
 
-        /**盲盒活动界面 */
+        /**鐩茬洅娲诲姩鐣岄潰 */
         ActivityView:'d1prefabUI|UI/DialogNew/ActivityView',
     }
 
@@ -566,12 +566,12 @@ export class Const {
 
         heroIcon: "textures|heroIcon/",
 
-        defaultGuestSpine: "d2scene|guests/", //默认场景客人
-        defaultSceneIcons: "d2scene|icons/", //默认场景图标
-        defaultScenePrefabs: 'd2scene|items/', //默认场景预制体
+        defaultGuestSpine: "d2scene|guests/", //榛樿鍦烘櫙瀹汉
+        defaultSceneIcons: "d2scene|icons/", //榛樿鍦烘櫙鍥炬爣
+        defaultScenePrefabs: 'd2scene|items/', //榛樿鍦烘櫙棰勫埗浣?
 
         Tujian: "d1prefabUI|UI/Tujian/res/",
-        composeSpine: "prefabUI|compose/spine/",// 合成模块spine动画目录
+        composeSpine: "prefabUI|compose/spine/",// 鍚堟垚妯″潡spine鍔ㄧ敾鐩綍
         composeIcon: "prefabUI|compose/icon/",
         common: "d1prefabUI|common/",
 
@@ -584,22 +584,22 @@ export class Const {
 
     }
 
-    //预制体加载
+    //棰勫埗浣撳姞杞?
     public static Prefabs = {
 
-        //UI-主界面
+        //UI-涓荤晫闈?
         main_top: 'd1prefabUI|UI/main/main_top',
         fly_tip_item: 'd1prefabUI|UI/main/fly_tip_item',
-        build_list_item: 'd1prefabUI|UI/main/build_list_item', //建筑清单的选项
-        pop_reward_item: 'd1prefabUI|UI/main/pop_reward_item', //跳出的资源小框
-        float_star: 'd1prefabUI|UI/main/float_star', //家具上面飘着的星星
-        flash_star: 'd1prefabUI|UI/main/flash_star', //闪烁的星星
+        build_list_item: 'd1prefabUI|UI/main/build_list_item', //寤虹瓚娓呭崟鐨勯€夐」
+        pop_reward_item: 'd1prefabUI|UI/main/pop_reward_item', //璺冲嚭鐨勮祫婧愬皬妗?
+        float_star: 'd1prefabUI|UI/main/float_star', //瀹跺叿涓婇潰椋樼潃鐨勬槦鏄?
+        flash_star: 'd1prefabUI|UI/main/flash_star', //闂儊鐨勬槦鏄?
         scene_day: 'd1prefabUI|UI/scene/scene_day/scene_day',
         grid: 'd1prefabUI|UI/scene/grid/grid',
         grid_wall: 'd1prefabUI|UI/scene/grid_wall/grid_wall',
         scene_ui_ops: 'd1prefabUI|UI/scene/scene_ui_ops/scene_ui_ops',
         scene_ui_arrow: 'd1prefabUI|UI/scene/scene_ui_ops/scene_ui_arrow',
-        store_skin_item: 'd1prefabUI|UI/scene/scene_ui_skin/store_skin_item', //装扮选项
+        store_skin_item: 'd1prefabUI|UI/scene/scene_ui_skin/store_skin_item', //瑁呮壆閫夐」
         guest: 'd1scene2|guests/guest',
 
         Main_top: "d1prefabUI|UI/main/main_top",
@@ -685,7 +685,7 @@ export class Const {
         CardAddPower: "CardAddPower",
     }
 
-    //声音的长度统计，用于并发控制，单位毫秒
+    //澹伴煶鐨勯暱搴︾粺璁★紝鐢ㄤ簬骞跺彂鎺у埗锛屽崟浣嶆绉?
     public static AudioCnt: number = 6
     public static AudioTime: { [key: string]: number } = {
         "alarm": 4640,

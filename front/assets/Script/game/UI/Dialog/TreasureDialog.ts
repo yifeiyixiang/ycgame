@@ -4,12 +4,12 @@ import GD from '../../../config/GD';
 import BaseView from '../../../easyFramework/mgr/BaseView';
 import tables from '../../../easyFramework/other/tables';
 import { CdComponent, CDType } from '../../../easyFramework/utils/CdComponent';
-import { tyqSDK } from '../../../tyqSDK/SDK/tyqSDK';
 import { RechargeManager } from '../../../Util/RechargeManager';
 import { composeModel } from '../../comm/composeModel';
 import { userData } from '../../comm/UserData';
 import { PropItem, PropItemFlag } from './PropItem';
 import { TreasureModel } from './TreasureModel';
+import { GamePlatform } from '../../platform/GamePlatform';
 
 const { ccclass, property } = _decorator;
 
@@ -31,7 +31,7 @@ export class TreasureDialog extends BaseView {
 
     show(args: any) {
         super.show(args)
-        tyqSDK.eventSendCustomEvent("查看阿宝的货车")
+        GamePlatform.track("查看阿宝的货车")
         this.timeLabel.getComponent(CdComponent)!.setCD(CDType.CDIneterVal, TreasureModel.timeData.key, TreasureModel.timeData.cdTime)
         TreasureModel.initLimitData(false)
 
