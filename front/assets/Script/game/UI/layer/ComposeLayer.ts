@@ -1685,7 +1685,7 @@ export class ComposeLayer extends BaseView {
 
                 // 相同物品，进行合�?
                 if (propRow.blessId) {
-                    console.log("合成新道�?);
+                    console.log("compose new item");
                     EventManger.eventTarget.emit(EventManger.EEventName.ADD_EXP_ANIMATION,1)
                     let handIndex = composeModel.getHandIndex();
                     if (handIndex == handIndexs.firstCompose && propRow.blessId == 10002) {
@@ -1864,7 +1864,7 @@ export class ComposeLayer extends BaseView {
                 composeModel.rommDataCdBubbleOver(row, col);
             } else {
                 // TODO 弹窗提示购买月卡
-                UtilPub.log("提示购买权益�?);
+                UtilPub.log("prompt purchase privilege");
             }
         }
 
@@ -2406,7 +2406,7 @@ export class ComposeLayer extends BaseView {
         this.refreshRoomItemUI(roomItem);
         roomData = this.getRoomDataByItemUI(roomItem);
         if (!roomData.id) {
-            UtilPub.log("=========点击物品已消�?);
+            UtilPub.log("clicked item disappeared");
             this.choseRoomItem = null;
         }
 

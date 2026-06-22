@@ -126,7 +126,7 @@ export class SetDialog extends BaseView {
     openDuihuanMa() {
         audioManager.instance.playSound(Const.Audio.btn)
 
-        GamePlatform.track("查看设置-兑换�?)
+        GamePlatform.track("open settings redeem")
         uiManager.instance.pushShowDialog(Const.Dialogs.CodeDialog)
     }
 

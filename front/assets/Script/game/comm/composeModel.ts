@@ -60,19 +60,19 @@ export const roomStatus = {
 }
 
 export const managerInfoTypeArr = [
-    "达到%d�?,
-    "发射任意发生�?d�?,
-    "完成%d个订�?,
-    "解锁%d次蓝色手提包",
-    "在棋盘合�?d�?,
-    "为健身房建�?d�?,
-    "消耗钻石购�?d次能�?,
-    "在棋盘上出售%d次任意物�?,
-    "加�?d次发射器",
-    "累计消�?d能量",
-    "合成%d个最高等级金�?,
-    "合成%d个最高等级能量球",
-    "累计消�?d金币",
+    "Reach level %d",
+    "Trigger any generator %d times",
+    "Complete %d orders",
+    "Unlock blue handbag %d times",
+    "Merge on board %d times",
+    "Build fitness room %d times",
+    "Spend gems to buy energy %d times",
+    "Sell any board item %d times",
+    "Speed up generator %d times",
+    "Use %d energy",
+    "Merge %d max-level coin items",
+    "Merge %d max-level energy balls",
+    "Spend %d coins",
 ];
 
 class ComposeModule {
@@ -255,7 +255,7 @@ class ComposeModule {
                 let arr = key.split("_");
                 this.managerArr[arr[1]] = val;
             }
-            UtilPub.log("从服务端加载店长值班�?, this.managerArr);
+            UtilPub.log("load manager duty data", this.managerArr);
         }
         console.log("loadData 7")
 
@@ -439,14 +439,14 @@ class ComposeModule {
                     roomArr.push({});
                 }
                 data.roomArr = roomArr;
-                UtilPub.log("背包初始化结�?, data);
+                UtilPub.log("bag init done", data);
             }
 
             if (propRow.lock) {
                 // 初始cd状�?
                 data.cd = this.getCurrentTimestamp() + propRow.milo * 1000;
                 data.cdSum = propRow.milo * 1000;
-                UtilPub.log("初始cd状�?, data);
+                UtilPub.log("init cd state", data);
             }
         }
 
@@ -579,7 +579,7 @@ class ComposeModule {
             id++;
         }
         GameStorage.setObjectMulti(tmpObj);
-        UtilPub.log("解锁新任�?, tmpObj);
+        UtilPub.log("unlock new task", tmpObj);
         Notifications.emit(GD.event.managerCreateTask);
     }
 
@@ -994,7 +994,7 @@ class ComposeModule {
             UtilPub.log("生成保底任务", leastTask);
         }
 
-        UtilPub.log("生成任务�?, taskArr);
+        UtilPub.log("create tasks", taskArr);
 
         return taskArr;
     }
@@ -1338,7 +1338,7 @@ class ComposeModule {
             }
         }
         this.sendRoomDataToServer(row, col);
-        UtilPub.log("剩余次数�? + roomData.times);
+        UtilPub.log("remaining times " + roomData.times);
 
         let propId = 0;
         if (roomData.clickPropId && roomData.clickPropId.length > 0) {
@@ -1888,7 +1888,7 @@ class ComposeModule {
         let row = tables.ins().getTableValueByID(Const.Tables.manager, manager.id);
         this.addPropNum(row.price[0], row.price[1], startPos);
 
-        GamePlatform.track("完成店长值班日任�? + manager.id);
+        GamePlatform.track("finish manager daily task " + manager.id);
 
         let allGet = true;
         for (let i = 0; i < this.managerArr.length; i++) {
@@ -2306,7 +2306,7 @@ class ComposeModule {
         let roomData = this.roomArr[targetRow][targetCol];
         delete roomData.cdSum;
         roomData.times += val;
-        UtilPub.log("增加次数�? + val, roomData.times);
+        UtilPub.log("add times " + val, roomData.times);
         this.setRoomData(targetRow, targetRow);
     }
 

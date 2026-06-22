@@ -201,7 +201,7 @@ export class scene_ui_skin_detailList extends BaseView {
         } else {
             if (userData.checkAndUseProp(this.dressData.price[0])) {
                 userData.unlockAvatarLook(this.dressData.id)
-                GamePlatform.track("购买店长装扮 id�? + this.dressData.id)
+                GamePlatform.track("buy manager outfit id " + this.dressData.id)
                 userData.dressValue += this.dressData.changeZhi
                 this.emit(GD.event.updateDressUp)
                 this.buyBtn.active = true

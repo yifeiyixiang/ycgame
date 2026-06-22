@@ -440,15 +440,15 @@ export enum GLoadPhase {
 
 //广告埋点文字
 export enum GBury {
-    step1EnterLoading = "a1进入加载�?,
+    step1EnterLoading = "a1EnterLoading",
     step2EnterGame = "a2进入战斗界面",
     step3EnterUI = "a3进入UI界面",
-    guide1 = "b1新手进入战斗1�?,
+    guide1 = "b1GuideBattle1",
 
     clickChallengeBtn = "点击挑战",
     clickPet = "点击展示宠物-",
-    clickForTen = "点击普通十�?,
-    showForHpAd = "展示欧米噶祝�?,
+    clickForTen = "normalTenDraw",
+    showForHpAd = "showHpAd",
     noAdToShare = "无视频转分享",
     videoForHead = "观看激励视�?头部",
     videoForHeadDone = "观看完激励视�?头部",

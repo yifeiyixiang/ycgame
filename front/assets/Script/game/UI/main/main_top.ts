@@ -176,7 +176,7 @@ export class main_top extends BaseView {
         this.petCountLab.string = "宠物数量: " + userData.pet_count + "";
         this.petScoreLab.string = "宠物积分: " + userData.pet_score + "";
 
-        this.lvLabelNew.string = userData.roleLv + "�?
+        this.lvLabelNew.string = userData.roleLv + ""
     }
 
     updateMoney() {

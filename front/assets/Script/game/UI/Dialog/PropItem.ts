@@ -21,7 +21,7 @@ export class PropItem extends BaseView {
     @property({ type: Node, tooltip: "背景" }) bg: Node = null!;
     @property({ type: Node, tooltip: "icon" }) icon: Node = null!;
     @property({ type: Label, tooltip: "名字" }) nameLab: Label = null!;
-    @property({ type: Node, tooltip: "感叹�? }) gantan: Node = null!;
+    @property({ type: Node, tooltip: "hint" }) gantan: Node = null!;
     @property({ type: Node, tooltip: "等级" }) lvLabel: Node = null!;
 
     @property({ type: Label, tooltip: "数量" }) numLabel: Label = null!;

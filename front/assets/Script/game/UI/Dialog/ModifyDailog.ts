@@ -13,7 +13,7 @@ const { ccclass, property } = _decorator;
 @ccclass('ModifyDailog')
 export class ModifyDailog extends BaseView {
 
-    @property({ type: Node, tooltip: "名字输入�? }) nameEditBox: Node = null!;
+    @property({ type: Node, tooltip: "name input" }) nameEditBox: Node = null!;
 
 
 

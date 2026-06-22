@@ -326,7 +326,7 @@ export class GodWealthLayer extends BaseView {
     videoRefreshSelectLayer() {
         // let timeData = tables.ins().getTableValueByKey(Const.Tables.privilege, "key", "10011")
         if (userData.getReceiveTime(this.timeData.dataKey + GodWealthLayer.key_reflesh, this.timeData.cdTime) >= Const.GodWealthRefleshTime) {
-            this.toast("刷新次数已用�?)
+            this.toast("Refresh limit used")
             return
         }
         RechargeManager.showVideo("财神礼包刷新", () => {

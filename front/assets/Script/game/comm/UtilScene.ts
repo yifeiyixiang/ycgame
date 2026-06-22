@@ -162,22 +162,33 @@ export class UtilScene extends comm {
         return cnt
     }
 
+    private static getBuildStarCost(itemData: any) {
+        let starParts = (itemData.stars + "").split(",")
+        let starCost = Number(starParts.length > 1 ? starParts[1] : starParts[0])
+        if (!isFinite(starCost) || starCost < 0) {
+            return 0
+        }
+        return starCost
+    }
+
     public static calcRoomCompletionRatio(roomId: number) {
         let roomItems = tables.ins().getTableValuesByType2(Const.Tables.scene_item, "room", roomId + "", "eff", "1")
         let totalStar: number = 0
-        let curStar: number = 0
+        let finishedStar: number = 0
         for (let i = 0; i < roomItems.length; i++) {
             let itemData = roomItems[i]
-            totalStar += parseInt(itemData.stars.split(",")[1])
-            if (SceneData.ins.getSceneItemById(itemData.id, itemData.type)!.lockState == GLockState.unlock) {
-                curStar += parseInt(itemData.stars.split(",")[1])
+            let starCost = UtilScene.getBuildStarCost(itemData)
+            totalStar += starCost
+            let sceneItem = SceneData.ins.getSceneItemById(itemData.id, itemData.type)
+            if (sceneItem && sceneItem.lockState == GLockState.unlock) {
+                finishedStar += starCost
             }
-            // UtilPub.log("======星星�?--", totalStar, curStar, itemData.id)
         }
-        let val = curStar / totalStar
-        return val
+        if (totalStar <= 0) {
+            return 0
+        }
+        return Math.min(1, finishedStar / totalStar)
     }
-
 
     /**
      * 根据地板的ID获得对应的节�?

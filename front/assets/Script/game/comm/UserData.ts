@@ -173,19 +173,27 @@ class UserData {
      * -----店长装扮 ----------
      */
     public get avatarLookId() {
-        let curDressUpId = GameStorage.getInt(Const.DataKeys.avatarLookId, 0)
-        if (curDressUpId == 0) {
-            let dressData = tables.ins().getTableValuesByType(Const.Tables.avatarStyle, "type", "2")
-            for (let index = 0; index < dressData.length; index++) {
-                const element = dressData[index];
+        let lookId = GameStorage.getInt(Const.DataKeys.avatarLookId, 0)
+        if (lookId == 0) {
+            lookId = GameStorage.getInt(Const.DataKeys.legacyAvatarLookId, 0)
+            if (lookId > 0) {
+                this.avatarLookId = lookId
+                return lookId
+            }
+        }
+        if (lookId == 0) {
+            let styleRows = tables.ins().getTableValuesByType(Const.Tables.avatarStyle, "type", "2")
+            for (let index = 0; index < styleRows.length; index++) {
+                const element = styleRows[index];
                 if (element.price == 0) {
-                    curDressUpId = element.id
-                    this.avatarLookId = curDressUpId
-                    return curDressUpId
+                    lookId = element.id
+                    this.avatarLookId = lookId
+                    this.unlockAvatarLook(lookId)
+                    return lookId
                 }
             }
         }
-        return curDressUpId
+        return lookId
     }
 
     public set avatarLookId(id: number) {
@@ -193,11 +201,15 @@ class UserData {
     }
 
     public isAvatarLookOwned(id: number) {
-        return GameStorage.getInt(Const.DataKeys.avatarLookId + id, 0) == 1
+        let owned = GameStorage.getInt(Const.DataKeys.avatarLookOwned + id, 0)
+        if (owned == 1) {
+            return true
+        }
+        return GameStorage.getInt(Const.DataKeys.legacyAvatarLookId + id, 0) == 1
     }
 
     public unlockAvatarLook(id: number) {
-        return GameStorage.setInt(Const.DataKeys.avatarLookId + id, 1)
+        return GameStorage.setInt(Const.DataKeys.avatarLookOwned + id, 1)
     }
     //---------------------
 
@@ -271,7 +283,11 @@ class UserData {
 
     //-----装扮�?
     public get styleVoucher() {
-        return GameStorage.getInt(Const.DataKeys.styleVoucher, tables.ins().config[Const.config.basicDressMoney])
+        let voucher = GameStorage.getInt(Const.DataKeys.styleVoucher, -1)
+        if (voucher >= 0) {
+            return voucher
+        }
+        return GameStorage.getInt(Const.DataKeys.legacyStyleVoucher, tables.ins().config[Const.config.basicDressMoney])
     }
 
     public set styleVoucher(num) {
@@ -286,7 +302,6 @@ class UserData {
         uiManager.instance.showDialog(Const.Dialogs.FreeGiftDialog, { type: "3" })
         return false
     }
-
     //-----绿色星星
     public get greenStar() {
         return GameStorage.getInt(Const.DataKeys.greenStar, tables.ins().config[Const.config.basicGreenStar])

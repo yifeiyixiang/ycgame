@@ -37,7 +37,7 @@ export class FreeGiftDialog extends BaseView {
     initItem(itemUI: Node, item: any) {
         itemUI.getChildByName("infoLabel")!.getComponent(Label)!.string = item.info
         let receiveTime = userData.getReceiveTime(item.dataKey, item.cdTime)
-        find("numLabel", itemUI)!.getComponent(Label)!.string = "已领取次�? + receiveTime
+        find("numLabel", itemUI)!.getComponent(Label)!.string = "Received: " + receiveTime
         find("titleLabel", itemUI)!.getComponent(Label)!.string = item.typename
         find("titleLabel", itemUI)!.getComponent(LabelOutline)!.color = item.fontColor.parseColor()
         //  find("infoLabel", itemUI)!.getComponent(LabelOutline)!.color = item.fontColor.parseColor()
@@ -86,7 +86,7 @@ export class FreeGiftDialog extends BaseView {
     dealClickItem() {
         //等待接入广告
         let receiveTime = userData.getReceiveTime(this._clickItem.dataKey, this._clickItem.cdTime)
-        RechargeManager.showVideo(this._clickItem!.info + "" + receiveTime + "�?, () => {
+        RechargeManager.showVideo(this._clickItem!.info + "" + receiveTime + " times", () => {
             this.onVideoBack(this._clickItem)
         })
     }

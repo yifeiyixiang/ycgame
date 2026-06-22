@@ -96,10 +96,10 @@
         "type": "build",
         "id": "1772258011491",
         "progress": 1,
-        "state": "success",
+        "state": "failure",
         "stage": "build",
-        "message": "2026-6-22 10:55:49 build success in 21 s!",
-        "detailMessage": "The SpriteFrame used by component \"cc.Sprite\" in prefab \"ComposeLayer\" is missing. Detailed information:\rNode path: \"ComposeLayer/ui/top/list/view/content/btnBuild/icon\"\rAsset url: \"db://assets/game/p...",
+        "message": "2026-6-22 21:21:37 build task failed! Error: excute-taskbuild-script failed!\n    at ChildProcess.<anonymous> (D:\\Software\\微信开发者\\cocoscreater\\resources\\app.asar\\builtin\\builder\\dist\\worker\\worker-pools\\sub-process-manager.ccc:1:2578)\n    at ChildProcess.emit (events.js:315:20)\n    at emit (internal/child_process.js:903:12)\n    at processTicksAndRejections (internal/process/task_queues.js:81:21)",
+        "detailMessage": "TypeError: Cannot read property 'constructor' of null\r    at Function._findComponents (D:\\Software\\微信开发者\\cocoscreater\\resources\\resources\\3d\\engine\\bin\\.cache\\dev\\editor\\bundled\\index.js:61745:24)\r   ...",
         "options": {
           "name": "毛茸茸大派对",
           "server": "https://admin.petlove.top",
@@ -161,7 +161,7 @@
           "__version__": "1.3.8",
           "logDest": "project://temp/builder/log/wechatgame2-28-2026 13-53.log"
         },
-        "time": "2026-6-22 10:55:27",
+        "time": "2026-6-22 21:21:31",
         "dirty": false
       }
     }

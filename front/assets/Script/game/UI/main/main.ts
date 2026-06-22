@@ -167,7 +167,7 @@ export class main extends BaseView {
 
     onEnable() {
         this.chgGreenStar()
-        console.log("onMessageEvent --- 开始监�?)
+        console.log("onMessageEvent --- start listen")
         director.off(GNetCmd.GetUserDataByKey.toString(), this.onMessageEvent, this);
         director.on(GNetCmd.GetUserDataByKey.toString(), this.onMessageEvent, this);
 
@@ -186,7 +186,7 @@ export class main extends BaseView {
 
         redPointManager.setRedpoint(find("root/LayoutRight/btnEmail", this.node)!, RPointEvent.RPM_Email, false)
         redPointManager.setRedpoint(find("root/LayoutRight/btnTujian", this.node)!, RPointEvent.RPM_Tujian, false)
-        GamePlatform.track("进入主界�?)
+        GamePlatform.track("enter main scene")
 
         this.scheduleOnce(() => {
             composeModel.btnComposePos = UtilPub.convertToWorldSpace(find("root/bottom/compose", this.node)!);

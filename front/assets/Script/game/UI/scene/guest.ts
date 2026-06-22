@@ -91,7 +91,7 @@ export class guest extends scene_item_parent {
         //动态设置spine文件
         resourceUtil.loadResWithBundle(spineName, sp.SkeletonData, (err, skedata) => {
             if (err) {
-                console.error("--------客人spine 资源未找�?, guestData, err)
+                console.error("guest spine resource not found", guestData, err)
             }
             this.spineAni.skeletonData = skedata;
             // UtilPub.log("--xxxxxxxxxxxx--", guestData)

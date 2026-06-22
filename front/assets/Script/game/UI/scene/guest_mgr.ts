@@ -56,7 +56,7 @@ export class guest_mgr extends comm {
                 this.roomLimit+= item.cnt
             }
         })
-        UtilPub.log("--------最大房间人�?, this.roomLimit)
+        UtilPub.log("roomLimit", this.roomLimit)
     }
 
     guestLeave(node:Node){
@@ -92,14 +92,21 @@ export class guest_mgr extends comm {
     intoTheWaitQueue(){
         //检查所有的人，然后设置在房间等待的人，设置他们的目标点，并且执行运�?
         //�?个没在队列中的人进入队列，强制拉入�?
-        let pickOne:Node = null! 
+        let pickOne:Node = null!
+        let pickScore = Number.MAX_SAFE_INTEGER
         // UtilPub.log("#####----指派客人去排�? 客人数量", this.streetGuests)
         for(let i=0;i<Const.Guests.length; i++){
             let script = Const.Guests[i].getComponent(guest)!
             let isInTheQueue:boolean = this.isInTheQueue(Const.Guests[i])
             // UtilPub.log("#####----队列角色", isInTheQueue, script.state)
             if(script.state==GGuestState.queueForRoomDoor && !isInTheQueue){
-                pickOne = Const.Guests[i]
+                let dx = Math.abs(script.curGridPoint.x - this.waitStartPos.x)
+                let dy = Math.abs(script.curGridPoint.y - this.waitStartPos.y)
+                let score = dx + dy
+                if (score < pickScore) {
+                    pickScore = score
+                    pickOne = Const.Guests[i]
+                }
             }
         }
         if(pickOne!=null){
@@ -210,14 +217,14 @@ export class guest_mgr extends comm {
                 // let n = 1
                 for(let i=0;i<n;i++){
                     //房间对应解锁
-                    UtilPub.log("----------街道出现n�?, i)
+                    UtilPub.log("street spawn count", i)
                     let item = poolManager.instance.getNode(p, Const.StreetFixedNode,false) //默认放在街道上，如果进入房间自动切换父节�?
                     item.getComponent(guest)!.init(GGuestState.streetWalk)
                 }
                 let roomCnt= Math.round(this.roomLimit * UtilPub.ranInt(15,35)/100)
                 for(let i=0;i<roomCnt;i++){
                     //房间对应解锁
-                    UtilPub.log("----------房间瞬间出现n�?, i)
+                    UtilPub.log("room spawn count", i)
                     let item = poolManager.instance.getNode(p, Const.ItemParent,false) //默认放在街道上，如果进入房间自动切换父节�?
                     item.getComponent(guest)!.init(GGuestState.roomWalk)
                 }

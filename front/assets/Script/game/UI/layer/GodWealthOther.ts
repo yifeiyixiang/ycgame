@@ -209,7 +209,7 @@ export class GodWealthOther extends BaseView {
         if (this._isReceived) {
             btnReceive.getComponent(Button)!.interactable = false
             btnReceive.getChildByName("bg")!.getComponent(Sprite)!.grayscale = true
-            btnReceive.getChildByName("text")!.getComponent(Label)!.string = "已领�?
+            btnReceive.getChildByName("text")!.getComponent(Label)!.string = "Received"
             btnReceive.getChildByName("text")!.getComponent(LabelOutline)!.color = color(30, 30, 30, 255)
         } else {
             btnReceive.getComponent(Button)!.interactable = true
@@ -228,21 +228,21 @@ export class GodWealthOther extends BaseView {
             this.btnReceive.active = false
             this.receivedLabel.active = true
             if(userData.getIntervalData(this.timeData.dataKey + GodWealthOther.key_shareUserID + (0), this.timeData.cdTime, this._curShareUserID + "") == this._curShareUserID + "" ||userData.getIntervalData(this.timeData.dataKey + GodWealthOther.key_shareUserID + (1), this.timeData.cdTime, this._curShareUserID + "") == this._curShareUserID + ""){
-                this.receivedLabel.getComponent(Label)?.string +"已领�?
+                this.receivedLabel.getComponent(Label)!.string = "Received"
             }else{
-                this.receivedLabel.getComponent(Label)?.string +"领取次数已用�?
+                this.receivedLabel.getComponent(Label)!.string = "Receive limit used"
             }
         } else {
             if (curTime == 1 && userData.getIntervalData(this.timeData.dataKey + GodWealthOther.key_shareUserID + (curTime - 1), this.timeData.cdTime, this._curShareUserID + "") == this._curShareUserID + "") {
                 this.btnReceive.active = false
                 this.receivedLabel.active = true
-                this.receivedLabel.getComponent(Label)?.string +"已领�?
+                this.receivedLabel.getComponent(Label)!.string = "Received"
             } else {
                 this.btnReceive.active = true
                 this.receivedLabel.active = false
             }
         }
-        this.receiveTimeLabel.string = "还可领取" + curTime + "/" + Const.GodWealthReceiveOtherTime + "次财神的礼物�?
+        this.receiveTimeLabel.string = "Receive count " + curTime + "/" + Const.GodWealthReceiveOtherTime
     }
 
     refreshSelectLayer(force = false) {
@@ -293,7 +293,7 @@ export class GodWealthOther extends BaseView {
 
     onClickBtnReceive() {
         if (this._curSelectIndex < 0) {
-            this.toast("请先选择一个礼�?)
+            this.toast("Please choose a gift first")
             return
         }
         ServerCtrJSF.GetInstance().reqReceiveGodWealth(this._curShareUserID + "", this._curSelectIndex)

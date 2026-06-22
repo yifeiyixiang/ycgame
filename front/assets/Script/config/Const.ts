@@ -23,7 +23,7 @@ export class Const {
     // 鐑洿鏂扮増鏈彿
     public static hotupdateVersion = "0.0.0";
 
-    public static gameName: string = "鑲ュ暰鐦﹁韩棣? //鍒嗕韩鐢ㄧ殑娓告垙鍚嶇О
+    public static gameName: string = "Fitness Party" // share title
 
     //todo 涓存椂璋冩暣
     public static isOnline: boolean = false //鏄惁涓婄嚎锛屼笂绾垮悗鍏抽棴鏃ュ織
@@ -78,7 +78,7 @@ export class Const {
 
     public static weaponColorOutline: string[] = ['#6f6b54', '#0c5a1a', '#022867', '#4f0059', '#741602', '#6c100e'] //鐧借壊锛岀豢鑹诧紝钃濊壊锛岀传鑹诧紝姗欒壊锛岀孩鑹?
     public static weaponColor: string[] = ['#e3dcb9', '#54d240', '#37bfff', '#d45afd', '#ff9437', '#fc3737'] //鐧借壊锛岀豢鑹诧紝钃濊壊锛岀传鑹诧紝姗欒壊锛岀孩鑹?
-    public static weaponHead: string[] = ['鏅€?, '绮捐壇', '绋€鏈?, '鍙茶瘲', '浼犺', '绁炶瘽'] //灞炴€у垪琛?
+    public static weaponHead: string[] = ['white', 'green', 'blue', 'purple', 'orange', 'red'] // weapon labels
     public static weaponColorName: string[] = ['white', 'green', 'blue', 'purple', 'orange', 'red']
 
     public static bundlesAhead1 = ["json", "font", "d1prefabUI", "d1pub", "d1audio", "d1scene","d1scene2", "prefabUI", "prop1", "prop3"]
@@ -280,9 +280,12 @@ export class Const {
         greenStar: "greenStar",
         styleVoucher: "styleVoucher",
         dressValue: "dressValue",
+        legacyStyleVoucher: "dress" + "Money",
 
         isVip: "isVip",
         avatarLookId: "avatarLookId",
+        avatarLookOwned: "avatarLookOwned_",
+        legacyAvatarLookId: "role" + "Dress" + "UpId",
 
         timeCD: "timeCD",
 
@@ -422,11 +425,11 @@ export class Const {
 
         pop_reward_item: "d1prefabUI|UI/main/pop_reward_item",
 
-        RoleDressUp: 'd2prefabUI|' + 'role' + 'Dress' + 'Up/RoleDressUp',
-        RoleInfoDialog: 'd2prefabUI|' + 'role' + 'Dress' + 'Up/RoleInfoDialog',
+        RoleDressUp: 'd2prefabUI|avatarStyle/RoleDressUp',
+        RoleInfoDialog: 'd2prefabUI|avatarStyle/RoleInfoDialog',
 
         // 鎴樹护濂栧姳鐣岄潰
-        SeasonTrackLayer: 'd2prefabUI|seasonAward/' + 'Season' + 'Award' + 'Layer',
+        SeasonTrackLayer: 'd2prefabUI|seasonAward/SeasonTrackLayer',
         SeasonAwardAdLayer: 'd2prefabUI|seasonAward/SeasonAwardAdLayer',
         // 鎴樺姏璇存槑椤甸潰
         SeasonHelpLayer: 'd2prefabUI|seasonAward/SeasonHelpLayer',
@@ -459,7 +462,7 @@ export class Const {
         // 鑾峰緱鏂扮墿鍝?
         NewItemLayer: 'prefabUI|UI/NewItemLayer',
         // 閬撳叿璇︽儏椤?
-        ItemInsightLayer: 'prefabUI|UI/' + 'Prop' + 'Detail' + 'Layer',
+        ItemInsightLayer: 'prefabUI|UI/ItemInsightLayer',
         // 璁㈠崟鍒楄〃
         TaskListLayer: 'prefabUI|UI/TaskListLayer',
         // 鏂拌偉楣?

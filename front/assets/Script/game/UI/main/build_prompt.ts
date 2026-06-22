@@ -133,7 +133,7 @@ export class build_prompt extends BaseView {
 
         this.titleLabel.string = roomData.name
         this.starLabel.string = userData.greenStar + ""
-        this.btnBuildLabel.string = "建�?
+        this.btnBuildLabel.string = "Build"
 
         this.sceneItemNameLabel.string = "搭建" + itemSkinData.name
 

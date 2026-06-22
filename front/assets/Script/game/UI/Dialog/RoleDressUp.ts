@@ -138,7 +138,7 @@ export class RoleDressUp extends BaseView {
         audioManager.instance.playSound(Const.Audio.btn)
         if (data.price == 0 || userData.checkAndUseProp(data.price[0])) {
             userData.unlockAvatarLook(data.id)
-            GamePlatform.track("购买角色皮肤�? + data.name)
+            GamePlatform.track("buy role skin " + data.name)
             userData.dressValue += data.changeZhi
             find("root/dressbg1/Label", this.node)!.getComponent(Label)!.string = userData.dressValue + ""
             this.scrollViewNode.getComponent(ScrollViewUtil)!.refreshList()

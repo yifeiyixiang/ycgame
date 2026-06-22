@@ -13,7 +13,7 @@ const { ccclass, property } = _decorator;
 @ccclass('RoleInfoDialog')
 export class RoleInfoDialog extends BaseView {
 
-    @property({ type: Node, tooltip: "名字输入�? }) nameEditBox: Node = null!;
+    @property({ type: Node, tooltip: "name input" }) nameEditBox: Node = null!;
     @property({ type: Node, tooltip: "名字Label" }) nameLabel: Node = null!;
     @property({ type: Node, tooltip: "名字Label" }) modifybtnLabel: Node = null!;
 
@@ -62,7 +62,7 @@ export class RoleInfoDialog extends BaseView {
 
         let infoNode = find("root/Layout", this.node)!
         find("dressNode/Label", infoNode)!.getComponent(Label)!.string = "装扮值：" + userData.dressValue + ""
-        find("levelNode/Label", infoNode)!.getComponent(Label)!.string = "等级�? + userData.roleLv + ""
+        find("levelNode/Label", infoNode)!.getComponent(Label)!.string = "Level: " + userData.roleLv + ""
         find("idbg/IDLabel", infoNode)!.getComponent(Label)!.string = "ID:" + userData.roleID
         find("root/Layout/nameLabel", this.node)!.getComponent(Label)!.string = userData.roleName + ""
 
