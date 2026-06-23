@@ -5,7 +5,7 @@ import BaseView from '../../../easyFramework/mgr/BaseView';
 import { uiManager } from '../../../easyFramework/mgr/uiManager';
 import tables from '../../../easyFramework/other/tables';
 import { UtilPub } from '../../../easyFramework/utils/UtilPub';
-import { composeModel } from '../../comm/composeModel';
+import { mergeBoardModel } from '../../comm/mergeBoardModel';
 import { audioManager } from '../../../easyFramework/mgr/audioManager';
 import { bagItem } from './item/bagItem';
 import { BagPropData, ShopCfg } from '../../../../typeScript/gameData';

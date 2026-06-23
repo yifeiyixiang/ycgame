@@ -12,7 +12,7 @@ import { Const } from "../../Script/config/Const";
 import { GoodsType } from "../../Script/config/global";
 
 import { PREVIEW } from 'cc/env';
-import { composeModel } from "../../Script/game/comm/composeModel";
+import { mergeBoardModel } from "../../Script/game/comm/mergeBoardModel";
 
 export class HttpClient {
     private httpTryCount = 10;  

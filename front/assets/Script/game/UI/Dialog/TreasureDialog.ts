@@ -5,7 +5,7 @@ import BaseView from '../../../easyFramework/mgr/BaseView';
 import tables from '../../../easyFramework/other/tables';
 import { CdComponent, CDType } from '../../../easyFramework/utils/CdComponent';
 import { RechargeManager } from '../../../Util/RechargeManager';
-import { composeModel } from '../../comm/composeModel';
+import { mergeBoardModel } from '../../comm/mergeBoardModel';
 import { userData } from '../../comm/UserData';
 import { PropItem, PropItemFlag } from './PropItem';
 import { TreasureModel } from './TreasureModel';
@@ -96,7 +96,7 @@ export class TreasureDialog extends BaseView {
         } else {
             labelReceive.active = false
             btnReceive.active = true
-            let hasInfo = composeModel.getRoomDataHasInfoById(TreasureModel.treasureData.bao1[index].id);
+            let hasInfo = mergeBoardModel.getRoomDataHasInfoById(TreasureModel.treasureData.bao1[index].id);
             let showNum = hasInfo.num;
             if (showNum > 0) {
                 btnReceive.getComponent(Sprite)!.grayscale = false
@@ -115,8 +115,8 @@ export class TreasureDialog extends BaseView {
     }
 
     onClickGet(event: any, index: any) {
-        composeModel.consumeProp(TreasureModel.treasureData.bao1[index].id, 1)
-        composeModel.addPropNum(TreasureModel.treasureData.bao2[index].id, 1)
+        mergeBoardModel.consumeProp(TreasureModel.treasureData.bao1[index].id, 1)
+        mergeBoardModel.addPropNum(TreasureModel.treasureData.bao2[index].id, 1)
         TreasureModel.treasureData.receive[index] = 1
         TreasureModel.saveTreasureData()
         this.initItem(event.target.parent, index)
@@ -147,7 +147,7 @@ export class TreasureDialog extends BaseView {
 
     onClickBtnAllReceive() {
         TreasureModel.receiveGift = 1
-        composeModel.addPropNum(901, 1)
+        mergeBoardModel.addPropNum(901, 1)
         this.initProgress()
     }
 

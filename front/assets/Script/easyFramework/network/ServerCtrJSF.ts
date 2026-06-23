@@ -13,7 +13,7 @@ import { HTML5 } from "cc/env";
 import { Const } from "../../config/Const";
 import GD from "../../config/GD";
 import { GAccountWay, GOrderStatus, GPlatform, GPromptType } from "../../config/global";
-import { composeModel } from "../../game/comm/composeModel";
+import { mergeBoardModel } from "../../game/comm/mergeBoardModel";
 import { GameStorage } from "../mgr/gameStorage";
 import { Notifications } from "../mgr/notifications";
 import { uiManager } from "../mgr/uiManager";
@@ -146,7 +146,7 @@ export default class ServerCtrJSF {
     }
 
     isOkToDownload() {
-        return composeModel.isHandDone() == true && ServerCtrJSF.GetInstance().gameTime() > 3 * 60
+        return mergeBoardModel.isHandDone() == true && ServerCtrJSF.GetInstance().gameTime() > 3 * 60
     }
 
     UpdateRegions(regions: any) {

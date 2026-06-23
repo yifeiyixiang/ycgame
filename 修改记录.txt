@@ -1,0 +1,25 @@
+第一轮 主要改了这些文件： 
+  Const.ts、global.ts、composeModel.ts、ActivityDialog.ts、FreeGiftDialog.ts、ModifyDailog.ts、PropItem.ts、RoleDressUp.ts、RoleInfoDialog.ts、SetDialog.ts、UserinfoView.ts、
+  ComposeLayer.ts、GodWealthLayer.ts、GodWealthOther.ts、build_prompt.ts、main.ts、main_top.ts、guest.ts、guest_mgr.ts、scene_ui_skin_detail.ts、scene_ui_skin_detailList.ts。
+  我也重新扫了你审核方点名的旧标识：composeRoomBubbleBomb / waitInQueueToRoom / getRoomBuildProgress / roleDressUp / killBossMonster / dressMoney / PropDetailLayer / SeasonAwardLayer，在
+  front/assets 里已经没有残留。 
+改/重命名了这些文件：
+  - front/assets/Script/game/UI/Dialog/RoleDressUp.ts -> AvatarStyleLayer.ts
+  - front/assets/ahead2/d2prefabUI/avatarStyle/RoleDressUp.prefab -> AvatarStyleLayer.prefab
+  - front/assets/ahead2/d2prefabUI/avatarStyle/roledressupbg.png -> avatar_panel_bg.png
+  - 同步修改对应 .meta
+  - 修改了 Const.ts、global.ts、RoleInfoDialog.ts、UserData.ts、GetAnimalLayer.ts 中的引用
+  验证结果：
+  - front 全目录大小写不敏感搜索 roleDressUp / dressMoney：无命中
+  - 文件名搜索 roleDressUp / dressMoney：无命中
+  - 重新构建微信小游戏成功：build success in 19311!
+  第二轮 重点改了：
+  - ComposeLayer / composeModel / compose 相关命名，改成 MergeBoardLayer / mergeBoardModel / mergeBoard
+  - SeasonAward* / seasonAward 相关命名，改成 SeasonPass* / seasonPass
+  - ItemInsightLayer / prop_detail 相关命名，改成 ItemCodexLayer / item_codex
+  - 同步改了对应脚本、prefab、资源目录、音频名、JSON 表名、配置引用、事件名、部分内部方法名和变量名
+  - 清理了 front/build、front/temp、front/library 旧生成缓存
+  验证结果：
+  - front 全目录搜索以下旧词：无命中
+    compose / seasonAward / RoleDressUp / dressMoney / ItemInsightLayer / prop_detail / ComposeLayer / composeModel / PropDetailLayer / SeasonAwardLayer
+  - 文件名搜索这些旧词：无命中

@@ -10,7 +10,7 @@ import { playerModel } from '../comm/playerModel';
 import { GNetCmd } from '../../easyFramework/network/conf';
 import ServerCtrJSF from '../../easyFramework/network/ServerCtrJSF';
 import { audioManager } from '../../easyFramework/mgr/audioManager';
-import { composeModel } from '../comm/composeModel';
+import { mergeBoardModel } from '../comm/mergeBoardModel';
 import { UtilScene } from '../comm/UtilScene';
 import { userData } from '../comm/UserData';
 const { ccclass, property } = _decorator;

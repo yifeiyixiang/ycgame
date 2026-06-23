@@ -5,7 +5,7 @@ import BaseView from '../../../easyFramework/mgr/BaseView';
 import { uiManager } from '../../../easyFramework/mgr/uiManager';
 import tables from '../../../easyFramework/other/tables';
 import { UtilPub } from '../../../easyFramework/utils/UtilPub';
-import { composeModel } from '../../comm/composeModel';
+import { mergeBoardModel } from '../../comm/mergeBoardModel';
 import { HttpClient } from '../../../../typeScript/net/HttpClient';
 import { userData } from '../../comm/UserData';
 import { TaskStateData } from '../../../../typeScript/gameData';
@@ -73,7 +73,7 @@ export class TaskView extends BaseView {
     }
 
     initUI() {
-        let arr2 = composeModel.createTask2();
+        let arr2 = mergeBoardModel.createTask2();
 
         this.listContent.removeAllChildren()
         for (const key in arr2) {
@@ -85,7 +85,7 @@ export class TaskView extends BaseView {
                 tempBg.active = true
                 let taskData = tables.ins().getTableValueByID(Const.Tables.taskUnlock, parseInt(key))
                 this.setString(find("title", tempBg)!, taskData.name);
-                let progress = composeModel.getTaskProgress(parseInt(key))
+                let progress = mergeBoardModel.getTaskProgress(parseInt(key))
                 this.setString(find("ProgressBar/roomBar/Label", tempBg)!, Math.floor(progress * 100) + "%");
                 find("ProgressBar/roomBar", tempBg)!.getComponent(ProgressBar)!.progress = progress
                 for (let index = 0; index < element.length; index++) {
@@ -111,15 +111,15 @@ export class TaskView extends BaseView {
                     this.bindButton(btnReceive, () => {
                         for (let i = 0; i < taskData.taskReward.length; i++) {
                             const element = taskData.taskReward[i];
-                            composeModel.addPropNum(element[0], element[1])
+                            mergeBoardModel.addPropNum(element[0], element[1])
                         }
-                        composeModel.setTaskGetReward(parseInt(key))
+                        mergeBoardModel.setTaskGetReward(parseInt(key))
                         this.initUI()
                     })
                 }
             }
         }
-        // let arr = composeModel.taskArr;
+        // let arr = mergeBoardModel.taskArr;
         // this.scrollViewSetData(this.listNode, arr, this.refreshTaskItem.bind(this));
     }
 
@@ -136,7 +136,7 @@ export class TaskView extends BaseView {
                     return;
                 }
                 this.setSpriteFrame2(find("icon", propItem)!.getComponent(Sprite)!, Const.resPath.icon + propRow.icon);
-                let hasInfo = composeModel.getRoomDataHasInfoById(prop.id);
+                let hasInfo = mergeBoardModel.getRoomDataHasInfoById(prop.id);
                 let showNum = hasInfo.num;
                 if (showNum >= prop.num) {
                     showNum = prop.num;
@@ -189,7 +189,7 @@ export class TaskView extends BaseView {
             btnRefresh.active = true
         }
 
-        if (composeModel.getHandIndex() >= 8) {
+        if (mergeBoardModel.getHandIndex() >= 8) {
 
         } else {
             btnRefresh.active = false;
@@ -202,7 +202,7 @@ export class TaskView extends BaseView {
     onClickTaskPropItem(btn: Button) {
         // @ts-ignore
         let propRow = btn.node.propRow;
-        composeModel.openPropInfoLayer(propRow.id);
+        mergeBoardModel.openPropInfoLayer(propRow.id);
     }
 
 
@@ -223,9 +223,9 @@ export class TaskView extends BaseView {
         // @ts-ignore
         let task = btn.node.task;
 
-        composeModel.openAd("刷新任务", (isAward: boolean) => {
+        mergeBoardModel.openAd("刷新任务", (isAward: boolean) => {
             if (isAward) {
-                composeModel.refreshTask(task);
+                mergeBoardModel.refreshTask(task);
                 this.initUI();
             }
         });

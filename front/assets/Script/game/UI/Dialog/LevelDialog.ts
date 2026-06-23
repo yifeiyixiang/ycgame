@@ -6,7 +6,7 @@ import { audioManager } from '../../../easyFramework/mgr/audioManager';
 import BaseView from '../../../easyFramework/mgr/BaseView';
 import { uiManager } from '../../../easyFramework/mgr/uiManager';
 import tables from '../../../easyFramework/other/tables';
-import { composeModel } from '../../comm/composeModel';
+import { mergeBoardModel } from '../../comm/mergeBoardModel';
 import { userData } from '../../comm/UserData';
 import { handIndexs } from '../../data/handData';
 import { PropItem, PropItemFlag } from './PropItem';
@@ -40,7 +40,7 @@ export class LevelDialog extends BaseView {
         super.show(args)
         this.initData()
 
-        let hadnIdnex = composeModel.getHandIndex();
+        let hadnIdnex = mergeBoardModel.getHandIndex();
         if (hadnIdnex == handIndexs.btnLvUp || hadnIdnex == handIndexs.btnLvUp3) {
             let obj: any = {};
             obj.id = hadnIdnex + 1;
@@ -79,22 +79,22 @@ export class LevelDialog extends BaseView {
     onClickBtnUpgrade() {
         if (userData.checkAndUseExp(this._leveldata.exp)) {
             this._leveldata.reward.forEach((element: any, index: number) => {
-                composeModel.addPropNum(element[0], element[1])
+                mergeBoardModel.addPropNum(element[0], element[1])
             });
-            let handIndex = composeModel.getHandIndex();
+            let handIndex = mergeBoardModel.getHandIndex();
             if (handIndex == handIndexs.btnLvUp || handIndex == handIndexs.btnLvUp3) {
                 if (handIndex == handIndexs.btnLvUp3) {
-                    composeModel.closeHandLayer()
-                    composeModel.addHandIndex();
-                    composeModel.addHandIndex();
+                    mergeBoardModel.closeHandLayer()
+                    mergeBoardModel.addHandIndex();
+                    mergeBoardModel.addHandIndex();
 
                     this.popClose();
                     this.emit(GD.event.refreshHandLayer);
                     audioManager.instance.playSound(Const.Audio.sceneChange);
-                    uiManager.instance.showDialog(Const.Dialogs.ComposeLayer);
+                    uiManager.instance.showDialog(Const.Dialogs.MergeBoardLayer);
                 } else {
-                    composeModel.addHandIndex();
-                    composeModel.addHandIndex();
+                    mergeBoardModel.addHandIndex();
+                    mergeBoardModel.addHandIndex();
                     this.popClose();
                     this.emit(GD.event.refreshHandLayer);
                 }

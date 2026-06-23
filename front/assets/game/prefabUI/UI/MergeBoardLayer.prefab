@@ -1,7 +1,7 @@
 [
   {
     "__type__": "cc.Prefab",
-    "_name": "ComposeLayer",
+    "_name": "MergeBoardLayer",
     "_objFlags": 0,
     "__editorExtras__": {},
     "_native": "",
@@ -13,7 +13,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "ComposeLayer",
+    "_name": "MergeBoardLayer",
     "_objFlags": 0,
     "__editorExtras__": {},
     "_parent": null,
@@ -12490,7 +12490,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "composeSpineLayer",
+    "_name": "mergeFxLayer",
     "_objFlags": 0,
     "__editorExtras__": {},
     "_parent": {
@@ -12541,7 +12541,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "composeSpineItem",
+    "_name": "mergeFxItem",
     "_objFlags": 0,
     "__editorExtras__": {},
     "_parent": {
@@ -22557,10 +22557,10 @@
     "bubbleLayer": {
       "__id__": 896
     },
-    "composeSpineLayer": {
+    "mergeFxLayer": {
       "__id__": 544
     },
-    "composeSpineItem": {
+    "mergeFxItem": {
       "__id__": 545
     },
     "propid": {

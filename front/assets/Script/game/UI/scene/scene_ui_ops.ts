@@ -7,7 +7,7 @@ import { poolManager } from '../../../easyFramework/mgr/poolManager';
 import { uiManager } from '../../../easyFramework/mgr/uiManager';
 import tables from '../../../easyFramework/other/tables';
 import { UtilPub } from '../../../easyFramework/utils/UtilPub';
-import { composeModel } from '../../comm/composeModel';
+import { mergeBoardModel } from '../../comm/mergeBoardModel';
 import { SceneData } from '../../comm/SceneData';
 import { UtilScene } from '../../comm/UtilScene';
 import { handIndexs } from '../../data/handData';
@@ -90,11 +90,11 @@ export class scene_ui_ops extends comm {
             this.hideShadow()
         }
 
-        if (composeModel.getHandIndex() == handIndexs.putCashDesk) {
-            composeModel.closeHandLayer();
-            composeModel.addHandIndex();
-        } else if (composeModel.getHandIndex() == handIndexs.btnLvUp2) {
-            composeModel.addHandIndex()
+        if (mergeBoardModel.getHandIndex() == handIndexs.putCashDesk) {
+            mergeBoardModel.closeHandLayer();
+            mergeBoardModel.addHandIndex();
+        } else if (mergeBoardModel.getHandIndex() == handIndexs.btnLvUp2) {
+            mergeBoardModel.addHandIndex()
         }
 
         //动画还原
@@ -187,10 +187,10 @@ export class scene_ui_ops extends comm {
         //拔起来的时候，可以隐藏
         this._selItemAttr.guestNode && this._selItemAttr.guestNode.getComponent(guest)!.ops(true)
 
-        let handIndex = composeModel.getHandIndex();
+        let handIndex = mergeBoardModel.getHandIndex();
         if (handIndex == handIndexs.putCashDesk) {
             let obj: any = {};
-            obj.id = composeModel.getHandIndex();
+            obj.id = mergeBoardModel.getHandIndex();
             obj.node = this.sure;
             obj.referNode = this._selItemNode;
             obj.isScene = 1;

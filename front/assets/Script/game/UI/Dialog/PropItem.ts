@@ -161,7 +161,7 @@ export class PropItem extends BaseView {
 
     onOpenPropInfo() {
         if (this._propdata.type <= 6 || this._propdata.type > 100 || this._propdata.type == 15 || this._propdata.type == 16 || this._propdata.type == 17 || this._propdata.type == 18) {
-            uiManager.instance.showDialog(Const.Dialogs.ItemInsightLayer, this._propdata.id);
+            uiManager.instance.showDialog(Const.Dialogs.ItemCodexLayer, this._propdata.id);
         } else {
             uiManager.instance.showDialog(Const.Dialogs.PropItemInfo, { propdata: this._propdata })
         }

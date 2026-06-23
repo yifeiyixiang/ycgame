@@ -21,7 +21,7 @@ export enum RPointEvent {
 
 
     // 合成界面，可建造红点提示
-    composeBuild = "composeBuild",
+    boardBuildHint = "boardBuildHint",
 
 }
 
@@ -98,7 +98,7 @@ class RedPointManager {
             case RPointEvent.RPM_TujianScene:
                 value = userData._showSceneTujianRed
                 break;
-            case RPointEvent.composeBuild:
+            case RPointEvent.boardBuildHint:
                 value = UtilScene.isSceneItemCouldBeBuild();
                 break;
             default:

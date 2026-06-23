@@ -3954,7 +3954,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "goToCompose",
+    "_name": "goToMergeBoard",
     "_objFlags": 0,
     "_parent": {
       "__id__": 123
@@ -4007,7 +4007,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "compose",
+    "_name": "mergeBoard",
     "_objFlags": 0,
     "_parent": {
       "__id__": 178

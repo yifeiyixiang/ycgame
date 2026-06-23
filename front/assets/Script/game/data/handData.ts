@@ -5,15 +5,15 @@ const sceneBuildIds = {
 };
 
 const handIndexs = {
-    goCompose: 1,
+    enterMergeBoard: 1,
     firstCompose: 2,
     secondCompose: 3,
     thirdCompose: 4,
-    composeGetNew: 5,
+    boardItemReveal: 5,
     clickRoomNew: 6,
     clickRoomNew2: 7,
-    composeMittens: 8,
-    composeMittens2: 9,
+    boardMergeStepA: 8,
+    boardMergeStepB: 9,
     taskMittens: 10,
     btnBuild: 11,
     goBuildScene: 12,
@@ -22,8 +22,8 @@ const handIndexs = {
     putCashDesk: 15,
     btnLvUp: 16,
     lvUpStart: 17,
-    backComposeLayer: 18,
-    composeCardLayer: 19,
+    returnMergeBoardLayer: 18,
+    boardCardPanel: 19,
 
     btnLvUp2: 20,
     btnLvUp3: 21,

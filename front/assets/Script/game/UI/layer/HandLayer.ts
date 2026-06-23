@@ -4,7 +4,7 @@ import GD from '../../../config/GD';
 import BaseView from '../../../easyFramework/mgr/BaseView';
 import { UtilPub } from '../../../easyFramework/utils/UtilPub';
 import { AnimationCtrl } from '../../comm/AnimationCtrl';
-import { composeModel } from '../../comm/composeModel';
+import { mergeBoardModel } from '../../comm/mergeBoardModel';
 import { handData } from '../../data/handData';
 import { GamePlatform } from '../../platform/GamePlatform';
 const { ccclass, property } = _decorator;
@@ -59,7 +59,7 @@ export class HandLayer extends BaseView {
 
     canvasTouchEvent() {
         if (this.obj.weak) {
-            // composeModel.addHandIndex();
+            // mergeBoardModel.addHandIndex();
             this.close()
         }
     }
@@ -240,11 +240,11 @@ export class HandLayer extends BaseView {
     }
 
     onClickBtnOver() {
-        let handIndex = composeModel.getHandIndex();
+        let handIndex = mergeBoardModel.getHandIndex();
         for (let i = handIndex; i < handData.length; i++) {
             GamePlatform.track("完成新手教程" + i);
         }
-        composeModel.setHandIndex(handData.length);
+        mergeBoardModel.setHandIndex(handData.length);
         this.close();
     }
 

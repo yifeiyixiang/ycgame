@@ -5,7 +5,7 @@ import { localText } from '../../../config/localText';
 import BaseView from '../../../easyFramework/mgr/BaseView';
 import { uiManager } from '../../../easyFramework/mgr/uiManager';
 import tables from '../../../easyFramework/other/tables';
-import { composeModel } from '../../comm/composeModel';
+import { mergeBoardModel } from '../../comm/mergeBoardModel';
 import { handIndexs } from '../../data/handData';
 const { ccclass, property } = _decorator;
 
@@ -46,9 +46,9 @@ export class NewItemLayer extends BaseView {
 
         this.bindButton(this.btnClose, this.onClickBtnClose);
 
-        let handIndex = composeModel.getHandIndex();
-        if (handIndex == handIndexs.composeGetNew) {
-            composeModel.addHandIndex();
+        let handIndex = mergeBoardModel.getHandIndex();
+        if (handIndex == handIndexs.boardItemReveal) {
+            mergeBoardModel.addHandIndex();
             let obj: any = {};
             obj.id = handIndex;
             obj.node = this.btnClose;
@@ -73,7 +73,7 @@ export class NewItemLayer extends BaseView {
 
     onClickBtnClose() {
         this.close();
-        composeModel.closeHandLayer();
+        mergeBoardModel.closeHandLayer();
         this.emit(GD.event.refreshHandLayer);
     }
 

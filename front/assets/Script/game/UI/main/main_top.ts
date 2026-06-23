@@ -7,7 +7,7 @@ import { uiManager } from '../../../easyFramework/mgr/uiManager';
 import tables from '../../../easyFramework/other/tables';
 import { CdComponent, CDType } from '../../../easyFramework/utils/CdComponent';
 import { UtilPub } from '../../../easyFramework/utils/UtilPub';
-import { composeModel } from '../../comm/composeModel';
+import { mergeBoardModel } from '../../comm/mergeBoardModel';
 import { numAction } from '../../comm/numAction';
 import { userData } from '../../comm/UserData';
 import { handIndexs } from '../../data/handData';
@@ -113,7 +113,7 @@ export class main_top extends BaseView {
     
 
     refreshHandLayer() {
-        let handIndex = composeModel.getHandIndex();
+        let handIndex = mergeBoardModel.getHandIndex();
         if (handIndex == handIndexs.btnLvUp) {
             let obj: any = {};
             obj.id = handIndex;
@@ -129,7 +129,7 @@ export class main_top extends BaseView {
                 obj.node = find("root/level", this.node);
                 obj.click2 = 1;
                 uiManager.instance.showDialog(Const.Dialogs.HandLayer, obj);
-                //  composeModel.addHandIndex()
+                //  mergeBoardModel.addHandIndex()
             }
         }
     }
@@ -257,7 +257,7 @@ export class main_top extends BaseView {
     }
 
     showLevelDialog() {
-        composeModel.closeHandLayer();
+        mergeBoardModel.closeHandLayer();
         uiManager.instance.pushShowDialog(Const.Dialogs.LevelDialog)
     }
 
@@ -269,10 +269,10 @@ export class main_top extends BaseView {
     }
 
     lateUpdate() {
-        if (composeModel.getComposePowerRemainTime() > 0) {
+        if (mergeBoardModel.getBoardEnergyCooldown() > 0) {
             this.powerLabel.node.active = false;
             this.wuxianEffect.active = true;
-            this.timeLabel.string = UtilPub.getDurationStr(composeModel.getComposePowerRemainTime());
+            this.timeLabel.string = UtilPub.getDurationStr(mergeBoardModel.getBoardEnergyCooldown());
         } else {
             this.powerLabel.node.active = true;
             this.wuxianEffect.active = false;

@@ -6,7 +6,7 @@ import BaseView from '../../../easyFramework/mgr/BaseView';
 import { uiManager } from '../../../easyFramework/mgr/uiManager';
 import tables from '../../../easyFramework/other/tables';
 import { CdComponent, CDType } from '../../../easyFramework/utils/CdComponent';
-import { composeModel } from '../../comm/composeModel';
+import { mergeBoardModel } from '../../comm/mergeBoardModel';
 import { userData } from '../../comm/UserData';
 import { handIndexs } from '../../data/handData';
 const { ccclass, property } = _decorator;
@@ -34,12 +34,12 @@ export class ShopSynthesisDialog extends BaseView {
     onEnable() {
         this.on(GD.event.updateShopItem, this.updateShopItem)
         // setTimeout(() => {
-        //     let hadnIdnex = composeModel.getHandIndex();
+        //     let hadnIdnex = mergeBoardModel.getHandIndex();
         //     let node = find("root/ScrollView2/view/content", this.node)!
         //     if (node.children.length > 0) {
         //         let node1 = find("Layout", node.children[0])!.children[0]
         //         if (node1 && hadnIdnex == handIndexs.shopbuy) {
-        //             composeModel.closeHandLayer()
+        //             mergeBoardModel.closeHandLayer()
         //             let obj: any = {};
         //             obj.id = hadnIdnex;
         //             obj.node = node1;

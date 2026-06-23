@@ -5,7 +5,7 @@ import BaseView from '../../../easyFramework/mgr/BaseView';
 import { uiManager } from '../../../easyFramework/mgr/uiManager';
 import tables from '../../../easyFramework/other/tables';
 import { UtilPub } from '../../../easyFramework/utils/UtilPub';
-import { composeModel } from '../../comm/composeModel';
+import { mergeBoardModel } from '../../comm/mergeBoardModel';
 import { BagPropData, gameData, petItemData, ShopCfg } from '../../../../typeScript/gameData';
 import { userData } from '../../comm/UserData';
 import { HttpClient } from '../../../../typeScript/net/HttpClient';

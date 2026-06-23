@@ -10,7 +10,7 @@ import TimeCtrJSF from "../../easyFramework/network/TimeCtrJSF";
 import tables from "../../easyFramework/other/tables";
 import { UtilPub } from "../../easyFramework/utils/UtilPub";
 import { handData } from "../data/handData";
-import { ComposeLayer } from "../UI/layer/ComposeLayer";
+import { MergeBoardLayer } from "../UI/layer/MergeBoardLayer";
 import { HandLayer } from "../UI/layer/HandLayer";
 import { aiRobot } from "./AIRobot";
 import { playerModel } from "./playerModel";
@@ -75,19 +75,19 @@ export const managerInfoTypeArr = [
     "Spend %d coins",
 ];
 
-class ComposeModule {
+class MergeBoardModule {
 
-    private static instance: ComposeModule;
+    private static instance: MergeBoardModule;
     private constructor() { }
-    public static getInstane(): ComposeModule {
+    public static getInstane(): MergeBoardModule {
         if (this.instance == null) {
-            this.instance = new ComposeModule();
+            this.instance = new MergeBoardModule();
         }
         return this.instance;
     }
 
     // 合成按钮位置
-    btnComposePos: Vec3 = v3(0, 0, 0);
+    btnMergeBoardPos: Vec3 = v3(0, 0, 0);
 
     // 棋盘大小
     colNum = 7;
@@ -121,7 +121,7 @@ class ComposeModule {
     initData() {
         // 卡片列表
         this.cardArr = [];
-        let ret = GameStorage.getObject(Const.DataKeys.composeCardArr);
+        let ret = GameStorage.getObject(Const.DataKeys.boardCardArr);
         if (ret) {
             // 从服务器加载
             this.cardArr = ret;
@@ -129,7 +129,7 @@ class ComposeModule {
         }
         // 棋盘数据
         this.roomArr = [];
-        this.roomDataKey = Const.DataKeys.composeRoomData;
+        this.roomDataKey = Const.DataKeys.boardRoomData;
 
         ret = GameStorage.getObjectArrayByKey(this.roomDataKey);
         UtilPub.log("读取服务端棋盘数据：", ret);
@@ -161,9 +161,9 @@ class ComposeModule {
             //     tmpObj[this.getRoomDataKey(emptyPos.row, emptyPos.col)] = emptyRoom;
             // }
 
-            let tb = tables.ins().getTable(Const.Tables.composeRoomInit);
+            let tb = tables.ins().getTable(Const.Tables.boardSeed);
             if (aiRobot.isRobot()) {
-                tb = tables.ins().getTable(Const.Tables.composeRoomInitRobot);
+                tb = tables.ins().getTable(Const.Tables.botBoardSeed);
             }
             for (let i = 0; i < tb.length; i++) {
                 let roomRow = tb[i];
@@ -202,12 +202,12 @@ class ComposeModule {
     loadData() {
         console.log("loadData 1")
         this.taskArr = [];
-        this.roomDataKey = Const.DataKeys.composeRoomData;
+        this.roomDataKey = Const.DataKeys.boardRoomData;
         console.log("loadData 2")
 
         // 任务列表
-        if (this.roomDataKey == Const.DataKeys.composeRoomData) {
-            this.taskDataKey = Const.DataKeys.composeTaskArr;
+        if (this.roomDataKey == Const.DataKeys.boardRoomData) {
+            this.taskDataKey = Const.DataKeys.boardOrderQueue;
             console.log("loadData 3")
 
             let ret = GameStorage.getObject(this.taskDataKey);
@@ -242,7 +242,7 @@ class ComposeModule {
         // 店长值班�?
         this.managerArr = [];
         let ret = GameStorage.getObjectArrayByKey(this.roomDataKey);
-        ret = GameStorage.getObjectArrayByKey(Const.DataKeys.composeManagerArr);
+        ret = GameStorage.getObjectArrayByKey(Const.DataKeys.boardMilestoneArr);
         if (!ret.values || ret.values.length <= 0) {
             // 本地初始�?
             this.createNextManager();
@@ -270,7 +270,7 @@ class ComposeModule {
     }
 
     // 完全展示合成界面之后调用
-    showComposeLayerEnd() {
+    markMergeBoardReady() {
         UtilPub.for2Arr(this.roomArr, (roomData: any, row: number, col: number) => {
             if (!roomData.id) {
                 return;
@@ -305,7 +305,7 @@ class ComposeModule {
                         row: row,
                         col: col
                     };
-                    Notifications.emit(GD.event.composeTimeSpeedUpEnd, info);
+                    Notifications.emit(GD.event.boardSpeedupEnded, info);
                 } else {
                     delete roomData.cd;
                     delete roomData.cdSum;
@@ -379,7 +379,7 @@ class ComposeModule {
         return this.roomDataKey + "_" + row + "_" + col;
     }
     getManagerDataKey(index: number) {
-        return Const.DataKeys.composeManagerArr + "_" + index;
+        return Const.DataKeys.boardMilestoneArr + "_" + index;
     }
 
     initRoomData(id: number, data: any = {}, st?: number, clickPropId?: any) {
@@ -733,7 +733,7 @@ class ComposeModule {
             }
         }
 
-        composeModel.taskArr = taskArr
+        mergeBoardModel.taskArr = taskArr
         return taskArr
     }
 
@@ -1014,7 +1014,7 @@ class ComposeModule {
         nineAroundArr.forEach((posArr: any) => {
             let r = row + posArr[0];
             let c = col + posArr[1];
-            if (this.rowColInComposeLayer(r, c)) {
+            if (this.isCellInsideMergeBoard(r, c)) {
                 let rData = this.roomArr[r][c];
                 if (!rData.id) {
                     emptyArr.push([r, c]);
@@ -1062,7 +1062,7 @@ class ComposeModule {
         data.col = col;
         data.newPosArr = newPosArr;
         data.isAuto = isAuto;
-        Notifications.emit(GD.event.composeRoomNew, data);
+        Notifications.emit(GD.event.boardSlotSpawn, data);
     }
     // 通知UI层气泡破�?
     sendToUIRoomBubbleBurst(row: number, col: number) {
@@ -1081,7 +1081,7 @@ class ComposeModule {
     }
 
     // 拖动：进行合�?
-    roomDataCompose(srcRow: number, srcCol: number, targetRow: number, targetCol: number) {
+    mergeRoomData(srcRow: number, srcCol: number, targetRow: number, targetCol: number) {
         let srcData = this.roomArr[srcRow][srcCol];
         let targetData = this.roomArr[targetRow][targetCol];
         let propRow = tables.ins().getTableValueByID(Const.Tables.prop, srcData.id);
@@ -1092,7 +1092,7 @@ class ComposeModule {
             // 通知UI显示获得新元�?
             let blessRow = tables.ins().getTableValueByID(Const.Tables.prop, propRow.blessId);
             if (blessRow.anc) {
-                Notifications.emit(GD.event.composeGetNewItem, propRow.blessId);
+                Notifications.emit(GD.event.boardDiscovery, propRow.blessId);
             }
         }
         let roomData = this.initRoomData(propRow.blessId);
@@ -1115,7 +1115,7 @@ class ComposeModule {
             let posArr = tenAroundArr[i];
             let r = targetRow + posArr[0];
             let c = targetCol + posArr[1];
-            if (this.rowColInComposeLayer(r, c)) {
+            if (this.isCellInsideMergeBoard(r, c)) {
                 let rData = this.roomArr[r][c];
                 if (rData.st == roomStatus.carton) {
                     rData = this.initRoomData(rData.id, rData, roomStatus.spider);
@@ -1125,28 +1125,28 @@ class ComposeModule {
             }
         }
 
-        this.addManagerVal(Const.ManagerTypes.composeCount);
+        this.addManagerVal(Const.ManagerTypes.mergeActionCount);
         if (roomData.id == propIds.coinMaxLv) {
-            this.addManagerVal(Const.ManagerTypes.composeCoinMaxLv);
+            this.addManagerVal(Const.ManagerTypes.coinPeakMergeCount);
         }
         if (roomData.id == propIds.powerMaxLv) {
-            this.addManagerVal(Const.ManagerTypes.composePowerMaxLv);
+            this.addManagerVal(Const.ManagerTypes.energyPeakMergeCount);
         }
 
         return retObj;
     }
     // 合成后，优先有概率生成额外东�?
-    roomDataComposeAfter(targetRow: number, targetCol: number) {
+    afterRoomMerge(targetRow: number, targetCol: number) {
         // 新手阶段不出新东�?
         if (!this.isHandDone() || aiRobot.isRobot()) {
             return;
         }
 
         let roomData = this.roomArr[targetRow][targetCol];
-        let arr = tables.ins().getTable(Const.Tables.composeAward);
+        let arr = tables.ins().getTable(Const.Tables.mergeReward);
         // let retRow = UtilPub.getRowByWeight(arr);
         // UtilPub.log(retRow);
-        let retRow = tables.ins().getTableValueByID(Const.Tables.composeAward, 1)
+        let retRow = tables.ins().getTableValueByID(Const.Tables.mergeReward, 1)
         // // test
         // let emptyPos = this.getEmptyRoomPos();
         // if (emptyPos) {
@@ -1249,7 +1249,7 @@ class ComposeModule {
      * @param bagCol 背包列索�?
      */
     getOutDataFromRoomBag(index: number, bagRow: number, bagCol: number) {
-        let emptyPos = composeModel.getEmptyRoomPos();
+        let emptyPos = mergeBoardModel.getEmptyRoomPos();
         if (!emptyPos) {
             // 外面没有空房间了
             return;
@@ -1309,7 +1309,7 @@ class ComposeModule {
         let propRow = tables.ins().getTableValueByID(Const.Tables.prop, roomData.id);
         roomData.times--;
 
-        if (!propRow.noPower && composeModel.getComposePowerRemainTime() <= 0) {
+        if (!propRow.noPower && mergeBoardModel.getBoardEnergyCooldown() <= 0) {
             // 扣减体力
             this.subPropNum(propIds.power);
             if (aiRobot.isRobot() && this.getPropNumById(propIds.power) <= 1) {
@@ -1375,8 +1375,8 @@ class ComposeModule {
     // 点击解锁
     onClickUnlockRoom(row: number, col: number) {
         let unlocking = false;
-        UtilPub.for2Arr(composeModel.roomArr, (pData: any, pRow: number, pCol: number) => {
-            if (!pData || !pData.id || composeModel.isRoomBubble(pRow, pCol)) {
+        UtilPub.for2Arr(mergeBoardModel.roomArr, (pData: any, pRow: number, pCol: number) => {
+            if (!pData || !pData.id || mergeBoardModel.isRoomBubble(pRow, pCol)) {
                 return;
             }
             let propRow2 = tables.ins().getTableValueByID(Const.Tables.prop, pData.id);
@@ -1387,7 +1387,7 @@ class ComposeModule {
         });
         if (unlocking) {
             // 同时只能有一�?
-            composeModel.showToast(localText.unlocking);
+            mergeBoardModel.showToast(localText.unlocking);
             return;
         }
 
@@ -1410,7 +1410,7 @@ class ComposeModule {
         switch (propRow.mdt) {
             case 2:
                 // 无限能量
-                GameStorage.setInt(Const.DataKeys.composePowerTime, this.getCurrentTimestamp() + propRow.p1 * 1000);
+                GameStorage.setInt(Const.DataKeys.boardEnergyReadyAt, this.getCurrentTimestamp() + propRow.p1 * 1000);
                 this.setRoomData(row, col, {});
                 break;
             case 5:
@@ -1485,8 +1485,8 @@ class ComposeModule {
     }
 
     // 获取无限能量剩余时间，单位：毫秒
-    getComposePowerRemainTime() {
-        let time = GameStorage.getInt(Const.DataKeys.composePowerTime, 0);
+    getBoardEnergyCooldown() {
+        let time = GameStorage.getInt(Const.DataKeys.boardEnergyReadyAt, 0);
         let dt = time - this.getCurrentTimestamp();
         if (dt < 0) {
             dt = 0;
@@ -1502,7 +1502,7 @@ class ComposeModule {
         if (!coin) {
             return;
         }
-        composeModel.addPropNum(propIds.coin, coin, startPos);
+        mergeBoardModel.addPropNum(propIds.coin, coin, startPos);
 
         this.setRoomData(row, col, {});
 
@@ -1627,7 +1627,7 @@ class ComposeModule {
     }
 
     onClickTaskDone(task: any, startPos?: Vec3) {
-        let index = composeModel.taskArr.indexOf(task);
+        let index = mergeBoardModel.taskArr.indexOf(task);
         let bagInfo = this.getRoomDataBagInfo();
         let hasBagProp = false;
         let subPropArr: any = [];
@@ -1660,11 +1660,11 @@ class ComposeModule {
         if (line > 0)
             this.submitLineTask(task.taskId, line)
         // 删除任务
-        composeModel.taskArr.splice(index, 1);
+        mergeBoardModel.taskArr.splice(index, 1);
 
         // 生成新任�?
         if (aiRobot.isRobot()) {
-            composeModel.taskArr.push(aiRobot.createTask());
+            mergeBoardModel.taskArr.push(aiRobot.createTask());
         } else {
             let nextHandTask = null;
             if (task.hand) {
@@ -1672,7 +1672,7 @@ class ComposeModule {
             }
             if (nextHandTask) {
                 // 新手任务
-                composeModel.taskArr.push(nextHandTask);
+                mergeBoardModel.taskArr.push(nextHandTask);
             } else {
                 let num = 0;
                 for (let i = 0; i < tables.ins().config.taskProb.length; i++) {
@@ -1682,18 +1682,18 @@ class ComposeModule {
                     }
                 }
 
-                let maxNum = tables.ins().config.taskMax - composeModel.taskArr.length;
+                let maxNum = tables.ins().config.taskMax - mergeBoardModel.taskArr.length;
                 if (num > maxNum) {
                     // 保证最多有tables.ins().config.taskMax个任�?
                     num = maxNum;
                 }
-                if (composeModel.taskArr.length == 0 && num <= 0) {
+                if (mergeBoardModel.taskArr.length == 0 && num <= 0) {
                     // 保证至少有一个任�?
                     num = 1;
                 }
                 if (num > 0) {
                     let retArr = this.createTask();
-                    composeModel.taskArr = retArr//composeModel.taskArr.concat(retArr);
+                    mergeBoardModel.taskArr = retArr//mergeBoardModel.taskArr.concat(retArr);
                 }
             }
             GamePlatform.track("玩家完成任务");
@@ -1707,12 +1707,12 @@ class ComposeModule {
 
     // 刷新任务
     refreshTask(task: any) {
-        let index = composeModel.taskArr.indexOf(task);
+        let index = mergeBoardModel.taskArr.indexOf(task);
         let newTask = this.createTask()[0];
         if (newTask) {
             newTask.id = task.id;
             newTask.hand = task.hand;
-            composeModel.taskArr[index] = newTask;
+            mergeBoardModel.taskArr[index] = newTask;
             Notifications.emit(GD.event.refreshTask);
         }
 
@@ -1836,7 +1836,7 @@ class ComposeModule {
 
     /**
      * 店长值班日里的任务统�?
-     * composeModel.addManagerVal(Const.ManagerTypes.roomSpeedUp);
+     * mergeBoardModel.addManagerVal(Const.ManagerTypes.roomSpeedUp);
      * @param type 任务类型
      * @param val 增加值，默认�?
      */
@@ -1859,7 +1859,7 @@ class ComposeModule {
                 manager.val += val;
             }
             this.sendManagerToServer(index);
-            Notifications.emit(GD.event.composeManagerRefresh);
+            Notifications.emit(GD.event.boardMilestoneRefresh);
         });
     }
     getManagerVal(manager: any) {
@@ -1915,13 +1915,13 @@ class ComposeModule {
             }
         }
         if (allGet) {
-            GameStorage.setInt(Const.DataKeys.composeManagerAllGet, 1);
+            GameStorage.setInt(Const.DataKeys.boardMilestoneAllClaimed, 1);
         }
 
-        Notifications.emit(GD.event.composeManagerRefresh);
+        Notifications.emit(GD.event.boardMilestoneRefresh);
     }
     isManagerAllGet() {
-        return GameStorage.getInt(Const.DataKeys.composeManagerAllGet);
+        return GameStorage.getInt(Const.DataKeys.boardMilestoneAllClaimed);
     }
 
     /**
@@ -1929,7 +1929,7 @@ class ComposeModule {
      * @param row 行索�?
      * @param col 列索�?
      */
-    rowColInComposeLayer(row: number, col: number) {
+    isCellInsideMergeBoard(row: number, col: number) {
         if (row >= 0 && row <= this.rowNum - 1 && col >= 0 && col <= this.colNum - 1) {
             return true;
         }
@@ -1996,29 +1996,29 @@ class ComposeModule {
                 this.cardArr.push(propId);
             }
             this.sendCardArrToServer();
-            Notifications.emit(GD.event.composeCardLayerRefresh);
+            Notifications.emit(GD.event.boardCardRefresh);
             if (notFlay) {
                 return;
             }
-            let composeLayer = this.getComposeLayer();
+            let mergeBoardLayer = this.findMergeBoardLayer();
             if (!startPos) {
                 startPos = this.getScreenMidPos();
             }
-            if (composeLayer) {
-                userData.showResFly(propId, propNum, startPos, composeLayer.getCardLayerPos());
+            if (mergeBoardLayer) {
+                userData.showResFly(propId, propNum, startPos, mergeBoardLayer.getCardLayerPos());
             } else {
-                userData.showResFly(propId, propNum, startPos, this.btnComposePos);
+                userData.showResFly(propId, propNum, startPos, this.btnMergeBoardPos);
             }
         } else {
             if (propId == propIds.star) {
                 if (!startPos) {
                     startPos = this.getScreenMidPos();
                 }
-                let composeLayer = this.getComposeLayer();
-                if (composeLayer) {
-                    endPos = composeLayer.getBtnBuildStarPos();
+                let mergeBoardLayer = this.findMergeBoardLayer();
+                if (mergeBoardLayer) {
+                    endPos = mergeBoardLayer.getBtnBuildStarPos();
                 } else {
-                    endPos = this.btnComposePos;
+                    endPos = this.btnMergeBoardPos;
                 }
             }
             if (startPos) {
@@ -2080,10 +2080,10 @@ class ComposeModule {
             keyArr.push(this.getManagerDataKey(index));
         });
         GameStorage.removeMulti(keyArr);
-        GameStorage.removeItem(Const.DataKeys.composeManagerAllGet);
+        GameStorage.removeItem(Const.DataKeys.boardMilestoneAllClaimed);
 
         // 卡片列表
-        GameStorage.removeItem(Const.DataKeys.composeCardArr);
+        GameStorage.removeItem(Const.DataKeys.boardCardArr);
 
         // 新手引导
         GameStorage.removeItem(Const.DataKeys.handIndex);
@@ -2103,7 +2103,7 @@ class ComposeModule {
 
     // 同步卡片列表数据给服务端
     sendCardArrToServer() {
-        GameStorage.setObject(Const.DataKeys.composeCardArr, this.cardArr);
+        GameStorage.setObject(Const.DataKeys.boardCardArr, this.cardArr);
     }
 
     /**
@@ -2128,12 +2128,12 @@ class ComposeModule {
     }
 
     getTaskArrSort() {
-        //   return composeModel.taskArr
+        //   return mergeBoardModel.taskArr
 
         let arr = [];
         // 加上索引信息
-        for (let i = 0; i < composeModel.taskArr.length; i++) {
-            arr.push(composeModel.taskArr[i]);
+        for (let i = 0; i < mergeBoardModel.taskArr.length; i++) {
+            arr.push(mergeBoardModel.taskArr[i]);
         }
 
 
@@ -2143,7 +2143,7 @@ class ComposeModule {
             let onePercent = 1 / t1.propArr.length;
             for (let i in t1.propArr) {
                 let prop = t1.propArr[i];
-                let hasInfo = composeModel.getRoomDataHasInfoById(prop.id);
+                let hasInfo = mergeBoardModel.getRoomDataHasInfoById(prop.id);
                 let hasPercent = hasInfo.num / prop.num;
                 if (hasPercent > 1) {
                     hasPercent = 1;
@@ -2154,7 +2154,7 @@ class ComposeModule {
             onePercent = 1 / t2.propArr.length;
             for (let i in t2.propArr) {
                 let prop = t2.propArr[i];
-                let hasInfo = composeModel.getRoomDataHasInfoById(prop.id);
+                let hasInfo = mergeBoardModel.getRoomDataHasInfoById(prop.id);
                 let hasPercent = hasInfo.num / prop.num;
                 if (hasPercent > 1) {
                     hasPercent = 1;
@@ -2172,17 +2172,17 @@ class ComposeModule {
     }
 
     getComposePropCount(propId: number) {
-        return GameStorage.getInt(Const.DataKeys.composePropCount + propId, 0);
+        return GameStorage.getInt(Const.DataKeys.boardItemCount + propId, 0);
     }
     setComposePropCount(propId: number, val: number) {
-        return GameStorage.setInt(Const.DataKeys.composePropCount + propId, val);
+        return GameStorage.setInt(Const.DataKeys.boardItemCount + propId, val);
     }
 
     getHandIndex() {
         let handIndex = GameStorage.getInt(Const.DataKeys.handIndex, 1);
         if (aiRobot.isRobot()) {
             handIndex = handData.length;
-            composeModel.setHandIndex(handIndex);
+            mergeBoardModel.setHandIndex(handIndex);
         }
         return handIndex;
     }
@@ -2221,10 +2221,10 @@ class ComposeModule {
         }
         return {};
     }
-    getComposeLayer(): ComposeLayer | null {
-        let composeLayer = find("Canvas/ComposeLayer");
-        if (composeLayer) {
-            return composeLayer.getComponent(ComposeLayer);
+    findMergeBoardLayer(): MergeBoardLayer | null {
+        let mergeBoardLayer = find("Canvas/MergeBoardLayer");
+        if (mergeBoardLayer) {
+            return mergeBoardLayer.getComponent(MergeBoardLayer);
         }
         return null;
     }
@@ -2273,7 +2273,7 @@ class ComposeModule {
         if (propRow.tan) {
             uiManager.instance.showDialog(Const.Dialogs.PropItemInfo, { propdata: propRow });
         } else {
-            uiManager.instance.showDialog(Const.Dialogs.ItemInsightLayer, propId);
+            uiManager.instance.showDialog(Const.Dialogs.ItemCodexLayer, propId);
         }
     }
 
@@ -2406,7 +2406,7 @@ class ComposeModule {
 
 }
 
-const composeModel = ComposeModule.getInstane();
+const mergeBoardModel = MergeBoardModule.getInstane();
 
-export { composeModel };
+export { mergeBoardModel };
 

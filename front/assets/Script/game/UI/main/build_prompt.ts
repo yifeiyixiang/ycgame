@@ -7,7 +7,7 @@ import BaseView from '../../../easyFramework/mgr/BaseView';
 import { uiManager } from '../../../easyFramework/mgr/uiManager';
 import tables from '../../../easyFramework/other/tables';
 import { UtilPub } from '../../../easyFramework/utils/UtilPub';
-import { composeModel } from '../../comm/composeModel';
+import { mergeBoardModel } from '../../comm/mergeBoardModel';
 import { SceneData } from '../../comm/SceneData';
 import { userData } from '../../comm/UserData';
 import { UtilScene } from '../../comm/UtilScene';
@@ -36,8 +36,8 @@ export class build_prompt extends BaseView {
     //右边奖励和建造按�?
     get rewards() { return find("root/bgIcon/rewards", this.node)! }
     get btnBuild() { return find("root/bgIcon/btnBuild", this.node)! }
-    get goToCompose() { return find("root/bgIcon/goToCompose", this.node)! }
-    get pop() { return find("root/bgIcon/goToCompose/pop", this.node)! }
+    get goToMergeBoard() { return find("root/bgIcon/goToMergeBoard", this.node)! }
+    get pop() { return find("root/bgIcon/goToMergeBoard/pop", this.node)! }
 
     get btnBuildLabel() { return find("root/bgIcon/btnBuild/btnBuildLabel", this.node)!.getComponent(Label)! }
 
@@ -67,9 +67,9 @@ export class build_prompt extends BaseView {
 
         this.bindButton(this.btnBuild, this.onClickBtnBuild);
 
-        this.bindButton(this.goToCompose, () => {
+        this.bindButton(this.goToMergeBoard, () => {
             this.close()
-            uiManager.instance.showDialog(Const.Dialogs.ComposeLayer)
+            uiManager.instance.showDialog(Const.Dialogs.MergeBoardLayer)
         })
 
         //完成监听
@@ -77,11 +77,11 @@ export class build_prompt extends BaseView {
             let name = trackEntry.animation ? trackEntry.animation.name : '';
             if (name == "animation") {// 动画结束后执行自己的逻辑
 
-                let handIndex = composeModel.getHandIndex();
+                let handIndex = mergeBoardModel.getHandIndex();
                 if (handIndex == handIndexs.buildCashDesk) {
-                    composeModel.addHandIndex();
-                    composeModel.addHandIndex();
-                    composeModel.closeHandLayer();
+                    mergeBoardModel.addHandIndex();
+                    mergeBoardModel.addHandIndex();
+                    mergeBoardModel.closeHandLayer();
                 }
 
                 this.emit(GD.event.chgGreenStar)
@@ -99,7 +99,7 @@ export class build_prompt extends BaseView {
 
                 }
 
-                if (composeModel.isHandDone()) {
+                if (mergeBoardModel.isHandDone()) {
                     this.scheduleOnce(() => {
                         UtilScene.setSceneItemAni(script.node, () => {
 
@@ -179,12 +179,12 @@ export class build_prompt extends BaseView {
         // let star = this.sceneItemData.stars.split(",")[1]
         // let isShowBuild = (userData.greenStar >= star)
         this.btnBuild.active = isShowBuild
-        this.goToCompose.active = !isShowBuild
+        this.goToMergeBoard.active = !isShowBuild
 
-        let handIndex = composeModel.getHandIndex();
+        let handIndex = mergeBoardModel.getHandIndex();
         if (handIndex == handIndexs.buildCashDesk) {
             let obj: any = {};
-            obj.id = composeModel.getHandIndex() + 1;
+            obj.id = mergeBoardModel.getHandIndex() + 1;
             obj.node = this.btnBuild;
             obj.delayTime = 0.5;
             uiManager.instance.showDialog(Const.Dialogs.HandLayer, obj);
@@ -215,7 +215,7 @@ export class build_prompt extends BaseView {
         if (userData.checkAndUseGreenStar(star)) {
             this.isBtnActive = true
             audioManager.instance.playSound(Const.Audio.star_touch)
-            composeModel.addManagerVal(Const.ManagerTypes.buildCount);
+            mergeBoardModel.addManagerVal(Const.ManagerTypes.buildCount);
 
             this.spineAni.node.active = true
             this.spineAni.setAnimation(0, "animation", false)
@@ -241,7 +241,7 @@ export class build_prompt extends BaseView {
             this.emit(GD.event.updateMoney);
 
             //赋予奖励
-            composeModel.addPropNum(this.sceneItemData.reward[0], this.sceneItemData.reward[1], v3(), v3(), true)
+            mergeBoardModel.addPropNum(this.sceneItemData.reward[0], this.sceneItemData.reward[1], v3(), v3(), true)
 
             //进度条动�?
             if (this.type != GBuildType.room) {

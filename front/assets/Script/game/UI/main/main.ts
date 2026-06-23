@@ -9,7 +9,7 @@ import ServerCtrJSF from '../../../easyFramework/network/ServerCtrJSF';
 import { CdComponent, CDType } from '../../../easyFramework/utils/CdComponent';
 import { UtilPub } from '../../../easyFramework/utils/UtilPub';
 import { aiRobot } from '../../comm/AIRobot';
-import { composeModel } from '../../comm/composeModel';
+import { mergeBoardModel } from '../../comm/mergeBoardModel';
 import { playerModel } from '../../comm/playerModel';
 import { redPointManager, RPointEvent } from '../../comm/RedPointManager';
 import { SignUtil } from '../../comm/SignUtil';
@@ -30,7 +30,7 @@ export class main extends BaseView {
     get sceneNode() { return find("root/sceneNode", this.node)! }
 
     //进入合成按钮
-    get menuBtnForCompose() { return find("root/bottom/compose", this.node)! }
+    get menuBtnForMergeBoard() { return find("root/bottom/mergeBoard", this.node)! }
 
     //建造清单节�?
     get buildListNode() { return find("root/LayoutLeft/buildList", this.node)! }
@@ -85,7 +85,7 @@ export class main extends BaseView {
         this.bindButton(this.buildListNode, () => {
             uiManager.instance.showDialog(Const.Dialogs.build_list)
         })
-        this.bindButtonNoAudio(this.menuBtnForCompose, this.onClickBtnCompose);
+        this.bindButtonNoAudio(this.menuBtnForMergeBoard, this.openMergeBoard);
 
         this.bindButton(find("root/LayoutRight/btnTujian", this.node)!, () => {
             uiManager.instance.showDialog(Const.Dialogs.Tujian)
@@ -152,9 +152,9 @@ export class main extends BaseView {
 
         find("root/top/btnSign", this.node)!.active = SignUtil.getInstance().getCurSignDay() > 0
 
-        this.bindButton(find("root/btnsRight/btnSeasonAward", this.node)!, () => {
-            // uiManager.instance.showDialog(Const.Dialogs.SeasonTrackLayer);
-            uiManager.instance.showDialog(Const.Dialogs.SeasonAwardAdLayer);
+        this.bindButton(find("root/btnsRight/btnSeasonPass", this.node)!, () => {
+            // uiManager.instance.showDialog(Const.Dialogs.SeasonRoadmapLayer);
+            uiManager.instance.showDialog(Const.Dialogs.SeasonPassLayer);
         });
 
         this.addPrefab(Const.Prefabs.Main_top, find("root", this.node)!, null!, { flag: main_top.ShowLevel | main_top.ShowCoin | main_top.ShowPower | main_top.ShowDiamond });
@@ -189,7 +189,7 @@ export class main extends BaseView {
         GamePlatform.track("enter main scene")
 
         this.scheduleOnce(() => {
-            composeModel.btnComposePos = UtilPub.convertToWorldSpace(find("root/bottom/compose", this.node)!);
+            mergeBoardModel.btnMergeBoardPos = UtilPub.convertToWorldSpace(find("root/bottom/mergeBoard", this.node)!);
         });
 
     }
@@ -225,28 +225,28 @@ export class main extends BaseView {
     }
 
     refreshUnlockLayer() {
-        let btnSeasonAward = find("root/btnsRight/btnSeasonAward", this.node)!;
-        // btnSeasonAward.active = false;
+        let btnSeasonPass = find("root/btnsRight/btnSeasonPass", this.node)!;
+        // btnSeasonPass.active = false;
         // return;
 
         if (playerModel.seasonOpen) {
-            btnSeasonAward.active = true;
+            btnSeasonPass.active = true;
         } else {
-            btnSeasonAward.active = false;
+            btnSeasonPass.active = false;
         }
     }
 
     refreshHandLayer() {
-        let handIndex = composeModel.getHandIndex();
+        let handIndex = mergeBoardModel.getHandIndex();
         if (handIndex >= handIndexs.firstCompose && handIndex <= handIndexs.goBuildScene) {
-            handIndex = handIndexs.goCompose;
-        } else if (handIndex == handIndexs.composeCardLayer) {
-            handIndex = handIndexs.backComposeLayer;
+            handIndex = handIndexs.enterMergeBoard;
+        } else if (handIndex == handIndexs.boardCardPanel) {
+            handIndex = handIndexs.returnMergeBoardLayer;
         }
-        if (handIndex == handIndexs.goCompose || handIndex == handIndexs.backComposeLayer) {
+        if (handIndex == handIndexs.enterMergeBoard || handIndex == handIndexs.returnMergeBoardLayer) {
             let obj: any = {};
             obj.id = handIndex;
-            obj.node = this.menuBtnForCompose;
+            obj.node = this.menuBtnForMergeBoard;
             uiManager.instance.showDialog(Const.Dialogs.HandLayer, obj);
         }
     }
@@ -294,16 +294,16 @@ export class main extends BaseView {
 
     }
 
-    onClickBtnCompose() {
-        if (composeModel.getHandIndex() == handIndexs.goCompose
-            || composeModel.getHandIndex() == handIndexs.backComposeLayer
+    openMergeBoard() {
+        if (mergeBoardModel.getHandIndex() == handIndexs.enterMergeBoard
+            || mergeBoardModel.getHandIndex() == handIndexs.returnMergeBoardLayer
         ) {
-            composeModel.addHandIndex();
-            composeModel.closeHandLayer();
+            mergeBoardModel.addHandIndex();
+            mergeBoardModel.closeHandLayer();
         }
-        UtilPub.log("------------handIndex Main0", composeModel.getHandIndex())
+        UtilPub.log("------------handIndex Main0", mergeBoardModel.getHandIndex())
         audioManager.instance.playSound(Const.Audio.sceneChange);
-        uiManager.instance.showDialog(Const.Dialogs.ComposeLayer);
+        uiManager.instance.showDialog(Const.Dialogs.MergeBoardLayer);
     }
 
 

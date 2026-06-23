@@ -8,8 +8,8 @@ import { UtilPub } from '../../../easyFramework/utils/UtilPub';
 import { userData } from '../../comm/UserData';
 const { ccclass, property } = _decorator;
 
-@ccclass('ItemInsightLayer')
-export class ItemInsightLayer extends BaseView {
+@ccclass('ItemCodexLayer')
+export class ItemCodexLayer extends BaseView {
 
 
     @property({ type: Node })
@@ -76,7 +76,7 @@ export class ItemInsightLayer extends BaseView {
                 }
             }
 
-            this.setSpriteFrame2(find("bg", itemUI)!.getComponent(Sprite)!, Const.resPath.composeIcon + "prop_detail/" + bgName);
+            this.setSpriteFrame2(find("bg", itemUI)!.getComponent(Sprite)!, Const.resPath.mergeIcon + "item_codex/" + bgName);
             this.bindButton(itemUI, this.onClickPropItem);
             // @ts-ignore
             itemUI.propRow = pRow;
@@ -161,7 +161,7 @@ export class ItemInsightLayer extends BaseView {
         // @ts-ignore
         let propRow = btn.node.propRow;
         // if (userData.isGetPropTujian(propRow.id) == TujianState.unGet) {
-        //     composeModel.showToast(localText.lockNoLook);
+        //     mergeBoardModel.showToast(localText.lockNoLook);
         //     return;
         // }
         uiManager.instance.showDialog(Const.Dialogs.PropMinInfo, { propdata: propRow });

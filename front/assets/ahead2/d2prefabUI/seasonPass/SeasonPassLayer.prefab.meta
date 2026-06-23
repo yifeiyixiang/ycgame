@@ -2,12 +2,12 @@
   "ver": "1.1.50",
   "importer": "prefab",
   "imported": true,
-  "uuid": "4a19fa93-7c21-4a5f-88eb-01c8fbb5f420",
+  "uuid": "012fca03-262c-4c94-9f02-4e56b2372780",
   "files": [
     ".json"
   ],
   "subMetas": {},
   "userData": {
-    "syncNodeName": "ItemInsightLayer"
+    "syncNodeName": "SeasonPassLayer"
   }
 }

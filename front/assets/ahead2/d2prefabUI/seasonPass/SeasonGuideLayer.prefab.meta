@@ -2,12 +2,12 @@
   "ver": "1.1.50",
   "importer": "prefab",
   "imported": true,
-  "uuid": "012fca03-262c-4c94-9f02-4e56b2372780",
+  "uuid": "6888496c-868d-4d29-a082-d8302c8c4284",
   "files": [
     ".json"
   ],
   "subMetas": {},
   "userData": {
-    "syncNodeName": "SeasonAwardAdLayer"
+    "syncNodeName": "SeasonGuideLayer"
   }
 }

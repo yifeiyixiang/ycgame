@@ -2,7 +2,7 @@ import { Button, find, Label, Node, Sprite, tween, UITransform, v3, Vec3, _decor
 import { Const } from '../../../config/Const';
 import BaseView from '../../../easyFramework/mgr/BaseView';
 import tables from '../../../easyFramework/other/tables';
-import { composeModel } from '../../comm/composeModel';
+import { mergeBoardModel } from '../../comm/mergeBoardModel';
 const { ccclass, property } = _decorator;
 
 @ccclass('FuBagReceiveLayer')
@@ -41,14 +41,14 @@ export class FuBagReceiveLayer extends BaseView {
     onClickPropItem(btn: Button) {
         // @ts-ignore
         let propRow = btn.node.propRow;
-        composeModel.openPropInfoLayer(propRow.id);
+        mergeBoardModel.openPropInfoLayer(propRow.id);
     }
 
     onClickBtnSure() {
         for (let index = 0; index < this._rewardList.length; index++) {
             const element = this._rewardList[index];
             console.log("prop : " + element[0] + "  num: " + element[1])
-            composeModel.addPropNum(element[0], element[1], this.node.getComponent(UITransform)!.convertToWorldSpaceAR(Vec3.ZERO))
+            mergeBoardModel.addPropNum(element[0], element[1], this.node.getComponent(UITransform)!.convertToWorldSpaceAR(Vec3.ZERO))
         }
         this.close();
     }

@@ -7,7 +7,7 @@ import { poolManager } from '../../easyFramework/mgr/poolManager';
 import { uiManager } from '../../easyFramework/mgr/uiManager';
 import tables from '../../easyFramework/other/tables';
 import { UtilPub } from '../../easyFramework/utils/UtilPub';
-import { composeModel } from '../comm/composeModel';
+import { mergeBoardModel } from '../comm/mergeBoardModel';
 import { SceneData } from '../comm/SceneData';
 import { userData } from '../comm/UserData';
 import { UtilScene } from '../comm/UtilScene';
@@ -174,7 +174,7 @@ export class canvas_game_scene extends comm {
             let targtPos = v3(target.worldPosition.x, target.worldPosition.y, Const.CameraScene.node.worldPosition.z)
             // let dis = UtilPub.getDis2D(target.worldPosition, Const.CameraScene.node.worldPosition)
             this.aniTween = tween(Const.CameraScene.node).to(0.3, { worldPosition: targtPos }).call(() => {
-                let handIndex = composeModel.getHandIndex();
+                let handIndex = mergeBoardModel.getHandIndex();
                 if (handIndex == handIndexs.buildCashDesk) {
                     let obj: any = {};
                     obj.id = handIndex;
@@ -636,7 +636,7 @@ export class canvas_game_scene extends comm {
                 }
             })
 
-            let handIndex = composeModel.getHandIndex();
+            let handIndex = mergeBoardModel.getHandIndex();
             if (handIndex == handIndexs.buildCashDesk
                 || handIndex == handIndexs.putCashDesk
             ) {

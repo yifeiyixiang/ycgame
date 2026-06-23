@@ -3,7 +3,7 @@ import { Const } from '../../../config/Const';
 import BaseView from '../../../easyFramework/mgr/BaseView';
 import tables from '../../../easyFramework/other/tables';
 import { CdComponent, CDType } from '../../../easyFramework/utils/CdComponent';
-import { composeModel } from '../../comm/composeModel';
+import { mergeBoardModel } from '../../comm/mergeBoardModel';
 import { userData } from '../../comm/UserData';
 import { PropItem, PropItemFlag } from './PropItem';
 const { ccclass, property } = _decorator;
@@ -67,7 +67,7 @@ export class TotalRechargeDialog extends BaseView {
 
     onClickFreeSaleShop(event: any, data: any) {
         data.reward.forEach((element: any) => {
-            composeModel.addPropNum(element[0], element[1])
+            mergeBoardModel.addPropNum(element[0], element[1])
         });
         userData.setActivityReceiveTime(data.dataKey)
         // this.initShop(data.type)

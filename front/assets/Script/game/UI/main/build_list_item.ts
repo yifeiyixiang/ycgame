@@ -5,7 +5,7 @@ import { GBuildType, GSceneRoomReceiveState, GSceneRoomState } from '../../../co
 import { comm } from '../../../easyFramework/mgr/comm';
 import { uiManager } from '../../../easyFramework/mgr/uiManager';
 import tables from '../../../easyFramework/other/tables';
-import { composeModel } from '../../comm/composeModel';
+import { mergeBoardModel } from '../../comm/mergeBoardModel';
 import { SceneData } from '../../comm/SceneData';
 import { userData } from '../../comm/UserData';
 import { UtilScene } from '../../comm/UtilScene';
@@ -151,7 +151,7 @@ export class build_list_item extends comm {
 
     onClickBtnGo(){
         //关闭窗口
-        composeModel.closeHandLayer();
+        mergeBoardModel.closeHandLayer();
         uiManager.instance.hideDialog(Const.Dialogs.build_list)
         this.emit(GD.event.goToBuildScene, this.buildId, this.buildType)
     }

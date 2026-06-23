@@ -5,7 +5,7 @@ import { localText } from '../../../config/localText';
 import BaseView from '../../../easyFramework/mgr/BaseView';
 import tables from '../../../easyFramework/other/tables';
 import { UtilPub } from '../../../easyFramework/utils/UtilPub';
-import { composeModel, propIds } from '../../comm/composeModel';
+import { mergeBoardModel, propIds } from '../../comm/mergeBoardModel';
 const { ccclass, property } = _decorator;
 
 @ccclass('BagLayer')
@@ -40,7 +40,7 @@ export class BagLayer extends BaseView {
     }
 
     initUI() {
-        let bagRoomData = composeModel.roomArr[this.row][this.col];
+        let bagRoomData = mergeBoardModel.roomArr[this.row][this.col];
         let arr = JSON.parse(JSON.stringify(bagRoomData.roomArr));
 
         let hasNum = 0;
@@ -91,21 +91,21 @@ export class BagLayer extends BaseView {
     }
 
     onClickBtnAdd(btn: Button) {
-        let bagRoomData = composeModel.roomArr[this.row][this.col];
+        let bagRoomData = mergeBoardModel.roomArr[this.row][this.col];
         let bagRow = tables.ins().getTableValueByID(Const.Tables.bagGrid, bagRoomData.roomArr.length + 1);
         if (!bagRow) {
             return;
         }
 
-        if (composeModel.getPropNumById(propIds.coin) < bagRow.coin) {
+        if (mergeBoardModel.getPropNumById(propIds.coin) < bagRow.coin) {
             // 金币不足
             return;
         }
 
         // 扣除金币
-        composeModel.subPropNum(propIds.coin, bagRow.coin);
+        mergeBoardModel.subPropNum(propIds.coin, bagRow.coin);
         // 增加格子
-        composeModel.bagRoomAddGrid(this.row, this.col);
+        mergeBoardModel.bagRoomAddGrid(this.row, this.col);
 
         this.initUI();
     }
@@ -121,7 +121,7 @@ export class BagLayer extends BaseView {
             return;
         }
 
-        let ret: any = composeModel.getOutDataFromRoomBag(index, this.row, this.col);
+        let ret: any = mergeBoardModel.getOutDataFromRoomBag(index, this.row, this.col);
         if (!ret) {
             // 取出失败
             UtilPub.log("棋盘上没有空房间了");
@@ -138,7 +138,7 @@ export class BagLayer extends BaseView {
     onClickBtnInfo(btn: Button) {
         // @ts-ignore
         let propRow = btn.node.propRow
-        composeModel.openPropInfoLayer(propRow.id);
+        mergeBoardModel.openPropInfoLayer(propRow.id);
     }
 
     onClickBtnClose() {
@@ -148,7 +148,7 @@ export class BagLayer extends BaseView {
         obj.row = this.row;
         obj.col = this.col;
         obj.getOutArr = this.getOutArr;
-        this.emit(GD.event.composeGetOutFromBag, obj);
+        this.emit(GD.event.boardBagWithdraw, obj);
     }
 
 

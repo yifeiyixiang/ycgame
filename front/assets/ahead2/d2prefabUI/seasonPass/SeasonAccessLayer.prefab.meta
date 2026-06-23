@@ -2,12 +2,12 @@
   "ver": "1.1.50",
   "importer": "prefab",
   "imported": true,
-  "uuid": "823e19d1-858d-4ddd-ab1a-81c7164739bc",
+  "uuid": "57ff58dc-dd2d-4453-8ea7-d7ac4738ab2f",
   "files": [
     ".json"
   ],
   "subMetas": {},
   "userData": {
-    "syncNodeName": "SeasonTrackLayer"
+    "syncNodeName": "SeasonAccessLayer"
   }
 }

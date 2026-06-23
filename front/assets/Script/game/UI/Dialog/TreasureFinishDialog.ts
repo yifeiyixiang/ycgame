@@ -5,7 +5,7 @@ import BaseView from '../../../easyFramework/mgr/BaseView';
 import tables from '../../../easyFramework/other/tables';
 import { CdComponent, CDType } from '../../../easyFramework/utils/CdComponent';
 import { RechargeManager } from '../../../Util/RechargeManager';
-import { composeModel } from '../../comm/composeModel';
+import { mergeBoardModel } from '../../comm/mergeBoardModel';
 import { userData } from '../../comm/UserData';
 import { PropItem, PropItemFlag } from './PropItem';
 import { TreasureModel } from './TreasureModel';

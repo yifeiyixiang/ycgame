@@ -6,7 +6,7 @@ import { comm } from '../../../easyFramework/mgr/comm';
 import TimeCtrJSF from '../../../easyFramework/network/TimeCtrJSF';
 import tables from '../../../easyFramework/other/tables';
 import { CdComponent, CDType } from '../../../easyFramework/utils/CdComponent';
-import { composeModel } from '../../comm/composeModel';
+import { mergeBoardModel } from '../../comm/mergeBoardModel';
 import { userData } from '../../comm/UserData';
 import { PropItem, PropItemFlag } from './PropItem';
 const { ccclass, property } = _decorator;
@@ -123,7 +123,7 @@ export class SaleDailyDialog extends BaseView {
 
     onClickFreeSaleShop(event: any, data: any) {
         data.reward.forEach((element: any) => {
-            composeModel.addPropNum(element[0], element[1])
+            mergeBoardModel.addPropNum(element[0], element[1])
         });
         userData.setReceiveTime(data.dataKey, data.cdTime)
         this.initShop(data.type)

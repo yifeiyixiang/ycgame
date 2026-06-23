@@ -10,7 +10,7 @@ import ServerCtrJSF from '../../easyFramework/network/ServerCtrJSF';
 import tables from '../../easyFramework/other/tables';
 import { UtilPub } from '../../easyFramework/utils/UtilPub';
 import { RechargeManager } from '../../Util/RechargeManager';
-import { composeModel } from '../comm/composeModel';
+import { mergeBoardModel } from '../comm/mergeBoardModel';
 import { userData } from '../comm/UserData';
 import GD from '../../config/GD';
 import { WmSocketJSF } from '../../easyFramework/network/WmSocketJSF';

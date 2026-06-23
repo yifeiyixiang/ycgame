@@ -5,7 +5,7 @@ import BaseView from '../../../easyFramework/mgr/BaseView';
 import { poolManager } from '../../../easyFramework/mgr/poolManager';
 import { uiManager } from '../../../easyFramework/mgr/uiManager';
 import { UtilPub } from '../../../easyFramework/utils/UtilPub';
-import { composeModel } from '../../comm/composeModel';
+import { mergeBoardModel } from '../../comm/mergeBoardModel';
 import { userData } from '../../comm/UserData';
 import { UtilScene } from '../../comm/UtilScene';
 import { handIndexs } from '../../data/handData';
@@ -52,16 +52,16 @@ export class build_list extends BaseView {
                 this.items.push(item)
             })
 
-            let handIndex = composeModel.getHandIndex();
+            let handIndex = mergeBoardModel.getHandIndex();
             if (handIndex == handIndexs.btnBuild) {
-                composeModel.addHandIndex();
+                mergeBoardModel.addHandIndex();
                 let obj: any = {};
-                obj.id = composeModel.getHandIndex();
+                obj.id = mergeBoardModel.getHandIndex();
                 let btnGo = find("root/mid/goBtn", this.buildListLayout.children[0]);
                 obj.node = btnGo;
                 obj.delayTime = 0.5;
                 uiManager.instance.showDialog(Const.Dialogs.HandLayer, obj);
-                composeModel.addHandIndex();
+                mergeBoardModel.addHandIndex();
             }
         })
     }

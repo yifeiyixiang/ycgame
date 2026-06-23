@@ -4,7 +4,7 @@ import { GBuildType } from '../../../config/global';
 import { comm } from '../../../easyFramework/mgr/comm';
 import { uiManager } from '../../../easyFramework/mgr/uiManager';
 import { UtilPub } from '../../../easyFramework/utils/UtilPub';
-import { composeModel } from '../../comm/composeModel';
+import { mergeBoardModel } from '../../comm/mergeBoardModel';
 const { ccclass, property } = _decorator;
 
 @ccclass('float_star')
@@ -34,7 +34,7 @@ export class float_star extends comm {
 
     onClickBtnPrompt() {
         //id 和 scene_item表id  type为GSceneItemType.room 或者 other，
-        composeModel.closeHandLayer();
+        mergeBoardModel.closeHandLayer();
         uiManager.instance.showDialog(Const.Dialogs.build_prompt, { id: this.id, type: this.type })
     }
 

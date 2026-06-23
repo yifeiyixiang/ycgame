@@ -2,7 +2,7 @@ import { Button, find, Node, Sprite, _decorator } from 'cc';
 import { Const } from '../../../config/Const';
 import BaseView from '../../../easyFramework/mgr/BaseView';
 import tables from '../../../easyFramework/other/tables';
-import { composeModel } from '../../comm/composeModel';
+import { mergeBoardModel } from '../../comm/mergeBoardModel';
 const { ccclass, property } = _decorator;
 
 @ccclass('FuBagLayer')
@@ -48,7 +48,7 @@ export class FuBagLayer extends BaseView {
         this.setString(find("num", itemUI), num);
 
         let infoNode = find("info", itemUI)!;
-        if (composeModel.propCanCreateNewProp(id)) {
+        if (mergeBoardModel.propCanCreateNewProp(id)) {
             infoNode.active = true;
             this.bindButton(itemUI, this.onClickPropItem);
         } else {
@@ -60,7 +60,7 @@ export class FuBagLayer extends BaseView {
     onClickPropItem(btn: Button) {
         // @ts-ignore
         let propRow = btn.node.propRow;
-        composeModel.openPropInfoLayer(propRow.id);
+        mergeBoardModel.openPropInfoLayer(propRow.id);
     }
 
     onClickBtnSure() {

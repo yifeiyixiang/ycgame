@@ -5,7 +5,7 @@ import BaseView from '../../../easyFramework/mgr/BaseView';
 import { GameStorage } from '../../../easyFramework/mgr/gameStorage';
 import ServerCtrJSF from '../../../easyFramework/network/ServerCtrJSF';
 import tables from '../../../easyFramework/other/tables';
-import { composeModel } from '../../comm/composeModel';
+import { mergeBoardModel } from '../../comm/mergeBoardModel';
 import { UtilScene } from '../../comm/UtilScene';
 
 const { ccclass, property } = _decorator;
@@ -85,7 +85,7 @@ export class DebugDialog extends BaseView {
         let propId = parseInt(itemUI.getChildByName("EditBox")!.getComponent(EditBox)!.string)
         let propData = tables.ins().getTableValueByID(Const.Tables.prop, propId)
         if (propData) {
-            composeModel.addPropNum(propId, 1)
+            mergeBoardModel.addPropNum(propId, 1)
         } else {
             this.toast("道具ID 有误")
         }

@@ -7,7 +7,7 @@ import BaseView from '../../../easyFramework/mgr/BaseView';
 import { uiManager } from '../../../easyFramework/mgr/uiManager';
 import tables from '../../../easyFramework/other/tables';
 import { RechargeManager } from '../../../Util/RechargeManager';
-import { composeModel } from '../../comm/composeModel';
+import { mergeBoardModel } from '../../comm/mergeBoardModel';
 import { userData } from '../../comm/UserData';
 import { handIndexs } from '../../data/handData';
 import { PropItem, PropItemFlag } from './PropItem';
@@ -147,9 +147,9 @@ export class ShopSynthesisItem extends BaseView {
 
         if (data.id == 18) {
 
-            let hadnIdnex = composeModel.getHandIndex();
+            let hadnIdnex = mergeBoardModel.getHandIndex();
             if (hadnIdnex == handIndexs.shopbuy) {
-                composeModel.closeHandLayer()
+                mergeBoardModel.closeHandLayer()
                 let obj: any = {};
                 obj.id = hadnIdnex;
                 obj.node = this.node;
@@ -200,10 +200,10 @@ export class ShopSynthesisItem extends BaseView {
 
     onBuySuccessCB(targetPos: any) {
 
-        let hadnIdnex = composeModel.getHandIndex();
+        let hadnIdnex = mergeBoardModel.getHandIndex();
         if (hadnIdnex == handIndexs.shopbuy) {
-            composeModel.closeHandLayer()
-            composeModel.addHandIndex()
+            mergeBoardModel.closeHandLayer()
+            mergeBoardModel.addHandIndex()
         }
         let shopData = this._layerData.data
         let itemData = this._layerData.item
@@ -219,7 +219,7 @@ export class ShopSynthesisItem extends BaseView {
             } else {
                 userData.addPropBuyTime(shopData.id)
             }
-            composeModel.addPropNum(item[0], item[1], targetPos)
+            mergeBoardModel.addPropNum(item[0], item[1], targetPos)
 
             let propRow = tables.ins().getTableValueByID(Const.Tables.prop, item[0]);
             if (propRow) {

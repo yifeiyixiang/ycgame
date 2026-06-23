@@ -7,7 +7,7 @@ import { default as ServerCtr, default as ServerCtrJSF } from "../../easyFramewo
 import TimeCtrJSF from "../../easyFramework/network/TimeCtrJSF";
 import tables from "../../easyFramework/other/tables";
 import { aiRobot } from "./AIRobot";
-import { composeModel } from "./composeModel";
+import { mergeBoardModel } from "./mergeBoardModel";
 import { GetAnimalLayer } from "./GetAnimalLayer";
 import { playerModel } from "./playerModel";
 import { AdPropCount, BagPropData, FriendData, petItemData, PropCountData, TaskStateData, UserInfoData } from "../../../typeScript/gameData";
@@ -118,7 +118,7 @@ class UserData {
 
     public set roleLv(lv) {
         GameStorage.setInt(Const.DataKeys.roleLv, lv)
-        composeModel.addManagerVal(Const.ManagerTypes.roleLv);
+        mergeBoardModel.addManagerVal(Const.ManagerTypes.roleLv);
 
         // 玩家等级发生变化�?
         playerModel.roleLvUp();
@@ -798,7 +798,7 @@ class UserData {
     }
 
     public showGodWealthOther() {
-        if (composeModel.isHandDone()) {
+        if (mergeBoardModel.isHandDone()) {
             let params = GamePlatform.getLaunchQuery()
             console.error("params = ", params)
             // let params: any = { propList: "20011,30055,20022,20013,30057,20013", shareName: "胖啾啾啊", shareUserId: "444456302229491712" }

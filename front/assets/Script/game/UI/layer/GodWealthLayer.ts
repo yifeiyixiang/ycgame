@@ -13,7 +13,7 @@ import TimeCtrJSF from '../../../easyFramework/network/TimeCtrJSF';
 import tables from '../../../easyFramework/other/tables';
 import { UtilPub } from '../../../easyFramework/utils/UtilPub';
 import { RechargeManager } from '../../../Util/RechargeManager';
-import { composeModel } from '../../comm/composeModel';
+import { mergeBoardModel } from '../../comm/mergeBoardModel';
 import { userData } from '../../comm/UserData';
 import { GamePlatform } from '../../platform/GamePlatform';
 const { ccclass, property } = _decorator;
@@ -205,7 +205,7 @@ export class GodWealthLayer extends BaseView {
     initPropItem(id: number, item: Node, index: number) {
         let data = tables.ins().getTableValueByID(Const.Tables.prop, id)
         this.bindButton(find("btnPropInfo", item)!, () => {
-            uiManager.instance.showDialog(Const.Dialogs.ItemInsightLayer, id);
+            uiManager.instance.showDialog(Const.Dialogs.ItemCodexLayer, id);
         })
         this.setSpriteFrame(find("icon", item)!.getComponent(Sprite)!, Const.resPath.icon + data.icon, () => { }, 120)
         find("val", item)!.getComponent(Label)!.string = data.name
@@ -247,7 +247,7 @@ export class GodWealthLayer extends BaseView {
 
     updateSecond() {
         let dayTime = 24 * 60 * 60 * 1000;
-        let nowTime = composeModel.getCurrentTimestamp();
+        let nowTime = mergeBoardModel.getCurrentTimestamp();
         let dayTimeStart = new Date(nowTime);
         dayTimeStart.setHours(0);
         dayTimeStart.setMinutes(0);
@@ -287,7 +287,7 @@ export class GodWealthLayer extends BaseView {
         }
 
         let propID = this._curRewardData[this._curSelectIndex]
-        composeModel.addPropNum(propID, 1, this.node.getComponent(UITransform)!.convertToWorldSpaceAR(Vec3.ZERO))
+        mergeBoardModel.addPropNum(propID, 1, this.node.getComponent(UITransform)!.convertToWorldSpaceAR(Vec3.ZERO))
         userData.setReceiveTime(this.timeData.dataKey + GodWealthLayer.key_receive, this.timeData.cdTime)
 
         let receiveUsers = []

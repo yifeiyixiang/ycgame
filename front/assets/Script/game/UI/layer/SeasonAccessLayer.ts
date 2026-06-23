@@ -2,8 +2,8 @@ import { Node, _decorator } from 'cc';
 import BaseView from '../../../easyFramework/mgr/BaseView';
 const { ccclass, property } = _decorator;
 
-@ccclass('SeasonHelpLayer')
-export class SeasonHelpLayer extends BaseView {
+@ccclass('SeasonAccessLayer')
+export class SeasonAccessLayer extends BaseView {
 
     @property({ type: Node })
     btnClose: Node = null!;

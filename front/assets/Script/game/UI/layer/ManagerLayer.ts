@@ -4,7 +4,7 @@ import GD from '../../../config/GD';
 import BaseView from '../../../easyFramework/mgr/BaseView';
 import tables from '../../../easyFramework/other/tables';
 import { UtilPub } from '../../../easyFramework/utils/UtilPub';
-import { composeModel, managerInfoTypeArr } from '../../comm/composeModel';
+import { mergeBoardModel, managerInfoTypeArr } from '../../comm/mergeBoardModel';
 const { ccclass, property } = _decorator;
 
 @ccclass('ManagerLayer')
@@ -43,8 +43,8 @@ export class ManagerLayer extends BaseView {
         let tb = tables.ins().getTable(Const.Tables.manager);
         this.scrollViewSetData(this.taskList, tb, this.refreshTaskItem.bind(this));
         let index = -1;
-        for (let i = 0; i < composeModel.managerArr.length; i++) {
-            let manager = composeModel.managerArr[i];
+        for (let i = 0; i < mergeBoardModel.managerArr.length; i++) {
+            let manager = mergeBoardModel.managerArr[i];
             if (!manager.get) {
                 index = i;
                 break;
@@ -72,11 +72,11 @@ export class ManagerLayer extends BaseView {
         doneNode.active = false;
         getNode.active = false;
 
-        let manager = composeModel.managerArr[row.id - 1];
+        let manager = mergeBoardModel.managerArr[row.id - 1];
 
         if (manager) {
             lockNode.active = false;
-            let val = composeModel.getManagerVal(manager);
+            let val = mergeBoardModel.getManagerVal(manager);
             this.setProgressBar(find("progress", itemUI)!, val / row.p1);
             this.setString(find("progress/num", itemUI), val + "/" + row.p1);
             if (val >= row.p1) {
@@ -95,13 +95,13 @@ export class ManagerLayer extends BaseView {
     onClickTaskItem(btn: Button) {
         // @ts-ignore
         let index = btn.node.index;
-        let manager = composeModel.managerArr[index];
+        let manager = mergeBoardModel.managerArr[index];
         if (!manager) {
             return;
         }
         let row = tables.ins().getTableValueByID(Const.Tables.manager, manager.id);
-        if (composeModel.getManagerVal(manager) >= row.p1 && !manager.get) {
-            composeModel.managerGetAward(index,UtilPub.convertToWorldSpace(find("prop/icon",btn.node!)!));
+        if (mergeBoardModel.getManagerVal(manager) >= row.p1 && !manager.get) {
+            mergeBoardModel.managerGetAward(index,UtilPub.convertToWorldSpace(find("prop/icon",btn.node!)!));
             this.scrollViewRefreshItemUIByIndex(this.taskList, index);
         }
     }

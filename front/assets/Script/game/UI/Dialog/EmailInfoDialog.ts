@@ -64,7 +64,7 @@ export class EmailInfoDialog extends BaseView {
         // let reward = this._layerData.email.reward
         // for (let index = 0; index < reward.length; index++) {
         //     const element = reward[index];
-        //     //  composeModel.addPropNum(element.propId, element.num)
+        //     //  mergeBoardModel.addPropNum(element.propId, element.num)
         // }
         uiManager.instance.pushShowDialog(Const.Dialogs.RewardDialog, { reward: this._layerData.email.reward })
 

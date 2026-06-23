@@ -41,25 +41,25 @@ class GD {
         loadAll: "loadAll",
 
         // 房间生成新物品了
-        composeRoomNew: "composeRoomNew",
+        boardSlotSpawn: "boardSlotSpawn",
         // 房间气泡破了
         roomBubbleBurst: "roomBubbleBurst",
         // 从背包中取出物品
-        composeGetOutFromBag: "composeGetOutFromBag",
+        boardBagWithdraw: "boardBagWithdraw",
         // 店长值班�?解锁新任�?
         managerCreateTask: "managerCreateTask",
         // 店长值班�?入口刷新
-        composeManagerRefresh: "composeManagerRefresh",
+        boardMilestoneRefresh: "boardMilestoneRefresh",
         // 刷新卡片列表
-        composeCardLayerRefresh: "composeCardLayerRefresh",
+        boardCardRefresh: "boardCardRefresh",
         // 获得新元�?
-        composeGetNewItem: "composeGetNewItem",
+        boardDiscovery: "boardDiscovery",
         // 刷新新手引导
         refreshHandLayer: "refreshHandLayer",
         // 刷新订单任务
         refreshTask: "refreshTask",
         // 加速装置时间到�?
-        composeTimeSpeedUpEnd: "composeTimeSpeedUpEnd",
+        boardSpeedupEnded: "boardSpeedupEnded",
 
         // 显示toast
         showToast: "showToast",

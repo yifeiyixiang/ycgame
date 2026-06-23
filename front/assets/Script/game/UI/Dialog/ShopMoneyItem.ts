@@ -4,7 +4,7 @@ import GD from '../../../config/GD';
 import { PriceType, GoodsType } from '../../../config/global';
 import BaseView from '../../../easyFramework/mgr/BaseView';
 import tables from '../../../easyFramework/other/tables';
-import { composeModel } from '../../comm/composeModel';
+import { mergeBoardModel } from '../../comm/mergeBoardModel';
 import { userData } from '../../comm/UserData';
 const { ccclass, property } = _decorator;
 
@@ -76,7 +76,7 @@ export class ShopMoneyItem extends BaseView {
                 userData.addBuyPowerTime()
                 this.emit(GD.event.updateMoney)
                 this.setData(this._layerData.data)
-                composeModel.addManagerVal(Const.ManagerTypes.diamondBuyPower);
+                mergeBoardModel.addManagerVal(Const.ManagerTypes.diamondBuyPower);
             }
             return
         }

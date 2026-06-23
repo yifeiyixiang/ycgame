@@ -2,7 +2,7 @@ import { _decorator, Node, Prefab, instantiate, find, Layout, UITransform, Vec3 
 import { Const } from '../../../config/Const';
 import { GoodsType, GSceneSkinState } from '../../../config/global';
 import BaseView from '../../../easyFramework/mgr/BaseView';
-import { composeModel } from '../../comm/composeModel';
+import { mergeBoardModel } from '../../comm/mergeBoardModel';
 import { SceneData } from '../../comm/SceneData';
 import { PropItem, PropItemFlag } from '../Dialog/PropItem';
 const { ccclass, property } = _decorator;
@@ -42,7 +42,7 @@ export class RewardLayer extends BaseView {
             })
         }
         else if (type == GoodsType.prop) {
-            composeModel.addPropNum(id, num, this.node.getComponent(UITransform)!.convertToWorldSpaceAR(Vec3.ZERO))
+            mergeBoardModel.addPropNum(id, num, this.node.getComponent(UITransform)!.convertToWorldSpaceAR(Vec3.ZERO))
             this.addPrefab(Const.Prefabs.PropItem, this.layer, (item: any) => {
                 item.getComponent(PropItem).setData(id, PropItemFlag.TouchInfo | PropItemFlag.HideName | PropItemFlag.ShowNum, num)
                 item.getComponent(PropItem).setSize(120)

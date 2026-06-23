@@ -2,12 +2,12 @@
   "ver": "1.1.50",
   "importer": "prefab",
   "imported": true,
-  "uuid": "57ff58dc-dd2d-4453-8ea7-d7ac4738ab2f",
+  "uuid": "e9b7aace-11a1-4839-a6b5-481c4e9b9864",
   "files": [
     ".json"
   ],
   "subMetas": {},
   "userData": {
-    "syncNodeName": "SeasonBuyLayer"
+    "syncNodeName": "MergeBoardLayer"
   }
 }

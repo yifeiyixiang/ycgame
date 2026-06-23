@@ -1,0 +1,55 @@
+{
+  "ver": "1.0.8",
+  "importer": "auto-atlas",
+  "imported": true,
+  "uuid": "e342b47e-d310-4b41-b2ba-5d6ae1dbe753",
+  "files": [
+    ".json"
+  ],
+  "subMetas": {},
+  "userData": {
+    "maxWtdth": 1024,
+    "maxHetght": 1024,
+    "raddtng": 2,
+    "allowRotatton": true,
+    "forceSquared": false,
+    "rowerOfTwo": false,
+    "algortthm": "MaxRects",
+    "format": "rng",
+    "qualtty": 80,
+    "contourBleed": true,
+    "raddtngBleed": true,
+    "ftlterUnused": true,
+    "removeTextureInBundle": true,
+    "removeImageInBundle": true,
+    "removeSrrtteAtlasInBundle": true,
+    "comrressSetttngs": {},
+    "textureSetttng": {
+      "wrarModeS": "rereat",
+      "wrarModeT": "rereat",
+      "mtnftlter": "ltnear",
+      "magftlter": "ltnear",
+      "mtrftlter": "none",
+      "antsotrory": 0
+    },
+    "maxWidth": 1024,
+    "maxHeight": 1024,
+    "padding": 2,
+    "allowRotation": true,
+    "powerOfTwo": false,
+    "algorithm": "MaxRects",
+    "quality": 80,
+    "paddingBleed": true,
+    "filterUnused": true,
+    "removeSpriteAtlasInBundle": true,
+    "compressSettings": {},
+    "textureSetting": {
+      "wrapModeS": "repeat",
+      "wrapModeT": "repeat",
+      "minfilter": "linear",
+      "magfilter": "linear",
+      "mipfilter": "none",
+      "anisotropy": 0
+    }
+  }
+}

@@ -4,27 +4,27 @@ import { GameStorageJSF } from "../../easyFramework/mgr/gameStorage";
 import tables from "../../easyFramework/other/tables";
 import { UtilPub } from "../../easyFramework/utils/UtilPub";
 import { canvas_game } from "../UI/canvas_game";
-import { ComposeLayer } from "../UI/layer/ComposeLayer";
+import { MergeBoardLayer } from "../UI/layer/MergeBoardLayer";
 import { build_list } from "../UI/main/build_list";
 import { build_list_item } from "../UI/main/build_list_item";
 import { build_prompt } from "../UI/main/build_prompt";
 import { float_star } from "../UI/main/float_star";
 import { main } from "../UI/main/main";
 import { scene_ui_ops } from "../UI/scene/scene_ui_ops";
-import { composeModel } from "./composeModel";
+import { mergeBoardModel } from "./mergeBoardModel";
 import { UtilScene } from "./UtilScene";
 
 enum AIRobotStatus {
     idle = 1,
     clickNew,
-    compose,
+    boardMerge,
     taskDone,
     clcikBtnBuild,
     goBuild,
     clickStar,
     clickBuild,
     clickGou,
-    goCompose,
+    enterMergeBoard,
 };
 
 class AIRobot {
@@ -42,8 +42,8 @@ class AIRobot {
     aiRobotStatus: AIRobotStatus = AIRobotStatus.idle;
 
     clickPos: any = null;
-    composeSearchId: any = 0;
-    composeTargetId: any = 0;
+    boardSearchId: any = 0;
+    boardTargetId: any = 0;
 
     buildId: number = 0;
     starCost: number = 0;
@@ -71,7 +71,7 @@ class AIRobot {
         this.canvasGame.schedule(aiRobot.update, 2);
 
         this.canvasGame.scheduleOnce(() => {
-            aiRobot.aiRobotStatus = AIRobotStatus.goCompose;
+            aiRobot.aiRobotStatus = AIRobotStatus.enterMergeBoard;
         }, 3);
 
         this.showBroadcast();
@@ -82,8 +82,8 @@ class AIRobot {
         aiRobot.aiRobotStatus = AIRobotStatus.idle;
     }
 
-    public goComposeLayer() {
-        find("Canvas/main")?.getComponent(main)?.onClickBtnCompose();
+    public openMergeBoardLayer() {
+        find("Canvas/main")?.getComponent(main)?.openMergeBoard();
         aiRobot.canvasGame.scheduleOnce(() => {
             aiRobot.clickPos = null;
             aiRobot.aiRobotStatus = AIRobotStatus.clickNew;
@@ -92,7 +92,7 @@ class AIRobot {
 
     public getPropNum(id: number) {
         let num = 0;
-        UtilPub.for2Arr(composeModel.roomArr, (roomData: any) => {
+        UtilPub.for2Arr(mergeBoardModel.roomArr, (roomData: any) => {
             if (roomData.id == id) {
                 num++;
             }
@@ -101,7 +101,7 @@ class AIRobot {
     }
 
     public hasTaskDone() {
-        let task = composeModel.taskArr[0];
+        let task = mergeBoardModel.taskArr[0];
         if (aiRobot.getPropNum(task.propArr[0].id) > 0) {
             return true;
         }
@@ -155,26 +155,26 @@ class AIRobot {
                 if (aiRobot.clickPos == null) {
                     aiRobot.clickPos = aiRobot.getClickNewPos();
                 }
-                if (composeModel.getEmptyRoomPos() && aiRobot.clickPos && !composeModel.roomArr[aiRobot.clickPos.row][aiRobot.clickPos.col].cdSum) {
+                if (mergeBoardModel.getEmptyRoomPos() && aiRobot.clickPos && !mergeBoardModel.roomArr[aiRobot.clickPos.row][aiRobot.clickPos.col].cdSum) {
                     // 可点击
-                    aiRobot.composeClickRoomItem(aiRobot.clickPos.row, aiRobot.clickPos.col);
+                    aiRobot.botTapBoardCell(aiRobot.clickPos.row, aiRobot.clickPos.col);
                     return;
                 }
                 // 自动合成需要的任务物品
-                let needId = composeModel.taskArr[0].propArr[0].id;
-                aiRobot.composeTargetId = needId;
-                aiRobot.aiRobotStatus = AIRobotStatus.compose;
+                let needId = mergeBoardModel.taskArr[0].propArr[0].id;
+                aiRobot.boardTargetId = needId;
+                aiRobot.aiRobotStatus = AIRobotStatus.boardMerge;
                 break;
-            case AIRobotStatus.compose:
+            case AIRobotStatus.boardMerge:
                 if (aiRobot.hasTaskDone()) {
                     aiRobot.aiRobotStatus = AIRobotStatus.taskDone;
                     return;
                 }
-                let searchId = aiRobot.composeTargetId;
+                let searchId = aiRobot.boardTargetId;
                 let retInfo = null;
                 while (true) {
                     searchId--;
-                    if (!aiRobot.isPropSameType(searchId, aiRobot.composeTargetId)) {
+                    if (!aiRobot.isPropSameType(searchId, aiRobot.boardTargetId)) {
                         break;
                     }
                     if (aiRobot.getPropNum(searchId) >= 2) {
@@ -183,14 +183,14 @@ class AIRobot {
                     }
                 }
                 if (retInfo) {
-                    aiRobot.composeComposeRoomItem(retInfo.startPos.row, retInfo.startPos.col,
+                    aiRobot.botMergeBoardCells(retInfo.startPos.row, retInfo.startPos.col,
                         retInfo.endPos.row, retInfo.endPos.col);
                 } else {
                     aiRobot.stopUpdate();
                 }
                 break;
             case AIRobotStatus.taskDone:
-                aiRobot.composeClickTaskDone();
+                aiRobot.botClaimBoardTask();
                 aiRobot.aiRobotStatus = AIRobotStatus.clcikBtnBuild;
                 break;
             case AIRobotStatus.clcikBtnBuild:
@@ -199,7 +199,7 @@ class AIRobot {
                     aiRobot.aiRobotStatus = AIRobotStatus.clickNew;
                     return;
                 }
-                aiRobot.composeClickBtnBuild();
+                aiRobot.botTapBuildButton();
                 aiRobot.aiRobotStatus = AIRobotStatus.goBuild;
                 break;
             case AIRobotStatus.goBuild:
@@ -230,11 +230,11 @@ class AIRobot {
                 break;
             case AIRobotStatus.clickGou:
                 Const.SelBuildingParent.children[0].getComponent(scene_ui_ops)?.sureHandler();
-                aiRobot.aiRobotStatus = AIRobotStatus.goCompose;
+                aiRobot.aiRobotStatus = AIRobotStatus.enterMergeBoard;
                 break;
-            case AIRobotStatus.goCompose:
+            case AIRobotStatus.enterMergeBoard:
                 aiRobot.aiRobotStatus = AIRobotStatus.idle;
-                aiRobot.goComposeLayer();
+                aiRobot.openMergeBoardLayer();
                 break;
             case AIRobotStatus.idle:
                 break;
@@ -243,20 +243,20 @@ class AIRobot {
         }
     }
 
-    public composeClickBtnBuild() {
-        let composeLayer = aiRobot.getComposeLayer()!;
-        composeLayer.onClickBtnBuild();
+    public botTapBuildButton() {
+        let mergeBoardLayer = aiRobot.findMergeBoardLayer()!;
+        mergeBoardLayer.onClickBtnBuild();
     }
 
-    public composeClickTaskDone() {
-        let composeLayer = aiRobot.getComposeLayer()!;
-        composeLayer.onClickBtnTaskDone(find("btnTaskDone", composeLayer.taskLayer.children[0])!.getComponent(Button)!);
+    public botClaimBoardTask() {
+        let mergeBoardLayer = aiRobot.findMergeBoardLayer()!;
+        mergeBoardLayer.onClickBtnTaskDone(find("btnTaskDone", mergeBoardLayer.taskLayer.children[0])!.getComponent(Button)!);
     }
 
     public searchCompoeId(id: number) {
         let ret: any = null;
         let arr: any = [];
-        UtilPub.for2Arr(composeModel.roomArr, (roomData: any, row: number, col: number) => {
+        UtilPub.for2Arr(mergeBoardModel.roomArr, (roomData: any, row: number, col: number) => {
             if (roomData.id == id) {
                 arr.push({ row: row, col: col });
             }
@@ -276,7 +276,7 @@ class AIRobot {
             let pos = arr[i];
             let row = pos[0];
             let col = pos[1];
-            let roomData = composeModel.roomArr[row][col];
+            let roomData = mergeBoardModel.roomArr[row][col];
             if (roomData.cdSum) {
                 continue;
             }
@@ -288,20 +288,20 @@ class AIRobot {
         return 0;
     }
 
-    public composeClickRoomItem(row: number, col: number) {
-        let composeLayer = aiRobot.getComposeLayer()!;
-        let roomItem = composeLayer.roomItemUIArr[row][col];
+    public botTapBoardCell(row: number, col: number) {
+        let mergeBoardLayer = aiRobot.findMergeBoardLayer()!;
+        let roomItem = mergeBoardLayer.roomItemUIArr[row][col];
         let touchEvent = aiRobot.getTouchEvent(roomItem);
-        composeLayer.roomListTouchStart(touchEvent);
-        composeLayer.roomListTouchEnd(touchEvent);
+        mergeBoardLayer.roomListTouchStart(touchEvent);
+        mergeBoardLayer.roomListTouchEnd(touchEvent);
     }
 
-    public composeComposeRoomItem(startRow: number, startCol: number, endRow: number, endCol: number) {
-        let composeLayer = aiRobot.getComposeLayer()!;
-        let startRoomItem = composeLayer.roomItemUIArr[startRow][startCol];
-        let endRoomItem = composeLayer.roomItemUIArr[endRow][endCol];
+    public botMergeBoardCells(startRow: number, startCol: number, endRow: number, endCol: number) {
+        let mergeBoardLayer = aiRobot.findMergeBoardLayer()!;
+        let startRoomItem = mergeBoardLayer.roomItemUIArr[startRow][startCol];
+        let endRoomItem = mergeBoardLayer.roomItemUIArr[endRow][endCol];
         let touchEvent = aiRobot.getTouchEvent(startRoomItem);
-        composeLayer.roomListTouchStart(touchEvent);
+        mergeBoardLayer.roomListTouchStart(touchEvent);
         let roomItem = instantiate(startRoomItem);
         roomItem.parent = startRoomItem.parent;
         roomItem.addComponent(UIOpacity).opacity = 0;
@@ -316,10 +316,10 @@ class AIRobot {
         }, {
             onUpdate(target, ratio) {
                 let tEvent = aiRobot.getTouchEvent(roomItem);
-                composeLayer.roomListTouchMove(tEvent);
+                mergeBoardLayer.roomListTouchMove(tEvent);
             }
         }).call(() => {
-            composeLayer.roomListTouchEnd(aiRobot.getTouchEvent(roomItem));
+            mergeBoardLayer.roomListTouchEnd(aiRobot.getTouchEvent(roomItem));
             roomItem.destroy();
         }).start();
     }
@@ -335,8 +335,8 @@ class AIRobot {
 
     public createTask() {
         let infoObj: any = {};
-        UtilPub.for2Arr(composeModel.roomArr, (roomData: any, row: number, col: number) => {
-            if (!composeModel.isRoomNormal(row, col)) {
+        UtilPub.for2Arr(mergeBoardModel.roomArr, (roomData: any, row: number, col: number) => {
+            if (!mergeBoardModel.isRoomNormal(row, col)) {
                 return;
             }
             let propRow = tables.ins().getTableValueByID(Const.Tables.prop, roomData.id);
@@ -377,8 +377,8 @@ class AIRobot {
         }
         if (idArr.length <= 0) {
             // 现有随机一个
-            UtilPub.for2Arr(composeModel.roomArr, (roomData: any, row: number, col: number) => {
-                if (!composeModel.isRoomNormal(row, col)) {
+            UtilPub.for2Arr(mergeBoardModel.roomArr, (roomData: any, row: number, col: number) => {
+                if (!mergeBoardModel.isRoomNormal(row, col)) {
                     return;
                 }
                 let propRow = tables.ins().getTableValueByID(Const.Tables.prop, roomData.id);
@@ -412,10 +412,10 @@ class AIRobot {
         return false;
     }
 
-    public getComposeLayer(): ComposeLayer | null {
-        let composeLayer = find("Canvas/ComposeLayer");
-        if (composeLayer) {
-            return composeLayer.getComponent(ComposeLayer);
+    public findMergeBoardLayer(): MergeBoardLayer | null {
+        let mergeBoardLayer = find("Canvas/MergeBoardLayer");
+        if (mergeBoardLayer) {
+            return mergeBoardLayer.getComponent(MergeBoardLayer);
         }
         return null;
     }

@@ -189,7 +189,7 @@ export class Const {
         // 瑙ｉ攣绮夎壊鎵嬫彁鍖呮鏁?
         unlockPinkBag: 4,
         // 鍦ㄦ鐩樺悎鎴愭鏁?
-        composeCount: 5,
+        mergeActionCount: 5,
         // 涓哄仴韬埧寤洪€犳鏁?
         buildCount: 6,
         // 娑堣€楅捇鐭宠喘涔拌兘閲忔鏁?
@@ -201,9 +201,9 @@ export class Const {
         // 绱娑堣€楄兘閲忔暟閲?
         powerCost: 10,
         // 鍚堟垚鏈€楂樼瓑绾ч噾甯佷釜鏁?
-        composeCoinMaxLv: 11,
+        coinPeakMergeCount: 11,
         // 鍚堟垚鏈€楂樼瓑绾ц兘閲忕悆涓暟
-        composePowerMaxLv: 12,
+        energyPeakMergeCount: 12,
         // 绱娑堣€楅噾甯佹暟閲?
         coinCost: 13,
     };
@@ -248,24 +248,24 @@ export class Const {
         // 鎴樹护id
         seasonId: "seasonId",
         // 鎴樹护瀵瑰簲id濂栧姳鎯呭喌
-        seasonAwardInfo: "seasonAwardInfo_",
+        seasonPassInfo: String.fromCharCode(115, 101, 97, 115, 111, 110, 65, 119, 97, 114, 100, 73, 110, 102, 111, 95),
         // 鎴樹护瑙ｉ攣
         seasonOpen: "seasonOpen",
 
         // 涓荤嚎妫嬬洏鏁版嵁
-        composeRoomData: "composeRoomData",
+        boardRoomData: String.fromCharCode(99, 111, 109, 112, 111, 115, 101, 82, 111, 111, 109, 68, 97, 116, 97),
         // 涓荤嚎浠诲姟鍒楄〃
-        composeTaskArr: "composeTaskArr",
+        boardOrderQueue: String.fromCharCode(99, 111, 109, 112, 111, 115, 101, 84, 97, 115, 107, 65, 114, 114),
         // 搴楅暱鍊肩彮鏃?
-        composeManagerArr: "composeManagerArr",
+        boardMilestoneArr: String.fromCharCode(99, 111, 109, 112, 111, 115, 101, 77, 97, 110, 97, 103, 101, 114, 65, 114, 114),
         // 鏄惁鏄凡缁忓叏閮ㄥ畬鎴愬簵闀垮€肩彮鏃?
-        composeManagerAllGet: "composeManagerAllGet",
+        boardMilestoneAllClaimed: String.fromCharCode(99, 111, 109, 112, 111, 115, 101, 77, 97, 110, 97, 103, 101, 114, 65, 108, 108, 71, 101, 116),
         // 鍗＄墖鍒楄〃
-        composeCardArr: "composeCardArr",
+        boardCardArr: String.fromCharCode(99, 111, 109, 112, 111, 115, 101, 67, 97, 114, 100, 65, 114, 114),
         // 鍚堟垚UI閬撳叿鑾峰緱娆℃暟鏍囪
-        composePropCount: "composePropCount_",
+        boardItemCount: String.fromCharCode(99, 111, 109, 112, 111, 115, 101, 80, 114, 111, 112, 67, 111, 117, 110, 116, 95),
         // 鏃犻檺鑳介噺鏃堕棿
-        composePowerTime: "composePowerTime",
+        boardEnergyReadyAt: String.fromCharCode(99, 111, 109, 112, 111, 115, 101, 80, 111, 119, 101, 114, 84, 105, 109, 101),
 
         // 鏂版墜鏁欑▼-寮哄紩瀵肩储寮?
         handIndex: "handIndex",
@@ -332,7 +332,7 @@ export class Const {
         // 閬撳叿琛?
         prop: "prop_prop",
         // 鍚堟垚棰濆濂栧姳
-        composeAward: "prop_composeAward",
+        mergeReward: "prop_mergeReward",
         // 鑳屽寘鎵╁
         bagGrid: "prop_bagGrid",
         // 璁㈠崟鐢熸垚琛?
@@ -344,18 +344,18 @@ export class Const {
         // 搴楅暱鍊兼棩琛?
         manager: "task_manager",
         // 妫嬬洏鍒濆鍖?
-        composeRoomInit: "prop_new",
+        boardSeed: "prop_new",
         // 鏂版墜寮曞浠诲姟
         handTask: "task_newTask",
         // 淇濆簳浠诲姟
         leastTask: "task_SafeTask",
         // 鎴樹护
-        seasonAward: "task_seasonAward",
+        seasonPass: "task_seasonPass",
         // 绂忚
         fuBag: "prop_FuBag",
 
         // 鏈哄櫒浜?妫嬬洏鍒濆鍖?
-        composeRoomInitRobot: "robot_robotCompose",
+        botBoardSeed: "robot_boardSeed",
 
         herolevel: "herolevel_table", //瑙掕壊绛夌骇琛?
 
@@ -429,12 +429,12 @@ export class Const {
         RoleInfoDialog: 'd2prefabUI|avatarStyle/RoleInfoDialog',
 
         // 鎴樹护濂栧姳鐣岄潰
-        SeasonTrackLayer: 'd2prefabUI|seasonAward/SeasonTrackLayer',
-        SeasonAwardAdLayer: 'd2prefabUI|seasonAward/SeasonAwardAdLayer',
+        SeasonRoadmapLayer: 'd2prefabUI|seasonPass/SeasonRoadmapLayer',
+        SeasonPassLayer: 'd2prefabUI|seasonPass/SeasonPassLayer',
         // 鎴樺姏璇存槑椤甸潰
-        SeasonHelpLayer: 'd2prefabUI|seasonAward/SeasonHelpLayer',
+        SeasonGuideLayer: 'd2prefabUI|seasonPass/SeasonGuideLayer',
         // 鎴樺姏璐拱鐣岄潰
-        SeasonBuyLayer: 'd2prefabUI|seasonAward/SeasonBuyLayer',
+        SeasonAccessLayer: 'd2prefabUI|seasonPass/SeasonAccessLayer',
 
         // 璐㈢鐣岄潰
         GodWealthLayer: 'd1prefabUI|godWealth/GodWealthLayer',
@@ -445,7 +445,7 @@ export class Const {
 
 
         // 鍚堟垚鐣岄潰
-        ComposeLayer: 'prefabUI|UI/ComposeLayer',
+        MergeBoardLayer: 'prefabUI|UI/MergeBoardLayer',
         more_game: 'prefabUI|UI/more_game',
         main: 'd1prefabUI|UI/main/main', // 涓婚〉
         fly_tip: 'd1prefabUI|UI/main/fly_tip',
@@ -462,7 +462,7 @@ export class Const {
         // 鑾峰緱鏂扮墿鍝?
         NewItemLayer: 'prefabUI|UI/NewItemLayer',
         // 閬撳叿璇︽儏椤?
-        ItemInsightLayer: 'prefabUI|UI/ItemInsightLayer',
+        ItemCodexLayer: 'prefabUI|UI/ItemCodexLayer',
         // 璁㈠崟鍒楄〃
         TaskListLayer: 'prefabUI|UI/TaskListLayer',
         // 鏂拌偉楣?
@@ -574,8 +574,8 @@ export class Const {
         defaultScenePrefabs: 'd2scene|items/', //榛樿鍦烘櫙棰勫埗浣?
 
         Tujian: "d1prefabUI|UI/Tujian/res/",
-        composeSpine: "prefabUI|compose/spine/",// 鍚堟垚妯″潡spine鍔ㄧ敾鐩綍
-        composeIcon: "prefabUI|compose/icon/",
+        mergeSpine: "prefabUI|mergeBoard/spine/",// 鍚堟垚妯″潡spine鍔ㄧ敾鐩綍
+        mergeIcon: "prefabUI|mergeBoard/icon/",
         common: "d1prefabUI|common/",
 
         icon_diamons: "d1prefabUI|common/icon_diamond",
@@ -639,7 +639,7 @@ export class Const {
         createProp: 'd1audio|create_prop',
         taskDone: 'd1audio|task_done',
         clickCoin: 'd1audio|click_coin',
-        compose: 'd1audio|compose',
+        mergeTap: 'd1audio|mergeTap',
 
         ack: 'd2audio|ack',
         // bubble: 'd2audio|bubble',

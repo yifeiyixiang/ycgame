@@ -11,7 +11,7 @@ import ServerCtrJSF from '../../../easyFramework/network/ServerCtrJSF';
 import tables from '../../../easyFramework/other/tables';
 import { CdComponent, CDType } from '../../../easyFramework/utils/CdComponent';
 import { RechargeManager } from '../../../Util/RechargeManager';
-import { composeModel } from '../../comm/composeModel';
+import { mergeBoardModel } from '../../comm/mergeBoardModel';
 import { userData } from '../../comm/UserData';
 import { MonthCard } from '../money/MonthCard';
 import { GamePlatform } from '../../platform/GamePlatform';
@@ -157,7 +157,7 @@ export class ShopPowerDialog extends BaseView {
             userData.addBuyPowerTime()
             this.emit(GD.event.updateMoney)
             this.initData()
-            composeModel.addManagerVal(Const.ManagerTypes.diamondBuyPower);
+            mergeBoardModel.addManagerVal(Const.ManagerTypes.diamondBuyPower);
         } else {
             this.toast("钻石不足")
         }

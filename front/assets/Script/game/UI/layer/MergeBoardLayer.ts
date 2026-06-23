@@ -13,7 +13,7 @@ import ServerCtrJSF from '../../../easyFramework/network/ServerCtrJSF';
 import tables from '../../../easyFramework/other/tables';
 import { UtilPub } from '../../../easyFramework/utils/UtilPub';
 import { AnimationCtrl } from '../../comm/AnimationCtrl';
-import { composeModel, nineAroundArr, propIds, roomStatus } from '../../comm/composeModel';
+import { mergeBoardModel, nineAroundArr, propIds, roomStatus } from '../../comm/mergeBoardModel';
 import { MovePath } from '../../comm/MovePath';
 import { playerModel } from '../../comm/playerModel';
 import { redPointManager, RPointEvent } from '../../comm/RedPointManager';
@@ -28,8 +28,8 @@ import { EventManger } from '../../../../typeScript/EventManger';
 import { GamePlatform } from '../../platform/GamePlatform';
 const { ccclass, property } = _decorator;
 
-@ccclass('ComposeLayer')
-export class ComposeLayer extends BaseView {
+@ccclass('MergeBoardLayer')
+export class MergeBoardLayer extends BaseView {
 
     @property(Node)
     bgNode: Node = null!;
@@ -70,7 +70,7 @@ export class ComposeLayer extends BaseView {
     touchMoveCount: number = 0;
 
     // 正在提示可以合成的房�?
-    roomItemComposeHintArr: any = [];
+    roomItemMergeHintArr: any = [];
 
     @property({ type: Node })
     btnBuild: Node = null!;
@@ -122,16 +122,16 @@ export class ComposeLayer extends BaseView {
 
     // 合成提示特效
     @property({ type: Node })
-    composeSpineLayer: Node = null!;
+    mergeFxLayer: Node = null!;
     @property({ type: Node })
-    composeSpineItem: Node = null!;
-    currentComposeSpine: any;
+    mergeFxItem: Node = null!;
+    currentMergeFx: any;
 
-    cartonSpinePath = Const.resPath.composeSpine + "xzsl/xzsl";
-    tbgxSpinePath = Const.resPath.composeSpine + "tbgx/tbgx";
-    jsqSpinePath = Const.resPath.composeSpine + "jsq/jsq";
+    cartonSpinePath = Const.resPath.mergeSpine + "xzsl/xzsl";
+    tbgxSpinePath = Const.resPath.mergeSpine + "tbgx/tbgx";
+    jsqSpinePath = Const.resPath.mergeSpine + "jsq/jsq";
 
-    composeAudioCount: number = 0;
+    mergeAudioCount: number = 0;
     touching: boolean = false;
 
     @property({ type: Node })
@@ -143,7 +143,7 @@ export class ComposeLayer extends BaseView {
     addPropID() {
         let id = this.propid.getComponent(EditBox)!.string
         let propnum = this.propnum.getComponent(EditBox)!.string
-        composeModel.addPropNum(parseInt(id), parseInt(propnum))
+        mergeBoardModel.addPropNum(parseInt(id), parseInt(propnum))
 
     }
 
@@ -170,8 +170,8 @@ export class ComposeLayer extends BaseView {
         this.cardItem.active = false;
         this.cardItem.parent = this.node;
 
-        this.composeSpineItem.active = false;
-        this.composeSpineItem.parent = this.node;
+        this.mergeFxItem.active = false;
+        this.mergeFxItem.parent = this.node;
 
         this.initRoomLayer();
         this.bindButtonNoAudio(this.btnClose, this.onClickBtnClose);
@@ -194,7 +194,7 @@ export class ComposeLayer extends BaseView {
 
         this.addPrefab(Const.Prefabs.Main_top, this.node, null!, { parentNode: this.node, flag: main_top.ShowLevel | main_top.ShowCoin | main_top.ShowPower | main_top.ShowDiamond });
 
-        redPointManager.setRedpoint(this.btnBuild, RPointEvent.composeBuild, false, 1.5, 35, 22);
+        redPointManager.setRedpoint(this.btnBuild, RPointEvent.boardBuildHint, false, 1.5, 35, 22);
 
         let uiHeight = this.uiNode.getComponent(UITransform)!.height;
         let topHeight = 110;
@@ -229,15 +229,15 @@ export class ComposeLayer extends BaseView {
         console.log(" show 2")
 
         // 加载所有房间数�?
-        composeModel.loadData();
+        mergeBoardModel.loadData();
         this.moveItemLayer.destroyAllChildren();
-        this.composeSpineLayer.destroyAllChildren();
+        this.mergeFxLayer.destroyAllChildren();
         this.bubbleLayer.destroyAllChildren();
         this.moveRoomItem = null;
         this.choseRoomItem = null;
         this.sellData = null;
         this.lastTaskArr = null;
-        this.composeAudioCount = 0;
+        this.mergeAudioCount = 0;
         this.roomBgMaskNode.active = false;
         this.touching = false;
         console.log(" show 3")
@@ -252,16 +252,16 @@ export class ComposeLayer extends BaseView {
         this.refreshBtnTaskList();
         console.log(" show 4")
 
-        this.on(GD.event.composeRoomNew, this.composeRoomNewRet, this);
+        this.on(GD.event.boardSlotSpawn, this.boardSlotSpawnRet, this);
         this.on(GD.event.roomBubbleBurst, this.roomBubbleBurstRet, this);
-        this.on(GD.event.composeGetOutFromBag, this.composeGetOutFromBagRet, this);
-        this.on(GD.event.composeManagerRefresh, this.composeManagerRefreshRet, this);
-        this.on(GD.event.composeCardLayerRefresh, this.composeCardLayerRefreshRet, this);
-        this.on(GD.event.composeGetNewItem, this.composeGetNewItemRet, this);
+        this.on(GD.event.boardBagWithdraw, this.boardBagWithdrawRet, this);
+        this.on(GD.event.boardMilestoneRefresh, this.boardMilestoneRefreshRet, this);
+        this.on(GD.event.boardCardRefresh, this.boardCardRefreshRet, this);
+        this.on(GD.event.boardDiscovery, this.boardDiscoveryRet, this);
         this.on(GD.event.refreshHandLayer, this.refreshHandLayerRet, this);
         this.on(GD.event.goToBuildScene, this.goToBuildSceneRet, this);
         this.on(GD.event.refreshTask, this.refreshTaskRet, this);
-        this.on(GD.event.composeTimeSpeedUpEnd, this.composeTimeSpeedUpEndRet, this);
+        this.on(GD.event.boardSpeedupEnded, this.boardSpeedupEndedRet, this);
         this.on(GD.event.onClickTaskDone, this.onClickBtnTaskDoneEvent, this);
         console.log(" show 5")
 
@@ -271,7 +271,7 @@ export class ComposeLayer extends BaseView {
 
         // 模拟等待展示动画
         this.scheduleOnce(() => {
-            composeModel.showComposeLayerEnd();
+            mergeBoardModel.markMergeBoardReady();
             this.refreshHandLayer();
         }, 0.5);
         console.log(" show 6")
@@ -279,7 +279,7 @@ export class ComposeLayer extends BaseView {
         this.schedule(this.startBuildBodyAnimation, 6);
         this.schedule(this.updateLogic, 0.5);
 
-        UtilPub.for2Arr(composeModel.roomArr, (roomData: any) => {
+        UtilPub.for2Arr(mergeBoardModel.roomArr, (roomData: any) => {
             if (roomData.st == roomStatus.carton) {
                 UtilPub.loadSpineSkeletonData(this.cartonSpinePath);
                 return true;
@@ -287,7 +287,7 @@ export class ComposeLayer extends BaseView {
         });
         console.log(" show 7")
 
-        let hadnIdnex = composeModel.getHandIndex();
+        let hadnIdnex = mergeBoardModel.getHandIndex();
         if (hadnIdnex == handIndexs.shopOpen) {
             let obj: any = {};
             obj.id = hadnIdnex;
@@ -305,12 +305,12 @@ export class ComposeLayer extends BaseView {
 
         audioManager.instance.playSound(Const.Audio.sceneChange);
 
-        this.off(GD.event.composeRoomNew, this.composeRoomNewRet);
+        this.off(GD.event.boardSlotSpawn, this.boardSlotSpawnRet);
         this.off(GD.event.roomBubbleBurst, this.roomBubbleBurstRet);
-        this.off(GD.event.composeGetOutFromBag, this.composeGetOutFromBagRet);
-        this.off(GD.event.composeManagerRefresh, this.composeManagerRefreshRet);
-        this.off(GD.event.composeCardLayerRefresh, this.composeCardLayerRefreshRet);
-        this.off(GD.event.composeGetNewItem, this.composeGetNewItemRet);
+        this.off(GD.event.boardBagWithdraw, this.boardBagWithdrawRet);
+        this.off(GD.event.boardMilestoneRefresh, this.boardMilestoneRefreshRet);
+        this.off(GD.event.boardCardRefresh, this.boardCardRefreshRet);
+        this.off(GD.event.boardDiscovery, this.boardDiscoveryRet);
         this.off(GD.event.refreshHandLayer, this.refreshHandLayerRet);
         this.off(GD.event.goToBuildScene, this.goToBuildSceneRet);
         this.off(GD.event.refreshTask, this.refreshTaskRet);
@@ -321,7 +321,7 @@ export class ComposeLayer extends BaseView {
     }
 
     onDisable() {
-        composeModel.close();
+        mergeBoardModel.close();
         // this.unscheduleAllCallbacks();
         this.unschedule(this.scheduleAudioCountReset);
         this.unschedule(this.startBuildBodyAnimation);
@@ -329,7 +329,7 @@ export class ComposeLayer extends BaseView {
     }
 
     refreshBtnTaskList() {
-        // let task = composeModel.taskArr[0];
+        // let task = mergeBoardModel.taskArr[0];
         // if (task && task.hand) {
         //     this.btnTaskList.active = false;
         //     return;
@@ -360,7 +360,7 @@ export class ComposeLayer extends BaseView {
     }
 
     refreshHandLayer() {
-        let handIndex = composeModel.getHandIndex();
+        let handIndex = mergeBoardModel.getHandIndex();
         // UtilPub.log("------handindex,,",handIndex)
         let obj: any = {};
         obj.id = handIndex;
@@ -381,8 +381,8 @@ export class ComposeLayer extends BaseView {
                 obj.startNode = this.roomItemUIArr[4][4];
                 obj.endNode = this.roomItemUIArr[3][4];
                 break;
-            case handIndexs.composeGetNew:
-                composeModel.addHandIndex();
+            case handIndexs.boardItemReveal:
+                mergeBoardModel.addHandIndex();
                 this.refreshHandLayer();
                 break;
             case handIndexs.clickRoomNew:
@@ -393,12 +393,12 @@ export class ComposeLayer extends BaseView {
                 obj.node = this.roomListLayer;
                 obj.nodeHand = this.roomItemUIArr[3][4];
                 break;
-            case handIndexs.composeMittens:
+            case handIndexs.boardMergeStepA:
                 obj.node = this.roomListLayer;
                 obj.startNode = this.roomItemUIArr[4][3];
                 obj.endNode = this.roomItemUIArr[5][3];
                 break;
-            case handIndexs.composeMittens2:
+            case handIndexs.boardMergeStepB:
                 obj.node = this.roomListLayer;
                 obj.startNode = this.roomItemUIArr[5][3];
                 obj.endNode = this.roomItemUIArr[3][2];
@@ -409,7 +409,7 @@ export class ComposeLayer extends BaseView {
             case handIndexs.btnBuild:
                 obj.node = this.btnBuild;
                 break;
-            case handIndexs.composeCardLayer:
+            case handIndexs.boardCardPanel:
                 obj.node = this.cardLayer;
                 break;
             default:
@@ -426,8 +426,8 @@ export class ComposeLayer extends BaseView {
         let roomListBg = find("ui/roomLayer/roomListBg", this.node)!;
         let roomBgItem = find("bgItem", roomListBg)!;
 
-        let colNum = composeModel.colNum;
-        let rowNum = composeModel.rowNum;
+        let colNum = mergeBoardModel.colNum;
+        let rowNum = mergeBoardModel.rowNum;
 
         this.roomListLayer.getComponent(UITransform)!.width = this.roomWidth * colNum;
         this.roomListLayer.getComponent(UITransform)!.height = this.roomWidth * rowNum;
@@ -478,7 +478,7 @@ export class ComposeLayer extends BaseView {
     }
 
     refreshCardLayer() {
-        if (composeModel.cardArr.length <= 0) {
+        if (mergeBoardModel.cardArr.length <= 0) {
             this.cardLayer.active = false;
             return;
         }
@@ -488,15 +488,15 @@ export class ComposeLayer extends BaseView {
         let arr = [];
         let show = 3;
         for (let i = 0; i < show; i++) {
-            let id = composeModel.cardArr[i];
+            let id = mergeBoardModel.cardArr[i];
             if (!id) {
                 break;
             }
             arr.unshift(id);
         }
         let showNum = 0;
-        if (composeModel.cardArr.length > show) {
-            showNum = composeModel.cardArr.length;
+        if (mergeBoardModel.cardArr.length > show) {
+            showNum = mergeBoardModel.cardArr.length;
         }
         for (let i = 0; i < arr.length; i++) {
             let itemUI = instantiate(this.cardItem);
@@ -537,7 +537,7 @@ export class ComposeLayer extends BaseView {
     }
 
     refreshManagerLayer() {
-        if (composeModel.isManagerAllGet()) {
+        if (mergeBoardModel.isManagerAllGet()) {
             this.btnManager.active = false;
             return;
         }
@@ -553,13 +553,13 @@ export class ComposeLayer extends BaseView {
         // 显示首个未完成的信息
         let manager = null;
         let hasCanGetAward = false;
-        for (let i in composeModel.managerArr) {
-            let temp = composeModel.managerArr[i];
+        for (let i in mergeBoardModel.managerArr) {
+            let temp = mergeBoardModel.managerArr[i];
             if (!manager && !temp.get) {
                 manager = temp;
             }
             let row = tables.ins().getTableValueByID(Const.Tables.manager, temp.id);
-            if (composeModel.getManagerVal(temp) >= row.p1 && !temp.get) {
+            if (mergeBoardModel.getManagerVal(temp) >= row.p1 && !temp.get) {
                 hasCanGetAward = true;
             }
         }
@@ -571,7 +571,7 @@ export class ComposeLayer extends BaseView {
                 infoLayer.active = true;
                 let row = tables.ins().getTableValueByID(Const.Tables.manager, manager.id);
                 this.setString(find("info/id/val", this.btnManager), manager.id);
-                this.setProgressBar(find("info/progress", this.btnManager)!, composeModel.getManagerVal(manager) / row.p1);
+                this.setProgressBar(find("info/progress", this.btnManager)!, mergeBoardModel.getManagerVal(manager) / row.p1);
                 let propId = row.price[0];
                 let propRow = tables.ins().getTableValueByID(Const.Tables.prop, propId);
                 this.setSpriteFrame2(find("info/icon", this.btnManager)?.getComponent(Sprite)!, Const.resPath.icon + propRow.icon);
@@ -582,7 +582,7 @@ export class ComposeLayer extends BaseView {
     initTaskLayer() {
         this.taskLayer.removeAllChildren();
 
-        for (let i = 0; i < composeModel.taskArr.length; i++) {
+        for (let i = 0; i < mergeBoardModel.taskArr.length; i++) {
             let taskItem = instantiate(this.taskItem);
             taskItem.active = true;
             taskItem.parent = this.taskLayer;
@@ -592,7 +592,7 @@ export class ComposeLayer extends BaseView {
     }
 
     refreshTaskLayer() {
-        let arr = composeModel.getTaskArrSort();
+        let arr = mergeBoardModel.getTaskArrSort();
         for (let i = 0; i < arr.length; i++) {
             let task = arr[i];
             let taskItem = this.taskLayer.children[i];
@@ -654,7 +654,7 @@ export class ComposeLayer extends BaseView {
                     return;
                 }
                 this.setSpriteFrame2(find("icon", propItem)?.getComponent(Sprite)!, Const.resPath.icon + propRow.icon);
-                let hasInfo = composeModel.getRoomDataHasInfoById(prop.id);
+                let hasInfo = mergeBoardModel.getRoomDataHasInfoById(prop.id);
                 let showNum = hasInfo.num;
                 if (showNum >= prop.num) {
                     showNum = prop.num;
@@ -713,12 +713,12 @@ export class ComposeLayer extends BaseView {
         // 提交物品
         for (let i in task.propArr) {
             let prop = task.propArr[i];
-            composeModel.addPropNum(prop.id, prop.num)
+            mergeBoardModel.addPropNum(prop.id, prop.num)
         }
     }
 
     refreshBuildLayer() {
-        this.setString(find("num", this.btnBuild), composeModel.getPropNumById(propIds.star));
+        this.setString(find("num", this.btnBuild), mergeBoardModel.getPropNumById(propIds.star));
         this.showWeakHand()
     }
 
@@ -732,10 +732,10 @@ export class ComposeLayer extends BaseView {
         if (userData.roleLv > 4) {
             return
         }
-        let handIndex = composeModel.getHandIndex();
+        let handIndex = mergeBoardModel.getHandIndex();
         if (handIndex >= 19) {
             let children = find("Canvas")!.children
-            if (UtilScene.isSceneItemCouldBeBuild() && children[children.length - 1].name == "ComposeLayer") {
+            if (UtilScene.isSceneItemCouldBeBuild() && children[children.length - 1].name == "MergeBoardLayer") {
                 let obj: any = {};
                 obj.id = 20;
                 obj.node = this.btnBuild;
@@ -800,8 +800,8 @@ export class ComposeLayer extends BaseView {
         this.btnBubbleGet.active = false;
         this.btnBubbleOver.active = false;
 
-        if (propRow.levelGold > 0 && !composeModel.isRoomBubble(row, col)
-            && !composeModel.isRoomCarton(row, col) && !composeModel.isRoomSpider(row, col)) {
+        if (propRow.levelGold > 0 && !mergeBoardModel.isRoomBubble(row, col)
+            && !mergeBoardModel.isRoomCarton(row, col) && !mergeBoardModel.isRoomSpider(row, col)) {
             this.btnSell.active = true;
             this.setString(find("num", this.btnSell), propRow.levelGold);
         }
@@ -817,8 +817,8 @@ export class ComposeLayer extends BaseView {
             let maxLvCount = 0;
             let maxLv = 0;
             let maxRoomData: any = null;
-            UtilPub.for2Arr(composeModel.roomArr, (pRoom: any, pRow: any, pCol: any) => {
-                if (!pRoom.id || pRoom.st == roomStatus.spider || pRoom.st == roomStatus.carton || composeModel.isRoomBubble(pRow, pCol)) {
+            UtilPub.for2Arr(mergeBoardModel.roomArr, (pRoom: any, pRow: any, pCol: any) => {
+                if (!pRoom.id || pRoom.st == roomStatus.spider || pRoom.st == roomStatus.carton || mergeBoardModel.isRoomBubble(pRow, pCol)) {
                     return;
                 }
                 let tmpRow = tables.ins().getTableValueByID(Const.Tables.prop, pRoom.id);
@@ -852,9 +852,9 @@ export class ComposeLayer extends BaseView {
     }
 
     getRoomDataByItemUI(itemUI: Node) {
-        return composeModel.getRoomDataByItemUI(itemUI)
+        return mergeBoardModel.getRoomDataByItemUI(itemUI)
         // @ts-ignore
-        return composeModel.roomArr[itemUI.row][itemUI.col];
+        return mergeBoardModel.roomArr[itemUI.row][itemUI.col];
     }
 
     refreshRoomItemUI(itemUI: Node, roomData?: any) {
@@ -880,10 +880,10 @@ export class ComposeLayer extends BaseView {
         let choseNode = find("chose", itemUI)!;
         if (itemUI == this.choseRoomItem) {
             let choseIcon = "chose_pink";
-            if (composeModel.isRoomBubble(row, col) || composeModel.getPropMaxLvId(roomData.id) == roomData.id) {
+            if (mergeBoardModel.isRoomBubble(row, col) || mergeBoardModel.getPropMaxLvId(roomData.id) == roomData.id) {
                 choseIcon = "chose_green";
             }
-            this.setSpriteFrame2(choseNode.getComponent(Sprite)!, Const.resPath.composeIcon + "compose/" + choseIcon, () => {
+            this.setSpriteFrame2(choseNode.getComponent(Sprite)!, Const.resPath.mergeIcon + "board/" + choseIcon, () => {
                 choseNode.active = true;
             });
         } else {
@@ -908,8 +908,8 @@ export class ComposeLayer extends BaseView {
                 bagHint.position = v3(30, 30);
                 tween(bagHint).to(1.2, { scale: v3(1.2, 1.2, 1) }).to(0.7, { scale: v3(1, 1, 1) }).union().repeatForever().start();
             }
-            this.setSpriteFrame2(bagHint.getComponent(Sprite)!, Const.resPath.composeIcon + "compose/bag_hint");
-            if (composeModel.isRoomCarton(row, col) || composeModel.isRoomSpider(row, col)) {
+            this.setSpriteFrame2(bagHint.getComponent(Sprite)!, Const.resPath.mergeIcon + "board/bag_hint");
+            if (mergeBoardModel.isRoomCarton(row, col) || mergeBoardModel.isRoomSpider(row, col)) {
                 bagHint.active = false;
             } else {
                 bagHint.active = true;
@@ -936,11 +936,11 @@ export class ComposeLayer extends BaseView {
         let taskNode = find("taskGou", itemUI)!;
         let taskNodeLan = find("taskGouLan", itemUI)!;
 
-        if (composeModel.isRoomBubble(row, col) || composeModel.isRoomSpider(row, col) || composeModel.isRoomCarton(row, col)) {
+        if (mergeBoardModel.isRoomBubble(row, col) || mergeBoardModel.isRoomSpider(row, col) || mergeBoardModel.isRoomCarton(row, col)) {
             taskNode.active = false;
             taskNodeLan.active = false;
         } else {
-            taskNode.active = composeModel.isTaskNeedWithId(roomData.id);
+            taskNode.active = mergeBoardModel.isTaskNeedWithId(roomData.id);
             taskNodeLan.active = TreasureModel.checkCompseHasProp(roomData.id)
         }
 
@@ -970,9 +970,9 @@ export class ComposeLayer extends BaseView {
                     break;
                 case roomStatus.carton:
                     iconNode.active = false;
-                    let flag = row * composeModel.colNum + col + 1;
+                    let flag = row * mergeBoardModel.colNum + col + 1;
                     let suffix = flag % 3 + 1;
-                    this.setSpriteFrame2(cartonNode.getComponent(Sprite)!, Const.resPath.composeIcon + "compose/xz" + suffix, () => {
+                    this.setSpriteFrame2(cartonNode.getComponent(Sprite)!, Const.resPath.mergeIcon + "board/xz" + suffix, () => {
                         cartonNode.active = true;
                     });
                     break;
@@ -990,7 +990,7 @@ export class ComposeLayer extends BaseView {
         let row = itemUI.row;
         let col = itemUI.col;
         let roomData = this.getRoomDataByItemUI(itemUI);
-        if (!composeModel.isRoomNormal(row, col)) {
+        if (!mergeBoardModel.isRoomNormal(row, col)) {
             return;
         }
         let propRow = tables.ins().getTableValueByID(Const.Tables.prop, roomData.id);
@@ -1005,11 +1005,11 @@ export class ComposeLayer extends BaseView {
             let r = row + posArr[0];
             let c = col + posArr[1];
             let angle = posArr[2];
-            if (r >= 0 && r <= composeModel.rowNum - 1 && c >= 0 && c <= composeModel.colNum - 1) {
+            if (r >= 0 && r <= mergeBoardModel.rowNum - 1 && c >= 0 && c <= mergeBoardModel.colNum - 1) {
                 let name = "speedUp_" + (row * 100 + col) + "_" + (r * 100 + c);
-                let rData = composeModel.roomArr[r][c];
-                let node = find(name, this.composeSpineLayer);
-                if (!composeModel.isRoomNormal(r, c) || !composeModel.propCanSpeedUp(rData.id)) {
+                let rData = mergeBoardModel.roomArr[r][c];
+                let node = find(name, this.mergeFxLayer);
+                if (!mergeBoardModel.isRoomNormal(r, c) || !mergeBoardModel.propCanSpeedUp(rData.id)) {
                     // 无法加速，有旧的要移除
                     if (node) {
                         node.removeFromParent();
@@ -1017,7 +1017,7 @@ export class ComposeLayer extends BaseView {
                 } else {
                     // 可以加速，没有要新�?
                     if (!node) {
-                        this.addSpine(this.jsqSpinePath, this.composeSpineLayer, (err, aniCtrl: AnimationCtrl) => {
+                        this.addSpine(this.jsqSpinePath, this.mergeFxLayer, (err, aniCtrl: AnimationCtrl) => {
                             aniCtrl.playAnimation("animation", true);
                             aniCtrl.node.name = name;
                             UtilPub.setNodePositionByOtherNode(aniCtrl.node, itemUI);
@@ -1040,7 +1040,7 @@ export class ComposeLayer extends BaseView {
         let col = itemUI.col;
         if (!isForce) {
             let roomData = this.getRoomDataByItemUI(itemUI);
-            if (!composeModel.isRoomNormal(row, col)) {
+            if (!mergeBoardModel.isRoomNormal(row, col)) {
                 return;
             }
             let propRow = tables.ins().getTableValueByID(Const.Tables.prop, roomData.id);
@@ -1052,9 +1052,9 @@ export class ComposeLayer extends BaseView {
         nineAroundArr.forEach((posArr: any) => {
             let r = row + posArr[0];
             let c = col + posArr[1];
-            if (r >= 0 && r <= composeModel.rowNum - 1 && c >= 0 && c <= composeModel.colNum - 1) {
+            if (r >= 0 && r <= mergeBoardModel.rowNum - 1 && c >= 0 && c <= mergeBoardModel.colNum - 1) {
                 let name = "speedUp_" + (row * 100 + col) + "_" + (r * 100 + c);
-                let node = find(name, this.composeSpineLayer);
+                let node = find(name, this.mergeFxLayer);
                 if (node) {
                     node.removeFromParent();
                 }
@@ -1097,13 +1097,13 @@ export class ComposeLayer extends BaseView {
         let dt = -1;
         let sum = 0;
         if (roomData.cd > 0 && roomData.cdSum > 0) {
-            dt = roomData.cd - composeModel.getCurrentTimestamp();
+            dt = roomData.cd - mergeBoardModel.getCurrentTimestamp();
             sum = roomData.cdSum;
         }
 
         let dtAuto = -1;
         if (roomData.cdAuto > 0) {
-            dtAuto = roomData.cdAuto - composeModel.getCurrentTimestamp();
+            dtAuto = roomData.cdAuto - mergeBoardModel.getCurrentTimestamp();
         }
 
         if (dt == -1 && dtAuto == -1) {
@@ -1152,7 +1152,7 @@ export class ComposeLayer extends BaseView {
             itemSpineNode.active = false;
         }
 
-        if (composeModel.isRoomSpider(row, col) || composeModel.isRoomBubble(row, col)) {
+        if (mergeBoardModel.isRoomSpider(row, col) || mergeBoardModel.isRoomBubble(row, col)) {
             itemSpineNode.active = false;
             cdNode.active = false;
             isClickSpine = false;
@@ -1188,7 +1188,7 @@ export class ComposeLayer extends BaseView {
         let col = Math.floor(p.x / this.roomWidth);
         let row = Math.floor(p.y / this.roomWidth);
 
-        if (composeModel.rowColInComposeLayer(row, col)) {
+        if (mergeBoardModel.isCellInsideMergeBoard(row, col)) {
             return this.roomItemUIArr[row][col];
         }
 
@@ -1204,24 +1204,24 @@ export class ComposeLayer extends BaseView {
     }
 
     showRoomListMaskLayer(row: number, col: number, targetRoomItem: any) {
-        let roomData = composeModel.roomArr[row][col];
+        let roomData = mergeBoardModel.roomArr[row][col];
         let propRow = tables.ins().getTableValueByID(Const.Tables.prop, roomData.id);
 
         // 处理拆分器特�?
         let isShow = false;
         if (propRow.mdt == 4 && targetRoomItem) {
             let targetRoomData = this.getRoomDataByItemUI(targetRoomItem);
-            if (composeModel.isRoomNormal(targetRoomItem.row, targetRoomItem.col) && composeModel.canSplitProp(roomData.id, targetRoomData.id)) {
+            if (mergeBoardModel.isRoomNormal(targetRoomItem.row, targetRoomItem.col) && mergeBoardModel.canSplitProp(roomData.id, targetRoomData.id)) {
                 isShow = true;
             }
         }
         let spineName = "spineSplit";
-        let spineNode = find(spineName, this.composeSpineLayer);
+        let spineNode = find(spineName, this.mergeFxLayer);
         if (isShow) {
             if (spineNode) {
                 UtilPub.setNodePositionByOtherNode(spineNode, targetRoomItem);
             } else {
-                this.addSpine(this.tbgxSpinePath, this.composeSpineLayer, (err: any, aniCtrl: AnimationCtrl) => {
+                this.addSpine(this.tbgxSpinePath, this.mergeFxLayer, (err: any, aniCtrl: AnimationCtrl) => {
                     aniCtrl.node.name = spineName;
                     aniCtrl.playAnimation("3", true);
                     UtilPub.setNodePositionByOtherNode(aniCtrl.node, targetRoomItem);
@@ -1246,7 +1246,7 @@ export class ComposeLayer extends BaseView {
 
         let arr: any = [];
         UtilPub.for2Arr(this.roomItemUIArr, (roomItem: any, r: number, c: number) => {
-            if (!composeModel.isRoomNormal(r, c)) {
+            if (!mergeBoardModel.isRoomNormal(r, c)) {
                 return;
             }
             if (row == r && col == c) {
@@ -1282,35 +1282,35 @@ export class ComposeLayer extends BaseView {
                     break;
                 case 6:
                     // 普通升级卡1
-                    if (!composeModel.propIsMaxLv(tmpRoomData.id) && tmpPropRow.putong1) {
+                    if (!mergeBoardModel.propIsMaxLv(tmpRoomData.id) && tmpPropRow.putong1) {
                         arr.push(roomItem);
                         roomItem.maskSpine = "";
                     }
                     break;
                 case 7:
                     // 普通升级卡2
-                    if (!composeModel.propIsMaxLv(tmpRoomData.id) && tmpPropRow.putong2) {
+                    if (!mergeBoardModel.propIsMaxLv(tmpRoomData.id) && tmpPropRow.putong2) {
                         arr.push(roomItem);
                         roomItem.maskSpine = "";
                     }
                     break;
                 case 8:
                     // 普通升级卡2
-                    if (!composeModel.propIsMaxLv(tmpRoomData.id) && tmpPropRow.putong3) {
+                    if (!mergeBoardModel.propIsMaxLv(tmpRoomData.id) && tmpPropRow.putong3) {
                         arr.push(roomItem);
                         roomItem.maskSpine = "";
                     }
                     break;
                 case 9:
                     // 超级升级�?
-                    if (!composeModel.propIsMaxLv(tmpRoomData.id) && !tmpPropRow.nochaoji) {
+                    if (!mergeBoardModel.propIsMaxLv(tmpRoomData.id) && !tmpPropRow.nochaoji) {
                         arr.push(roomItem);
                         roomItem.maskSpine = "";
                     }
                     break;
                 case 10:
                     // 全能层级�?
-                    if (!composeModel.propIsMaxLv(tmpRoomData.id) && tmpPropRow.quanneng) {
+                    if (!mergeBoardModel.propIsMaxLv(tmpRoomData.id) && tmpPropRow.quanneng) {
                         arr.push(roomItem);
                         roomItem.maskSpine = "";
                     }
@@ -1349,7 +1349,7 @@ export class ComposeLayer extends BaseView {
         });
 
         let spineName = "spineSplit";
-        let spineNode = find(spineName, this.composeSpineLayer);
+        let spineNode = find(spineName, this.mergeFxLayer);
         if (spineNode) {
             spineNode.removeFromParent();
         }
@@ -1383,15 +1383,15 @@ export class ComposeLayer extends BaseView {
         }
         let propRow = tables.ins().getTableValueByID(Const.Tables.prop, roomData.id);
         find("hintSpine", roomItem)!.active = false;
-        if (!composeModel.isHandDone()) {
-            let handIndex = composeModel.getHandIndex();
+        if (!mergeBoardModel.isHandDone()) {
+            let handIndex = mergeBoardModel.getHandIndex();
             switch (handIndex) {
                 case handIndexs.firstCompose:
                 case handIndexs.secondCompose:
                 case handIndexs.thirdCompose:
-                case handIndexs.composeMittens:
-                case handIndexs.composeMittens2:
-                    if (roomItem != composeModel.getHandLayer()!.startNode) {
+                case handIndexs.boardMergeStepA:
+                case handIndexs.boardMergeStepB:
+                    if (roomItem != mergeBoardModel.getHandLayer()!.startNode) {
                         return;
                     }
                     break;
@@ -1425,8 +1425,8 @@ export class ComposeLayer extends BaseView {
             return;
         }
 
-        if (!composeModel.isHandDone()) {
-            let handIndex = composeModel.getHandIndex();
+        if (!mergeBoardModel.isHandDone()) {
+            let handIndex = mergeBoardModel.getHandIndex();
             switch (handIndex) {
                 case handIndexs.clickRoomNew:
                 case handIndexs.clickRoomNew2:
@@ -1463,36 +1463,36 @@ export class ComposeLayer extends BaseView {
         // 目标房间物品可以合成，显示合成特�?
         let isShowComposeEffect = false;
         let targetRoomItem = this.getRoomItemByPos(pos);
-        if (!composeModel.isRoomBubble(row, col) && propRow.blessId > 0 && targetRoomItem) {
+        if (!mergeBoardModel.isRoomBubble(row, col) && propRow.blessId > 0 && targetRoomItem) {
             let targetRoomData = this.getRoomDataByItemUI(targetRoomItem);
             let targetRow = targetRoomItem.row;
             let targetCol = targetRoomItem.col;
             if (targetRoomData != moveRoomData
                 && targetRoomData.id == moveRoomData.id
-                && !composeModel.isRoomCarton(targetRow, targetCol)
-                && !composeModel.isRoomBubble(targetRow, targetCol)
+                && !mergeBoardModel.isRoomCarton(targetRow, targetCol)
+                && !mergeBoardModel.isRoomBubble(targetRow, targetCol)
             ) {
                 isShowComposeEffect = true;
             }
         }
         if (isShowComposeEffect) {
-            if (!this.currentComposeSpine || this.currentComposeSpine.targetRoomItem != targetRoomItem) {
-                if (this.currentComposeSpine) {
-                    this.currentComposeSpine.destroy();
-                    this.currentComposeSpine = null;
+            if (!this.currentMergeFx || this.currentMergeFx.targetRoomItem != targetRoomItem) {
+                if (this.currentMergeFx) {
+                    this.currentMergeFx.destroy();
+                    this.currentMergeFx = null;
                 }
-                let composeSpineItem = instantiate(this.composeSpineItem);
-                composeSpineItem.active = true;
-                composeSpineItem.parent = this.composeSpineLayer;
-                composeSpineItem.getComponent(AnimationCtrl)?.playAnimation("1", true);
-                UtilPub.setNodePositionByOtherNode(composeSpineItem, targetRoomItem);
-                this.currentComposeSpine = composeSpineItem;
-                this.currentComposeSpine.targetRoomItem = targetRoomItem;
+                let mergeFxItem = instantiate(this.mergeFxItem);
+                mergeFxItem.active = true;
+                mergeFxItem.parent = this.mergeFxLayer;
+                mergeFxItem.getComponent(AnimationCtrl)?.playAnimation("1", true);
+                UtilPub.setNodePositionByOtherNode(mergeFxItem, targetRoomItem);
+                this.currentMergeFx = mergeFxItem;
+                this.currentMergeFx.targetRoomItem = targetRoomItem;
             }
         } else {
-            if (this.currentComposeSpine) {
-                this.currentComposeSpine.destroy();
-                this.currentComposeSpine = null;
+            if (this.currentMergeFx) {
+                this.currentMergeFx.destroy();
+                this.currentMergeFx = null;
             }
         }
 
@@ -1542,17 +1542,17 @@ export class ComposeLayer extends BaseView {
             if (row == endRoomItem.row && col == endRoomItem.col) {
                 // 目标位置是自�?
                 this.moveRoomItemToRowCol(this.moveRoomItem, row, col, () => {
-                    composeModel.refreshRoomAutoNew(row, col);
+                    mergeBoardModel.refreshRoomAutoNew(row, col);
                 });
                 this.refreshComposeHint();
                 return;
             }
             console.log("roomListTouchEnd  3")
-            let endRoomIsBubble = composeModel.isRoomBubble(endRoomItem.row, endRoomItem.col);
+            let endRoomIsBubble = mergeBoardModel.isRoomBubble(endRoomItem.row, endRoomItem.col);
             if (!endRoomData.id || roomData.id != endRoomData.id
-                || composeModel.isRoomBubble(row, col)
+                || mergeBoardModel.isRoomBubble(row, col)
                 || endRoomIsBubble
-                || composeModel.isRoomCarton(endRoomItem.row, endRoomItem.col)
+                || mergeBoardModel.isRoomCarton(endRoomItem.row, endRoomItem.col)
             ) {
                 console.log("roomListTouchEnd  4")
 
@@ -1560,7 +1560,7 @@ export class ComposeLayer extends BaseView {
                     console.log("roomListTouchEnd  5")
 
                     // 拖到背包，是放进去物�?
-                    if (composeModel.putDataInRoomBag(row, col, endRoomItem.row, endRoomItem.col)) {
+                    if (mergeBoardModel.putDataInRoomBag(row, col, endRoomItem.row, endRoomItem.col)) {
                         // 放入成功
                         this.refreshRoomItemUIByRowCol(row, col);
                         this.choseRoomItem = endRoomItem;
@@ -1575,7 +1575,7 @@ export class ComposeLayer extends BaseView {
                     console.log("roomListTouchEnd  6")
 
                     // 如果是蜘蛛网或者纸箱，不能交换位置，返回去
-                    if (composeModel.isRoomSpider(endRoomItem.row, endRoomItem.col) || composeModel.isRoomCarton(endRoomItem.row, endRoomItem.col)) {
+                    if (mergeBoardModel.isRoomSpider(endRoomItem.row, endRoomItem.col) || mergeBoardModel.isRoomCarton(endRoomItem.row, endRoomItem.col)) {
                         console.log("roomListTouchEnd  7")
                         this.setChoseRoomItem(this.startRoomItem);
                         this.moveRoomItemToRowCol(this.moveRoomItem, row, col);
@@ -1585,14 +1585,14 @@ export class ComposeLayer extends BaseView {
                         return;
                     }
 
-                    let handIndex = composeModel.getHandIndex();
+                    let handIndex = mergeBoardModel.getHandIndex();
                     switch (handIndex) {
                         case handIndexs.firstCompose:
                         case handIndexs.secondCompose:
                         case handIndexs.thirdCompose:
-                        case handIndexs.composeMittens:
-                        case handIndexs.composeMittens2:
-                            if (endRoomItem != composeModel.getHandLayer()!.endNode) {
+                        case handIndexs.boardMergeStepA:
+                        case handIndexs.boardMergeStepB:
+                            if (endRoomItem != mergeBoardModel.getHandLayer()!.endNode) {
                                 this.setChoseRoomItem(this.startRoomItem);
                                 this.moveRoomItemToRowCol(this.moveRoomItem, row, col);
                                 return;
@@ -1602,11 +1602,11 @@ export class ComposeLayer extends BaseView {
                             break;
                     }
 
-                    if (propRow && propRow.mdt == 3 && composeModel.canAddTimes(endRoomData.id) && !endRoomIsBubble) {
+                    if (propRow && propRow.mdt == 3 && mergeBoardModel.canAddTimes(endRoomData.id) && !endRoomIsBubble) {
                         // 充能�?
                         this.moveRoomItem.destroy();
                         this.moveRoomItem = null;
-                        composeModel.roomAddTimes(row, col, endRoomItem.row, endRoomItem.col, propRow.p1);
+                        mergeBoardModel.roomAddTimes(row, col, endRoomItem.row, endRoomItem.col, propRow.p1);
                         this.setChoseRoomItem(endRoomItem);
                         this.refreshRoomItemUI(endRoomItem);
                         this.refreshRoomItemUIByRowCol(row, col);
@@ -1620,19 +1620,19 @@ export class ComposeLayer extends BaseView {
                         return;
                     }
 
-                    if (propRow && propRow.mdt == 4 && composeModel.canSplitProp(propRow.id, endRoomData.id) && !endRoomIsBubble) {
+                    if (propRow && propRow.mdt == 4 && mergeBoardModel.canSplitProp(propRow.id, endRoomData.id) && !endRoomIsBubble) {
                         // 拆分�?
                         this.moveRoomItem.destroy();
                         this.moveRoomItem = null;
-                        let retObj = composeModel.roomPropSplit(row, col, endRoomItem.row, endRoomItem.col);
+                        let retObj = mergeBoardModel.roomPropSplit(row, col, endRoomItem.row, endRoomItem.col);
                         this.setChoseRoomItem(endRoomItem);
                         this.refreshRoomItemUI(endRoomItem);
                         this.refreshComposeHint();
-                        composeModel.refreshRoomAutoNew(row, col);
+                        mergeBoardModel.refreshRoomAutoNew(row, col);
                         let mRow = retObj.emptyPos.row;
                         let mCol = retObj.emptyPos.col;
                         this.addNewMoveNewItemRoomToRowCol(endRoomItem, mRow, mCol, 1, () => {
-                            composeModel.refreshRoomAutoNew(mRow, mCol);
+                            mergeBoardModel.refreshRoomAutoNew(mRow, mCol);
                             this.showHintSpineOnce(this.roomItemUIArr[mRow][mCol], "5");
                             this.refreshTaskLayer();
                         });
@@ -1641,18 +1641,18 @@ export class ComposeLayer extends BaseView {
                     }
 
                     if (propRow && (propRow.mdt == 6 || propRow.mdt == 7 || propRow.mdt == 8 || propRow.mdt == 9 || propRow.mdt == 10)
-                        && composeModel.canLvUpProp(propRow.id, endRoomData.id) && !endRoomIsBubble) {
+                        && mergeBoardModel.canLvUpProp(propRow.id, endRoomData.id) && !endRoomIsBubble) {
                         // 升级�?
                         this.moveRoomItem.destroy();
                         this.moveRoomItem = null;
-                        composeModel.roomPropLvUp(row, col, endRoomItem.row, endRoomItem.col);
+                        mergeBoardModel.roomPropLvUp(row, col, endRoomItem.row, endRoomItem.col);
                         this.setChoseRoomItem(endRoomItem);
                         this.refreshRoomItemUI(endRoomItem);
                         this.refreshRoomItemUIByRowCol(row, col);
                         this.refreshComposeHint();
                         this.showChoseTween(endRoomItem);
                         this.refreshTaskLayer();
-                        this.addSpine(this.tbgxSpinePath, this.composeSpineLayer, (err: any, aniCtrl: AnimationCtrl) => {
+                        this.addSpine(this.tbgxSpinePath, this.mergeFxLayer, (err: any, aniCtrl: AnimationCtrl) => {
                             UtilPub.setNodePositionByOtherNode(aniCtrl.node, endRoomItem);
                             aniCtrl.playAnimationOnce("6", () => {
                                 aniCtrl.node.destroy();
@@ -1662,10 +1662,10 @@ export class ComposeLayer extends BaseView {
                     }
 
                     // 两个物品交换位置，包括目标位置是空的
-                    composeModel.roomDataExchange(row, col, endRoomItem.row, endRoomItem.col);
+                    mergeBoardModel.roomDataExchange(row, col, endRoomItem.row, endRoomItem.col);
                     this.setChoseRoomItem(endRoomItem);
                     this.moveRoomItemToRowCol(this.moveRoomItem, endRoomItem.row, endRoomItem.col, () => {
-                        composeModel.refreshRoomAutoNew(endRoomItem.row, endRoomItem.col);
+                        mergeBoardModel.refreshRoomAutoNew(endRoomItem.row, endRoomItem.col);
                         this.refreshComposeHint();
                         this.refreshRoomNineAroundAutoNew(row, col);
                     });
@@ -1673,7 +1673,7 @@ export class ComposeLayer extends BaseView {
                         // 目标位置不为空，也无法合成，该物品自动跑回触摸开始位�?
                         endRoomItem.active = false;
                         this.addNewMoveNewItemRoomToRowCol(endRoomItem, row, col, 0, () => {
-                            composeModel.refreshRoomAutoNew(row, col);
+                            mergeBoardModel.refreshRoomAutoNew(row, col);
                         });
                     }
                 }
@@ -1685,27 +1685,27 @@ export class ComposeLayer extends BaseView {
 
                 // 相同物品，进行合�?
                 if (propRow.blessId) {
-                    console.log("compose new item");
+                    console.log("merge board item");
                     EventManger.eventTarget.emit(EventManger.EEventName.ADD_EXP_ANIMATION,1)
-                    let handIndex = composeModel.getHandIndex();
+                    let handIndex = mergeBoardModel.getHandIndex();
                     if (handIndex == handIndexs.firstCompose && propRow.blessId == 10002) {
-                        composeModel.addHandIndex();
+                        mergeBoardModel.addHandIndex();
                         this.refreshHandLayer();
                     } else if (handIndex == handIndexs.secondCompose && propRow.blessId == 10003) {
-                        composeModel.addHandIndex();
+                        mergeBoardModel.addHandIndex();
                         this.refreshHandLayer();
                     } else if (handIndex == handIndexs.thirdCompose && propRow.blessId == 10004) {
-                        composeModel.addHandIndex();
-                        composeModel.closeHandLayer();
-                    } else if (handIndex == handIndexs.composeMittens && propRow.blessId == 10027) {
-                        composeModel.addHandIndex();
+                        mergeBoardModel.addHandIndex();
+                        mergeBoardModel.closeHandLayer();
+                    } else if (handIndex == handIndexs.boardMergeStepA && propRow.blessId == 10027) {
+                        mergeBoardModel.addHandIndex();
                         this.refreshHandLayer();
-                    } else if (handIndex == handIndexs.composeMittens2 && propRow.blessId == 10028) {
-                        composeModel.addHandIndex();
+                    } else if (handIndex == handIndexs.boardMergeStepB && propRow.blessId == 10028) {
+                        mergeBoardModel.addHandIndex();
                         this.refreshHandLayer();
                     }
 
-                    let retObj = composeModel.roomDataCompose(row, col, endRoomItem.row, endRoomItem.col);
+                    let retObj = mergeBoardModel.mergeRoomData(row, col, endRoomItem.row, endRoomItem.col);
                     // 纸箱裂开，变成蜘蛛网包住
                     for (let i in retObj.cartonArr) {
                         let posInfo = retObj.cartonArr[i];
@@ -1741,25 +1741,25 @@ export class ComposeLayer extends BaseView {
                     this.refreshRoomItemUI(endRoomItem);
                     this.showComposeEndTween(endRoomItem);
 
-                    let audioName = Const.Audio.compose + (this.composeAudioCount % 4)
-                    this.composeAudioCount++;
+                    let audioName = Const.Audio.mergeTap + (this.mergeAudioCount % 4)
+                    this.mergeAudioCount++;
                     audioManager.instance.playSound(audioName);
                     this.unschedule(this.scheduleAudioCountReset);
                     this.scheduleOnce(this.scheduleAudioCountReset, 2);
 
-                    composeModel.refreshRoomAutoNew(endRoomItem.row, endRoomItem.col);
+                    mergeBoardModel.refreshRoomAutoNew(endRoomItem.row, endRoomItem.col);
                     this.refreshRoomNineAroundAutoNew(row, col);
 
                     if (propRow.luna >= 4)
-                        composeModel.roomDataComposeAfter(endRoomItem.row, endRoomItem.col);
+                        mergeBoardModel.afterRoomMerge(endRoomItem.row, endRoomItem.col);
 
                     this.refreshBottomLayer();
                     this.refreshTaskLayer();
 
-                    if (this.currentComposeSpine) {
-                        this.currentComposeSpine.getComponent(AnimationCtrl).playAnimationOnce("2", () => {
-                            this.currentComposeSpine.destroy();
-                            this.currentComposeSpine = null;
+                    if (this.currentMergeFx) {
+                        this.currentMergeFx.getComponent(AnimationCtrl).playAnimationOnce("2", () => {
+                            this.currentMergeFx.destroy();
+                            this.currentMergeFx = null;
                         });
                     }
                 } else {
@@ -1776,9 +1776,9 @@ export class ComposeLayer extends BaseView {
         if (this.choseRoomItem == this.startRoomItem) {
             // 点击了房�?
             this.onClickRoomItem(this.startRoomItem);
-            let handIndex = composeModel.getHandIndex();
+            let handIndex = mergeBoardModel.getHandIndex();
             if (handIndex == handIndexs.clickRoomNew || handIndex == handIndexs.clickRoomNew2) {
-                composeModel.addHandIndex();
+                mergeBoardModel.addHandIndex();
                 this.refreshHandLayer();
             }
         } else {
@@ -1795,7 +1795,7 @@ export class ComposeLayer extends BaseView {
     }
 
     scheduleAudioCountReset() {
-        this.composeAudioCount = 0;
+        this.mergeAudioCount = 0;
     }
 
     roomListTouchCancel(event: EventTouch) {
@@ -1828,10 +1828,10 @@ export class ComposeLayer extends BaseView {
         nineAroundArr.forEach((posArr: any) => {
             let r = row + posArr[0];
             let c = col + posArr[1];
-            if (r >= 0 && r <= composeModel.rowNum - 1 && c >= 0 && c <= composeModel.colNum - 1) {
-                let rData = composeModel.roomArr[r][c];
+            if (r >= 0 && r <= mergeBoardModel.rowNum - 1 && c >= 0 && c <= mergeBoardModel.colNum - 1) {
+                let rData = mergeBoardModel.roomArr[r][c];
                 if (rData.id > 0) {
-                    composeModel.refreshRoomAutoNew(r, c);
+                    mergeBoardModel.refreshRoomAutoNew(r, c);
                 }
             }
         });
@@ -1861,7 +1861,7 @@ export class ComposeLayer extends BaseView {
             if (monthCardVal) {
                 let row = this.choseRoomItem.row;
                 let col = this.choseRoomItem.col;
-                composeModel.rommDataCdBubbleOver(row, col);
+                mergeBoardModel.rommDataCdBubbleOver(row, col);
             } else {
                 // TODO 弹窗提示购买月卡
                 UtilPub.log("prompt purchase privilege");
@@ -1870,7 +1870,7 @@ export class ComposeLayer extends BaseView {
 
     }
 
-    composeTimeSpeedUpEndRet(data: any) {
+    boardSpeedupEndedRet(data: any) {
         this.refreshRoomItemUIByRowCol(data.row, data.col);
         this.removeAllSpeedUpSpine(this.roomItemUIArr[data.row][data.col], true);
     }
@@ -1888,15 +1888,15 @@ export class ComposeLayer extends BaseView {
         this.refreshHandLayer();
     }
 
-    composeGetNewItemRet(propId: number) {
+    boardDiscoveryRet(propId: number) {
         uiManager.instance.showDialog(Const.Dialogs.NewItemLayer, propId);
     }
 
-    composeCardLayerRefreshRet() {
+    boardCardRefreshRet() {
         this.refreshCardLayer();
     }
 
-    composeManagerRefreshRet() {
+    boardMilestoneRefreshRet() {
         this.refreshManagerLayer();
     }
 
@@ -1908,8 +1908,8 @@ export class ComposeLayer extends BaseView {
         });
     }
 
-    composeGetOutFromBagRet(data: any) {
-        UtilPub.log("composeGetOutFromBagRet", data);
+    boardBagWithdrawRet(data: any) {
+        UtilPub.log("boardBagWithdrawRet", data);
         let roomItem = this.roomItemUIArr[data.row][data.col];
         data.getOutArr.forEach((pos: any) => {
             this.addNewMoveNewItemRoomToRowCol(roomItem, pos.row, pos.col, 1, () => {
@@ -1933,7 +1933,7 @@ export class ComposeLayer extends BaseView {
             this.refreshBottomLayer();
         }
         this.refreshTaskLayer();
-        this.addSpine(Const.resPath.composeSpine + "qipao/qipao", this.bubbleLayer, (err, aniCtrl: AnimationCtrl) => {
+        this.addSpine(Const.resPath.mergeSpine + "qipao/qipao", this.bubbleLayer, (err, aniCtrl: AnimationCtrl) => {
             UtilPub.setNodePositionByOtherNode(aniCtrl.node, roomItem);
             aniCtrl.playAnimationOnce("3", () => {
                 aniCtrl.node.destroy();
@@ -1942,14 +1942,14 @@ export class ComposeLayer extends BaseView {
         audioManager.instance.playSound(Const.Audio.bubbleBomb);
     }
 
-    composeRoomNewRet(data: any) {
-        UtilPub.log("composeRoomNewRet", data);
+    boardSlotSpawnRet(data: any) {
+        UtilPub.log("boardSlotSpawnRet", data);
         let row = data.row;
         let col = data.col;
         let roomItem = this.roomItemUIArr[row][col];
         data.newPosArr.forEach((posArr: any) => {
             this.addNewMoveNewItemRoomToRowCol(roomItem, posArr[0], posArr[1], 1);
-            if (composeModel.isRoomBubble(posArr[0], posArr[1])) {
+            if (mergeBoardModel.isRoomBubble(posArr[0], posArr[1])) {
                 audioManager.instance.playSound(Const.Audio.bubble);
             }
         });
@@ -1976,7 +1976,7 @@ export class ComposeLayer extends BaseView {
         moveRoomItem.row = row;
         // @ts-ignore
         moveRoomItem.col = col;
-        this.refreshRoomItemUI(moveRoomItem, composeModel.roomArr[row][col]);
+        this.refreshRoomItemUI(moveRoomItem, mergeBoardModel.roomArr[row][col]);
         let pos = UtilPub.convertToWorldSpace(roomItem);
         pos = UtilPub.convertToNodeSpace(moveRoomItem, pos);
         moveRoomItem.position = pos;
@@ -2033,7 +2033,7 @@ export class ComposeLayer extends BaseView {
     // 刷新可合成的提示
     refreshComposeHint() {
         this.clearComposeHintTween();
-        if (!composeModel.isHandDone()) {
+        if (!mergeBoardModel.isHandDone()) {
             return;
         }
         let tmpObj: any = {};
@@ -2061,7 +2061,7 @@ export class ComposeLayer extends BaseView {
             if (!id) {
                 return;
             }
-            if (composeModel.isRoomBubble(roomItem.row, roomItem.col)) {
+            if (mergeBoardModel.isRoomBubble(roomItem.row, roomItem.col)) {
                 return;
             }
             let propRow = tables.ins().getTableValueByID(Const.Tables.prop, id);
@@ -2085,11 +2085,11 @@ export class ComposeLayer extends BaseView {
 
             let normalRoomItem = tmpFunc(arr, true);
             this.showComposeHintTween(normalRoomItem);
-            this.roomItemComposeHintArr.push(normalRoomItem);
+            this.roomItemMergeHintArr.push(normalRoomItem);
 
             let otherRoomItem = UtilPub.getRandomItemByArr(arr, true);
             this.showComposeHintTween(otherRoomItem);
-            this.roomItemComposeHintArr.push(otherRoomItem);
+            this.roomItemMergeHintArr.push(otherRoomItem);
 
         }
     }
@@ -2145,7 +2145,7 @@ export class ComposeLayer extends BaseView {
         let iconNode = find("icon", node)!;
         Tween.stopAllByTag(tag, iconNode);
         iconNode.scale = v3(1, 1, 1);
-        let composeHintTween = tween(iconNode).tag(tag).delay(3)
+        let mergeHintTween = tween(iconNode).tag(tag).delay(3)
             .to(0.3, { scale: v3(1.4, 1.4, 1) })
             .to(0.25, { scale: v3(0.8, 0.8, 1) })
             .to(0.15, { scale: v3(1.15, 1.15, 1) })
@@ -2154,24 +2154,24 @@ export class ComposeLayer extends BaseView {
             .to(0.1, { scale: v3(1, 1, 1) })
             .union().repeatForever().start();
         // @ts-ignore
-        node.composeHintTween = composeHintTween;
+        node.mergeHintTween = mergeHintTween;
     }
     // 移除合成提示
     clearComposeHintTween() {
-        this.roomItemComposeHintArr.forEach((node: Node) => {
+        this.roomItemMergeHintArr.forEach((node: Node) => {
             let iconNode = find("icon", node)!;
             iconNode.scale = v3(1, 1, 1);
             Tween.stopAllByTag(102, iconNode);
             // @ts-ignore
-            delete node.composeHintTween;
+            delete node.mergeHintTween;
         });
-        this.roomItemComposeHintArr = [];
+        this.roomItemMergeHintArr = [];
     }
     // 显示有东西可以生成的动画
     showItemCreateTween(node: Node) {
         // 如果正在显示合成提示动画，直接丢�?
         // @ts-ignore
-        if (node.composeHintTween) {
+        if (node.mergeHintTween) {
             this.stopItemCreateTween(node);
             return;
         }
@@ -2226,7 +2226,7 @@ export class ComposeLayer extends BaseView {
         let col = this.choseRoomItem.col;
 
         // 点击和自动吐东西cd
-        let timestamp = composeModel.getCurrentTimestamp();
+        let timestamp = mergeBoardModel.getCurrentTimestamp();
         let dt = -1;
         if (roomData.cd > 0 && roomData.cdSum > 0) {
             dt = roomData.cd - timestamp;
@@ -2256,12 +2256,12 @@ export class ComposeLayer extends BaseView {
             this.btnCdOver.dt = dt;
             let timeStr = UtilPub.getDurationStr(dt);
             this.setString(find("cd/time", this.btnCdOver), timeStr);
-            let num = composeModel.getOverCdCostDiamond(dt);
+            let num = mergeBoardModel.getOverCdCostDiamond(dt);
             this.setString(find("num", this.btnCdOver), num);
         }
 
         // 气泡cd
-        if (composeModel.isRoomBubble(row, col) && roomData.cdBubble > 0) {
+        if (mergeBoardModel.isRoomBubble(row, col) && roomData.cdBubble > 0) {
             this.btnBubbleGet.active = true;
             this.btnBubbleOver.active = true;
             let dt2 = roomData.cdBubble - timestamp;
@@ -2311,7 +2311,7 @@ export class ComposeLayer extends BaseView {
 
         let propRow = tables.ins().getTableValueByID(Const.Tables.prop, roomData.id);
 
-        if (composeModel.isRoomBubble(row, col)) {
+        if (mergeBoardModel.isRoomBubble(row, col)) {
             // 有气�?
             let aniCtrl = find("bubble", roomItem)!.getComponent(AnimationCtrl)!;
             aniCtrl.playAnimationOnce("2", () => {
@@ -2320,14 +2320,14 @@ export class ComposeLayer extends BaseView {
             return;
         }
 
-        if (composeModel.isRoomCd(row, col)) {
+        if (mergeBoardModel.isRoomCd(row, col)) {
             // 有在走cd
             return;
         }
 
         if (propRow.clickAwardId > 0) {
             // 点击直接拿奖励的
-            composeModel.onClickRoomAward(row, col, UtilPub.convertToWorldSpace(roomItem));
+            mergeBoardModel.onClickRoomAward(row, col, UtilPub.convertToWorldSpace(roomItem));
             this.setChoseRoomItem(null);
             this.refreshRoomItemUIByRowCol(row, col);
             this.refreshTaskLayer();
@@ -2339,19 +2339,19 @@ export class ComposeLayer extends BaseView {
 
         if (propRow.mdt == 1 && !roomData.unlock) {
             // 点击解锁
-            composeModel.onClickUnlockRoom(row, col);
+            mergeBoardModel.onClickUnlockRoom(row, col);
             this.refreshBottomLayer();
             return;
         }
 
         if (propRow.mdt == 2 || propRow.mdt == 5 || propRow.mdt == 11) {
-            let ret = composeModel.onClickEspRoom(row, col);
+            let ret = mergeBoardModel.onClickEspRoom(row, col);
             this.refreshRoomItemUIByRowCol(row, col);
             this.refreshBottomLayer();
             if (propRow.mdt == 5) {
                 ret.arr.forEach((info: any) => {
                     let tempRoomItem = this.roomItemUIArr[info.row][info.col];
-                    this.addSpine(this.tbgxSpinePath, this.composeSpineLayer, (err: any, aniCtrl: AnimationCtrl) => {
+                    this.addSpine(this.tbgxSpinePath, this.mergeFxLayer, (err: any, aniCtrl: AnimationCtrl) => {
                         UtilPub.setNodePositionByOtherNode(aniCtrl.node, tempRoomItem);
                         aniCtrl.playAnimationOnce("7", () => {
                             aniCtrl.node.destroy();
@@ -2377,7 +2377,7 @@ export class ComposeLayer extends BaseView {
             return;
         }
 
-        let emptyPos = composeModel.getEmptyRoomPos();
+        let emptyPos = mergeBoardModel.getEmptyRoomPos();
         if (!emptyPos) {
             // 没有空房间了
             return;
@@ -2388,16 +2388,16 @@ export class ComposeLayer extends BaseView {
             return;
         }
 
-        if (!propRow.noPower && composeModel.getPropNumById(propIds.power) <= 0 && composeModel.getComposePowerRemainTime() <= 0) {
+        if (!propRow.noPower && mergeBoardModel.getPropNumById(propIds.power) <= 0 && mergeBoardModel.getBoardEnergyCooldown() <= 0) {
             // 体力不够
             uiManager.instance.showDialog(Const.Dialogs.ShopPowerDialog);
             return;
         }
 
         // 点击房间，生成新物品
-        composeModel.onClickRoomNew(row, col, emptyPos.row, emptyPos.col);
+        mergeBoardModel.onClickRoomNew(row, col, emptyPos.row, emptyPos.col);
         this.addNewMoveNewItemRoomToRowCol(roomItem, emptyPos.row, emptyPos.col, 1, () => {
-            composeModel.refreshRoomAutoNew(emptyPos.row, emptyPos.col);
+            mergeBoardModel.refreshRoomAutoNew(emptyPos.row, emptyPos.col);
             this.refreshTaskLayer();
         });
 
@@ -2425,7 +2425,7 @@ export class ComposeLayer extends BaseView {
         if (roomData.st == roomStatus.spider) {
             return;
         }
-        composeModel.openPropInfoLayer(roomData.id);
+        mergeBoardModel.openPropInfoLayer(roomData.id);
     }
 
     onClickBtnUnlock(btn: Button) {
@@ -2434,7 +2434,7 @@ export class ComposeLayer extends BaseView {
         }
         let row = this.choseRoomItem.row;
         let col = this.choseRoomItem.col;
-        composeModel.onClickUnlockRoom(row, col);
+        mergeBoardModel.onClickUnlockRoom(row, col);
         this.refreshRoomItemUI(this.choseRoomItem);
         this.refreshBottomLayer();
     }
@@ -2448,7 +2448,7 @@ export class ComposeLayer extends BaseView {
 
         let row = this.choseRoomItem.row;
         let col = this.choseRoomItem.col;
-        let sellData = composeModel.sellRoomData(row, col, UtilPub.convertToWorldSpace(this.choseRoomItem));
+        let sellData = mergeBoardModel.sellRoomData(row, col, UtilPub.convertToWorldSpace(this.choseRoomItem));
         if (!sellData) {
             return;
         }
@@ -2465,7 +2465,7 @@ export class ComposeLayer extends BaseView {
     onClickBtnSellBack() {
         audioManager.instance.playSound(Const.Audio.sellBack);
 
-        let pos = composeModel.sellBack(this.sellData);
+        let pos = mergeBoardModel.sellBack(this.sellData);
         if (!pos) {
             // 刷新顶部卡片列表
             this.refreshCardLayer();
@@ -2490,7 +2490,7 @@ export class ComposeLayer extends BaseView {
         let dt = btn.node.dt;
         // @ts-ignore
         let cdType = btn.node.cdType;
-        composeModel.roomDataCdOver(row, col, dt, cdType);
+        mergeBoardModel.roomDataCdOver(row, col, dt, cdType);
     }
 
     onClickBtnBubbleGet() {
@@ -2499,7 +2499,7 @@ export class ComposeLayer extends BaseView {
         }
         let row = this.choseRoomItem.row;
         let col = this.choseRoomItem.col;
-        let isSuccess = composeModel.roomDataBubbleGet(row, col);
+        let isSuccess = mergeBoardModel.roomDataBubbleGet(row, col);
         if (!isSuccess) {
             return;
         }
@@ -2516,7 +2516,7 @@ export class ComposeLayer extends BaseView {
             if (st == 1) {
                 let row = this.choseRoomItem.row;
                 let col = this.choseRoomItem.col;
-                composeModel.rommDataCdBubbleOver(row, col);
+                mergeBoardModel.rommDataCdBubbleOver(row, col);
             }
         });
         return;
@@ -2533,13 +2533,13 @@ export class ComposeLayer extends BaseView {
     onClickTaskPropInfo(btn: Button) {
         // @ts-ignore
         let propRow = btn.node.propRow;
-        composeModel.openPropInfoLayer(propRow.id);
+        mergeBoardModel.openPropInfoLayer(propRow.id);
     }
 
     onClickTaskPropItem(btn: Button) {
         // @ts-ignore
         let propRow = btn.node.propRow;
-        composeModel.openPropInfoLayer(propRow.id);
+        mergeBoardModel.openPropInfoLayer(propRow.id);
     }
 
     onClickBtnTaskDoneEvent(btn: Button) {
@@ -2547,7 +2547,7 @@ export class ComposeLayer extends BaseView {
         // @ts-ignore
         let task1 = node.task;
 
-        let arr = composeModel.getTaskArrSort();
+        let arr = mergeBoardModel.getTaskArrSort();
         for (let i = 0; i < arr.length; i++) {
             let taskItem = this.taskLayer.children[i];
             if (taskItem) {
@@ -2567,9 +2567,9 @@ export class ComposeLayer extends BaseView {
     }
 
     onClickBtnTaskDone(btn: Button) {
-        let handIndex = composeModel.getHandIndex();
+        let handIndex = mergeBoardModel.getHandIndex();
         if (handIndex == handIndexs.taskMittens) {
-            composeModel.addHandIndex();
+            mergeBoardModel.addHandIndex();
             this.refreshHandLayer();
         }
 
@@ -2580,8 +2580,8 @@ export class ComposeLayer extends BaseView {
         // @ts-ignore
         let task = node.task;
         this.lastTaskArr = [];
-        for (let i in composeModel.taskArr) {
-            let t = composeModel.taskArr[i];
+        for (let i in mergeBoardModel.taskArr) {
+            let t = mergeBoardModel.taskArr[i];
             if (t.id == task.id) {
                 continue;
             }
@@ -2590,8 +2590,8 @@ export class ComposeLayer extends BaseView {
 
 
         EventManger.eventTarget.emit(EventManger.EEventName.ADD_EXP_ANIMATION,task.starNum)
-        let subPropArr = composeModel.onClickTaskDone(task, UtilPub.convertToWorldSpace(find("award/icon", node.parent!)!));
-        let bagInfo = composeModel.getRoomDataBagInfo();
+        let subPropArr = mergeBoardModel.onClickTaskDone(task, UtilPub.convertToWorldSpace(find("award/icon", node.parent!)!));
+        let bagInfo = mergeBoardModel.getRoomDataBagInfo();
         let taskItem = node.parent!;
         let worldPos = UtilPub.convertToWorldSpace(taskItem);
         let hasCb = false;
@@ -2605,7 +2605,7 @@ export class ComposeLayer extends BaseView {
                     this.updateTaskLayerLayout();
                 }
             }).call(() => {
-                composeModel.createTask()
+                mergeBoardModel.createTask()
                 this.initTaskLayer();
                 this.refershRoomLayer();
                 this.refreshBuildLayer();
@@ -2631,11 +2631,11 @@ export class ComposeLayer extends BaseView {
     }
 
     onClickTaskItem(btn: Button) {
-        let task = composeModel.taskArr[0];
+        let task = mergeBoardModel.taskArr[0];
         // if (task && task.hand) {
         //     return;
         // }
-        // if (!composeModel.isHandDone()) {
+        // if (!mergeBoardModel.isHandDone()) {
         //     return;
         // }
         // 弹出订单列表
@@ -2648,7 +2648,7 @@ export class ComposeLayer extends BaseView {
 
     // 点击卡片列表
     onClickCardLayer(btn: Button) {
-        let emptyPos = composeModel.onClickCardLayer();
+        let emptyPos = mergeBoardModel.onClickCardLayer();
         if (!emptyPos) {
             return;
         }
@@ -2662,16 +2662,16 @@ export class ComposeLayer extends BaseView {
         });
         this.refreshCardLayer();
 
-        let handIndex = composeModel.getHandIndex();
-        if (handIndex == handIndexs.composeCardLayer) {
-            composeModel.addHandIndex();
-            composeModel.closeHandLayer();
+        let handIndex = mergeBoardModel.getHandIndex();
+        if (handIndex == handIndexs.boardCardPanel) {
+            mergeBoardModel.addHandIndex();
+            mergeBoardModel.closeHandLayer();
         }
     }
 
     // 建造清�?
     onClickBtnBuild() {
-        composeModel.closeHandLayer();
+        mergeBoardModel.closeHandLayer();
         uiManager.instance.showDialog(Const.Dialogs.build_list);
     }
 
@@ -2686,7 +2686,7 @@ export class ComposeLayer extends BaseView {
     // 商店
     onClickBtnShop() {
         // // test
-        // composeModel.taskArr = [aiRobot.createTask()];
+        // mergeBoardModel.taskArr = [aiRobot.createTask()];
         // this.refreshTaskLayer();
         // return;
 
@@ -2704,29 +2704,29 @@ export class ComposeLayer extends BaseView {
         }
         this.clearSellBack();
         uiManager.instance.showDialog(Const.Dialogs.ShopSynthesisDialog);
-        let handIndex = composeModel.getHandIndex();
+        let handIndex = mergeBoardModel.getHandIndex();
         if (handIndex == handIndexs.shopOpen) {
-            composeModel.addHandIndex();
+            mergeBoardModel.addHandIndex();
         }
 
         // test
-        // composeModel.addPropNum(201);
-        // composeModel.addPropNum(206);
+        // mergeBoardModel.addPropNum(201);
+        // mergeBoardModel.addPropNum(206);
 
         // // test
         // UtilPub.log(tables.ins().config);
         // let arr = [1001, 1002, 1003];
-        // composeModel.addPropNum(UtilPub.getRandomItemByArr(arr));
+        // mergeBoardModel.addPropNum(UtilPub.getRandomItemByArr(arr));
 
         // // test 加入背包
-        // let emptyPos = composeModel.getEmptyRoomPos();
+        // let emptyPos = mergeBoardModel.getEmptyRoomPos();
         // if (emptyPos) {
-        //     let emptyRoom = composeModel.initRoomData(propIds.bag);
-        //     composeModel.setRoomData(emptyPos.row, emptyPos.col, emptyRoom);
+        //     let emptyRoom = mergeBoardModel.initRoomData(propIds.bag);
+        //     mergeBoardModel.setRoomData(emptyPos.row, emptyPos.col, emptyRoom);
         // }
 
         // test
-        // UtilPub.log(tables.ins().getTable(Const.Tables.seasonAward));
+        // UtilPub.log(tables.ins().getTable(Const.Tables.seasonPass));
 
     }
 
@@ -2735,7 +2735,7 @@ export class ComposeLayer extends BaseView {
     }
 
     onClickBtnDeleteData() {
-        composeModel.deleteAllRoomData();
+        mergeBoardModel.deleteAllRoomData();
         this.close();
     }
 
