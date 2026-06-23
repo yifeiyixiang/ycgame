@@ -241,7 +241,7 @@ export enum GoodsType {
     Power,
     Exp,
     GreenStar,
-    DressMoney = 27,
+    StyleVoucher = 27,
 }
 
 

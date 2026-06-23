@@ -17,8 +17,8 @@ const { ccclass, property } = _decorator;
 
 
 
-@ccclass('RoleDressUp')
-export class RoleDressUp extends BaseView {
+@ccclass('AvatarStyleLayer')
+export class AvatarStyleLayer extends BaseView {
     @property({ type: Node, tooltip: "列表" }) scrollViewNode: Node = null!;
     @property({ type: sp.Skeleton }) roleSpine: sp.Skeleton = null!;
 
@@ -74,11 +74,11 @@ export class RoleDressUp extends BaseView {
 
     }
 
-    initItem(itemUI: Node, item: any, index: number, self: RoleDressUp) {
+    initItem(itemUI: Node, item: any, index: number, self: AvatarStyleLayer) {
         self.setSpriteFrame(itemUI.getChildByName("icon")!.getComponent(Sprite)!, Const.resPath.roleIcon + item.icon, undefined, 200)
-        self.addButtonHander(itemUI!, self.node, "RoleDressUp", "onChangeWear", item)
+        self.addButtonHander(itemUI!, self.node, "AvatarStyleLayer", "onChangeWear", item)
         self.clearButtonHander(itemUI.getChildByName("gantan")!)
-        self.addButtonHander(itemUI.getChildByName("gantan")!, self.node, "RoleDressUp", "openSkinDetail", item)
+        self.addButtonHander(itemUI.getChildByName("gantan")!, self.node, "AvatarStyleLayer", "openSkinDetail", item)
 
         if (userData.isAvatarLookOwned(item.id) || item.price == 0) {
             itemUI.getChildByName("btnBuy")!.active = false
@@ -89,7 +89,7 @@ export class RoleDressUp extends BaseView {
             } else {
                 itemUI.getChildByName("btnWear")!.active = true
                 itemUI.getChildByName("wearlab")!.active = false
-                self.addButtonHander(itemUI.getChildByName("btnWear")!, self.node, "RoleDressUp", "onClickWear", item)
+                self.addButtonHander(itemUI.getChildByName("btnWear")!, self.node, "AvatarStyleLayer", "onClickWear", item)
             }
         } else {
             itemUI.getChildByName("btnWear")!.active = false
@@ -107,7 +107,7 @@ export class RoleDressUp extends BaseView {
             } else {
                 itemUI.getChildByName("hua1")!.active = false
             }
-            self.addButtonHander(itemUI.getChildByName("btnBuy")!, self.node, "RoleDressUp", "onClickBuy", item)
+            self.addButtonHander(itemUI.getChildByName("btnBuy")!, self.node, "AvatarStyleLayer", "onClickBuy", item)
         }
     }
 

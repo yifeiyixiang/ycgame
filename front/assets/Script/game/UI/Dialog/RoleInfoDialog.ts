@@ -32,7 +32,7 @@ export class RoleInfoDialog extends BaseView {
     start() {
         this.bindButton(find("root/btnClose", this.node)!, this.popClose)
         this.bindButton(find("root/btnDress", this.node)!, () => {
-            uiManager.instance.pushShowDialog(Const.Dialogs.RoleDressUp)
+            uiManager.instance.pushShowDialog(Const.Dialogs.AvatarStyleLayer)
         })
     }
 

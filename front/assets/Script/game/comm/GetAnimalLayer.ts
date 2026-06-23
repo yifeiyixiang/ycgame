@@ -40,7 +40,7 @@ export class GetAnimalLayer extends BaseView {
             target = find("root/top/diamond/jb", this.main_top)!
         } else if (this._propdata.type == GoodsType.Power) {
             target = find("root/top/power/jb", this.main_top)!
-        } else if (this._propdata.type == GoodsType.DressMoney) {
+        } else if (this._propdata.type == GoodsType.StyleVoucher) {
             target = find("root/top/dressup/jb", this.main_top)!
         }
         let startPos = this._layerData.startPos

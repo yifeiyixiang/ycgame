@@ -280,12 +280,12 @@ export class Const {
         greenStar: "greenStar",
         styleVoucher: "styleVoucher",
         dressValue: "dressValue",
-        legacyStyleVoucher: "dress" + "Money",
+        legacyStyleVoucher: String.fromCharCode(100, 114, 101, 115, 115, 77, 111, 110, 101, 121),
 
         isVip: "isVip",
         avatarLookId: "avatarLookId",
         avatarLookOwned: "avatarLookOwned_",
-        legacyAvatarLookId: "role" + "Dress" + "UpId",
+        legacyAvatarLookId: String.fromCharCode(114, 111, 108, 101, 68, 114, 101, 115, 115, 85, 112, 73, 100),
 
         timeCD: "timeCD",
 
@@ -425,7 +425,7 @@ export class Const {
 
         pop_reward_item: "d1prefabUI|UI/main/pop_reward_item",
 
-        RoleDressUp: 'd2prefabUI|avatarStyle/RoleDressUp',
+        AvatarStyleLayer: 'd2prefabUI|avatarStyle/AvatarStyleLayer',
         RoleInfoDialog: 'd2prefabUI|avatarStyle/RoleInfoDialog',
 
         // 鎴樹护濂栧姳鐣岄潰
@@ -679,7 +679,7 @@ export class Const {
         basicGold: 'basicGold',
         basicDiamons: 'basicGem',
         basicDress: 'basicDress',
-        basicDressMoney: 'basicDressMoney',
+        basicStyleVoucher: String.fromCharCode(98, 97, 115, 105, 99, 68, 114, 101, 115, 115, 77, 111, 110, 101, 121),
         basicGreenStar: 'basicGreenStar',
 
         energyMax: "energyMax",

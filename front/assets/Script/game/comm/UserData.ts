@@ -287,7 +287,7 @@ class UserData {
         if (voucher >= 0) {
             return voucher
         }
-        return GameStorage.getInt(Const.DataKeys.legacyStyleVoucher, tables.ins().config[Const.config.basicDressMoney])
+        return GameStorage.getInt(Const.DataKeys.legacyStyleVoucher, tables.ins().config[Const.config.basicStyleVoucher])
     }
 
     public set styleVoucher(num) {
@@ -343,7 +343,7 @@ class UserData {
                 case GoodsType.GreenStar:
                     this.greenStar += num
                     break;
-                case GoodsType.DressMoney:
+                case GoodsType.StyleVoucher:
                     this.styleVoucher += num
                     break;
                 default:
@@ -406,7 +406,7 @@ class UserData {
                 return this.checkAndUseCoin(args[1])
             } else if (propdata.type == GoodsType.Diamonds) {
                 return this.checkAndUseDiamonds(args[1])
-            } else if (propdata.type == GoodsType.DressMoney) {
+            } else if (propdata.type == GoodsType.StyleVoucher) {
                 return this.checkAndUseStyleVoucher(args[1])
             } else if (propdata.type == GoodsType.GreenStar) {
                 return this.checkAndUseGreenStar(args[1])
@@ -423,7 +423,7 @@ class UserData {
             return this.coin
         } else if (propdata.type == GoodsType.Diamonds) {
             return this.diamonds
-        } else if (propdata.type == GoodsType.DressMoney) {
+        } else if (propdata.type == GoodsType.StyleVoucher) {
             return this.styleVoucher
         } else if (propdata.type == GoodsType.GreenStar) {
             return this.greenStar
