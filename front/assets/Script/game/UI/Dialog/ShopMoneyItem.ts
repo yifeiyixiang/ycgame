@@ -3,9 +3,9 @@ import { Const } from '../../../config/Const';
 import GD from '../../../config/GD';
 import { PriceType, GoodsType } from '../../../config/global';
 import BaseView from '../../../easyFramework/mgr/BaseView';
-import tables from '../../../easyFramework/other/tables';
-import { mergeBoardModel } from '../../comm/mergeBoardModel';
-import { userData } from '../../comm/UserData';
+import TableDataService from '../../../easyFramework/other/tables';
+import { mergeBoardStateStore } from '../../comm/mergeBoardModel';
+import { playerDataStore } from '../../comm/UserData';
 const { ccclass, property } = _decorator;
 
 
@@ -47,14 +47,14 @@ export class ShopMoneyItem extends BaseView {
         this.setSpriteFrame(this.icon.getComponent(Sprite)!, Const.resPath.icon + data.icon, fun)
 
         if (data.recharge && data.recharge > 0) {
-            let rechargeData = tables.ins().getTableValueByID(Const.Tables.recharge, data.recharge)
+            let rechargeData = TableDataService.ins().getTableValueByID(Const.Tables.recharge, data.recharge)
             this.priceLab.string = "￥" + rechargeData.cash
             find("btnbg/Layout/prop_diamond1", this.node)!.active = false
         } else {
             let priceData = data.price2[0]
             if (priceData.length >= 2) {
                 this._priceType = parseInt(priceData[0])
-                this._priceNum = parseInt(priceData[1]) * userData.buyPowerTime
+                this._priceNum = parseInt(priceData[1]) * playerDataStore.buyPowerTime
             }
             if (this._priceType == PriceType.RMB) {
                 this.priceLab.string = "￥" + priceData[1]
@@ -70,13 +70,13 @@ export class ShopMoneyItem extends BaseView {
         let shopData = this._layerData.data
 
         if (this._priceType == PriceType.Diamonds) {
-            if (userData.checkAndUseDiamonds(tables.ins().config[Const.config.diamonsPower][1] * userData.buyPowerTime)) {
-                //userData.diamonds +=  tables.ins().config[Const.config.diamonsPower][0]
-                userData.getProp(GoodsType.Power + "," + tables.ins().config[Const.config.diamonsPower][0], v3(0, 0, 0), v3(0, 0, 0))
-                userData.addBuyPowerTime()
+            if (playerDataStore.checkAndUseDiamonds(TableDataService.ins().config[Const.config.diamonsPower][1] * playerDataStore.buyPowerTime)) {
+
+                playerDataStore.getProp(GoodsType.Power + "," + TableDataService.ins().config[Const.config.diamonsPower][0], v3(0, 0, 0), v3(0, 0, 0))
+                playerDataStore.addBuyPowerTime()
                 this.emit(GD.event.updateMoney)
                 this.setData(this._layerData.data)
-                mergeBoardModel.addManagerVal(Const.ManagerTypes.diamondBuyPower);
+                mergeBoardStateStore.addManagerVal(Const.ManagerTypes.diamondBuyPower);
             }
             return
         }
@@ -86,9 +86,9 @@ export class ShopMoneyItem extends BaseView {
 
 
     onBuySuccessCB() {
-        userData.getProp(this._layerData.data.price3, null, null)
+        playerDataStore.getProp(this._layerData.data.price3, null, null)
         if (this._layerData.data.first && this._layerData.data.first != "") {
-            userData.getProp(this._layerData.data.first, null, null)
+            playerDataStore.getProp(this._layerData.data.first, null, null)
             this.emit(GD.event.updateMoney)
         }
     }

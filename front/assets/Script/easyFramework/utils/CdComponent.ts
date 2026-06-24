@@ -1,19 +1,19 @@
 import { Label, _decorator } from "cc";
-import { userData } from "../../game/comm/UserData";
+import { playerDataStore } from "../../game/comm/UserData";
 import BaseView from "../mgr/BaseView";
-import { comm } from "../mgr/comm";
+import { BaseUiComponent } from "../mgr/comm";
 import { UtilPub } from "./UtilPub";
 
 const { ccclass, property } = _decorator;
 
 export enum CDType {
-    CDIneterVal = 0, //间隔时间刷新
-    CDCountdown = 1, //倒计时刷新
-    CDFixTime = 2, //固定活动时间刷新
-    CDCondition = 3, //条件开启限时活动
+    CDIneterVal = 0,
+    CDCountdown = 1,
+    CDFixTime = 2,
+    CDCondition = 3,
 }
 @ccclass('CdComponent')
-export class CdComponent extends comm {
+export class CdComponent extends BaseUiComponent {
 
 
     _cdTime = 0
@@ -30,7 +30,7 @@ export class CdComponent extends comm {
 
     _format = 0
 
-    _ignoreSec = false;// 省略秒数
+    _ignoreSec = false;
 
     start() {
 
@@ -61,14 +61,14 @@ export class CdComponent extends comm {
 
     checkTime() {
         if (this._cdType == CDType.CDIneterVal) {
-            this._cdTime = userData.getIntervalCD(this._key, this._interval)
+            this._cdTime = playerDataStore.getIntervalCD(this._key, this._interval)
             if (this._ignoreSec) {
                 this.node.getComponent(Label)!.string = UtilPub.getDurationStr2(this._cdTime * 1000) + ""
             } else {
                 this.node.getComponent(Label)!.string = UtilPub.getDurationStr(this._cdTime * 1000) + ""
             }
         } else if (this._cdType == CDType.CDCountdown) {
-            let num = userData.checkCDTime(this._key, this._interval, this._startTime)
+            let num = playerDataStore.checkCDTime(this._key, this._interval, this._startTime)
             if (num[0] > 0) {
                 if (this._cb) {
                     this._cb(num[0])
@@ -77,7 +77,7 @@ export class CdComponent extends comm {
             this._cdTime = num[1]
             this.node.getComponent(Label)!.string = UtilPub.timerFormat(this._cdTime)
         } else if (this._cdType == CDType.CDCondition) {
-            let num = userData.checkLimitTime(this._key, this._interval * 60 * 1000)
+            let num = playerDataStore.checkLimitTime(this._key, this._interval * 60 * 1000)
             this._cdTime = num
             if (this._ignoreSec) {
                 this.node.getComponent(Label)!.string = UtilPub.getDurationStr2(this._cdTime)
@@ -85,7 +85,7 @@ export class CdComponent extends comm {
                 this.node.getComponent(Label)!.string = UtilPub.getDurationStr(this._cdTime)
             }
         } else {
-            let num = userData.checkEndTime(this._key, this._endTime)
+            let num = playerDataStore.checkEndTime(this._key, this._endTime)
             if (num <= 0) {
                 if (this._cb) {
                     this._cb()
@@ -104,7 +104,7 @@ export class CdComponent extends comm {
     clearCD() {
         this._cdTime = 0
         this.node.getComponent(Label)!.string = ""
-        userData.clearCDTime(this._key)
+        playerDataStore.clearCDTime(this._key)
         this._cb = null!
     }
 

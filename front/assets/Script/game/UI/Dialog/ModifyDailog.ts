@@ -1,12 +1,12 @@
 import { _decorator, Node, Label, ScrollView, find, Sprite, SpriteFrame, tween, v3, UITransform, math, Layout, utils, EditBox, sp, } from 'cc';
 import { Const } from '../../../config/Const';
-import { audioManager } from '../../../easyFramework/mgr/audioManager';
+import { AudioPlaybackService } from '../../../easyFramework/mgr/audioManager';
 import BaseView from '../../../easyFramework/mgr/BaseView';
-import { resourceUtil } from '../../../easyFramework/mgr/resourceUtil';
-import { uiManager } from '../../../easyFramework/mgr/uiManager';
-import tables from '../../../easyFramework/other/tables';
-import { userData } from '../../comm/UserData';
-import { HttpClient } from '../../../../typeScript/net/HttpClient';
+import { ResourceLoaderService } from '../../../easyFramework/mgr/resourceUtil';
+import { UiLayerService } from '../../../easyFramework/mgr/uiManager';
+import TableDataService from '../../../easyFramework/other/tables';
+import { playerDataStore } from '../../comm/UserData';
+import { GameHttpClient } from '../../../../typeScript/net/HttpClient';
 
 const { ccclass, property } = _decorator;
 
@@ -25,11 +25,11 @@ export class ModifyDailog extends BaseView {
 
     show(args: any) {
         super.show(args)
-        //  let item = tables.ins().getTableValueByID(Const.Tables.avatarStyle, userData.avatarLookId)
+
     }
 
     onClickModifyBtn() {
-        audioManager.instance.playSound(Const.Audio.btn)
+        AudioPlaybackService.instance.playSound(Const.Audio.btn)
 
         let str = this.nameEditBox.getComponent(EditBox)!.string
         if (str == "") {
@@ -41,8 +41,8 @@ export class ModifyDailog extends BaseView {
             return
         }
 
-        HttpClient.getInstance().sendChangeInfo(1, str, ()=>{
-            userData.roleName = str
+        GameHttpClient.getInstance().sendChangeInfo(1, str, ()=>{
+            playerDataStore.roleName = str
         })
         this.popClose()
 

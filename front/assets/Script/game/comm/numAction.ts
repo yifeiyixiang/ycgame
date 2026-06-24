@@ -4,7 +4,7 @@ import { Component, Label, _decorator } from "cc";
 const { ccclass, property } = _decorator;
 
 @ccclass('numAction')
-export class numAction extends Component {
+export class NumberActionController extends Component {
 
     _targetNum = 0
     _isUpdate = false

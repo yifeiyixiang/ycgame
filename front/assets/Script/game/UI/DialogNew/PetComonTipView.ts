@@ -1,16 +1,16 @@
 import { find, Label, Node, Sprite, SpriteFrame, tween, v3, _decorator, EditBox } from 'cc';
 import { Const } from '../../../config/Const';
 import { RoleSex } from '../../../config/global';
-import { audioManager } from '../../../easyFramework/mgr/audioManager';
+import { AudioPlaybackService } from '../../../easyFramework/mgr/audioManager';
 import BaseView from '../../../easyFramework/mgr/BaseView';
-import { resourceUtil } from '../../../easyFramework/mgr/resourceUtil';
-import { uiManager } from '../../../easyFramework/mgr/uiManager';
-import tables from '../../../easyFramework/other/tables';
+import { ResourceLoaderService } from '../../../easyFramework/mgr/resourceUtil';
+import { UiLayerService } from '../../../easyFramework/mgr/uiManager';
+import TableDataService from '../../../easyFramework/other/tables';
 import { aiRobot } from '../../comm/AIRobot';
-import { userData } from '../../comm/UserData';
-import { RechargeManager } from '../../../Util/RechargeManager';
-import { petItemData } from '../../../../typeScript/gameData';
-import { HttpClient } from '../../../../typeScript/net/HttpClient';
+import { playerDataStore } from '../../comm/UserData';
+import { RewardVideoManager } from '../../../Util/RechargeManager';
+import { PetProfileRecord } from '../../../../typeScript/gameData';
+import { GameHttpClient } from '../../../../typeScript/net/HttpClient';
 import { Notifications } from '../../../easyFramework/mgr/notifications';
 import GD from '../../../config/GD';
 
@@ -28,9 +28,9 @@ export class PetComonTipView extends BaseView {
     @property({ type: Label })
     cancleLab: Label = null!;
 
-    type: number = 0;   //1放生，2放置家园, 3休息
+    type: number = 0;
 
-    selectData:petItemData = null!;
+    selectData:PetProfileRecord = null!;
 
     start() {
 
@@ -38,8 +38,8 @@ export class PetComonTipView extends BaseView {
 
         this.bindButton(find("root/btnSave", this.node)!, ()=>{
             if (this.type == 1){
-                HttpClient.getInstance().sendPetAction(3, this.selectData.id, 0, 0, "", ()=>{
-                    HttpClient.getInstance().getPetList(()=>{
+                GameHttpClient.getInstance().sendPetAction(3, this.selectData.id, 0, 0, "", ()=>{
+                    GameHttpClient.getInstance().getPetList(()=>{
                         Notifications.emit(GD.event.updateScenePet);
                     });
                     this.toast("放生成功")
@@ -47,14 +47,14 @@ export class PetComonTipView extends BaseView {
                 })
             }
             else if (this.type == 2){
-                HttpClient.getInstance().sendPetAction(1, this.selectData.id, 0, 0, "", ()=>{
+                GameHttpClient.getInstance().sendPetAction(1, this.selectData.id, 0, 0, "", ()=>{
                     this.toast("放置成功")
                     Notifications.emit(GD.event.updateScenePet);
                     this.close();
                 })
             }
             else if (this.type == 3){
-                HttpClient.getInstance().sendPetAction(2, this.selectData.id, 0, 0, "", ()=>{
+                GameHttpClient.getInstance().sendPetAction(2, this.selectData.id, 0, 0, "", ()=>{
                     this.toast("宠物已休息")
                     Notifications.emit(GD.event.updateScenePet);
                     this.close();

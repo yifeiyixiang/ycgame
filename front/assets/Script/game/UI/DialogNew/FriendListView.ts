@@ -2,16 +2,16 @@ import { Button, find, instantiate, Node, ProgressBar, Sprite, tween, v3, Vec3, 
 import { Const } from '../../../config/Const';
 import GD from '../../../config/GD';
 import BaseView from '../../../easyFramework/mgr/BaseView';
-import { uiManager } from '../../../easyFramework/mgr/uiManager';
-import tables from '../../../easyFramework/other/tables';
+import { UiLayerService } from '../../../easyFramework/mgr/uiManager';
+import TableDataService from '../../../easyFramework/other/tables';
 import { UtilPub } from '../../../easyFramework/utils/UtilPub';
-import { mergeBoardModel } from '../../comm/mergeBoardModel';
-import { audioManager } from '../../../easyFramework/mgr/audioManager';
-import { HttpClient } from '../../../../typeScript/net/HttpClient';
-import { EventManger } from '../../../../typeScript/EventManger';
-import { userData } from '../../comm/UserData';
-import { FriendData } from '../../../../typeScript/gameData';
-import { friendItem } from './item/friendItem';
+import { mergeBoardStateStore } from '../../comm/mergeBoardModel';
+import { AudioPlaybackService } from '../../../easyFramework/mgr/audioManager';
+import { GameHttpClient } from '../../../../typeScript/net/HttpClient';
+import { GameEventManager } from '../../../../typeScript/EventManger';
+import { playerDataStore } from '../../comm/UserData';
+import { FriendProfileRecord } from '../../../../typeScript/gameData';
+import { FriendItemCellController } from './item/friendItem';
 const { ccclass, property } = _decorator;
 
 @ccclass('FriendListView')
@@ -29,22 +29,22 @@ export class FriendListView extends BaseView {
     onLoad() {
         this.bindButton(this.btnClose, this.onClickBtnClose);
 
-        // this.bindButton(find("root/nameBg/btnName", this.node)!, () => {
-        //     uiManager.instance.showDialog(Const.Dialogs.PetNameView)
-        // })
 
-        // this.bindButton(find("root/btnFangsheng", this.node)!, () => {
-        //     uiManager.instance.showDialog(Const.Dialogs.PetComonTipView, 1)
-        // })
 
-        EventManger.eventTarget.on(EventManger.EEventName.REFRESH_FRIEND_DATA, this.refresh, this);
+
+
+
+
+
+
+        GameEventManager.eventTarget.on(GameEventManager.EEventName.REFRESH_FRIEND_DATA, this.refresh, this);
 
     }
 
     show(args: any) {
         super.show(args);
 
-        HttpClient.getInstance().getFriendList();
+        GameHttpClient.getInstance().getFriendList();
     }
 
     refresh(){
@@ -55,10 +55,10 @@ export class FriendListView extends BaseView {
             }
         }
 
-        this.numLab.string = "好友数量：" + userData.friendList.length + "/"+50;
-                
-        for (let index = 0; index < userData.friendList.length; index++) {
-            let friend:FriendData = userData.friendList[index];
+        this.numLab.string = "好友数量：" + playerDataStore.friendList.length + "/"+50;
+
+        for (let index = 0; index < playerDataStore.friendList.length; index++) {
+            let friend:FriendProfileRecord = playerDataStore.friendList[index];
 
             let ele = this.listContent.children[index];
             if (!ele){
@@ -66,23 +66,23 @@ export class FriendListView extends BaseView {
                 ele.parent = this.listContent;
             }
             ele.active = true;
-            ele.getComponent(friendItem).refreshData(friend);
+            ele.getComponent(FriendItemCellController).refreshData(friend);
         }
     }
 
     onClickHandler(eve:Event, str:string){
-        audioManager.instance.playSound(Const.Audio.btn)
+        AudioPlaybackService.instance.playSound(Const.Audio.btn)
         if (str == "tuijian"){
-            uiManager.instance.showDialog(Const.Dialogs.FriendDialogView, 1)
+            UiLayerService.instance.showDialog(Const.Dialogs.FriendDialogView, 1)
         }
         else if (str == "search"){
-            uiManager.instance.showDialog(Const.Dialogs.FriendDialogView, 2)
+            UiLayerService.instance.showDialog(Const.Dialogs.FriendDialogView, 2)
         }
         else if (str == "apply"){
-            uiManager.instance.showDialog(Const.Dialogs.FriendDialogView, 3)
+            UiLayerService.instance.showDialog(Const.Dialogs.FriendDialogView, 3)
         }
     }
-    
+
     onClickBtnClose() {
         this.close();
     }

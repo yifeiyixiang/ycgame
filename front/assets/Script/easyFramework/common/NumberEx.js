@@ -3,7 +3,7 @@ let numberEx = Number.prototype;
 
 numberEx.GameFormat = function(){
     if (Math.abs(this) < 100000) {
-        return this.SubNumber();//.toLocaleString()
+        return this.SubNumber();
     }
     let value = this;
     var param = {};
@@ -23,9 +23,9 @@ numberEx.GameFormat = function(){
     }
     return param["value"] + param["unit"] +""
 }
-// 保留小数点2位数
+
 numberEx.SubNumber = function(){
-    // let xx = Number(parseFloat(a).toFixed(3).slice(0,-1))
+
     let t = this.toString();
     let index = t.indexOf('.');
     if(index != -1){
@@ -41,7 +41,7 @@ numberEx.SubNumber = function(){
         if (n == index + 1) {
             n = index;
         }
-        
+
         t = t.slice(0,n);
     }
     return t

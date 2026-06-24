@@ -1,25 +1,25 @@
 import { game, Node, v3, Vec2, Vec3, _decorator, director, Game, find, EventTouch } from 'cc';
 import { Const } from '../../config/Const';
 import GD from '../../config/GD';
-import { comm } from '../../easyFramework/mgr/comm';
-import { resourceUtil } from '../../easyFramework/mgr/resourceUtil';
-import { uiManager } from '../../easyFramework/mgr/uiManager';
+import { BaseUiComponent } from '../../easyFramework/mgr/comm';
+import { ResourceLoaderService } from '../../easyFramework/mgr/resourceUtil';
+import { UiLayerService } from '../../easyFramework/mgr/uiManager';
 import TimeCtrJSF from '../../easyFramework/network/TimeCtrJSF';
 import { UtilPub } from '../../easyFramework/utils/UtilPub';
-import { playerModel } from '../comm/playerModel';
+import { seasonProgressStore } from '../comm/playerModel';
 import { GNetCmd } from '../../easyFramework/network/conf';
 import ServerCtrJSF from '../../easyFramework/network/ServerCtrJSF';
-import { audioManager } from '../../easyFramework/mgr/audioManager';
-import { mergeBoardModel } from '../comm/mergeBoardModel';
+import { AudioPlaybackService } from '../../easyFramework/mgr/audioManager';
+import { mergeBoardStateStore } from '../comm/mergeBoardModel';
 import { UtilScene } from '../comm/UtilScene';
-import { userData } from '../comm/UserData';
+import { playerDataStore } from '../comm/UserData';
 const { ccclass, property } = _decorator;
 
 @ccclass('canvas_game')
-export class canvas_game extends comm {
+export class GameCanvasController extends BaseUiComponent {
 
-    private clickPos: Vec2 = new Vec2();    //触摸的点
-    private starPos: Vec2 = new Vec2();  //初始触摸点
+    private clickPos: Vec2 = new Vec2();
+    private starPos: Vec2 = new Vec2();
 
     buildingNode: Node = null!
     player: Node = null!
@@ -32,12 +32,12 @@ export class canvas_game extends comm {
     pointsDis: number = 0
     rate: number = 1
 
-    isDownloading: boolean = false //是否下载
-    curDownLoadIdx: number = 0 //当前下载索引
-    isLoadingPrefab: boolean = false //是否正在加载预制体
-    curPrefabIdx: number = 0 //当前预制体索引
+    isDownloading: boolean = false
+    curDownLoadIdx: number = 0
+    isLoadingPrefab: boolean = false
+    curPrefabIdx: number = 0
     prefabsArr: string[] = []
-    calGameTime: number = 0 //计算时间
+    calGameTime: number = 0
 
     onLoad() {
         director.off(GNetCmd.GetRegionData.toString(), this.onMessageEvent, this);
@@ -64,24 +64,24 @@ export class canvas_game extends comm {
         }
 
         UtilPub.log("---------展示主页-0-----")
-        playerModel.initData();
-        uiManager.instance.showDialog(Const.Dialogs.main)
+        seasonProgressStore.initData();
+        UiLayerService.instance.showDialog(Const.Dialogs.main)
 
-        audioManager.instance.initMusic()
-        audioManager.instance.playMusic(true, Const.Audio.bgm);
+        AudioPlaybackService.instance.initMusic()
+        AudioPlaybackService.instance.playMusic(true, Const.Audio.bgm);
 
         game.on(Game.EVENT_HIDE, () => {
             // @ts-ignore
 
         });
 
-        userData.showGodWealthOther()
+        playerDataStore.showGodWealthOther()
         game.on(Game.EVENT_SHOW, () => {
             UtilPub.log("---------展示主页-1-----")
-            userData.showGodWealthOther()
+            playerDataStore.showGodWealthOther()
         });
 
-      
+
     }
 
     onEnable() {
@@ -108,7 +108,7 @@ export class canvas_game extends comm {
             ServerCtrJSF.GetInstance().addGameTime(1)
         }
 
-        //进入游戏后统一进行异步加载
+
         this.calTime += dt
         if (this.calTime > 0.1 && ServerCtrJSF.GetInstance().isOkToDownload() == true) {
             this.calTime = 0
@@ -125,8 +125,8 @@ export class canvas_game extends comm {
                 }
             }
 
-            //下载完毕后，加载所有预制体
-            // Public.warn("------------预制体加载1", this.curDownLoadIdx>=Const.bundles.length, this.curDownLoadIdx, Const.bundles.length)
+
+
             if (this.curDownLoadIdx >= Const.bundles.length) {
                 if (this.isLoadingPrefab == false) {
                     if (this.curPrefabIdx >= this.prefabsArr.length) {
@@ -138,10 +138,10 @@ export class canvas_game extends comm {
 
                     //@ts-ignore
                     let prefab = Const.Prefabs[prefabName]
-                    resourceUtil.preloadPrefab(prefab).then(() => {
+                    ResourceLoaderService.preloadPrefab(prefab).then(() => {
                         this.curPrefabIdx++
                         this.isLoadingPrefab = false
-                        //UtilPub.warn("------------预制体加载完毕", this.prefabsArr[this.curPrefabIdx], this.curPrefabIdx)
+
                     })
                 }
             }

@@ -1,7 +1,7 @@
 import { _decorator, Node, Prefab, instantiate, Sprite, find, ProgressBar, Label } from 'cc';
 import { Const } from '../../../config/Const';
 import BaseView from '../../../easyFramework/mgr/BaseView';
-import tables from '../../../easyFramework/other/tables';
+import TableDataService from '../../../easyFramework/other/tables';
 import { PropItem, PropItemFlag } from './PropItem';
 const { ccclass, property } = _decorator;
 
@@ -44,7 +44,7 @@ export class PropMinInfo extends BaseView {
     }
 
     setData(id: any) {
-        let data = tables.ins().getTableValueByID(Const.Tables.prop, id)
+        let data = TableDataService.ins().getTableValueByID(Const.Tables.prop, id)
     }
 
 }

@@ -1,12 +1,12 @@
 import { _decorator, Node, Label, ScrollView, find, Sprite, SpriteFrame, tween, v3, UITransform, math, Layout, utils, EditBox, sp, } from 'cc';
 import { Const } from '../../../config/Const';
 import { RoleSex } from '../../../config/global';
-import { audioManager } from '../../../easyFramework/mgr/audioManager';
+import { AudioPlaybackService } from '../../../easyFramework/mgr/audioManager';
 import BaseView from '../../../easyFramework/mgr/BaseView';
-import { resourceUtil } from '../../../easyFramework/mgr/resourceUtil';
-import { uiManager } from '../../../easyFramework/mgr/uiManager';
-import tables from '../../../easyFramework/other/tables';
-import { userData } from '../../comm/UserData';
+import { ResourceLoaderService } from '../../../easyFramework/mgr/resourceUtil';
+import { UiLayerService } from '../../../easyFramework/mgr/uiManager';
+import TableDataService from '../../../easyFramework/other/tables';
+import { playerDataStore } from '../../comm/UserData';
 
 const { ccclass, property } = _decorator;
 
@@ -32,39 +32,39 @@ export class RoleInfoDialog extends BaseView {
     start() {
         this.bindButton(find("root/btnClose", this.node)!, this.popClose)
         this.bindButton(find("root/btnDress", this.node)!, () => {
-            uiManager.instance.pushShowDialog(Const.Dialogs.AvatarStyleLayer)
+            UiLayerService.instance.pushShowDialog(Const.Dialogs.AvatarStyleLayer)
         })
     }
 
     updateInfo() {
-        let item = tables.ins().getTableValueByID(Const.Tables.avatarStyle, userData.avatarLookId)
-        //动态设置spine文件
-        resourceUtil.loadResWithBundle(Const.resPath.roleSpine + item.spine, sp.SkeletonData, (err, skedata) => {
+        let item = TableDataService.ins().getTableValueByID(Const.Tables.avatarStyle, playerDataStore.avatarLookId)
+
+        ResourceLoaderService.loadResWithBundle(Const.resPath.roleSpine + item.spine, sp.SkeletonData, (err, skedata) => {
             this.roleSpine.skeletonData = skedata;
             this.roleSpine.setSkin(item.spineSkin)
             this.roleSpine.setAnimation(0, item.spineAni, true);
         })
 
-        find("root/Layout/nameLabel", this.node)!.getComponent(Label)!.string = userData.roleName + ""
+        find("root/Layout/nameLabel", this.node)!.getComponent(Label)!.string = playerDataStore.roleName + ""
 
         if (item.type == RoleSex.men) {
             this.avatarBg.getComponent(Sprite)!.spriteFrame = this.avatarBg1
         }else{
             this.avatarBg.getComponent(Sprite)!.spriteFrame = this.avatarBg2
         }
-        // this.setSpriteFrame(find("root/RoleIcon", this.node)!.getComponent(Sprite)!, Const.resPath.icon + item.icon)
+
     }
 
     show(args: any) {
         super.show(args)
-      //  let item = tables.ins().getTableValueByID(Const.Tables.avatarStyle, userData.avatarLookId)
-      //  this.setSpriteFrame(find("root/RoleIcon", this.node)!.getComponent(Sprite)!, Const.resPath.icon + item.icon)
+
+
 
         let infoNode = find("root/Layout", this.node)!
-        find("dressNode/Label", infoNode)!.getComponent(Label)!.string = "装扮值：" + userData.dressValue + ""
-        find("levelNode/Label", infoNode)!.getComponent(Label)!.string = "Level: " + userData.roleLv + ""
-        find("idbg/IDLabel", infoNode)!.getComponent(Label)!.string = "ID:" + userData.roleID
-        find("root/Layout/nameLabel", this.node)!.getComponent(Label)!.string = userData.roleName + ""
+        find("dressNode/Label", infoNode)!.getComponent(Label)!.string = "装扮值：" + playerDataStore.dressValue + ""
+        find("levelNode/Label", infoNode)!.getComponent(Label)!.string = "Level: " + playerDataStore.roleLv + ""
+        find("idbg/IDLabel", infoNode)!.getComponent(Label)!.string = "ID:" + playerDataStore.roleID
+        find("root/Layout/nameLabel", this.node)!.getComponent(Label)!.string = playerDataStore.roleName + ""
 
         this.nameEditBox.active = false
         this.nameLabel.active = true
@@ -74,8 +74,8 @@ export class RoleInfoDialog extends BaseView {
     }
 
     onClickModifyBtn() {
-        audioManager.instance.playSound(Const.Audio.btn)
-        uiManager.instance.pushShowDialog(Const.Dialogs.ModifyDailog)
+        AudioPlaybackService.instance.playSound(Const.Audio.btn)
+        UiLayerService.instance.pushShowDialog(Const.Dialogs.ModifyDailog)
         return
 
         if (this._isEditState) {
@@ -84,8 +84,8 @@ export class RoleInfoDialog extends BaseView {
                 this.toast("名字不能为空")
                 return
             }
-            userData.roleName = str
-            find("root/nameLabel", this.node)!.getComponent(Label)!.string = userData.roleName + ""
+            playerDataStore.roleName = str
+            find("root/nameLabel", this.node)!.getComponent(Label)!.string = playerDataStore.roleName + ""
             this.nameEditBox.active = false
             this.nameLabel.active = true
             this._isEditState = false
@@ -94,7 +94,7 @@ export class RoleInfoDialog extends BaseView {
             this.nameEditBox.active = true
             this.nameLabel.active = false
             this.modifybtnLabel.getComponent(Label)!.string + "保存"
-            this.nameEditBox.getComponent(EditBox)!.string = userData.roleName
+            this.nameEditBox.getComponent(EditBox)!.string = playerDataStore.roleName
         }
     }
 

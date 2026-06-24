@@ -57,7 +57,7 @@ const handData: any = [
     {
         id: 5,
         content: "恭喜你获得了第一个发射器<color=#d7555a>【简单五金盒】</color>，点击发射器，合成任务所需物品吧！",
-        // dialogBottom: 1,
+
     },
     {
         id: 6,

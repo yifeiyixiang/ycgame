@@ -5,16 +5,16 @@ import { TujianState } from "../../config/global";
 import { localText } from "../../config/localText";
 import { GameStorage } from "../../easyFramework/mgr/gameStorage";
 import { Notifications } from "../../easyFramework/mgr/notifications";
-import { uiManager } from "../../easyFramework/mgr/uiManager";
+import { UiLayerService } from "../../easyFramework/mgr/uiManager";
 import TimeCtrJSF from "../../easyFramework/network/TimeCtrJSF";
-import tables from "../../easyFramework/other/tables";
+import TableDataService from "../../easyFramework/other/tables";
 import { UtilPub } from "../../easyFramework/utils/UtilPub";
 import { handData } from "../data/handData";
 import { MergeBoardLayer } from "../UI/layer/MergeBoardLayer";
 import { HandLayer } from "../UI/layer/HandLayer";
 import { aiRobot } from "./AIRobot";
-import { playerModel } from "./playerModel";
-import { userData } from "./UserData";
+import { seasonProgressStore } from "./playerModel";
+import { playerDataStore } from "./UserData";
 import { GamePlatform } from '../platform/GamePlatform';
 
 
@@ -30,9 +30,9 @@ export const tenAroundArr = [
 ];
 
 export const designConfig = {
-    // 气泡自动戳破时间
+
     bubbleTime: 60 * 1000,
-    // 气泡破了，产生的物品id
+
     bubbleBombPropId: 203,
 };
 export const propIds = {
@@ -53,9 +53,9 @@ export const propIds = {
 };
 export const roomStatus = {
     normal: 0,
-    // 蜘蛛�?
+
     spider: 1,
-    // 纸箱
+
     carton: 2,
 }
 
@@ -75,95 +75,95 @@ export const managerInfoTypeArr = [
     "Spend %d coins",
 ];
 
-class MergeBoardModule {
+class MergeBoardStateStore {
 
-    private static instance: MergeBoardModule;
+    private static instance: MergeBoardStateStore;
     private constructor() { }
-    public static getInstane(): MergeBoardModule {
+    public static getInstane(): MergeBoardStateStore {
         if (this.instance == null) {
-            this.instance = new MergeBoardModule();
+            this.instance = new MergeBoardStateStore();
         }
         return this.instance;
     }
 
-    // 合成按钮位置
+
     btnMergeBoardPos: Vec3 = v3(0, 0, 0);
 
-    // 棋盘大小
+
     colNum = 7;
     rowNum = 9;
 
-    // 棋盘数据
+
     roomArr: any;
     roomDataKey: string = "";
 
-    // 任务列表
+
     taskArr: any;
     taskDataKey: string = "";
 
-    // 店长值班�?
+
     managerArr: any;
-    // 卡片列表
+
     cardArr: any;
 
     updateInterval: any;
 
     curTaskLineState: any = {}
 
-    // get taskArr() {
-    //     return this.createTask()
-    // }
 
-    // set taskArr(val:any) {
 
-    // }
+
+
+
+
+
 
     initData() {
-        // 卡片列表
+
         this.cardArr = [];
         let ret = GameStorage.getObject(Const.DataKeys.boardCardArr);
         if (ret) {
-            // 从服务器加载
+
             this.cardArr = ret;
             UtilPub.log("从服务端加载卡片列表", this.cardArr);
         }
-        // 棋盘数据
+
         this.roomArr = [];
         this.roomDataKey = Const.DataKeys.boardRoomData;
 
         ret = GameStorage.getObjectArrayByKey(this.roomDataKey);
         UtilPub.log("读取服务端棋盘数据：", ret);
         if (!ret.values || ret.values.length <= 0) {
-            // 初始化数据，并且上传
+
             let tmpObj: any = {};
 
-            // // test
-            // // let idArr = [10001, 10012, 10026, 20001, 20011, 20021, 20026, 20030, 20041, 20052, 20059, 20065, 20069, 30001, 30008, 30019];
-            // let idArr = [10001, 10012, 10026, 20001, 20011, 20021, 20026];
-            // for (let i = 0; i < this.rowNum; i++) {
-            //     this.roomArr[i] = [];
-            //     for (let j = 0; j < this.colNum; j++) {
-            //         let roomData: any = {};
-            //         if (Math.random() > 0.3) {
-            //             let id = UtilPub.getRandomItemByArr(idArr);
-            //             roomData = this.initRoomData(id);
-            //         }
-            //         this.roomArr[i][j] = roomData;
-            //         let key = this.getRoomDataKey(i, j);
-            //         tmpObj[key] = roomData;
-            //     }
-            // }
-            // // 加入背包
-            // let emptyPos = this.getEmptyRoomPos();
-            // if (emptyPos) {
-            //     let emptyRoom = this.initRoomData(propIds.bag);
-            //     this.roomArr[emptyPos.row][emptyPos.col] = emptyRoom;
-            //     tmpObj[this.getRoomDataKey(emptyPos.row, emptyPos.col)] = emptyRoom;
-            // }
 
-            let tb = tables.ins().getTable(Const.Tables.boardSeed);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            let tb = TableDataService.ins().getTable(Const.Tables.boardSeed);
             if (aiRobot.isRobot()) {
-                tb = tables.ins().getTable(Const.Tables.botBoardSeed);
+                tb = TableDataService.ins().getTable(Const.Tables.botBoardSeed);
             }
             for (let i = 0; i < tb.length; i++) {
                 let roomRow = tb[i];
@@ -178,11 +178,11 @@ class MergeBoardModule {
                 tmpObj[key] = roomData;
             }
 
-            // 将初始化的数据上�?
+
             GameStorage.setObjectMulti(tmpObj);
             UtilPub.log("本地初始化棋盘数据：", this.roomArr);
         } else {
-            // 解析服务端的数据
+
             for (let i = 0; i < ret.values.length; i++) {
                 let val = ret.values[i];
                 let key = ret.keys[i];
@@ -205,7 +205,7 @@ class MergeBoardModule {
         this.roomDataKey = Const.DataKeys.boardRoomData;
         console.log("loadData 2")
 
-        // 任务列表
+
         if (this.roomDataKey == Const.DataKeys.boardRoomData) {
             this.taskDataKey = Const.DataKeys.boardOrderQueue;
             console.log("loadData 3")
@@ -214,7 +214,7 @@ class MergeBoardModule {
             console.log("loadData 4")
 
             if (!ret) {
-                // 本地初始�?
+
                 if (aiRobot.isRobot()) {
                     let retTask = aiRobot.createTask();
                     this.taskArr = [retTask];
@@ -222,16 +222,16 @@ class MergeBoardModule {
                     let retTask = this.createHandTask(1);
                     this.taskArr = [retTask];
                 }
-                // 将初始化的数据上�?
+
                 this.sendTaskArrToServer();
                 UtilPub.log("本地初始化任务列表：", this.taskArr);
 
             } else {
-                // 从服务器加载
+
 
                 console.log("loadData 5 a")
 
-                this.taskArr = this.createTask()//ret;
+                this.taskArr = this.createTask()
                 UtilPub.log("从服务端加载任务列表", this.taskArr);
                 console.log("loadData 5")
 
@@ -239,16 +239,16 @@ class MergeBoardModule {
         }
         console.log("loadData 6")
 
-        // 店长值班�?
+
         this.managerArr = [];
         let ret = GameStorage.getObjectArrayByKey(this.roomDataKey);
         ret = GameStorage.getObjectArrayByKey(Const.DataKeys.boardMilestoneArr);
         if (!ret.values || ret.values.length <= 0) {
-            // 本地初始�?
+
             this.createNextManager();
             UtilPub.log("本地初始化店长值班日：", this.managerArr);
         } else {
-            // 从服务器加载
+
             for (let i = 0; i < ret.values.length; i++) {
                 let val = ret.values[i];
                 let key = ret.keys[i];
@@ -269,7 +269,7 @@ class MergeBoardModule {
 
     }
 
-    // 完全展示合成界面之后调用
+
     markMergeBoardReady() {
         UtilPub.for2Arr(this.roomArr, (roomData: any, row: number, col: number) => {
             if (!roomData.id) {
@@ -280,7 +280,7 @@ class MergeBoardModule {
     }
 
     close() {
-        //this.roomArr = [];
+
         if (this.updateInterval) {
             clearInterval(this.updateInterval);
             this.updateInterval = null;
@@ -294,12 +294,12 @@ class MergeBoardModule {
             if (!roomData.id) {
                 return;
             }
-            let propRow = tables.ins().getTableValueByID(Const.Tables.prop, roomData.id);
+            let propRow = TableDataService.ins().getTableValueByID(Const.Tables.prop, roomData.id);
 
-            // 主动点击cd
+
             if (roomData.cd && timestamp >= roomData.cd) {
                 if (propRow.mdt == 11) {
-                    // 加速装�?时间到了，自动消�?
+
                     this.setRoomData(row, col, {});
                     let info = {
                         row: row,
@@ -309,26 +309,26 @@ class MergeBoardModule {
                 } else {
                     delete roomData.cd;
                     delete roomData.cdSum;
-                    // cd到了，补充库�?
+
                     roomData.times = propRow.times;
                     this.sendRoomDataToServer(row, col);
                 }
             }
 
-            // 自动吐东�?
+
             if (propRow.fair && roomData.timesAuto > 0) {
                 this.refreshRoomAutoNew(row, col);
             }
-            // 自动吐物品cd
+
             if (roomData.cdAuto && timestamp >= roomData.cdAuto && !this.isRoomBubble(row, col)) {
-                // cd到了，补充库�?
+
                 delete roomData.cdAuto;
                 roomData.timesAuto = propRow.kishu;
                 this.sendRoomDataToServer(row, col);
                 this.refreshRoomAutoNew(row, col);
             }
 
-            // 气泡戳破
+
             if (roomData.cdBubble > 0 && timestamp >= roomData.cdBubble) {
                 roomData = this.initRoomData(designConfig.bubbleBombPropId);
                 this.setRoomData(row, col, roomData);
@@ -336,10 +336,10 @@ class MergeBoardModule {
             }
 
             if (propRow.mdt == 11 && roomData.startTime) {
-                // 加速装�?
+
                 let speedTime = timestamp - roomData.startTime;
                 roomData.startTime = timestamp;
-                // 九宫周围可加速房�?
+
                 for (let i = 0, len = nineAroundArr.length; i < len; i++) {
                     let posArr = nineAroundArr[i];
                     let r = row + posArr[0];
@@ -384,17 +384,17 @@ class MergeBoardModule {
 
     initRoomData(id: number, data: any = {}, st?: number, clickPropId?: any) {
         data.id = id;
-        let propRow = tables.ins().getTableValueByID(Const.Tables.prop, id);
+        let propRow = TableDataService.ins().getTableValueByID(Const.Tables.prop, id);
         if (!propRow) {
             UtilPub.error("道具数据找不到，id:" + id);
         }
 
         if (clickPropId) {
-            // 指定点击生成的道�?
+
             data.clickPropId = clickPropId;
         }
 
-        // 首次生成指定点击获得道具列表
+
         if (propRow.clickPropId) {
             let propCount = this.getComposePropCount(id);
             if (propCount == 0) {
@@ -404,7 +404,7 @@ class MergeBoardModule {
                 clickPropId = clickPropId.concat(propRow.clickPropId);
                 data.clickPropId = clickPropId;
                 this.setComposePropCount(id, propCount + 1);
-                // UtilPub.log("%s create clickPropId".format(propRow.name), clickPropId);
+
             }
         }
 
@@ -417,22 +417,22 @@ class MergeBoardModule {
         } else {
             delete data.st;
             if (propRow.anc && propRow.times > 0) {
-                // 手动点击次数
+
                 data.times = propRow.times;
             }
 
             if (propRow.kishu > 0) {
-                // 自动生成次数，首次改成只生成一�?
-                // data.timesAuto = propRow.kishu;
+
+
                 data.timesAuto = 1;
             }
 
             if (id == propIds.bag) {
-                // 背包，初始化免费格子
+
                 let roomArr = [];
                 while (true) {
                     let id = roomArr.length + 1;
-                    let bagRow = tables.ins().getTableValueByID(Const.Tables.bagGrid, id);
+                    let bagRow = TableDataService.ins().getTableValueByID(Const.Tables.bagGrid, id);
                     if (bagRow.coin != 0) {
                         break;
                     }
@@ -443,7 +443,7 @@ class MergeBoardModule {
             }
 
             if (propRow.lock) {
-                // 初始cd状�?
+
                 data.cd = this.getCurrentTimestamp() + propRow.milo * 1000;
                 data.cdSum = propRow.milo * 1000;
                 UtilPub.log("init cd state", data);
@@ -451,31 +451,31 @@ class MergeBoardModule {
         }
 
         if (!st) {
-            // 解锁道具
-            userData.setGetPropTujian(id, TujianState.geted);
+
+            playerDataStore.setGetPropTujian(id, TujianState.geted);
         }
 
         return data;
     }
 
-    /**
-     * 寻找棋盘下的同子类物品的最高等�?lvAdd，溢出就取最高等�?
-     * @param id 物品id
-     * @param lvAdd 等级增加值，�?，不作处理，返回传入的id本身
-     * @returns 
-     */
+
+
+
+
+
+
     getRoomPropIdByIdLvUp(id: number, lvAdd: number) {
         if (!lvAdd) {
             return id;
         }
-        let propRow = tables.ins().getTableValueByID(Const.Tables.prop, id);
+        let propRow = TableDataService.ins().getTableValueByID(Const.Tables.prop, id);
         UtilPub.for2Arr(this.roomArr, (roomData: any, row: number, col: number) => {
             if (!roomData.id || this.isRoomBubble(row, col)) {
                 return;
             }
-            let tmpRow = tables.ins().getTableValueByID(Const.Tables.prop, roomData.id);
+            let tmpRow = TableDataService.ins().getTableValueByID(Const.Tables.prop, roomData.id);
             if (propRow.type != tmpRow.type || propRow.typeson != tmpRow.typeson) {
-                // 不是同子�?
+
                 return;
             }
             if (propRow.luna > tmpRow.luna) {
@@ -483,7 +483,7 @@ class MergeBoardModule {
             }
             propRow = tmpRow;
         });
-        // 找到最高等级了
+
         id = propRow.id;
 
         id = this.getPropIdByIdLvUp(id, lvAdd);
@@ -491,15 +491,15 @@ class MergeBoardModule {
         return id;
     }
 
-    /**
-     * 获得道具的最高等级id
-     * @param id 
-     */
+
+
+
+
     getPropMaxLvId(id: number) {
-        let propRow = tables.ins().getTableValueByID(Const.Tables.prop, id);
+        let propRow = TableDataService.ins().getTableValueByID(Const.Tables.prop, id);
         while (true) {
             id++;
-            let nextRow = tables.ins().getTableValueByID(Const.Tables.prop, id);
+            let nextRow = TableDataService.ins().getTableValueByID(Const.Tables.prop, id);
             if (!nextRow || propRow.type != nextRow.type || propRow.typeson != nextRow.typeson) {
                 id--;
                 break;
@@ -508,20 +508,20 @@ class MergeBoardModule {
         return id;
     }
 
-    /**
-     * 物品等级+lvAdd，溢出就取最高等�?
-     * @param id 物品id
-     * @param lvAdd 等级增加值，�?，不作处理，返回传入的id本身
-     */
+
+
+
+
+
     getPropIdByIdLvUp(id: number, lvAdd: number) {
         if (!lvAdd) {
             return id;
         }
 
-        let propRow = tables.ins().getTableValueByID(Const.Tables.prop, id);
+        let propRow = TableDataService.ins().getTableValueByID(Const.Tables.prop, id);
         for (let i = 0; i < lvAdd; i++) {
             id++;
-            let nextRow = tables.ins().getTableValueByID(Const.Tables.prop, id);
+            let nextRow = TableDataService.ins().getTableValueByID(Const.Tables.prop, id);
             if (!nextRow || propRow.type != nextRow.type || propRow.typeson != nextRow.typeson) {
                 id--;
                 break;
@@ -532,17 +532,17 @@ class MergeBoardModule {
         return id;
     }
 
-    /**
-     * 是否已解�?某道具的子类，有解锁1个，就算解锁了整个子�?
-     * @param id 
-     */
+
+
+
+
     hasUnlockPropType(id: number) {
-        let propRow = tables.ins().getTableValueByID(Const.Tables.prop, id);
-        let tb = tables.ins().getTable(Const.Tables.prop);
+        let propRow = TableDataService.ins().getTableValueByID(Const.Tables.prop, id);
+        let tb = TableDataService.ins().getTable(Const.Tables.prop);
         for (let i = 0; i < tb.length; i++) {
             let tmpRow = tb[i];
             if (propRow.type == tmpRow.type && propRow.typeson == tmpRow.typeson) {
-                if (userData.isGetPropTujian(tmpRow.id) != TujianState.unGet) {
+                if (playerDataStore.isGetPropTujian(tmpRow.id) != TujianState.unGet) {
                     return true;
                 }
             }
@@ -550,17 +550,17 @@ class MergeBoardModule {
         return false;
     }
 
-    // 解锁新任务到下一个卡�?
+
     createNextManager() {
         let tmpObj: any = {};
         let id = this.managerArr.length;
-        if (id >= tables.ins().getTableLastOne(Const.Tables.manager).id) {
-            // 已全部解�?
+        if (id >= TableDataService.ins().getTableLastOne(Const.Tables.manager).id) {
+
             return;
         }
         let row = null;
         while (true) {
-            row = tables.ins().getTableValueByID(Const.Tables.manager, id + 1);
+            row = TableDataService.ins().getTableValueByID(Const.Tables.manager, id + 1);
             if (!row) {
                 break;
             }
@@ -584,7 +584,7 @@ class MergeBoardModule {
     }
 
     createHandTask(id: number) {
-        let row = tables.ins().getTableValueByID(Const.Tables.handTask, id);
+        let row = TableDataService.ins().getTableValueByID(Const.Tables.handTask, id);
         if (!row) {
             return;
         }
@@ -603,13 +603,13 @@ class MergeBoardModule {
     }
 
     getCurTaskLineStep(taskId: number = 1, line: number, ischeck: boolean = false) {
-        let lineTaskData = tables.ins().getTableValuesByType2(Const.Tables.taskMainType, "taskId", taskId + "", "firstLine", line + "")
+        let lineTaskData = TableDataService.ins().getTableValuesByType2(Const.Tables.taskMainType, "taskId", taskId + "", "firstLine", line + "")
         if (lineTaskData.length <= 0) {
             return [0, 0]
         }
-        // lineTaskData.sort((a: any, b: any) => {
-        //     return a.secondLine - b.secondLine
-        // })
+
+
+
         if (ischeck && this.curTaskLineState[taskId * 1000 + line]) {
             return this.curTaskLineState[taskId * 1000 + line]
         }
@@ -625,11 +625,11 @@ class MergeBoardModule {
         for (let stepLine = 1; stepLine <= line - 1; stepLine++) {
             let step = this.getCurTaskLineStep(taskId, stepLine, true)!
             if (step[0] < start && step[1] >= start) {
-                //  let lineTaskData2 = tables.ins().getTableValuesByType3(Const.Tables.taskMainType, "taskId", taskId + "", "firstLine", stepLine + "", "secondLine", "" + step1)
-                // if (step[1]) {
+
+
                 isPass = false
                 break;
-                //  }
+
             }
         }
 
@@ -653,7 +653,7 @@ class MergeBoardModule {
         if (this.curTaskLineState[taskId * 1000 + line]) {
             this.curTaskLineState[taskId * 1000 + line][0] = curStep
         }
-        //  let taskData = tables.ins().getTableValuesByType3(Const.Tables.taskMainType, "taskId", taskId + "", "firstLine", line + "", "secondLine", curStep + "")
+
         if (arr.length <= 0) {
             GameStorage.setInt(Const.DataKeys.TaskLineFinsh + taskId, 1)
         }
@@ -665,10 +665,10 @@ class MergeBoardModule {
     }
 
     isTaskGetReward(taskId: number) {
-        // if (taskId == 4) {
-        //     GameStorage.setInt(Const.DataKeys.TaskLineFinshReward + taskId, 0)
-        //     return false
-        // }
+
+
+
+
         let isstate = GameStorage.getInt(Const.DataKeys.TaskLineFinshReward + taskId, 0)
         return isstate == 1
     }
@@ -680,11 +680,11 @@ class MergeBoardModule {
     createTask2() {
         let taskArr: any = {};
 
-        let taskUnLockData = tables.ins().getTable(Const.Tables.taskUnlock)
+        let taskUnLockData = TableDataService.ins().getTable(Const.Tables.taskUnlock)
         this.curTaskLineState = {}
         for (let index = 0; index < taskUnLockData.length; index++) {
             const element = taskUnLockData[index];
-            if (userData.roleLv >= element.level) {
+            if (playerDataStore.roleLv >= element.level) {
                 if (element.tid == 0 || this.isTaskFish(element.tid)) {
                     let arr = this.createTaskLine(element.taskId)
                     if (arr.length > 0 || !this.isTaskGetReward(element.taskId))
@@ -697,11 +697,11 @@ class MergeBoardModule {
 
 
     getTaskProgress(taskId: number) {
-        let firstLinenum = tables.ins().getTableValuesNumberByType(Const.Tables.taskMainType, "taskId", taskId + "", "firstLine")
-        let taskData = tables.ins().getTableValuesByType(Const.Tables.taskMainType, "taskId", taskId + "")
+        let firstLinenum = TableDataService.ins().getTableValuesNumberByType(Const.Tables.taskMainType, "taskId", taskId + "", "firstLine")
+        let taskData = TableDataService.ins().getTableValuesByType(Const.Tables.taskMainType, "taskId", taskId + "")
         let finishNum = 0
         for (let index = 1; index <= firstLinenum; index++) {
-            let lineTaskData = tables.ins().getTableValuesByType2(Const.Tables.taskMainType, "taskId", taskId + "", "firstLine", index + "")
+            let lineTaskData = TableDataService.ins().getTableValuesByType2(Const.Tables.taskMainType, "taskId", taskId + "", "firstLine", index + "")
             if (lineTaskData.length > 0) {
                 let start = lineTaskData[0].secondLine
                 let taskMain1 = this.getCurTaskLineStep(taskId, index)[0]
@@ -716,13 +716,13 @@ class MergeBoardModule {
     createTask() {
         let taskArr: any = [];
 
-        let taskUnLockData = tables.ins().getTable(Const.Tables.taskUnlock)
+        let taskUnLockData = TableDataService.ins().getTable(Const.Tables.taskUnlock)
         this.curTaskLineState = {}
 
         for (let index = 0; index < taskUnLockData.length; index++) {
             const element = taskUnLockData[index];
 
-            if (userData.roleLv >= element.level) {
+            if (playerDataStore.roleLv >= element.level) {
 
                 if (element.tid == 0 || this.isTaskFish(element.tid)) {
                     let arr = this.createTaskLine(element.taskId)
@@ -733,19 +733,19 @@ class MergeBoardModule {
             }
         }
 
-        mergeBoardModel.taskArr = taskArr
+        mergeBoardStateStore.taskArr = taskArr
         return taskArr
     }
 
     createTaskLine(taskId: number = 1, num: number = 1) {
         let taskArr: any = [];
-        let firstLinenum = tables.ins().getTableValuesNumberByType(Const.Tables.taskMainType, "taskId", taskId + "", "firstLine")
+        let firstLinenum = TableDataService.ins().getTableValuesNumberByType(Const.Tables.taskMainType, "taskId", taskId + "", "firstLine")
         for (let index = 1; index <= firstLinenum; index++) {
 
             let taskMain1 = this.getCurTaskLineStep(taskId, index)[0]
 
             if (taskMain1 > 0) {
-                let taskData = tables.ins().getTableValuesByType3(Const.Tables.taskMainType, "taskId", taskId + "", "firstLine", index + "", "secondLine", taskMain1 + "")[0]
+                let taskData = TableDataService.ins().getTableValuesByType3(Const.Tables.taskMainType, "taskId", taskId + "", "firstLine", index + "", "secondLine", taskMain1 + "")[0]
                 if (taskData) {
 
                     let task: any = {};
@@ -770,11 +770,11 @@ class MergeBoardModule {
         return taskArr
     }
 
-    /**
-     * 生成任务
-     * @param num 生成任务数量 
-     * @param funcType 指定任务类型 
-     */
+
+
+
+
+
     createTaskMain(num: number = 1, funcType: number = 0) {
         let taskArr: any = [];
 
@@ -782,30 +782,30 @@ class MergeBoardModule {
             let task: any = {};
 
             let arr = [];
-            let tb = tables.ins().getTable(Const.Tables.taskType);
+            let tb = TableDataService.ins().getTable(Const.Tables.taskType);
             for (let row of tb) {
                 if (funcType > 0 && row.res1 != funcType) {
-                    // 不是指定类型
+
                     continue;
                 }
-                let lv = userData.roleLv;
+                let lv = playerDataStore.roleLv;
                 if (lv >= row.levelMin && lv <= row.levelMax) {
-                    // 过滤玩家等级
+
                     arr.push(row);
                 }
             }
             let retRow = UtilPub.getRowByWeight(arr);
 
-            // test
-            // retRow = tables.ins().getTableValueByID(Const.Tables.taskType, 50);
+
+
 
             let idArr: any = [];
-            let propTb = tables.ins().getTable(Const.Tables.prop);
+            let propTb = TableDataService.ins().getTable(Const.Tables.prop);
             let unlockInfo: any = {};
-            // 按照类型区分
+
             switch (retRow.res1) {
                 case 2:
-                    // 已拥有的
+
                     UtilPub.for2Arr(this.roomArr, (roomData: any, pRow: number, pCol: number) => {
                         let id = roomData.id;
                         if (!id || id == propIds.bag) {
@@ -818,32 +818,32 @@ class MergeBoardModule {
                             return;
                         }
 
-                        let propRow = tables.ins().getTableValueByID(Const.Tables.prop, id);
+                        let propRow = TableDataService.ins().getTableValueByID(Const.Tables.prop, id);
                         if (propRow.lunc > retRow.quality) {
-                            // 过滤道具品质
+
                             return;
                         }
                         idArr.push(id);
                     });
                     break;
                 case 3:
-                    // 已解锁，但是未拥有的最高等�?
+
                     let tmpInfo: any = {};
                     UtilPub.forArr(propTb, (propRow: any) => {
                         if (propRow.lunc > retRow.quality) {
-                            // 过滤道具品质
+
                             return;
                         }
-                        // 过滤掉未解锁�?
-                        if (userData.isGetPropTujian(propRow.id) == TujianState.unGet) {
+
+                        if (playerDataStore.isGetPropTujian(propRow.id) == TujianState.unGet) {
                             return;
                         }
-                        // 过滤掉已拥有�?
+
                         let hasInfo = this.getRoomDataHasInfoById(propRow.id);
                         if (hasInfo.num > 0) {
                             return;
                         }
-                        // 同子类道具取最高等�?
+
                         let key = propRow.type * 1000 + propRow.typeson;
                         let info = tmpInfo[key];
                         if (info) {
@@ -863,17 +863,17 @@ class MergeBoardModule {
                     }
                     break;
                 case 4:
-                    // 已解锁子类，但是未解锁的道具
+
                     UtilPub.forArr(propTb, (propRow: any) => {
                         if (propRow.lunc > retRow.quality) {
-                            // 过滤道具品质
+
                             return;
                         }
-                        // 过滤掉已解锁�?
-                        if (userData.isGetPropTujian(propRow.id) != TujianState.unGet) {
+
+                        if (playerDataStore.isGetPropTujian(propRow.id) != TujianState.unGet) {
                             return;
                         }
-                        // 过滤掉未解锁的子�?
+
                         let unlockKey = propRow.type * 1000 + propRow.typeson;
                         let hasUnlock = unlockInfo[unlockKey];
                         if (hasUnlock == undefined) {
@@ -887,17 +887,17 @@ class MergeBoardModule {
                     });
                     break;
                 case 5:
-                    // 未解锁子类，并且也未解锁的道�?
+
                     UtilPub.forArr(propTb, (propRow: any) => {
                         if (propRow.lunc > retRow.quality) {
-                            // 过滤道具品质
+
                             return;
                         }
-                        // 过滤掉已解锁�?
-                        if (userData.isGetPropTujian(propRow.id) != TujianState.unGet) {
+
+                        if (playerDataStore.isGetPropTujian(propRow.id) != TujianState.unGet) {
                             return;
                         }
-                        // 过滤掉已解锁的子�?
+
                         let unlockKey = propRow.type * 1000 + propRow.typeson;
                         let hasUnlock = unlockInfo[unlockKey];
                         if (hasUnlock == undefined) {
@@ -911,14 +911,14 @@ class MergeBoardModule {
                     });
                     break;
                 case 6:
-                    // 已解锁的道具
+
                     UtilPub.forArr(propTb, (propRow: any) => {
                         if (propRow.lunc > retRow.quality) {
-                            // 过滤道具品质
+
                             return;
                         }
-                        // 已解锁的
-                        if (userData.isGetPropTujian(propRow.id) != TujianState.unGet) {
+
+                        if (playerDataStore.isGetPropTujian(propRow.id) != TujianState.unGet) {
                             idArr.push(propRow.id);
                         }
                     });
@@ -927,7 +927,7 @@ class MergeBoardModule {
                     break;
             }
 
-            // 道具种类
+
             let needTypeNum = retRow.djzl;
             if (idArr.length <= 1) {
                 needTypeNum = 1;
@@ -940,7 +940,7 @@ class MergeBoardModule {
                 while (true) {
                     let retId = UtilPub.getRandomItemByArr(idArr, true);
                     if (retId > 0) {
-                        // 等级增加，按照类型区�?
+
                         switch (res1) {
                             case 2:
                                 retId = this.getRoomPropIdByIdLvUp(retId, lvUp);
@@ -955,7 +955,7 @@ class MergeBoardModule {
                         if (propArr.length > 0 && retId == propArr[0].id) {
                             res1 = 2;
                             lvUp = 0;
-                            UtilPub.log("任务道具重复�?" + retId);
+                            UtilPub.log("任务道具重复�?" + retId);
                             continue;
                         }
                         let num = this.getValByDesignWeight("1,2,3", retRow.num);
@@ -968,19 +968,19 @@ class MergeBoardModule {
                 }
             }
             if (propArr.length > 0) {
-                // task.id = retRow.id;
+
                 task.propArr = propArr;
-                // 任务奖励数量
+
                 task.starNum = UtilPub.getRandomItemByArr(retRow.taskReward);
                 taskArr.push(task);
             }
 
-            // UtilPub.log("任务类型�? + retRow.res1);
+
         }
 
         if (taskArr.length <= 0) {
-            // 如果没有任务了，要生成一个保底任�?
-            let leastTaskArr = tables.ins().getTable(Const.Tables.leastTask);
+
+            let leastTaskArr = TableDataService.ins().getTable(Const.Tables.leastTask);
             let leastTaskRow = UtilPub.getRandomItemByArr(leastTaskArr);
             let propArr = [{
                 id: leastTaskRow.prop,
@@ -999,7 +999,7 @@ class MergeBoardModule {
         return taskArr;
     }
 
-    // 刷新可以自动生成新物品的房间
+
     refreshRoomAutoNew(row: number, col: number) {
         let roomData = this.roomArr[row][col];
         if (!roomData.id || !roomData.timesAuto || roomData.timesAuto <= 0) {
@@ -1009,7 +1009,7 @@ class MergeBoardModule {
             return;
         }
 
-        // 记录九宫周围的空房间
+
         let emptyArr: any = [];
         nineAroundArr.forEach((posArr: any) => {
             let r = row + posArr[0];
@@ -1022,11 +1022,11 @@ class MergeBoardModule {
             }
         });
 
-        // 判断周边九宫有空房间才会生成
+
         if (emptyArr.length > 0) {
             let tmpObj: any = {};
             let newPosArr: any = [];
-            let propRow = tables.ins().getTableValueByID(Const.Tables.prop, roomData.id);
+            let propRow = TableDataService.ins().getTableValueByID(Const.Tables.prop, roomData.id);
             while (roomData.timesAuto > 0 && emptyArr.length > 0 && propRow.fair > 0) {
                 let roomDataNew = this.initRoomData(propRow.fair);
                 let posArr = emptyArr.shift();
@@ -1041,21 +1041,21 @@ class MergeBoardModule {
                 }
             }
 
-            // 将数据批量上传给服务�?
+
             GameStorage.setObjectMulti(tmpObj);
 
-            // 通知UI�?
+
             this.sendToUIComposeRoomNew(row, col, newPosArr, true);
 
         }
     }
 
-    /**
-     * 通知UI层，有新的物品生成了
-     * @param row 开始行
-     * @param col 开始列
-     * @param newPosArr 生成的物品位置数�?[[row,col],...]
-     */
+
+
+
+
+
+
     sendToUIComposeRoomNew(row: number, col: number, newPosArr: any, isAuto: boolean = false) {
         let data: any = {};
         data.row = row;
@@ -1064,7 +1064,7 @@ class MergeBoardModule {
         data.isAuto = isAuto;
         Notifications.emit(GD.event.boardSlotSpawn, data);
     }
-    // 通知UI层气泡破�?
+
     sendToUIRoomBubbleBurst(row: number, col: number) {
         let data: any = {};
         data.row = row;
@@ -1072,7 +1072,7 @@ class MergeBoardModule {
         Notifications.emit(GD.event.roomBubbleBurst, data);
     }
 
-    // 拖动：交换位�?
+
     roomDataExchange(srcRow: number, srcCol: number, targetRow: number, targetCol: number) {
         let srcData = this.roomArr[srcRow][srcCol];
         let targetData = this.roomArr[targetRow][targetCol];
@@ -1080,17 +1080,17 @@ class MergeBoardModule {
         this.setRoomData(targetRow, targetCol, srcData);
     }
 
-    // 拖动：进行合�?
+
     mergeRoomData(srcRow: number, srcCol: number, targetRow: number, targetCol: number) {
         let srcData = this.roomArr[srcRow][srcCol];
         let targetData = this.roomArr[targetRow][targetCol];
-        let propRow = tables.ins().getTableValueByID(Const.Tables.prop, srcData.id);
-        // 源房间清除掉
+        let propRow = TableDataService.ins().getTableValueByID(Const.Tables.prop, srcData.id);
+
         this.setRoomData(srcRow, srcCol, {});
-        // 目标房间生成合成后的物品
-        if (userData.isGetPropTujian(propRow.blessId) == TujianState.unGet) {
-            // 通知UI显示获得新元�?
-            let blessRow = tables.ins().getTableValueByID(Const.Tables.prop, propRow.blessId);
+
+        if (playerDataStore.isGetPropTujian(propRow.blessId) == TujianState.unGet) {
+
+            let blessRow = TableDataService.ins().getTableValueByID(Const.Tables.prop, propRow.blessId);
             if (blessRow.anc) {
                 Notifications.emit(GD.event.boardDiscovery, propRow.blessId);
             }
@@ -1108,7 +1108,7 @@ class MergeBoardModule {
         }
         this.setRoomData(targetRow, targetCol, roomData);
 
-        // 按照十字型戳破周围的纸箱子，变成蜘蛛网包�?
+
         let retObj: any = {};
         retObj.cartonArr = [];
         for (let i in tenAroundArr) {
@@ -1135,45 +1135,45 @@ class MergeBoardModule {
 
         return retObj;
     }
-    // 合成后，优先有概率生成额外东�?
+
     afterRoomMerge(targetRow: number, targetCol: number) {
-        // 新手阶段不出新东�?
+
         if (!this.isHandDone() || aiRobot.isRobot()) {
             return;
         }
 
         let roomData = this.roomArr[targetRow][targetCol];
-        let arr = tables.ins().getTable(Const.Tables.mergeReward);
-        // let retRow = UtilPub.getRowByWeight(arr);
-        // UtilPub.log(retRow);
-        let retRow = tables.ins().getTableValueByID(Const.Tables.mergeReward, 1)
-        // // test
-        // let emptyPos = this.getEmptyRoomPos();
-        // if (emptyPos) {
-        //     let newRoom = null;
-        //     // 生成相同等级的气泡物�?
-        //     // newRoom = this.initRoomData(roomData.id);
-        //     // 金币
-        //     newRoom = this.initRoomData(201);
-        //     newRoom.cdBubble = this.getCurrentTimestamp() + designConfig.bubbleTime;
+        let arr = TableDataService.ins().getTable(Const.Tables.mergeReward);
 
-        //     if (newRoom) {
-        //         this.setRoomData(emptyPos.row, emptyPos.col, newRoom);
-        //         this.sendToUIComposeRoomNew(targetRow, targetCol, [[emptyPos.row, emptyPos.col]]);
-        //     }
-        // }
-        // return;
+
+        let retRow = TableDataService.ins().getTableValueByID(Const.Tables.mergeReward, 1)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
         if (retRow.propId != 0) {
             let emptyPos = this.getEmptyRoomPos();
             if (emptyPos) {
                 let newRoom = null;
                 if (retRow.propId == -1) {
-                    // 生成相同等级的气泡物�?
+
                     newRoom = this.initRoomData(roomData.id);
                     newRoom.cdBubble = this.getCurrentTimestamp() + designConfig.bubbleTime;
                 } else if (retRow.propId > 0) {
-                    // 生成物品
+
                     newRoom = this.initRoomData(retRow.propId);
                 }
                 if (newRoom) {
@@ -1184,17 +1184,17 @@ class MergeBoardModule {
         }
     }
 
-    /**
-     * 将物品放入背�?
-     * 返回值：true 放入成功   false 放入失败，背包已�?
-     * @param row 物品行索�?
-     * @param col 物品列索�?
-     * @param bagRow 背包行索�?
-     * @param bagCol 背包列索�?
-     */
+
+
+
+
+
+
+
+
     putDataInRoomBag(row: number, col: number, bagRow: number, bagCol: number) {
         if (this.isRoomBubble(row, col)) {
-            // 有气泡，不能放入
+
             this.showToast(localText.notInBag);
             return;
         }
@@ -1203,7 +1203,7 @@ class MergeBoardModule {
             UtilPub.log("还未解锁背包");
             return;
         }
-        // 寻找空位�?
+
         let index = -1;
         for (let i = bagRoomData.roomArr.length - 1; i >= 0; i--) {
             let room = bagRoomData.roomArr[i];
@@ -1213,7 +1213,7 @@ class MergeBoardModule {
             }
         }
         if (index == -1) {
-            // 背包已满
+
             UtilPub.log("背包已满");
             return false;
         }
@@ -1241,23 +1241,23 @@ class MergeBoardModule {
         this.sendRoomDataToServer(bagRow, bagCol);
         return true;
     }
-    /**
-     * 从背包中取出物品
-     * 返回值：{row,col}取出成功  否则取出失败，棋盘没空房间了
-     * @param index 要取出的物品索引
-     * @param bagRow 背包行索�?
-     * @param bagCol 背包列索�?
-     */
+
+
+
+
+
+
+
     getOutDataFromRoomBag(index: number, bagRow: number, bagCol: number) {
-        let emptyPos = mergeBoardModel.getEmptyRoomPos();
+        let emptyPos = mergeBoardStateStore.getEmptyRoomPos();
         if (!emptyPos) {
-            // 外面没有空房间了
+
             return;
         }
         let bagRoomData = this.roomArr[bagRow][bagCol];
         let roomData = bagRoomData.roomArr[index];
 
-        // 放入背包的物品，是不走cd�?
+
         let dt = this.getCurrentTimestamp() - roomData.putTime;
         if (roomData.cd > 0) {
             roomData.cd += dt;
@@ -1274,7 +1274,7 @@ class MergeBoardModule {
 
         return emptyPos;
     }
-    // 整理背包物品，重新排�?
+
     sortBagRoomArr(row: number, col: number) {
         let bagRoomData = this.roomArr[row][col];
         let arr = [];
@@ -1295,22 +1295,22 @@ class MergeBoardModule {
         bagRoomData.roomArr = arr.concat(emptyArr);
         this.sendRoomDataToServer(row, col);
     }
-    // 背包扩容
+
     bagRoomAddGrid(row: number, col: number) {
         let bagRoomData = this.roomArr[row][col];
         bagRoomData.roomArr.push({});
         this.sendRoomDataToServer(row, col);
     }
 
-    // 点击房间，生成新物品
+
     onClickRoomNew(row: number, col: number, emptyRow: number, emptyCol: number) {
-        // UtilPub.log(row, col, emptyRow, emptyCol);
+
         let roomData = this.roomArr[row][col];
-        let propRow = tables.ins().getTableValueByID(Const.Tables.prop, roomData.id);
+        let propRow = TableDataService.ins().getTableValueByID(Const.Tables.prop, roomData.id);
         roomData.times--;
 
-        if (!propRow.noPower && mergeBoardModel.getBoardEnergyCooldown() <= 0) {
-            // 扣减体力
+        if (!propRow.noPower && mergeBoardStateStore.getBoardEnergyCooldown() <= 0) {
+
             this.subPropNum(propIds.power);
             if (aiRobot.isRobot() && this.getPropNumById(propIds.power) <= 1) {
                 this.addPropNum(propIds.power, 100);
@@ -1324,16 +1324,16 @@ class MergeBoardModule {
             roomData.cd += (propRow.milo * 1000);
         }
         if (roomData.times <= 0) {
-            // 全部点击完了
+
             if (propRow.wsb) {
-                // 点击完消�?
+
                 this.roomArr[row][col] = {};
             } else if (propRow.doge > 0) {
-                // 点击完变成另外一个物�?
+
                 let roomData2 = this.initRoomData(propRow.doge);
                 this.roomArr[row][col] = roomData2;
             } else {
-                // 要开始显示cd了，记录下分母大小，用于显示冷却进度�?
+
                 roomData.cdSum = roomData.cd - this.getCurrentTimestamp();
             }
         }
@@ -1342,57 +1342,57 @@ class MergeBoardModule {
 
         let propId = 0;
         if (roomData.clickPropId && roomData.clickPropId.length > 0) {
-            // 指定配表
+
             propId = roomData.clickPropId.shift();
             if (roomData.clickPropId.length <= 0) {
                 delete roomData.clickPropId;
             }
         } else {
-            // 按照权重生成物品到新房间
+
             propId = this.getValByDesignWeight(propRow.atom, propRow.matic);
         }
 
         let newRoomData = this.initRoomData(propId);
         this.setRoomData(emptyRow, emptyCol, newRoomData);
-        //  this.setRoomData(row, col, this.roomArr[row][col]);
+
 
         this.addManagerVal(Const.ManagerTypes.roomClickAdd);
-        let newPropRow = tables.ins().getTableValueByID(Const.Tables.prop, propId);
-        UtilPub.log("生成新物�?id:%d,name:%s".format(propId, newPropRow.name));
+        let newPropRow = TableDataService.ins().getTableValueByID(Const.Tables.prop, propId);
+        UtilPub.log("生成新物�?id:%d,name:%s".format(propId, newPropRow.name));
 
     }
 
-    // 点击直接拿奖励的房间
+
     onClickRoomAward(row: number, col: number, roomPos: Vec3) {
         let roomData = this.roomArr[row][col];
-        let propRow = tables.ins().getTableValueByID(Const.Tables.prop, roomData.id);
-        // 获得道具
+        let propRow = TableDataService.ins().getTableValueByID(Const.Tables.prop, roomData.id);
+
         this.addPropNum(propRow.clickAwardId, propRow.clickAwardNum, roomPos);
 
         this.setRoomData(row, col, {});
     }
 
-    // 点击解锁
+
     onClickUnlockRoom(row: number, col: number) {
         let unlocking = false;
-        UtilPub.for2Arr(mergeBoardModel.roomArr, (pData: any, pRow: number, pCol: number) => {
-            if (!pData || !pData.id || mergeBoardModel.isRoomBubble(pRow, pCol)) {
+        UtilPub.for2Arr(mergeBoardStateStore.roomArr, (pData: any, pRow: number, pCol: number) => {
+            if (!pData || !pData.id || mergeBoardStateStore.isRoomBubble(pRow, pCol)) {
                 return;
             }
-            let propRow2 = tables.ins().getTableValueByID(Const.Tables.prop, pData.id);
+            let propRow2 = TableDataService.ins().getTableValueByID(Const.Tables.prop, pData.id);
             if (propRow2.mdt == 1 && pData.unlock && pData.cdSum > 0) {
                 unlocking = true;
                 return true;
             }
         });
         if (unlocking) {
-            // 同时只能有一�?
-            mergeBoardModel.showToast(localText.unlocking);
+
+            mergeBoardStateStore.showToast(localText.unlocking);
             return;
         }
 
         let roomData = this.roomArr[row][col];
-        let propRow = tables.ins().getTableValueByID(Const.Tables.prop, roomData.id);
+        let propRow = TableDataService.ins().getTableValueByID(Const.Tables.prop, roomData.id);
         roomData.unlock = 1;
         roomData.cd = this.getCurrentTimestamp() + propRow.p1 * 1000;
         roomData.cdSum = propRow.p1 * 1000;
@@ -1406,15 +1406,15 @@ class MergeBoardModule {
     onClickEspRoom(row: number, col: number) {
         let ret: any = {};
         let roomData = this.roomArr[row][col];
-        let propRow = tables.ins().getTableValueByID(Const.Tables.prop, roomData.id);
+        let propRow = TableDataService.ins().getTableValueByID(Const.Tables.prop, roomData.id);
         switch (propRow.mdt) {
             case 2:
-                // 无限能量
+
                 GameStorage.setInt(Const.DataKeys.boardEnergyReadyAt, this.getCurrentTimestamp() + propRow.p1 * 1000);
                 this.setRoomData(row, col, {});
                 break;
             case 5:
-                // 减少cd
+
                 let timestamp = this.getCurrentTimestamp();
                 ret.arr = [];
                 UtilPub.for2Arr(this.roomArr, (rData: any, r: number, c: number) => {
@@ -1429,7 +1429,7 @@ class MergeBoardModule {
                     }
                     let subCd = propRow.p1 * 60 * 60 * 1000;
                     if (rData.cd) {
-                        // 点击发射
+
                         rData.cd -= subCd;
                         if (rData.cd <= timestamp) {
                             rData.cd = timestamp;
@@ -1437,7 +1437,7 @@ class MergeBoardModule {
                             delete rData.cd;
                         }
                         if (!rData.cdSum) {
-                            // 还未显示cd，手动加库存
+
                             let num = subCd / (propRow.milo * 1000);
                             num = Math.floor(num);
                             if (num > 0) {
@@ -1451,9 +1451,9 @@ class MergeBoardModule {
                     }
 
                     if (rData.cdAuto) {
-                        // 自动吐东�?
+
                         rData.cdAuto -= subCd;
-                        // 统一交给update里面去执�?
+
                         this.update();
                     }
 
@@ -1466,11 +1466,11 @@ class MergeBoardModule {
                 return ret;
                 break;
             case 11:
-                // 加速装�?
+
                 if (!roomData.cd) {
                     let duration = propRow.p1 * 60 * 60 * 1000;
-                    // test
-                    // duration = 10 * 1000;
+
+
                     let timestamp = this.getCurrentTimestamp();
                     roomData.startTime = timestamp;
                     roomData.cd = timestamp + duration;
@@ -1484,7 +1484,7 @@ class MergeBoardModule {
         }
     }
 
-    // 获取无限能量剩余时间，单位：毫秒
+
     getBoardEnergyCooldown() {
         let time = GameStorage.getInt(Const.DataKeys.boardEnergyReadyAt, 0);
         let dt = time - this.getCurrentTimestamp();
@@ -1494,15 +1494,15 @@ class MergeBoardModule {
         return dt;
     }
 
-    // 出售房间物品
+
     sellRoomData(row: number, col: number, startPos: Vec3) {
         let roomData = this.roomArr[row][col];
-        let propRow = tables.ins().getTableValueByID(Const.Tables.prop, roomData.id);
+        let propRow = TableDataService.ins().getTableValueByID(Const.Tables.prop, roomData.id);
         let coin = propRow.levelGold;
         if (!coin) {
             return;
         }
-        mergeBoardModel.addPropNum(propIds.coin, coin, startPos);
+        mergeBoardStateStore.addPropNum(propIds.coin, coin, startPos);
 
         this.setRoomData(row, col, {});
 
@@ -1510,42 +1510,42 @@ class MergeBoardModule {
 
         return { roomData: roomData, coin: coin, row: row, col: col };
     }
-    // 撤销出售操作
+
     sellBack(sellData: any) {
         let roomData = this.roomArr[sellData.row][sellData.col];
 
         this.subPropNum(propIds.coin, sellData.coin);
         if (roomData.id) {
-            // 再尝试找其他空位�?
+
             let emptyPos = this.getEmptyRoomPos();
             if (emptyPos) {
                 this.setRoomData(emptyPos.row, emptyPos.col, sellData.roomData);
             } else {
-                // 棋盘上没空房间了，放入顶部的卡片列表
+
                 this.addPropNum(sellData.id);
             }
             return emptyPos;
         }
 
-        // 优先放到原先位置
+
         this.setRoomData(sellData.row, sellData.col, sellData.roomData);
 
         return { row: sellData.row, col: sellData.col };
 
     }
 
-    /**
-     * 跳过cd时间
-     * @param row 
-     * @param col 
-     * @param dt 跳过时长，单位：毫秒 
-     * @param cdType cd类型 1：点击cd  2：自动吐物品cd
-     */
+
+
+
+
+
+
+
     roomDataCdOver(row: number, col: number, dt: number, cdType: number) {
         let roomData = this.roomArr[row][col];
         let num = this.getOverCdCostDiamond(dt);
         if (this.getPropNumById(propIds.diamond) < num) {
-            // 钻石数量不足
+
             this.showToast(localText.lackDiamond);
             return;
         }
@@ -1560,15 +1560,15 @@ class MergeBoardModule {
         return true;
     }
 
-    // 主动戳破气泡，获得气泡里的东�?
+
     roomDataBubbleGet(row: number, col: number) {
         let roomData = this.roomArr[row][col];
         if (!roomData.cdBubble) {
             return;
         }
-        let propRow = tables.ins().getTableValueByID(Const.Tables.prop, roomData.id);
+        let propRow = TableDataService.ins().getTableValueByID(Const.Tables.prop, roomData.id);
         if (this.getPropNumById(propIds.diamond) < propRow.bubble) {
-            // 钻石不足
+
             return;
         }
         this.subPropNum(propIds.diamond, propRow.bubble);
@@ -1577,7 +1577,7 @@ class MergeBoardModule {
 
         return true;
     }
-    // 跳过气泡等待时间
+
     rommDataCdBubbleOver(row: number, col: number) {
         let roomData = this.roomArr[row][col];
         roomData.cdBubble = this.getCurrentTimestamp();
@@ -1609,15 +1609,15 @@ class MergeBoardModule {
     consumeProp(propId: number, num: number) {
         let bagInfo = this.getRoomDataBagInfo();
         let hasBagProp = false;
-        // 提交物品
+
         let hasInfo = this.getRoomDataHasInfoById(propId);
         let info = hasInfo.arr[0];
         if (info.isBag) {
-            // 扣除背包里的物品
+
             bagInfo.roomData.roomArr[info.index] = {};
             hasBagProp = true;
         } else {
-            // 扣除棋盘上的物品
+
             this.setRoomData(info.row, info.col, {});
         }
         if (hasBagProp) {
@@ -1627,22 +1627,22 @@ class MergeBoardModule {
     }
 
     onClickTaskDone(task: any, startPos?: Vec3) {
-        let index = mergeBoardModel.taskArr.indexOf(task);
+        let index = mergeBoardStateStore.taskArr.indexOf(task);
         let bagInfo = this.getRoomDataBagInfo();
         let hasBagProp = false;
         let subPropArr: any = [];
-        // 提交物品
+
         for (let i in task.propArr) {
             let prop = task.propArr[i];
             let hasInfo = this.getRoomDataHasInfoById(prop.id);
             for (let j = 0; j < prop.num; j++) {
                 let info = hasInfo.arr[j];
                 if (info.isBag) {
-                    // 扣除背包里的物品
+
                     bagInfo.roomData.roomArr[info.index] = {};
                     hasBagProp = true;
                 } else {
-                    // 扣除棋盘上的物品
+
                     this.setRoomData(info.row, info.col, {});
                 }
                 info.id = prop.id;
@@ -1653,47 +1653,47 @@ class MergeBoardModule {
             this.sortBagRoomArr(bagInfo.row, bagInfo.col);
         }
 
-        // 获得奖励
+
         this.addPropNum(propIds.star, task.starNum, startPos);
 
         let line = task.line
         if (line > 0)
             this.submitLineTask(task.taskId, line)
-        // 删除任务
-        mergeBoardModel.taskArr.splice(index, 1);
 
-        // 生成新任�?
+        mergeBoardStateStore.taskArr.splice(index, 1);
+
+
         if (aiRobot.isRobot()) {
-            mergeBoardModel.taskArr.push(aiRobot.createTask());
+            mergeBoardStateStore.taskArr.push(aiRobot.createTask());
         } else {
             let nextHandTask = null;
             if (task.hand) {
                 nextHandTask = this.createHandTask(task.id + 1);
             }
             if (nextHandTask) {
-                // 新手任务
-                mergeBoardModel.taskArr.push(nextHandTask);
+
+                mergeBoardStateStore.taskArr.push(nextHandTask);
             } else {
                 let num = 0;
-                for (let i = 0; i < tables.ins().config.taskProb.length; i++) {
-                    let prob = tables.ins().config.taskProb[i];
+                for (let i = 0; i < TableDataService.ins().config.taskProb.length; i++) {
+                    let prob = TableDataService.ins().config.taskProb[i];
                     if (Math.random() < prob) {
                         num++;
                     }
                 }
 
-                let maxNum = tables.ins().config.taskMax - mergeBoardModel.taskArr.length;
+                let maxNum = TableDataService.ins().config.taskMax - mergeBoardStateStore.taskArr.length;
                 if (num > maxNum) {
-                    // 保证最多有tables.ins().config.taskMax个任�?
+
                     num = maxNum;
                 }
-                if (mergeBoardModel.taskArr.length == 0 && num <= 0) {
-                    // 保证至少有一个任�?
+                if (mergeBoardStateStore.taskArr.length == 0 && num <= 0) {
+
                     num = 1;
                 }
                 if (num > 0) {
                     let retArr = this.createTask();
-                    mergeBoardModel.taskArr = retArr//mergeBoardModel.taskArr.concat(retArr);
+                    mergeBoardStateStore.taskArr = retArr
                 }
             }
             GamePlatform.track("玩家完成任务");
@@ -1705,25 +1705,25 @@ class MergeBoardModule {
         return subPropArr;
     }
 
-    // 刷新任务
+
     refreshTask(task: any) {
-        let index = mergeBoardModel.taskArr.indexOf(task);
+        let index = mergeBoardStateStore.taskArr.indexOf(task);
         let newTask = this.createTask()[0];
         if (newTask) {
             newTask.id = task.id;
             newTask.hand = task.hand;
-            mergeBoardModel.taskArr[index] = newTask;
+            mergeBoardStateStore.taskArr[index] = newTask;
             Notifications.emit(GD.event.refreshTask);
         }
 
     }
 
-    /**
-     * 根据策划配表数据格式，按照权重取出一个�?
-     * @param valStr �?�?...
-     * @param weightStr 权重,权重,...
-     * @returns 
-     */
+
+
+
+
+
+
     getValByDesignWeight(valStr: string, weightStr: string) {
         let valArr = ("" + valStr).split(",");
         let weightArr = ("" + weightStr).split(",");
@@ -1739,7 +1739,7 @@ class MergeBoardModule {
         return ret.val;
     }
 
-    // 从上到下，寻找首个空房间位置
+
     getEmptyRoomPos() {
         let emptyPos: any = null;
         UtilPub.for2Arr(this.roomArr, (data: any, r: number, c: number) => {
@@ -1754,7 +1754,7 @@ class MergeBoardModule {
         return emptyPos;
     }
 
-    // 房间是否被纸箱包�?
+
     isRoomCarton(row: number, col: number) {
         let roomData = this.roomArr[row][col];
         if (roomData.st == roomStatus.carton) {
@@ -1762,7 +1762,7 @@ class MergeBoardModule {
         }
         return false;
     }
-    // 房间是否被蜘蛛网包住
+
     isRoomSpider(row: number, col: number) {
         let roomData = this.roomArr[row][col];
         if (roomData.st == roomStatus.spider) {
@@ -1770,7 +1770,7 @@ class MergeBoardModule {
         }
         return false;
     }
-    // 房间是否被汽包罩�?
+
     isRoomBubble(row: number, col: number) {
         let roomData = this.roomArr[row][col];
         if (!roomData.cdBubble) {
@@ -1781,7 +1781,7 @@ class MergeBoardModule {
         }
         return false;
     }
-    // 房间是否在走cd
+
     isRoomCd(row: number, col: number) {
         let roomData = this.roomArr[row][col];
         if (roomData.cdSum > 0) {
@@ -1790,18 +1790,18 @@ class MergeBoardModule {
         return false;
     }
 
-    // 跳过cd需要花费的钻石数量
+
     getOverCdCostDiamond(dt: number) {
-        let num = Math.ceil(dt / 1000 / 60 / tables.ins().config.minuteCost);
+        let num = Math.ceil(dt / 1000 / 60 / TableDataService.ins().config.minuteCost);
 
         return num;
     }
 
-    /**
-     * 获取棋盘上的物品情况
-     * @param id 道具id
-     * @returns 
-     */
+
+
+
+
+
     getRoomDataHasInfoById(id: number) {
         let num = 0;
         let arr: any = [];
@@ -1819,7 +1819,7 @@ class MergeBoardModule {
             }
         });
         if (roomDataBag) {
-            // 背包里的物品也要�?
+
             for (let i = 0; i < roomDataBag.roomArr.length; i++) {
                 let bagRoom = roomDataBag.roomArr[i];
                 if (!bagRoom || !bagRoom.id) {
@@ -1834,19 +1834,19 @@ class MergeBoardModule {
         return { num: num, arr: arr };
     }
 
-    /**
-     * 店长值班日里的任务统�?
-     * mergeBoardModel.addManagerVal(Const.ManagerTypes.roomSpeedUp);
-     * @param type 任务类型
-     * @param val 增加值，默认�?
-     */
+
+
+
+
+
+
     addManagerVal(type: number, val: number = 1) {
         if (this.isManagerAllGet() || !this.managerArr) {
             return;
         }
 
         UtilPub.forArr(this.managerArr, (manager: any, index: number) => {
-            let row = tables.ins().getTableValueByID(Const.Tables.manager, manager.id);
+            let row = TableDataService.ins().getTableValueByID(Const.Tables.manager, manager.id);
             if (row.taskType != type) {
                 return;
             }
@@ -1854,7 +1854,7 @@ class MergeBoardModule {
                 return;
             }
             if (type == Const.ManagerTypes.roleLv) {
-                manager.val = userData.roleLv;
+                manager.val = playerDataStore.roleLv;
             } else {
                 manager.val += val;
             }
@@ -1863,10 +1863,10 @@ class MergeBoardModule {
         });
     }
     getManagerVal(manager: any) {
-        let row = tables.ins().getTableValueByID(Const.Tables.manager, manager.id);
+        let row = TableDataService.ins().getTableValueByID(Const.Tables.manager, manager.id);
         let val = manager.val;
         if (row.taskType == Const.ManagerTypes.roleLv) {
-            val = userData.roleLv;
+            val = playerDataStore.roleLv;
         }
         if (val > row.p1) {
             val = row.p1;
@@ -1874,10 +1874,10 @@ class MergeBoardModule {
 
         return val;
     }
-    /**
-     * 店长值班�?领取完成奖励
-     * @param index 任务索引
-     */
+
+
+
+
     managerGetAward(index: number, startPos: Vec3) {
         let manager = this.managerArr[index];
         if (manager.get) {
@@ -1885,7 +1885,7 @@ class MergeBoardModule {
         }
         manager.get = true;
         this.sendManagerToServer(index);
-        let row = tables.ins().getTableValueByID(Const.Tables.manager, manager.id);
+        let row = TableDataService.ins().getTableValueByID(Const.Tables.manager, manager.id);
         this.addPropNum(row.price[0], row.price[1], startPos);
 
         GamePlatform.track("finish manager daily task " + manager.id);
@@ -1894,19 +1894,19 @@ class MergeBoardModule {
         for (let i = 0; i < this.managerArr.length; i++) {
             let man = this.managerArr[i];
             if (!man.get) {
-                // 有未完成的任�?
+
                 allGet = false;
                 break;
             }
         }
         if (allGet) {
-            // 开启新任务
+
             this.createNextManager();
         }
 
-        // 全部任务都已完成
+
         allGet = true;
-        let tb = tables.ins().getTable(Const.Tables.manager);
+        let tb = TableDataService.ins().getTable(Const.Tables.manager);
         for (let i = 0; i < tb.length; i++) {
             let pManager = this.managerArr[i];
             if (!pManager || !pManager.get) {
@@ -1924,11 +1924,11 @@ class MergeBoardModule {
         return GameStorage.getInt(Const.DataKeys.boardMilestoneAllClaimed);
     }
 
-    /**
-     * 提供的行列索引，是否在棋盘内
-     * @param row 行索�?
-     * @param col 列索�?
-     */
+
+
+
+
+
     isCellInsideMergeBoard(row: number, col: number) {
         if (row >= 0 && row <= this.rowNum - 1 && col >= 0 && col <= this.colNum - 1) {
             return true;
@@ -1936,7 +1936,7 @@ class MergeBoardModule {
         return false;
     }
 
-    // 点击卡片列表
+
     onClickCardLayer() {
         if (this.cardArr.length <= 0) {
             return;
@@ -1955,43 +1955,43 @@ class MergeBoardModule {
     }
 
 
-    /**
-     * 道具是否是能放到棋盘里的，并且可以产出东�?
-     * @param id 
-     * @returns 
-     */
+
+
+
+
+
     propCanCreateNewProp(id: number) {
         if (this.propIsPutInCardList(id)) {
-            let propRow = tables.ins().getTableValueByID(Const.Tables.prop, id);
+            let propRow = TableDataService.ins().getTableValueByID(Const.Tables.prop, id);
             if (propRow.anc || propRow.fair) {
                 return true;
             }
         }
         return false;
     }
-    /**
-     * 判断道具是否是玩棋盘的卡片列表加�?
-     * @param id 
-     * @returns 
-     */
+
+
+
+
+
     propIsPutInCardList(id: number) {
-        let propRow = tables.ins().getTableValueByID(Const.Tables.prop, id);
+        let propRow = TableDataService.ins().getTableValueByID(Const.Tables.prop, id);
         if ((propRow.type >= 100 && propRow.type < 200) || propRow.type == 27) {
-            // 直接获取
+
             return false;
         }
         return true;
     }
-    /**
-     * 获得道具
-     * @param propId 道具id 
-     * @param num 道具数量
-     */
+
+
+
+
+
     addPropNum(propId: number, propNum: number = 1, startPos?: Vec3, endPos?: Vec3, notFlay = false) {
-        let propRow = tables.ins().getTableValueByID(Const.Tables.prop, propId);
+        let propRow = TableDataService.ins().getTableValueByID(Const.Tables.prop, propId);
         UtilPub.log("获得道具 %s id:%d,num:%d".format(propRow.name, propId, propNum));
         if (this.propIsPutInCardList(propId)) {
-            // 加到卡片列表里面
+
             for (let i = 0; i < propNum; i++) {
                 this.cardArr.push(propId);
             }
@@ -2005,9 +2005,9 @@ class MergeBoardModule {
                 startPos = this.getScreenMidPos();
             }
             if (mergeBoardLayer) {
-                userData.showResFly(propId, propNum, startPos, mergeBoardLayer.getCardLayerPos());
+                playerDataStore.showResFly(propId, propNum, startPos, mergeBoardLayer.getCardLayerPos());
             } else {
-                userData.showResFly(propId, propNum, startPos, this.btnMergeBoardPos);
+                playerDataStore.showResFly(propId, propNum, startPos, this.btnMergeBoardPos);
             }
         } else {
             if (propId == propIds.star) {
@@ -2025,56 +2025,55 @@ class MergeBoardModule {
                 if (!endPos) {
                     endPos = Vec3.ZERO;
                 }
-                userData.getProp([propId, propNum], startPos, endPos);
+                playerDataStore.getProp([propId, propNum], startPos, endPos);
             } else if (endPos) {
                 if (!startPos) {
                     startPos = this.getScreenMidPos();
                 }
-                userData.getProp([propId, propNum], startPos, endPos);
+                playerDataStore.getProp([propId, propNum], startPos, endPos);
             } else {
-                userData.getProp([propId, propNum], null, null);
+                playerDataStore.getProp([propId, propNum], null, null);
             }
-            //    Notifications.emit(GD.event.updateMoney);
         }
     }
-    /**
-     * 扣减道具
-     * @param propId 道具id 
-     * @param propNum 道具数量
-     */
+
+
+
+
+
     subPropNum(propId: number, propNum: number = 1) {
-        let propRow = tables.ins().getTableValueByID(Const.Tables.prop, propId);
+        let propRow = TableDataService.ins().getTableValueByID(Const.Tables.prop, propId);
         UtilPub.log("扣减道具 %s id:%d,num:%d".format(propRow.name, propId, propNum));
 
         if (propId == propIds.coin) {
             this.addManagerVal(Const.ManagerTypes.coinCost, propNum);
         } else if (propId == propIds.power) {
             this.addManagerVal(Const.ManagerTypes.powerCost, propNum);
-            playerModel.addSeasonScore(propNum);
+            seasonProgressStore.addSeasonScore(propNum);
         }
-        userData.checkAndUseProp([propId, propNum]);
+        playerDataStore.checkAndUseProp([propId, propNum]);
         Notifications.emit(GD.event.updateMoney);
     }
-    // 返回对应id的道具数�?
+
     getPropNumById(propId: number) {
-        return userData.curPropNum(propId);
+        return playerDataStore.curPropNum(propId);
     }
 
-    /**
-     * 删除当前合成模块的所有数�?
-     */
+
+
+
     deleteAllRoomData() {
-        // 棋盘数据
+
         let keyArr: string[] = [];
         UtilPub.for2Arr(this.roomArr, (roomData: any, row: number, col: number) => {
             keyArr.push(this.getRoomDataKey(row, col));
         });
         GameStorage.removeMulti(keyArr);
 
-        // 任务数据
+
         GameStorage.removeItem(this.taskDataKey);
 
-        // 店长值班�?
+
         keyArr = [];
         UtilPub.forArr(this.managerArr, (manager: any, index: number) => {
             keyArr.push(this.getManagerDataKey(index));
@@ -2082,36 +2081,36 @@ class MergeBoardModule {
         GameStorage.removeMulti(keyArr);
         GameStorage.removeItem(Const.DataKeys.boardMilestoneAllClaimed);
 
-        // 卡片列表
+
         GameStorage.removeItem(Const.DataKeys.boardCardArr);
 
-        // 新手引导
+
         GameStorage.removeItem(Const.DataKeys.handIndex);
     }
 
-    // 同步任务数据给服务端
+
     sendTaskArrToServer() {
         GameStorage.setObject(this.taskDataKey, this.taskArr);
     }
 
-    // 同步店长订单表数据给服务�?
+
     sendManagerToServer(index: number) {
         let manager = this.managerArr[index];
         let key = this.getManagerDataKey(index);
         GameStorage.setObject(key, manager);
     }
 
-    // 同步卡片列表数据给服务端
+
     sendCardArrToServer() {
         GameStorage.setObject(Const.DataKeys.boardCardArr, this.cardArr);
     }
 
-    /**
-     * 同步房间数据给服务端
-     * @param row 房间行索�?
-     * @param col 房间列索�?
-     * @param roomData 房间数据对象
-     */
+
+
+
+
+
+
     sendRoomDataToServer(row: number, col: number, roomData?: any) {
         if (!roomData) {
             roomData = this.roomArr[row][col];
@@ -2119,31 +2118,31 @@ class MergeBoardModule {
         GameStorage.setObject(this.getRoomDataKey(row, col), roomData);
     }
 
-    // 获取当前时间戳，单位：毫�?
+
     getCurrentTimestamp() {
-        // let timestamp = new Date().getTime();
+
         let timestamp = TimeCtrJSF.GetInstance().ServerTime;
 
         return timestamp;
     }
 
     getTaskArrSort() {
-        //   return mergeBoardModel.taskArr
+
 
         let arr = [];
-        // 加上索引信息
-        for (let i = 0; i < mergeBoardModel.taskArr.length; i++) {
-            arr.push(mergeBoardModel.taskArr[i]);
+
+        for (let i = 0; i < mergeBoardStateStore.taskArr.length; i++) {
+            arr.push(mergeBoardStateStore.taskArr[i]);
         }
 
 
-        // 根据完成进度排序
+
         UtilPub.sortArr(arr, (t1: any, t2: any) => {
             let t1Percent = 0;
             let onePercent = 1 / t1.propArr.length;
             for (let i in t1.propArr) {
                 let prop = t1.propArr[i];
-                let hasInfo = mergeBoardModel.getRoomDataHasInfoById(prop.id);
+                let hasInfo = mergeBoardStateStore.getRoomDataHasInfoById(prop.id);
                 let hasPercent = hasInfo.num / prop.num;
                 if (hasPercent > 1) {
                     hasPercent = 1;
@@ -2154,7 +2153,7 @@ class MergeBoardModule {
             onePercent = 1 / t2.propArr.length;
             for (let i in t2.propArr) {
                 let prop = t2.propArr[i];
-                let hasInfo = mergeBoardModel.getRoomDataHasInfoById(prop.id);
+                let hasInfo = mergeBoardStateStore.getRoomDataHasInfoById(prop.id);
                 let hasPercent = hasInfo.num / prop.num;
                 if (hasPercent > 1) {
                     hasPercent = 1;
@@ -2182,7 +2181,7 @@ class MergeBoardModule {
         let handIndex = GameStorage.getInt(Const.DataKeys.handIndex, 1);
         if (aiRobot.isRobot()) {
             handIndex = handData.length;
-            mergeBoardModel.setHandIndex(handIndex);
+            mergeBoardStateStore.setHandIndex(handIndex);
         }
         return handIndex;
     }
@@ -2241,7 +2240,7 @@ class MergeBoardModule {
         return false;
     }
 
-    // 打开激励视�?
+
     openAd(info: string, cb?: Function) {
         if (Const.isDebug) {
             if (cb) {
@@ -2269,11 +2268,11 @@ class MergeBoardModule {
     }
 
     openPropInfoLayer(propId: number) {
-        let propRow = tables.ins().getTableValueByID(Const.Tables.prop, propId);
+        let propRow = TableDataService.ins().getTableValueByID(Const.Tables.prop, propId);
         if (propRow.tan) {
-            uiManager.instance.showDialog(Const.Dialogs.PropItemInfo, { propdata: propRow });
+            UiLayerService.instance.showDialog(Const.Dialogs.PropItemInfo, { propdata: propRow });
         } else {
-            uiManager.instance.showDialog(Const.Dialogs.ItemCodexLayer, propId);
+            UiLayerService.instance.showDialog(Const.Dialogs.ItemCodexLayer, propId);
         }
     }
 
@@ -2293,14 +2292,14 @@ class MergeBoardModule {
     }
 
     canAddTimes(id: number) {
-        let propRow = tables.ins().getTableValueByID(Const.Tables.prop, id);
+        let propRow = TableDataService.ins().getTableValueByID(Const.Tables.prop, id);
         if (propRow && propRow.chongneng && propRow.anc) {
             return true;
         }
         return false;
     }
 
-    // 充能�?
+
     roomAddTimes(row: number, col: number, targetRow: number, targetCol: number, val: number) {
         this.setRoomData(row, col, {});
         let roomData = this.roomArr[targetRow][targetCol];
@@ -2311,8 +2310,8 @@ class MergeBoardModule {
     }
 
     canSplitProp(id: number, targetId: number) {
-        let propRow = tables.ins().getTableValueByID(Const.Tables.prop, id);
-        let targetPropRow = tables.ins().getTableValueByID(Const.Tables.prop, targetId);
+        let propRow = TableDataService.ins().getTableValueByID(Const.Tables.prop, id);
+        let targetPropRow = TableDataService.ins().getTableValueByID(Const.Tables.prop, targetId);
         if (targetPropRow && targetPropRow.jiandao && targetPropRow.luna > 1 && targetPropRow.luna <= propRow.p1) {
             return true;
         }
@@ -2320,7 +2319,7 @@ class MergeBoardModule {
         return false;
     }
 
-    // 拆分�?
+
     roomPropSplit(row: number, col: number, targetRow: number, targetCol: number) {
         this.setRoomData(row, col, {});
         let roomData = this.roomArr[targetRow][targetCol];
@@ -2335,8 +2334,8 @@ class MergeBoardModule {
     }
 
     canLvUpProp(id: number, targetId: number) {
-        let propRow = tables.ins().getTableValueByID(Const.Tables.prop, id);
-        let targetPropRow = tables.ins().getTableValueByID(Const.Tables.prop, targetId);
+        let propRow = TableDataService.ins().getTableValueByID(Const.Tables.prop, id);
+        let targetPropRow = TableDataService.ins().getTableValueByID(Const.Tables.prop, targetId);
         if (!targetPropRow || this.propIsMaxLv(targetId)) {
             return false;
         }
@@ -2374,8 +2373,8 @@ class MergeBoardModule {
     }
 
     propIsMaxLv(id: number) {
-        let propRow = tables.ins().getTableValueByID(Const.Tables.prop, id);
-        let nextPropRow = tables.ins().getTableValueByID(Const.Tables.prop, id + 1);
+        let propRow = TableDataService.ins().getTableValueByID(Const.Tables.prop, id);
+        let nextPropRow = TableDataService.ins().getTableValueByID(Const.Tables.prop, id + 1);
         let isMaxLv = false;
         if (!nextPropRow || nextPropRow.type != propRow.type || nextPropRow.typeson != propRow.typeson) {
             isMaxLv = true;
@@ -2391,7 +2390,7 @@ class MergeBoardModule {
     }
 
     propCanSpeedUp(id: number) {
-        let row = tables.ins().getTableValueByID(Const.Tables.prop, id);
+        let row = TableDataService.ins().getTableValueByID(Const.Tables.prop, id);
         if ((row.anc && row.milo) || row.faircd) {
             return true;
         }
@@ -2406,7 +2405,7 @@ class MergeBoardModule {
 
 }
 
-const mergeBoardModel = MergeBoardModule.getInstane();
+const mergeBoardStateStore = MergeBoardStateStore.getInstane();
 
-export { mergeBoardModel };
+export { mergeBoardStateStore };
 

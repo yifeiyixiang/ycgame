@@ -3,11 +3,11 @@ import BaseView from '../../../easyFramework/mgr/BaseView';
 const { ccclass, property } = _decorator;
 
 @ccclass('gold_no_enough')
-export class gold_no_enough extends BaseView {
+export class GoldNotEnoughDialogController extends BaseView {
     get root(){return find("root", this.node)!}
-    get closeBtn(){return find("root/btnClose", this.node)!} 
-    
-    cb:Function=null! //回调
+    get closeBtn(){return find("root/btnClose", this.node)!}
+
+    cb:Function=null!
 
     start() {
 
@@ -18,11 +18,11 @@ export class gold_no_enough extends BaseView {
     }
 
     show(args:any){
-        this.cb = args.cb 
+        this.cb = args.cb
     }
 
     onEnable(){
-       
+
     }
 
 }

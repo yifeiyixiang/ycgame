@@ -1,9 +1,9 @@
 import { _decorator, Component, Node, tween, instantiate,Label, Sprite } from 'cc';
 import BaseView from '../../../easyFramework/mgr/BaseView';
-import tables from '../../../easyFramework/other/tables';
+import TableDataService from '../../../easyFramework/other/tables';
 import { Const } from '../../../config/Const';
-import { ShopCfg } from '../../../../typeScript/gameData';
-import { HttpClient } from '../../../../typeScript/net/HttpClient';
+import { ShopConfigRecord } from '../../../../typeScript/gameData';
+import { GameHttpClient } from '../../../../typeScript/net/HttpClient';
 const { ccclass, property } = _decorator;
 
 @ccclass('TurntableView')
@@ -23,7 +23,7 @@ export class TurntableView extends BaseView {
 
         this.bindButton(this.btnClose, this.close);
 
-        let cfgs = tables.ins().getTable(Const.Tables.new_turn);
+        let cfgs = TableDataService.ins().getTable(Const.Tables.new_turn);
 
         for (let index = 0; index < cfgs.length; index++) {
             const cfg = cfgs[index];
@@ -32,7 +32,7 @@ export class TurntableView extends BaseView {
                 ele = instantiate(this.turnBg.children[0])
                 ele.parent = this.turnBg;
             }
-            let propData:ShopCfg = tables.ins().getTableValueByID(Const.Tables.new_prop, cfg.circle_reward_id);
+            let propData:ShopConfigRecord = TableDataService.ins().getTableValueByID(Const.Tables.new_prop, cfg.circle_reward_id);
             if (cfg.circle_rewards_num > 1){
                 ele.getChildByName("nameLab").getComponent(Label).string = cfg.circle_rewards_num + "";
             }else{
@@ -49,9 +49,9 @@ export class TurntableView extends BaseView {
         this.turnBg.angle = 0;
     }
 
-    //开始转盘
+
     startTurn() {
-        HttpClient.getInstance().sendWheel((res:any)=>{
+        GameHttpClient.getInstance().sendWheel((res:any)=>{
 
             let resData = res.res.data
 
@@ -62,23 +62,23 @@ export class TurntableView extends BaseView {
             this.turnBg.angle = 0;
 
             let ang = (360/8 * (resultInd-1))
-            // ang = ang + Math.random() * 45
+
 
             tween(this.turnBg)
-                .to(5, { angle: (360*5 + ang )}, { easing: 'sineInOut' }) // 将两个动作合并为一个，使用 sineInOut
+                .to(5, { angle: (360*5 + ang )}, { easing: 'sineInOut' })
                 .delay(0.5)
                 .call(() => {
                     this.btnStart.active = true;
                     this.btnClose.active = true;
 
-                    HttpClient.getInstance().showReward(resData);
+                    GameHttpClient.getInstance().showReward(resData);
                 })
                 .start();
         })
     }
 
     update(deltaTime: number) {
-        
+
     }
 }
 

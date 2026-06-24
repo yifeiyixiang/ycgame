@@ -2,19 +2,19 @@ import { find, Label, Node, Prefab, _decorator } from 'cc';
 import { Const } from '../../../config/Const';
 import GD from '../../../config/GD';
 import BaseView from '../../../easyFramework/mgr/BaseView';
-import { poolManager } from '../../../easyFramework/mgr/poolManager';
-import { uiManager } from '../../../easyFramework/mgr/uiManager';
+import { NodePoolService } from '../../../easyFramework/mgr/poolManager';
+import { UiLayerService } from '../../../easyFramework/mgr/uiManager';
 import { UtilPub } from '../../../easyFramework/utils/UtilPub';
-import { mergeBoardModel } from '../../comm/mergeBoardModel';
-import { userData } from '../../comm/UserData';
+import { mergeBoardStateStore } from '../../comm/mergeBoardModel';
+import { playerDataStore } from '../../comm/UserData';
 import { UtilScene } from '../../comm/UtilScene';
 import { handIndexs } from '../../data/handData';
-import { build_list_item } from './build_list_item';
+import { BuildListItemController } from './build_list_item';
 import { GamePlatform } from '../../platform/GamePlatform';
 const { ccclass, property } = _decorator;
 
 @ccclass('build_list')
-export class build_list extends BaseView {
+export class BuildListPanelController extends BaseView {
     get titleLabel() { return find("root/window/titleLabel", this.node)!.getComponent(Label)! }
     get topLabel() { return find("root/window/top/star/topLabel", this.node)!.getComponent(Label)! }
     get closeBtn() { return find("root/window/btnClose", this.node)! }
@@ -31,7 +31,7 @@ export class build_list extends BaseView {
     }
 
     chgGreenStar() {
-        this.starLabel.string = userData.greenStar + ""
+        this.starLabel.string = playerDataStore.greenStar + ""
     }
 
     show(args: any) {
@@ -42,26 +42,26 @@ export class build_list extends BaseView {
 
     reload() {
         this.chgGreenStar()
-        poolManager.instance.putNodeArr(this.items)
+        NodePoolService.instance.putNodeArr(this.items)
         let needShowRooms = UtilScene.getNeedShowStarRooms()
-        //生成对应的对象
-        UtilPub.getPrefab(Const.Prefabs.build_list_item, (p: Prefab) => {
+
+        UtilPub.getPrefab(Const.Prefabs.BuildListItemController, (p: Prefab) => {
             needShowRooms.forEach((row: any) => {
-                let item = poolManager.instance.getNode(p, this.buildListLayout)!
-                item.getComponent(build_list_item)!.init(row.id)
+                let item = NodePoolService.instance.getNode(p, this.buildListLayout)!
+                item.getComponent(BuildListItemController)!.init(row.id)
                 this.items.push(item)
             })
 
-            let handIndex = mergeBoardModel.getHandIndex();
+            let handIndex = mergeBoardStateStore.getHandIndex();
             if (handIndex == handIndexs.btnBuild) {
-                mergeBoardModel.addHandIndex();
+                mergeBoardStateStore.addHandIndex();
                 let obj: any = {};
-                obj.id = mergeBoardModel.getHandIndex();
+                obj.id = mergeBoardStateStore.getHandIndex();
                 let btnGo = find("root/mid/goBtn", this.buildListLayout.children[0]);
                 obj.node = btnGo;
                 obj.delayTime = 0.5;
-                uiManager.instance.showDialog(Const.Dialogs.HandLayer, obj);
-                mergeBoardModel.addHandIndex();
+                UiLayerService.instance.showDialog(Const.Dialogs.HandLayer, obj);
+                mergeBoardStateStore.addHandIndex();
             }
         })
     }

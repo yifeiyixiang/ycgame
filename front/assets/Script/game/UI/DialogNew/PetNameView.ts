@@ -1,16 +1,16 @@
 import { find, Label, Node, Sprite, SpriteFrame, tween, v3, _decorator, EditBox } from 'cc';
 import { Const } from '../../../config/Const';
 import { RoleSex } from '../../../config/global';
-import { audioManager } from '../../../easyFramework/mgr/audioManager';
+import { AudioPlaybackService } from '../../../easyFramework/mgr/audioManager';
 import BaseView from '../../../easyFramework/mgr/BaseView';
-import { resourceUtil } from '../../../easyFramework/mgr/resourceUtil';
-import { uiManager } from '../../../easyFramework/mgr/uiManager';
-import tables from '../../../easyFramework/other/tables';
+import { ResourceLoaderService } from '../../../easyFramework/mgr/resourceUtil';
+import { UiLayerService } from '../../../easyFramework/mgr/uiManager';
+import TableDataService from '../../../easyFramework/other/tables';
 import { aiRobot } from '../../comm/AIRobot';
-import { userData } from '../../comm/UserData';
-import { RechargeManager } from '../../../Util/RechargeManager';
-import { HttpClient } from '../../../../typeScript/net/HttpClient';
-import { petItemData } from '../../../../typeScript/gameData';
+import { playerDataStore } from '../../comm/UserData';
+import { RewardVideoManager } from '../../../Util/RechargeManager';
+import { GameHttpClient } from '../../../../typeScript/net/HttpClient';
+import { PetProfileRecord } from '../../../../typeScript/gameData';
 
 const { ccclass, property } = _decorator;
 
@@ -21,7 +21,7 @@ export class PetNameView extends BaseView {
 
     @property({ type: Label, tooltip: "改名费用" }) coinLab: Label = null!;
 
-    curPetData:petItemData = null!;
+    curPetData:PetProfileRecord = null!;
 
     start() {
 
@@ -31,8 +31,8 @@ export class PetNameView extends BaseView {
         this.bindButton(find("root/btnClose", this.node)!, this.close)
 
         this.bindButton(find("root/btnSave", this.node)!, ()=>{
-            //修改昵称
-             audioManager.instance.playSound(Const.Audio.btn)
+
+             AudioPlaybackService.instance.playSound(Const.Audio.btn)
 
             let str = this.nameEdit.getComponent(EditBox)!.string
             if (str == "") {
@@ -44,12 +44,12 @@ export class PetNameView extends BaseView {
                 return
             }
 
-            if (userData.coin < Const.PET_NAME_CHANGE_GOLD_COST){
+            if (playerDataStore.coin < Const.PET_NAME_CHANGE_GOLD_COST){
                 this.toast("金币不足")
                 return
             }
 
-            HttpClient.getInstance().sendPetAction(8, this.curPetData.id, 0, 0, str, ()=>{
+            GameHttpClient.getInstance().sendPetAction(8, this.curPetData.id, 0, 0, str, ()=>{
                 this.toast("修改成功")
                 this.close();
             })

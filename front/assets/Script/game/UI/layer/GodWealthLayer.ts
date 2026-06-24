@@ -5,16 +5,16 @@ import { GodWealthData, GodWealthReceiveUser } from '../../../config/global';
 import { localText } from '../../../config/localText';
 import BaseView from '../../../easyFramework/mgr/BaseView';
 import { GameStorage } from '../../../easyFramework/mgr/gameStorage';
-import { resourceUtil } from '../../../easyFramework/mgr/resourceUtil';
-import { uiManager } from '../../../easyFramework/mgr/uiManager';
+import { ResourceLoaderService } from '../../../easyFramework/mgr/resourceUtil';
+import { UiLayerService } from '../../../easyFramework/mgr/uiManager';
 import { GNetCmd } from '../../../easyFramework/network/conf';
 import ServerCtrJSF from '../../../easyFramework/network/ServerCtrJSF';
 import TimeCtrJSF from '../../../easyFramework/network/TimeCtrJSF';
-import tables from '../../../easyFramework/other/tables';
+import TableDataService from '../../../easyFramework/other/tables';
 import { UtilPub } from '../../../easyFramework/utils/UtilPub';
-import { RechargeManager } from '../../../Util/RechargeManager';
-import { mergeBoardModel } from '../../comm/mergeBoardModel';
-import { userData } from '../../comm/UserData';
+import { RewardVideoManager } from '../../../Util/RechargeManager';
+import { mergeBoardStateStore } from '../../comm/mergeBoardModel';
+import { playerDataStore } from '../../comm/UserData';
 import { GamePlatform } from '../../platform/GamePlatform';
 const { ccclass, property } = _decorator;
 
@@ -56,7 +56,7 @@ export class GodWealthLayer extends BaseView {
     _timeData: any = null
     get timeData() {
         if (this._timeData == null) {
-            this._timeData = tables.ins().getTableValueByKey(Const.Tables.privilege, "key", "10011")
+            this._timeData = TableDataService.ins().getTableValueByKey(Const.Tables.privilege, "key", "10011")
         }
         return this._timeData!
     }
@@ -94,7 +94,7 @@ export class GodWealthLayer extends BaseView {
         this.updateSecond();
 
         this.initBtns()
-        ServerCtrJSF.GetInstance().reqGetUserDataByKey(GameStorage.Key(Const.DataKeys.GodWealthData + "_" + userData.roleID))
+        ServerCtrJSF.GetInstance().reqGetUserDataByKey(GameStorage.Key(Const.DataKeys.GodWealthData + "_" + playerDataStore.roleID))
 
     }
 
@@ -106,7 +106,7 @@ export class GodWealthLayer extends BaseView {
             console.log("请求失败~!")
             return null;
         }
-        let godWealthData: GodWealthData = { shareUserId: userData.roleID, shareName: userData.roleName, propList: this._curRewardData, receiveUser: [], shareTime: Math.floor(TimeCtrJSF.GetInstance().ServerTime) }
+        let godWealthData: GodWealthData = { shareUserId: playerDataStore.roleID, shareName: playerDataStore.roleName, propList: this._curRewardData, receiveUser: [], shareTime: Math.floor(TimeCtrJSF.GetInstance().ServerTime) }
         if (value.key.indexOf(GameStorage.Key(Const.DataKeys.GodWealthData)) >= 0) {
             if (value.val != "") {
                 godWealthData = JSON.parse(value.val)
@@ -118,7 +118,7 @@ export class GodWealthLayer extends BaseView {
     }
 
     updateSelectLayer(godWealthData: GodWealthData) {
-        if (godWealthData.shareUserId != userData.roleID) {
+        if (godWealthData.shareUserId != playerDataStore.roleID) {
             return
         }
         let receiveData = godWealthData.receiveUser
@@ -133,7 +133,7 @@ export class GodWealthLayer extends BaseView {
                 otherChose.active = false
                 let receiveUser = receiveData[i]
                 if (receiveUser) {
-                    if (receiveUser.userID == userData.roleID + "") {
+                    if (receiveUser.userID == playerDataStore.roleID + "") {
                         myChose.active = true
                         receiveTime++
                         this._isReceived = true
@@ -141,8 +141,8 @@ export class GodWealthLayer extends BaseView {
                         otherChose.active = true
                         receiveTime++
                         if (receiveUser.avatar != "") {
-                            //动态加载图片的方法
-                            resourceUtil.setRemoteImage(receiveUser.avatar, find("head/icon", otherChose)!.getComponent(Sprite)!, () => { })
+
+                            ResourceLoaderService.setRemoteImage(receiveUser.avatar, find("head/icon", otherChose)!.getComponent(Sprite)!, () => { })
                         }
                     }
                 }
@@ -153,7 +153,7 @@ export class GodWealthLayer extends BaseView {
         for (let i = 0; i < chs.length; i++) {
             let awardItem = chs[i];
             let getNode = find("get", awardItem)!;
-            getNode.active = receiveTime >= (i + 1) * 2 && userData.getReceiveTime(this.timeData.dataKey + GodWealthLayer.Key_fubag + (i + 1), this.timeData.cdTime) <= 0;
+            getNode.active = receiveTime >= (i + 1) * 2 && playerDataStore.getReceiveTime(this.timeData.dataKey + GodWealthLayer.Key_fubag + (i + 1), this.timeData.cdTime) <= 0;
         }
 
         let progress = find("root/top/progress", this.node)!.getComponent(ProgressBar)!
@@ -162,7 +162,7 @@ export class GodWealthLayer extends BaseView {
     }
 
     initBtns() {
-        if (userData.getReceiveTime(this.timeData.dataKey + "receive", this.timeData.cdTime) >= this.timeData.receiveTime) {
+        if (playerDataStore.getReceiveTime(this.timeData.dataKey + "receive", this.timeData.cdTime) >= this.timeData.receiveTime) {
             this.btnReceive.active = false
             this.btnShare.active = true
             this.btnChange.active = false
@@ -188,7 +188,7 @@ export class GodWealthLayer extends BaseView {
     }
 
     initLimitData(force: boolean = false) {
-        let propArr = tables.ins().getTableValuesByType(Const.Tables.prop, "fudai", "1")
+        let propArr = TableDataService.ins().getTableValuesByType(Const.Tables.prop, "fudai", "1")
         let godProp = []
         for (let index = 0; index < 6; index++) {
             let propItem = propArr[Math.floor(propArr.length * Math.random())]
@@ -196,16 +196,16 @@ export class GodWealthLayer extends BaseView {
         }
         let fun = (isUpdate: boolean) => {
             if (isUpdate) {
-                GameStorage.setObject(Const.DataKeys.GodWealthData + "_" + userData.roleID, "")
+                GameStorage.setObject(Const.DataKeys.GodWealthData + "_" + playerDataStore.roleID, "")
             }
         }
-        return userData.getLimitTimeData(this.timeData.dataKey, this.timeData.cdTime, godProp, force, fun)
+        return playerDataStore.getLimitTimeData(this.timeData.dataKey, this.timeData.cdTime, godProp, force, fun)
     }
 
     initPropItem(id: number, item: Node, index: number) {
-        let data = tables.ins().getTableValueByID(Const.Tables.prop, id)
+        let data = TableDataService.ins().getTableValueByID(Const.Tables.prop, id)
         this.bindButton(find("btnPropInfo", item)!, () => {
-            uiManager.instance.showDialog(Const.Dialogs.ItemCodexLayer, id);
+            UiLayerService.instance.showDialog(Const.Dialogs.ItemCodexLayer, id);
         })
         this.setSpriteFrame(find("icon", item)!.getComponent(Sprite)!, Const.resPath.icon + data.icon, () => { }, 120)
         find("val", item)!.getComponent(Label)!.string = data.name
@@ -228,7 +228,7 @@ export class GodWealthLayer extends BaseView {
 
     refreshAwardLayer() {
         let chs = find("root/top/progress/awardLayer", this.node)!.children;
-        // let fubagTime = userData.getReceiveTime(this.timeData.dataKey + GodWealthLayer.Key_fubag, this.timeData.cdTime)
+
         for (let i = 0; i < chs.length; i++) {
             let awardItem = chs[i];
             let btnPropInfo = find("btnPropInfo", awardItem)!;
@@ -247,7 +247,7 @@ export class GodWealthLayer extends BaseView {
 
     updateSecond() {
         let dayTime = 24 * 60 * 60 * 1000;
-        let nowTime = mergeBoardModel.getCurrentTimestamp();
+        let nowTime = mergeBoardStateStore.getCurrentTimestamp();
         let dayTimeStart = new Date(nowTime);
         dayTimeStart.setHours(0);
         dayTimeStart.setMinutes(0);
@@ -274,7 +274,7 @@ export class GodWealthLayer extends BaseView {
     onClickPropInfo(btn: Button) {
         // @ts-ignore
         let bagId = btn.node.bagId;
-        uiManager.instance.showDialog(Const.Dialogs.FuBagLayer, bagId);
+        UiLayerService.instance.showDialog(Const.Dialogs.FuBagLayer, bagId);
     }
 
     onClickBtnReceive() {
@@ -282,28 +282,28 @@ export class GodWealthLayer extends BaseView {
             this.toast("请先选择一个礼物！")
             return
         }
-        if (userData.getReceiveTime(this.timeData.dataKey + GodWealthLayer.key_receive, this.timeData.cdTime) >= this.timeData.receiveTime) {
+        if (playerDataStore.getReceiveTime(this.timeData.dataKey + GodWealthLayer.key_receive, this.timeData.cdTime) >= this.timeData.receiveTime) {
             return
         }
 
         let propID = this._curRewardData[this._curSelectIndex]
-        mergeBoardModel.addPropNum(propID, 1, this.node.getComponent(UITransform)!.convertToWorldSpaceAR(Vec3.ZERO))
-        userData.setReceiveTime(this.timeData.dataKey + GodWealthLayer.key_receive, this.timeData.cdTime)
+        mergeBoardStateStore.addPropNum(propID, 1, this.node.getComponent(UITransform)!.convertToWorldSpaceAR(Vec3.ZERO))
+        playerDataStore.setReceiveTime(this.timeData.dataKey + GodWealthLayer.key_receive, this.timeData.cdTime)
 
         let receiveUsers = []
         for (let index = 0; index < 6; index++) {
             let use: GodWealthReceiveUser = index == this._curSelectIndex ? {
-                userID: userData.roleID,
-                avatar: userData.roleAvatar,
+                userID: playerDataStore.roleID,
+                avatar: playerDataStore.roleAvatar,
             } : {
                 userID: "",
                 avatar: "",
             }
             receiveUsers.push(use)
         }
-        let godWealthData: GodWealthData = { shareUserId: userData.roleID, shareName: userData.roleName, propList: this._curRewardData, receiveUser: receiveUsers, shareTime: Math.floor(TimeCtrJSF.GetInstance().ServerTime) }
+        let godWealthData: GodWealthData = { shareUserId: playerDataStore.roleID, shareName: playerDataStore.roleName, propList: this._curRewardData, receiveUser: receiveUsers, shareTime: Math.floor(TimeCtrJSF.GetInstance().ServerTime) }
         this._godWealthData = godWealthData
-        GameStorage.setObject(Const.DataKeys.GodWealthData + "_" + userData.roleID, godWealthData)
+        GameStorage.setObject(Const.DataKeys.GodWealthData + "_" + playerDataStore.roleID, godWealthData)
         this.updateSelectLayer(this._godWealthData)
         this.initBtns()
         if (GameStorage.getInt(Const.DataKeys.authSetting, 0) == 0) {
@@ -312,9 +312,9 @@ export class GodWealthLayer extends BaseView {
                     console.error("res = ", res)
                     let avatarUrl = res && (res.avatarUrl || (res.userInfo && res.userInfo.avatarUrl))
                     if (avatarUrl) {
-                        userData.roleAvatar = avatarUrl
+                        playerDataStore.roleAvatar = avatarUrl
                     }
-                    console.error("userData.roleAvatar = ", userData.roleAvatar)
+                    console.error("userData.roleAvatar = ", playerDataStore.roleAvatar)
                 }).catch(() => { })
                 GameStorage.setInt(Const.DataKeys.authSetting, 1)
             }
@@ -324,19 +324,19 @@ export class GodWealthLayer extends BaseView {
     }
 
     videoRefreshSelectLayer() {
-        // let timeData = tables.ins().getTableValueByKey(Const.Tables.privilege, "key", "10011")
-        if (userData.getReceiveTime(this.timeData.dataKey + GodWealthLayer.key_reflesh, this.timeData.cdTime) >= Const.GodWealthRefleshTime) {
+
+        if (playerDataStore.getReceiveTime(this.timeData.dataKey + GodWealthLayer.key_reflesh, this.timeData.cdTime) >= Const.GodWealthRefleshTime) {
             this.toast("Refresh limit used")
             return
         }
-        RechargeManager.showVideo("财神礼包刷新", () => {
+        RewardVideoManager.showVideo("财神礼包刷新", () => {
             this.refreshSelectLayer(true)
-            userData.setReceiveTime(this.timeData.dataKey + GodWealthLayer.key_reflesh, this.timeData.cdTime)
+            playerDataStore.setReceiveTime(this.timeData.dataKey + GodWealthLayer.key_reflesh, this.timeData.cdTime)
         })
     }
 
     onClickBtnShare() {
-        // params: { shareUserId: "443344673366511616", shareName: "胖胖�?, propList: [40028, 50017, 50012, 40027, 50013, 20022] } 
+
         this.wxScopeHead()
 
         let str = ""
@@ -346,13 +346,13 @@ export class GodWealthLayer extends BaseView {
                 str += ","
             }
         }
-        let args = "shareUserId=" + userData.roleID + "&shareName=" + userData.roleName + "&propList=" + str
+        let args = "shareUserId=" + playerDataStore.roleID + "&shareName=" + playerDataStore.roleName + "&propList=" + str
         GamePlatform.share(args)
     }
 
     receiveFuBag(event: any, data: any) {
-        uiManager.instance.showDialog(Const.Dialogs.FuBagReceiveLayer, { id: data });
-        userData.setReceiveTime(this.timeData.dataKey + GodWealthLayer.Key_fubag + data, this.timeData.cdTime)
+        UiLayerService.instance.showDialog(Const.Dialogs.FuBagReceiveLayer, { id: data });
+        playerDataStore.setReceiveTime(this.timeData.dataKey + GodWealthLayer.Key_fubag + data, this.timeData.cdTime)
         if (this._godWealthData) {
             this.updateSelectLayer(this._godWealthData)
         }
@@ -361,12 +361,12 @@ export class GodWealthLayer extends BaseView {
     wxScopeHead() {
         if (WECHAT) {
             GamePlatform.requestWechatUserInfo().then((res: any) => {
-                //  console.error("res = ", res)
+
                 let avatarUrl = res && (res.avatarUrl || (res.userInfo && res.userInfo.avatarUrl))
                 if (avatarUrl) {
-                    userData.roleAvatar = avatarUrl
+                    playerDataStore.roleAvatar = avatarUrl
                 }
-                //    console.error("userData.roleAvatar = ", userData.roleAvatar)
+
             }).catch(() => { })
         }
     }

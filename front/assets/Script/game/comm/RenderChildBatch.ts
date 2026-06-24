@@ -9,19 +9,19 @@ export class RenderChildBatch extends UIRenderer {
 
     private rootNodeArr: Node[] = [];
 
-    // 添加根子节点
+
     public addRootItemNode(node: Node) {
         if (this.rootNodeArr.indexOf(node) == -1) {
             this.pauseRender(node, "");
             this.rootNodeArr.push(node);
         }
     }
-    // 架空节点提交渲染的方法
+
     private pauseRender(node: Node, rootPath: string) {
         if (!node || !isValid(node)) {
             return ;
         }
-      
+
         let path = rootPath + node.name;
         let renderable = node.getComponent(UIRenderer);
         if (renderable) {
@@ -47,7 +47,7 @@ export class RenderChildBatch extends UIRenderer {
         });
     }
 
-    // 移除根子节点
+
     public removeRootItemNode(node: Node) {
         this.removeRender(node, "");
         let index = this.rootNodeArr.indexOf(node);
@@ -55,7 +55,7 @@ export class RenderChildBatch extends UIRenderer {
             this.rootNodeArr.splice(index, 1);
         }
     }
-    // 还原架空的方法
+
     private removeRender(node: Node, rootPath: string) {
         if (!node || !isValid(node)) {
             return ;
@@ -80,12 +80,12 @@ export class RenderChildBatch extends UIRenderer {
         });
     }
 
-    // 所有子节点渲染前调用
+
     updateAssembler(batch: any) {
 
     }
 
-    // 所有子节点渲染后调用
+
     postUpdateAssembler(batch: any) {
         this.pathArr.forEach((path: string) => {
             let arr = this.path2RenderArr.get(path);
@@ -95,7 +95,7 @@ export class RenderChildBatch extends UIRenderer {
                 if (!renderable || !isValid(renderable)||!renderable.node || !isValid(renderable.node)) {
                     return ;
                 }
-             
+
                 tmpArr.push(renderable);
                 if (!renderable.node.activeInHierarchy) {
                     return;
@@ -108,7 +108,7 @@ export class RenderChildBatch extends UIRenderer {
         });
     }
 
-    // 还原现场
+
     onDestroy() {
         this.pathArr.forEach((path: string) => {
             let arr = this.path2RenderArr.get(path);

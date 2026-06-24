@@ -2,12 +2,12 @@ import { find, Label, Layout, ProgressBar, tween, v3, _decorator, Node, Tween } 
 import { NATIVE, WECHAT } from 'cc/env';
 import { Const } from '../../../config/Const';
 import GD from '../../../config/GD';
-import { audioManager } from '../../../easyFramework/mgr/audioManager';
+import { AudioPlaybackService } from '../../../easyFramework/mgr/audioManager';
 import BaseView from '../../../easyFramework/mgr/BaseView';
-import { uiManager } from '../../../easyFramework/mgr/uiManager';
-import tables from '../../../easyFramework/other/tables';
-import { mergeBoardModel } from '../../comm/mergeBoardModel';
-import { userData } from '../../comm/UserData';
+import { UiLayerService } from '../../../easyFramework/mgr/uiManager';
+import TableDataService from '../../../easyFramework/other/tables';
+import { mergeBoardStateStore } from '../../comm/mergeBoardModel';
+import { playerDataStore } from '../../comm/UserData';
 import { handIndexs } from '../../data/handData';
 import { PropItem, PropItemFlag } from './PropItem';
 import { GamePlatform } from '../../platform/GamePlatform';
@@ -29,7 +29,7 @@ export class LevelDialog extends BaseView {
     start() {
         this.bindButton(find("root/btnClose", this.node)!, this.popClose)
         this.bindButton(find("root/btnGrowup", this.node)!, () => {
-            uiManager.instance.showDialog(Const.Dialogs.GrowUpDialog)
+            UiLayerService.instance.showDialog(Const.Dialogs.GrowUpDialog)
         })
         if (WECHAT) {
             find("root/btnGrowup", this.node)!.active = false
@@ -40,33 +40,33 @@ export class LevelDialog extends BaseView {
         super.show(args)
         this.initData()
 
-        let hadnIdnex = mergeBoardModel.getHandIndex();
+        let hadnIdnex = mergeBoardStateStore.getHandIndex();
         if (hadnIdnex == handIndexs.btnLvUp || hadnIdnex == handIndexs.btnLvUp3) {
             let obj: any = {};
             obj.id = hadnIdnex + 1;
             obj.node = find("root/btnbg", this.node);
             obj.delayTime = 0.5;
-            uiManager.instance.showDialog(Const.Dialogs.HandLayer, obj);
+            UiLayerService.instance.showDialog(Const.Dialogs.HandLayer, obj);
         }
     }
     initData() {
 
-        find("root/lvicon/Label", this.node)!.getComponent(Label)!.string = "" + userData.roleLv
-        this._leveldata = tables.ins().getTableValueByID(Const.Tables.herolevel, userData.roleLv)
+        find("root/lvicon/Label", this.node)!.getComponent(Label)!.string = "" + playerDataStore.roleLv
+        this._leveldata = TableDataService.ins().getTableValueByID(Const.Tables.herolevel, playerDataStore.roleLv)
 
         this.itemLayer.node.removeAllChildren()
         this._leveldata.reward.forEach((element: any, index: number) => {
             this.addPrefab(Const.Prefabs.PropItem, this.itemLayer.node, (item: any) => {
                 item.getComponent(PropItem).setData(element[0], PropItemFlag.TouchInfo, element[1]).setItemBg(1).setSize(180)
-                // tween(item).set({ scale: v3(0, 0, 0) }).delay(0.06 + index * 0.05).to(0.15, { scale: v3(1, 1, 1) }).call(() => {
-                //     item.scale = v3(1, 1, 1)
-                // }).start()
+
+
+
             })
         });
-        this.lvBar.progress = Math.min(1, userData.roleExp / this._leveldata.exp)
-        this.expLab.string = userData.roleExp + "/" + this._leveldata.exp
+        this.lvBar.progress = Math.min(1, playerDataStore.roleExp / this._leveldata.exp)
+        this.expLab.string = playerDataStore.roleExp + "/" + this._leveldata.exp
 
-        if (userData.roleExp >= this._leveldata.exp) {
+        if (playerDataStore.roleExp >= this._leveldata.exp) {
             this.levelEffect.active = true
             tween(this.star).to(0.6, { scale: v3(1.2, 1.2, 1.2) }).to(0.6, { scale: v3(1, 1, 1) }).union().repeatForever().start()
         } else {
@@ -77,31 +77,31 @@ export class LevelDialog extends BaseView {
     }
 
     onClickBtnUpgrade() {
-        if (userData.checkAndUseExp(this._leveldata.exp)) {
+        if (playerDataStore.checkAndUseExp(this._leveldata.exp)) {
             this._leveldata.reward.forEach((element: any, index: number) => {
-                mergeBoardModel.addPropNum(element[0], element[1])
+                mergeBoardStateStore.addPropNum(element[0], element[1])
             });
-            let handIndex = mergeBoardModel.getHandIndex();
+            let handIndex = mergeBoardStateStore.getHandIndex();
             if (handIndex == handIndexs.btnLvUp || handIndex == handIndexs.btnLvUp3) {
                 if (handIndex == handIndexs.btnLvUp3) {
-                    mergeBoardModel.closeHandLayer()
-                    mergeBoardModel.addHandIndex();
-                    mergeBoardModel.addHandIndex();
+                    mergeBoardStateStore.closeHandLayer()
+                    mergeBoardStateStore.addHandIndex();
+                    mergeBoardStateStore.addHandIndex();
 
                     this.popClose();
                     this.emit(GD.event.refreshHandLayer);
-                    audioManager.instance.playSound(Const.Audio.sceneChange);
-                    uiManager.instance.showDialog(Const.Dialogs.MergeBoardLayer);
+                    AudioPlaybackService.instance.playSound(Const.Audio.sceneChange);
+                    UiLayerService.instance.showDialog(Const.Dialogs.MergeBoardLayer);
                 } else {
-                    mergeBoardModel.addHandIndex();
-                    mergeBoardModel.addHandIndex();
+                    mergeBoardStateStore.addHandIndex();
+                    mergeBoardStateStore.addHandIndex();
                     this.popClose();
                     this.emit(GD.event.refreshHandLayer);
                 }
             }
 
-            userData.roleLv++
-            GamePlatform.track(userData.roleLv + "等级的玩家");
+            playerDataStore.roleLv++
+            GamePlatform.track(playerDataStore.roleLv + "等级的玩家");
 
             this.initData()
             this.emit(GD.event.updateMoney)

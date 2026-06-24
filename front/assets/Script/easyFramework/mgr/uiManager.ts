@@ -1,7 +1,7 @@
 import { _decorator, Component, Node, find, isValid, Vec3, UIOpacity } from "cc";
 import { UtilPub } from "../utils/UtilPub";
 import BaseView from "./BaseView";
-import { resourceUtil } from "./resourceUtil";
+import { ResourceLoaderService } from "./resourceUtil";
 import { Const } from "../../config/Const";
 const { ccclass, property } = _decorator;
 
@@ -13,7 +13,7 @@ interface IPanel extends Component {
 }
 
 @ccclass("uiManager")
-export class uiManager {
+export class UiLayerService {
 
     dictSharedPanel: { [path: string]: Node } = {}
     dictLoading: { [path: string]: boolean } = {};
@@ -27,14 +27,14 @@ export class uiManager {
     panelPath: string = ""
 
     dialogList: string[] = []
-    private static _instance: uiManager;
+    private static _instance: UiLayerService;
 
     static get instance() {
         if (this._instance) {
             return this._instance;
         }
 
-        this._instance = new uiManager();
+        this._instance = new UiLayerService();
         return this._instance;
     }
 
@@ -59,19 +59,19 @@ export class uiManager {
             let _panelPath = panelPath.split("|")[1]
             let idxSplit = _panelPath.lastIndexOf('/');
             let scriptName = _panelPath.slice(idxSplit + 1);
-            resourceUtil.createUIWithBundle(panelPath, (err, node) => {
+            ResourceLoaderService.createUIWithBundle(panelPath, (err, node) => {
                 this.dictLoading[panelPath] = false;
                 if (err) {
                     console.error(err);
                     return;
                 }
-                // node.zIndex = 100;
+
                 this.dictSharedPanel[panelPath] = node!;
-                // node.parent = find("Canvas").getChildByName("panelRoot")
+
                 let script = node!.getComponent(scriptName)! as IPanel;
-                //node.setSiblingIndex(script.zIndex)
+
                 script.dialogPath = panelPath
-                // //Public.log("scriptName2----", script.dialogPath, script.zIndex, scriptName, this.dictSharedPanel, node.parent)
+
                 node!.active = false
                 resolve();
             })
@@ -79,20 +79,20 @@ export class uiManager {
     }
 
 
-    /**
-     * 显示单例界面
-     * @param {String} panelPath
-     * @param {Array} args
-     * @param {Function} cb 回调函数，创建完毕后回调
-     * @param {Node} parent 父节点，默认是Canvas
-     * @param {Node} active 默认为true
-     */
+
+
+
+
+
+
+
+
     showDialog(panelPath: string, args?: any, cb?: Function, parent?: Node, active: boolean = true) {
         this.panelPath = panelPath
         if (this.dictLoading[panelPath]) {
             return;
         }
-        //todo 关闭引导
+
         if (panelPath == Const.Dialogs.HandLayer){
             console.log("关闭引导");
             return;
@@ -105,36 +105,36 @@ export class uiManager {
         if (!args) {
             args = [];
         }
-        // UtilPub.log("---args------------------", args)
+
         if (this.dictSharedPanel.hasOwnProperty(panelPath)) {
             let panel = this.dictSharedPanel[panelPath];
             if (isValid(panel)) {
-                // //Public.log("---parent------------------", parent)
+
                 if (parent == undefined) {
-                    // //Public.log("---parent------------------", find("Canvas"))
+
                     panel.parent = find("Canvas")
                 } else {
                     panel.parent = parent
                 }
 
-                // panel.position = Public.MainCamera.node.position
+
 
                 let script = panel.getComponent(scriptName) as IPanel;
 
-                // if (script.show) {
-                // //Public.log("scriptName-old2----", scriptName, script.show, args)
-                // script.show.apply(script, args);
+
+
+
                 script.show(args);
-                // }
-                //层级待定
-                //对子节点的进行zIndx排序
+
+
+
                 panel.setSiblingIndex(script.zIndex!)
                 script.dialogPath = panelPath
 
-                //设置顺序
+
                 this.setOrder(panel, scriptName)
 
-                // panel.position = new Vec3(Public.MainCamera.node.position.x, Public.MainCamera.node.position.y, 0)
+
                 panel.active = true;
 
                 cb && cb(script);
@@ -144,11 +144,11 @@ export class uiManager {
         }
 
         this.dictLoading[panelPath] = true;
-        resourceUtil.createUIWithBundle(panelPath, (err, node) => {
-            //判断是否有可能在显示前已经被关掉了？
+        ResourceLoaderService.createUIWithBundle(panelPath, (err, node) => {
+
             let isCloseBeforeShow = false;
             if (!this.dictLoading[panelPath]) {
-                //已经被关掉
+
                 isCloseBeforeShow = true;
             }
 
@@ -158,113 +158,113 @@ export class uiManager {
                 return;
             }
 
-            // node.zIndex = 100;
+
 
             this.dictSharedPanel[panelPath] = node!;
             let script = node!.getComponent(scriptName)! as IPanel;
-            // Public.log("scriptName1----", node, script, scriptName, args)
+
             if (script.show) {
-                // //Public.log("scriptName1111----", script, scriptName, args)
-                // script.show.apply(script, args);
+
+
                 script.show(args);
             }
-            //TODO 层级控制待定
-            //node.setSiblingIndex(script.zIndex)
-            script.dialogPath = panelPath
-            // //Public.log("scriptName2----", script.dialogPath, script.zIndex, scriptName, this.dictSharedPanel, node.parent)
-            // //Public.log(node.parent.children)
-            node && (node.active = active)
-            // node.getChildByName("Root").getComponent(UIOpacity).opacity=1
 
-            //设置顺序
+
+            script.dialogPath = panelPath
+
+
+            node && (node.active = active)
+
+
+
             this.setOrder(node!, scriptName)
 
             cb && cb(script);
 
-            //不要使用widget，会导致生成时位置移动失效！！！
-            // node.setPosition(new Vec3(Public.MainCamera.node.position.x, Public.MainCamera.node.position.y, 0))
-            // Public.log("----node info------", parent)
 
-            // 直接执行不生效
-            // setTimeout(()=>{
-            //     // this.syncPos(node)
-            //     node.setPosition(new Vec3(Public.MainCamera.node.position.x, Public.MainCamera.node.position.y, 0))
-            // },50)
+
+
+
+
+
+
+
+
 
             if (isCloseBeforeShow) {
-                //Public.log("如果在显示前又被关闭 closeDialog1-----", panelPath)
-                //如果在显示前又被关闭，则直接触发关闭掉
+
+
                 this.hideDialog(panelPath);
             }
         }, parent);
     }
 
     setOrder(panel: Node, scriptName: string) {
-        // UtilPub.log("窗口检查1----", panel.parent)
-        // let children = find("Canvas")!.children
-        // let arr = []
-        
-        // for (let i = 0; i < children.length; i++) {
-        //     // let script = children[i].getComponent(scriptName) as IPanel;
-        //     if (children[i]) {
-        //         arr.push(children[i])
-        //     }
-        // }
-        // arr.sort((a, b) => {
-        //     let as = a.getComponent(scriptName) as IPanel;
-        //     let bs = b.getComponent(scriptName) as IPanel;
-        //     let aval = 0
-        //     let bval = 0
-        //     if (as && as.zIndex != null) aval = as.zIndex
-        //     if (bs && bs.zIndex != null) bval = bs.zIndex
-        //     return bval - aval
-        // })
-        // // Public.log("窗口检查mid----", arr)
-        // find("Canvas")!.removeAllChildren()
-        // for (let i = 0; i < arr.length; i++) {
-        //     arr[i] && find("Canvas")!.addChild(arr[i])
-        // }
-        // Public.log("窗口检查2----", panel.parent)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     }
 
-    // syncPos(dialogNode){
-    //     if(dialogNode==undefined) return
-    //     if(Public.MainCamera.node.position.x!=dialogNode.position.x || Public.MainCamera.node.position.y!=dialogNode.position.y){
-    //         dialogNode.setPosition(new Vec3(Public.MainCamera.node.position.x, Public.MainCamera.node.position.y, 0))
-    //         return
-    //     }else{
-    //         setTimeout(()=>{ this.syncPos(dialogNode)},50)
-    //     }
-    // }
 
 
-    /**
-     * 隐藏单例界面
-     * @param {String} panelPath
-     * @param {fn} callback
-     */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     hideDialog(panelPath: string, callback?: Function) {
-        //Public.log("closeDialog-----", panelPath)
+
         if (this.dictSharedPanel.hasOwnProperty(panelPath)) {
             let panel = this.dictSharedPanel[panelPath];
             if (panel && isValid(panel)) {
-                // let ani = panel.getComponent('animationUI');
-                // if (ani) {
-                //     ani.close(() => {
-                //         panel.parent = null;
-                //         if (callback && typeof callback === 'function') {
-                //             callback();
-                //         }
-                //     });
-                // } else {
+
+
+
+
+
+
+
+
+
                 let _panelPath = panelPath.split("|")[1]
                 let idxSplit = _panelPath.lastIndexOf('/');
                 let scriptName = _panelPath.slice(idxSplit + 1);
                 let script = panel!.getComponent(scriptName)! as IPanel;
-                // //Public.log("scriptName1----", script, scriptName, args)
+
                 if (script.hide) {
-                    // //Public.log("scriptName1111----", script, scriptName, args)
-                    // script.show.apply(script, args);
+
+
                     script.hide();
                 }
                 panel.active = false
@@ -272,7 +272,7 @@ export class uiManager {
                 if (callback && typeof callback === 'function') {
                     callback();
                 }
-                // }
+
             } else if (callback && typeof callback === 'function') {
                 callback();
             }
@@ -324,12 +324,12 @@ export class uiManager {
         }
     }
 
-    /**
-     * 将弹窗加入弹出窗队列
-     * @param {string} panelPath
-     * @param {string} scriptName
-     * @param {*} param
-     */
+
+
+
+
+
+
     pushToPopupSeq(panelPath: string, scriptName: string, param: any) {
         let popupDialog = {
             panelPath: panelPath,
@@ -343,13 +343,13 @@ export class uiManager {
         this.checkPopupSeq();
     }
 
-    /**
-     * 将弹窗加入弹出窗队列
-     * @param {number} index
-     * @param {string} panelPath
-     * @param {string} scriptName
-     * @param {*} param
-     */
+
+
+
+
+
+
+
     insertToPopupSeq(index: number, panelPath: string, param: any) {
         let popupDialog = {
             panelPath: panelPath,
@@ -358,13 +358,13 @@ export class uiManager {
         };
 
         this.arrPopupDialog.splice(index, 0, popupDialog);
-        //this.checkPopupSeq();
+
     }
 
-    /**
-     * 将弹窗从弹出窗队列中移除
-     * @param {string} panelPath
-     */
+
+
+
+
     shiftFromPopupSeq(panelPath: string) {
         this.hideDialog(panelPath, () => {
             if (this.arrPopupDialog[0] && this.arrPopupDialog[0].panelPath === panelPath) {
@@ -374,9 +374,9 @@ export class uiManager {
         })
     }
 
-    /**
-     * 检查当前是否需要弹窗
-     */
+
+
+
     checkPopupSeq() {
         if (this.arrPopupDialog.length > 0) {
             let first = this.arrPopupDialog[0];

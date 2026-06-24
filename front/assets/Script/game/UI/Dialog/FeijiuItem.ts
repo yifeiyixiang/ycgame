@@ -2,7 +2,7 @@ import { _decorator, Node, Label, find, Sprite, SpriteFrame, tween, v3, UITransf
 import { Const } from '../../../config/Const';
 import { GSceneSkinState } from '../../../config/global';
 import BaseView from '../../../easyFramework/mgr/BaseView';
-import { uiManager } from '../../../easyFramework/mgr/uiManager';
+import { UiLayerService } from '../../../easyFramework/mgr/uiManager';
 import { SceneData } from '../../comm/SceneData';
 const { ccclass, property } = _decorator;
 
@@ -26,7 +26,7 @@ export class FeijiuItem extends BaseView {
             find("roleItembg/name", this.node)!.getComponent(Label)!.string = "?????"
         }
         this.bindButton(this.node, () => {
-            uiManager.instance.showDialog(Const.Dialogs.FeijiuInfoDialog, { roleData: data });
+            UiLayerService.instance.showDialog(Const.Dialogs.FeijiuInfoDialog, { roleData: data });
         })
     }
 

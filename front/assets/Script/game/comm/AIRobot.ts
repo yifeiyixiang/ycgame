@@ -1,17 +1,17 @@
 import { Button, find, instantiate, Label, Node, Tween, tween, UIOpacity, v2, v3, Vec3, view } from "cc";
 import { Const } from "../../config/Const";
 import { GameStorageJSF } from "../../easyFramework/mgr/gameStorage";
-import tables from "../../easyFramework/other/tables";
+import TableDataService from "../../easyFramework/other/tables";
 import { UtilPub } from "../../easyFramework/utils/UtilPub";
-import { canvas_game } from "../UI/canvas_game";
+import { GameCanvasController } from "../UI/canvas_game";
 import { MergeBoardLayer } from "../UI/layer/MergeBoardLayer";
-import { build_list } from "../UI/main/build_list";
-import { build_list_item } from "../UI/main/build_list_item";
-import { build_prompt } from "../UI/main/build_prompt";
-import { float_star } from "../UI/main/float_star";
+import { BuildListPanelController } from "../UI/main/build_list";
+import { BuildListItemController } from "../UI/main/build_list_item";
+import { BuildPromptDialogController } from "../UI/main/build_prompt";
+import { FloatingStarController } from "../UI/main/float_star";
 import { main } from "../UI/main/main";
-import { scene_ui_ops } from "../UI/scene/scene_ui_ops";
-import { mergeBoardModel } from "./mergeBoardModel";
+import { SceneOperationPanelController } from "../UI/scene/scene_ui_ops";
+import { mergeBoardStateStore } from "./mergeBoardModel";
 import { UtilScene } from "./UtilScene";
 
 enum AIRobotStatus {
@@ -36,7 +36,7 @@ class AIRobot {
         return this.instance;
     }
 
-    canvasGame: canvas_game = null!;
+    canvasGame: GameCanvasController = null!;
     updateInterval: any = null;
 
     aiRobotStatus: AIRobotStatus = AIRobotStatus.idle;
@@ -53,7 +53,7 @@ class AIRobot {
     textItem: Node = null!;
 
     public initRobot() {
-        this.canvasGame = find("Canvas")!.getComponent(canvas_game)!;
+        this.canvasGame = find("Canvas")!.getComponent(GameCanvasController)!;
         this.broadcastUINode = find("Canvas2/broadcastLayer/ui")!;
         this.broadcastUINode.active = false;
         this.textLayer = find("pmd/textLayer", this.broadcastUINode)!;
@@ -92,7 +92,7 @@ class AIRobot {
 
     public getPropNum(id: number) {
         let num = 0;
-        UtilPub.for2Arr(mergeBoardModel.roomArr, (roomData: any) => {
+        UtilPub.for2Arr(mergeBoardStateStore.roomArr, (roomData: any) => {
             if (roomData.id == id) {
                 num++;
             }
@@ -101,7 +101,7 @@ class AIRobot {
     }
 
     public hasTaskDone() {
-        let task = mergeBoardModel.taskArr[0];
+        let task = mergeBoardStateStore.taskArr[0];
         if (aiRobot.getPropNum(task.propArr[0].id) > 0) {
             return true;
         }
@@ -155,13 +155,13 @@ class AIRobot {
                 if (aiRobot.clickPos == null) {
                     aiRobot.clickPos = aiRobot.getClickNewPos();
                 }
-                if (mergeBoardModel.getEmptyRoomPos() && aiRobot.clickPos && !mergeBoardModel.roomArr[aiRobot.clickPos.row][aiRobot.clickPos.col].cdSum) {
-                    // 可点击
+                if (mergeBoardStateStore.getEmptyRoomPos() && aiRobot.clickPos && !mergeBoardStateStore.roomArr[aiRobot.clickPos.row][aiRobot.clickPos.col].cdSum) {
+
                     aiRobot.botTapBoardCell(aiRobot.clickPos.row, aiRobot.clickPos.col);
                     return;
                 }
-                // 自动合成需要的任务物品
-                let needId = mergeBoardModel.taskArr[0].propArr[0].id;
+
+                let needId = mergeBoardStateStore.taskArr[0].propArr[0].id;
                 aiRobot.boardTargetId = needId;
                 aiRobot.aiRobotStatus = AIRobotStatus.boardMerge;
                 break;
@@ -195,7 +195,7 @@ class AIRobot {
                 break;
             case AIRobotStatus.clcikBtnBuild:
                 if (!UtilScene.isSceneItemCouldBeBuild()) {
-                    // 不能建造
+
                     aiRobot.aiRobotStatus = AIRobotStatus.clickNew;
                     return;
                 }
@@ -203,14 +203,14 @@ class AIRobot {
                 aiRobot.aiRobotStatus = AIRobotStatus.goBuild;
                 break;
             case AIRobotStatus.goBuild:
-                let buildListItem = find("Canvas/build_list")!.getComponent(build_list)!.buildListLayout.children[0].getComponent(build_list_item)!;
+                let buildListItem = find("Canvas/build_list")!.getComponent(BuildListPanelController)!.buildListLayout.children[0].getComponent(BuildListItemController)!;
                 buildListItem.onClickBtnGo();
                 aiRobot.buildId = buildListItem.buildId;
                 aiRobot.aiRobotStatus = AIRobotStatus.clickStar;
                 break;
             case AIRobotStatus.clickStar:
                 Const.FloatStarParent.children.forEach((node: Node) => {
-                    let floatStar = node.getComponent(float_star)!;
+                    let floatStar = node.getComponent(FloatingStarController)!;
                     UtilPub.log(floatStar.id, aiRobot.buildId);
                     if (floatStar.id == aiRobot.buildId) {
                         floatStar.onClickBtnPrompt();
@@ -222,14 +222,14 @@ class AIRobot {
                 }, 2);
                 break;
             case AIRobotStatus.clickBuild:
-                find("Canvas/build_prompt")!.getComponent(build_prompt)!.onClickBtnBuild();
+                find("Canvas/build_prompt")!.getComponent(BuildPromptDialogController)!.onClickBtnBuild();
                 aiRobot.aiRobotStatus = AIRobotStatus.idle;
                 aiRobot.canvasGame.scheduleOnce(() => {
                     aiRobot.aiRobotStatus = AIRobotStatus.clickGou;
                 }, 3);
                 break;
             case AIRobotStatus.clickGou:
-                Const.SelBuildingParent.children[0].getComponent(scene_ui_ops)?.sureHandler();
+                Const.SelBuildingParent.children[0].getComponent(SceneOperationPanelController)?.sureHandler();
                 aiRobot.aiRobotStatus = AIRobotStatus.enterMergeBoard;
                 break;
             case AIRobotStatus.enterMergeBoard:
@@ -256,7 +256,7 @@ class AIRobot {
     public searchCompoeId(id: number) {
         let ret: any = null;
         let arr: any = [];
-        UtilPub.for2Arr(mergeBoardModel.roomArr, (roomData: any, row: number, col: number) => {
+        UtilPub.for2Arr(mergeBoardStateStore.roomArr, (roomData: any, row: number, col: number) => {
             if (roomData.id == id) {
                 arr.push({ row: row, col: col });
             }
@@ -276,7 +276,7 @@ class AIRobot {
             let pos = arr[i];
             let row = pos[0];
             let col = pos[1];
-            let roomData = mergeBoardModel.roomArr[row][col];
+            let roomData = mergeBoardStateStore.roomArr[row][col];
             if (roomData.cdSum) {
                 continue;
             }
@@ -335,11 +335,11 @@ class AIRobot {
 
     public createTask() {
         let infoObj: any = {};
-        UtilPub.for2Arr(mergeBoardModel.roomArr, (roomData: any, row: number, col: number) => {
-            if (!mergeBoardModel.isRoomNormal(row, col)) {
+        UtilPub.for2Arr(mergeBoardStateStore.roomArr, (roomData: any, row: number, col: number) => {
+            if (!mergeBoardStateStore.isRoomNormal(row, col)) {
                 return;
             }
-            let propRow = tables.ins().getTableValueByID(Const.Tables.prop, roomData.id);
+            let propRow = TableDataService.ins().getTableValueByID(Const.Tables.prop, roomData.id);
             if (propRow.anc) {
                 return;
             }
@@ -348,11 +348,11 @@ class AIRobot {
             }
             infoObj[roomData.id].push({ data: roomData, row: row, col: col });
         });
-        // 优先要合成的物品当做任务
+
         let idArr: any = [];
         for (let i in infoObj) {
             let id = parseInt(i);
-            let propRow = tables.ins().getTableValueByID(Const.Tables.prop, id);
+            let propRow = TableDataService.ins().getTableValueByID(Const.Tables.prop, id);
             let arr = infoObj[i];
             if (arr.length < 2) {
                 continue;
@@ -376,12 +376,12 @@ class AIRobot {
             }
         }
         if (idArr.length <= 0) {
-            // 现有随机一个
-            UtilPub.for2Arr(mergeBoardModel.roomArr, (roomData: any, row: number, col: number) => {
-                if (!mergeBoardModel.isRoomNormal(row, col)) {
+
+            UtilPub.for2Arr(mergeBoardStateStore.roomArr, (roomData: any, row: number, col: number) => {
+                if (!mergeBoardStateStore.isRoomNormal(row, col)) {
                     return;
                 }
-                let propRow = tables.ins().getTableValueByID(Const.Tables.prop, roomData.id);
+                let propRow = TableDataService.ins().getTableValueByID(Const.Tables.prop, roomData.id);
                 if (propRow.anc) {
                     return;
                 }
@@ -404,8 +404,8 @@ class AIRobot {
     }
 
     public isPropSameType(id: number, id2: number) {
-        let propRow = tables.ins().getTableValueByID(Const.Tables.prop, id);
-        let tmpRow = tables.ins().getTableValueByID(Const.Tables.prop, id2);
+        let propRow = TableDataService.ins().getTableValueByID(Const.Tables.prop, id);
+        let tmpRow = TableDataService.ins().getTableValueByID(Const.Tables.prop, id2);
         if (propRow && tmpRow && propRow.type == tmpRow.type && propRow.typeson == tmpRow.typeson) {
             return true;
         }

@@ -1,12 +1,12 @@
 import { _decorator, Component, native, Node, System } from 'cc';
-import { gameData, popupCommonType } from './gameData';
+import { GameRuntimeData, PopupDialogMode } from './gameData';
 import { HTML5, JSB, NATIVE } from 'cc/env';
-import { HttpClient } from './net/HttpClient';
-import { EventManger } from './EventManger';
+import { GameHttpClient } from './net/HttpClient';
+import { GameEventManager } from './EventManger';
 const { ccclass, property } = _decorator;
 
 @ccclass('AndroidSdk')
-export class AndroidSdk  {
+export class NativeSdkBridge  {
     public static isLocal = false;
 
     public static isAndroid =  NATIVE
@@ -36,7 +36,7 @@ export class AndroidSdk  {
         }, 2000);
         this.isPlaying = true;
         this.callBack = call;
-        if (AndroidSdk.isAndroid && AndroidSdk.isAd){
+        if (NativeSdkBridge.isAndroid && NativeSdkBridge.isAd){
             native.bridge.sendToNative("playAd", "defaultAdUrl");
         }else{
             this.wxLoginResult("playAd", null);
@@ -44,51 +44,50 @@ export class AndroidSdk  {
     }
 
     public static playAdAddItem(index:number){
-        // LanauageManager.popupCommonlType = popupCommonType.buy;
-        // UIManager.open(UIManager.uiNamePath.popupCommonBtn);
-        //EventManger.eventTarget.emit(EventManger.EEventName.SHOW_TIP, LanauageManager.getDesStrById(84));
-        //this.playAd(null, -1, index);
+
+
+
     }
 
     public static outToWx(type:number){
-        //HttpClient.getInstance().sendOutBytype(type);
+
     }
 
 
      public static wxLogin() {
         console.log("wxLogin");
-        if (AndroidSdk.isAndroid){
+        if (NativeSdkBridge.isAndroid){
             native.bridge.onNative = (animationName: string, code: string | null):void=>{
                 this.wxLoginResult(animationName, code);
                 return;
             }
             native.bridge.sendToNative("login", "defaultAdUrl");
         }else{
-            HttpClient.getInstance().sendLogin();
+            GameHttpClient.getInstance().sendLogin();
         }
     }
- 
+
     public static wxLoginResult(usrName:string, errCode:string) {
         return;
         if (usrName == "login"){
             console.log("wxLoginResultcode=" + errCode)
-            HttpClient.getInstance().sendLogin()
+            GameHttpClient.getInstance().sendLogin()
         }
-        
+
         else if (usrName == "playAd"){
 
             console.log("usrName  =" + usrName)
-            gameData.saveData.playAdNum++;
+            GameRuntimeData.saveData.playAdNum++;
             if (this.index >= 0 && this.index <= 2){
-                gameData.saveData.arrNumDJ[this.index]++;
+                GameRuntimeData.saveData.arrNumDJ[this.index]++;
             }
             if(this.gear >= 1 && this.gear <= 3){
-                gameData.saveData.taskAdArr[this.gear - 1]++;
+                GameRuntimeData.saveData.taskAdArr[this.gear - 1]++;
             }
-            EventManger.eventTarget.emit(EventManger.EEventName.REFRESH_GAME);
-            //HttpClient.getInstance().sendPlayAd(this.index + 1, this.gear);
+            GameEventManager.eventTarget.emit(GameEventManager.EEventName.REFRESH_GAME);
+
             if(this.callBack){
-                this.callBack();   
+                this.callBack();
             }
 
             this.callBack = null;
@@ -97,7 +96,7 @@ export class AndroidSdk  {
         }
 
         else if (usrName == "showTip"){
-            EventManger.eventTarget.emit(EventManger.EEventName.SHOW_TIP, "广告错误" + errCode);
+            GameEventManager.eventTarget.emit(GameEventManager.EEventName.SHOW_TIP, "广告错误" + errCode);
         }
     }
 }

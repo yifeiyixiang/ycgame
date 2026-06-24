@@ -1,75 +1,75 @@
 import { _decorator, Component, dragonBones, Label, Node,UIOpacity, randomRangeInt, SkeletalAnimation, sp, Sprite, SpriteFrame, Tween, tween, Vec2, Vec3 } from 'cc';
-import { gameData, petItemData } from './gameData';
-import { ItemEnumId, ItemEnumType, LanauageManager, petConfig } from './LanauageManager';
-import { HttpClient } from './net/HttpClient';
-import { EventManger } from './EventManger';
+import { GameRuntimeData, PetProfileRecord } from './gameData';
+import { ItemEnumId, ItemEnumType, LanguageContentManager, PetConfigRecord } from './LanauageManager';
+import { GameHttpClient } from './net/HttpClient';
+import { GameEventManager } from './EventManger';
 import { Const } from '../Script/config/Const';
-import { uiManager } from '../Script/easyFramework/mgr/uiManager';
-import tables from '../Script/easyFramework/other/tables';
-import { resourceUtil } from '../Script/easyFramework/mgr/resourceUtil';
+import { UiLayerService } from '../Script/easyFramework/mgr/uiManager';
+import TableDataService from '../Script/easyFramework/other/tables';
+import { ResourceLoaderService } from '../Script/easyFramework/mgr/resourceUtil';
 const { ccclass, property } = _decorator;
 
 @ccclass('pet')
 export class pet extends Component {
 
-    @property(Node)           //提示底
-    statusBg: Node = null;  
+    @property(Node)
+    statusBg: Node = null;
 
-    @property(Label)  
-    statusLabel: Label = null;  
+    @property(Label)
+    statusLabel: Label = null;
 
-    @property(sp.Skeleton)  
-    nodeSke: sp.Skeleton = null;    //宠物动画
+    @property(sp.Skeleton)
+    nodeSke: sp.Skeleton = null;
 
-    @property(Sprite)  
-    qipao: Sprite = null;    //宠物气泡icon
+    @property(Sprite)
+    qipao: Sprite = null;
 
-    @property([SpriteFrame])  
-    qipaos: SpriteFrame[] = [];    //宠物气泡icon组
+    @property([SpriteFrame])
+    qipaos: SpriteFrame[] = [];
 
 
-    @property(sp.Skeleton)  
-    skeMao: sp.Skeleton = null;         //帽子
+    @property(sp.Skeleton)
+    skeMao: sp.Skeleton = null;
 
-    @property(sp.Skeleton)  
-    skeYifu: sp.Skeleton = null;         //衣服
+    @property(sp.Skeleton)
+    skeYifu: sp.Skeleton = null;
 
-    @property(sp.Skeleton)  
-    skeLingdai: sp.Skeleton = null;         //领带
+    @property(sp.Skeleton)
+    skeLingdai: sp.Skeleton = null;
 
-    @property(sp.Skeleton)  
-    skeXiu: sp.Skeleton = null;         //袖子
+    @property(sp.Skeleton)
+    skeXiu: sp.Skeleton = null;
 
-    @property(Boolean)  
-    isScene: boolean = true;         //是否在场景中
-  
-    // @property(SpriteFrame)  
-    // walkSprite: SpriteFrame = null;  
-  
-    // @property(SpriteFrame)  
-    // sleepSprite: SpriteFrame = null;  
+    @property(Boolean)
+    isScene: boolean = true;
 
-    public petData:petItemData;
 
-    //宠物唯一ID
-    petId:number = 0;   
-  
-    // 宠物状态  
-    isHungry: boolean = false;  
-    isDirty: boolean = false;  
-    isHappy: boolean = true;  
 
-    lastSatiety:number = 1;        //饱食度
 
-    lastThirsty:number = 1;        //干渴度
 
-    lastCleanliness:number = 1;       //清洁度
 
-    tipTween:Tween<Node>;            //提示动画
 
-    walkTween:Tween<Node>;          //行走动画
+    public petData:PetProfileRecord;
 
-    public state:number = 0;       //当前状态 0无状态，1饱食，2干渴，3清洁，4爱心, 5抚摸, 6聊天,7货币可领取
+
+    petId:number = 0;
+
+
+    isHungry: boolean = false;
+    isDirty: boolean = false;
+    isHappy: boolean = true;
+
+    lastSatiety:number = 1;
+
+    lastThirsty:number = 1;
+
+    lastCleanliness:number = 1;
+
+    tipTween:Tween<Node>;
+
+    walkTween:Tween<Node>;
+
+    public state:number = 0;
 
     timeSta:number = 0;
 
@@ -78,45 +78,45 @@ export class pet extends Component {
     timeAiChat:number = 0;
 
     actionInd:number = 0;
-  
-    // 行走范围  
-    private walkArea: number[] = [-1000, 1000, 200, -700];  //左，右，上，下
 
-    //actions = ["", 'yidong',"shenlanyao",'shuijiao','kaixin', "yidong", "daiji"];
+
+    private walkArea: number[] = [-1000, 1000, 200, -700];
+
+
 
     actions = ["yidong", 'daiji',"kaixin",'shenlanyao','shenlanyao', "yidong"];
 
     actimes = [1, 10,10,20,10, 10, 5];
 
-    //是否静止展示
-    isDaiji:boolean = false;    
-  
-    onLoad() {  
+
+    isDaiji:boolean = false;
+
+    onLoad() {
         if (this.isScene){
-            // 监听点击事件  
-            this.statusBg.on(Node.EventType.TOUCH_START, this.onPetClicked, this);  
+
+            this.statusBg.on(Node.EventType.TOUCH_START, this.onPetClicked, this);
 
             this.nodeSke.node.on(Node.EventType.TOUCH_START, this.onPetClicked, this);
 
             this.showStatusTip(0)
 
-            //this.updateAnima();
 
-            EventManger.eventTarget.on(EventManger.EEventName.REFRESH_PET_DATA, this.refreshData, this);
+
+            GameEventManager.eventTarget.on(GameEventManager.EEventName.REFRESH_PET_DATA, this.refreshData, this);
         }
-    }  
-
-    start() {
-       
     }
 
-    init(petData:petItemData){
+    start() {
+
+    }
+
+    init(petData:PetProfileRecord){
 
         this.petData = petData;
 
         this.petId = petData.id
 
-        resourceUtil.setSkeEffect([this.nodeSke, this.skeMao, this.skeYifu, this.skeLingdai, this.skeXiu], this.petData, this);
+        ResourceLoaderService.setSkeEffect([this.nodeSke, this.skeMao, this.skeYifu, this.skeLingdai, this.skeXiu], this.petData, this);
 
         if(this.isScene){
 
@@ -128,11 +128,11 @@ export class pet extends Component {
 
             this.node.setPosition(initX, initY, 1)
         }
-        
+
     }
 
     refreshData(){
-        this.petData = gameData.getPetDataById(this.petId);
+        this.petData = GameRuntimeData.getPetDataById(this.petId);
 
         if (!this.petData){
             this.node.active = false;
@@ -144,12 +144,12 @@ export class pet extends Component {
 
             this.node.active = this.petData.is_active;
         }
-        resourceUtil.setSkeEffect([this.nodeSke, this.skeMao, this.skeYifu, this.skeLingdai, this.skeXiu], this.petData);
+        ResourceLoaderService.setSkeEffect([this.nodeSke, this.skeMao, this.skeYifu, this.skeLingdai, this.skeXiu], this.petData);
 
-        // this.nodeSke.setSkin("gou/chaiquan_hei");
+
     }
 
-    // 更新宠物状态标签  
+
     private updateStatusLabel() {
 
         if (!this.petData){
@@ -160,18 +160,18 @@ export class pet extends Component {
             return;
         }
 
-        if(false){          
+        if(false){
             this.showStatusTip(7);
         }
         else if (this.lastSatiety - this.petData.hunger_value/Const.CLEAN_FULL >= 0.1){
             this.showStatusTip(1)
             this.lastSatiety = this.petData.hunger_value/Const.CLEAN_FULL;
         }
-        // else if (this.lastThirsty - this.petData.thirsty/this.petData.thirstyFull >= 0.1)
-        // {
-        //     this.showStatusTip(2)
-        //     this.lastThirsty = this.petData.thirsty/this.petData.thirstyFull;
-        // }
+
+
+
+
+
         else if (this.lastCleanliness - this.petData.clean_value/Const.CLEAN_FULL >= 0.1)
         {
             this.showStatusTip(3)
@@ -179,63 +179,62 @@ export class pet extends Component {
         }else{
 
         }
-    }  
-  
-    // 宠物点击事件  
-    private onPetClicked(event: Event) {  
-        // 可以在这里添加点击后的逻辑，比如弹出详情界面  
+    }
+
+
+    private onPetClicked(event: Event) {
+
         console.log('宠物被点击了！');
 
-        uiManager.instance.pushShowDialog(Const.Dialogs.PetDetialsView, this.petData);
+        UiLayerService.instance.pushShowDialog(Const.Dialogs.PetDetialsView, this.petData);
 
-        HttpClient.getInstance().sendPetAction(7, this.petData.id, 0);
+        GameHttpClient.getInstance().sendPetAction(7, this.petData.id, 0);
 
         if (this.state == 4 || this.state == 5){
-            //EventManger.eventTarget.emit(EventManger.EEventName.PET_REWARD_DROP, this.node, ItemEnumId.petCoin, 0, true);
-            //HttpClient.getInstance().interActive(this.state == 4?0:1, [this.petData._id]);
+
         }
         else if (this.state == 1){
 
-            //UIManager.petFoodType = 1;
-            //UIManager.open(UIManager.uiNamePathNew.foodView)
+
+
         }
         else if (this.state == 2){
 
-            //UIManager.petFoodType = 2;
-            //UIManager.open(UIManager.uiNamePathNew.foodView)
+
+
 
         }
         else if (this.state == 3){
-            //UIManager.curPetId = this.petData.id;
-            //UIManager.open(UIManager.uiNamePathNew.bathView)
+
+
         }
         else if (this.state == 6){
-            //UIManager.petAiChatType = 0;
-            //UIManager.petAiChatId = this.petData.id;
-            //UIManager.open(UIManager.uiNamePathNew.aiChatView);
+
+
+
         }
         else if (this.state == 7){
-            //HttpClient.getInstance().interActive(3, [this.petData.id]);
+
         }
         else{
-            HttpClient.getInstance().getPetList();
-            //UIManager.petDetialId = this.petData.id;
-            //UIManager.open(UIManager.uiNamePathNew.petDetialView);
+            GameHttpClient.getInstance().getPetList();
+
+
         }
         this.timeSta = 0;
         this.timeAiChat = 0;
         this.showStatusTip(0)
-    }  
-  
-    // 更新宠物行为  
-    public updateAnima() {  
-        // 随机选择一种行为 
-        //站立、行走、躺下、睡觉、跑动、伸懒腰行为按以下规则进行 
+    }
+
+
+    public updateAnima() {
+
+
 
         if (!this.petData){
             return;
         }
-        
+
         let index = Math.floor(Math.random() * this.actions.length);
 
         if (index == 0){
@@ -247,7 +246,7 @@ export class pet extends Component {
         }
 
         this.actionInd = index;
-  
+
         this.nodeSke.clearAnimations();
         this.skeMao.clearAnimations();
         this.skeYifu.clearAnimations();
@@ -261,10 +260,10 @@ export class pet extends Component {
 
         if (index == 5){
             this.nodeSke.setAnimation(index,this.actions[index], true);
-            this.randomWalk();  
+            this.randomWalk();
         }else{
-            
-            this.nodeSke.setAnimation(index,this.actions[index], true); 
+
+            this.nodeSke.setAnimation(index,this.actions[index], true);
 
             this.unschedule(this.updateAnima)
             this.scheduleOnce(this.updateAnima, this.actimes[index]);
@@ -275,36 +274,36 @@ export class pet extends Component {
         this.skeLingdai.setAnimation(index,this.actions[index], true);
         this.skeXiu.setAnimation(index,this.actions[index], true);
 
-        // this.skeLingdai.enabled = false
-        // // this.skeLingdai.node.getComponent(UIOpacity).opacity = 0;
-        // this.skeLingdai.node.active = false;
-        // this.skeLingdai.node.parent.active = false;
-        // this.skeLingdai.node.scale = 0;
-        
-        //console.log("动画状态：" + this.actions[index])
-        // 检查并更新状态  
-        this.updateStatusLabel();  
-    }  
 
-  
-    // 随机行走  
-    private randomWalk() { 
+
+
+
+
+
+
+
+        this.updateStatusLabel();
+    }
+
+
+
+    private randomWalk() {
         if(this.isDaiji){
             return;
         }
         let targetX:number = 0;
 
         let targetY:number = 0;
-        
-        let offx = Math.floor(Math.random() * 500);  
 
-        let offy = Math.floor(Math.random() * 400); 
+        let offx = Math.floor(Math.random() * 500);
 
-        //console.log("移动距离：" + offx + "  " + offy)
+        let offy = Math.floor(Math.random() * 400);
 
-        let randX = Math.random(); 
 
-        
+
+        let randX = Math.random();
+
+
         if(randX < 0.5){
             targetX = this.node.getPosition().x + offx;
             if (targetX > this.walkArea[1]){
@@ -326,7 +325,7 @@ export class pet extends Component {
         this.skeLingdai.node.setScale(new Vec3(Math.abs(this.skeLingdai.node.scale.x) * scaleX, this.skeLingdai.node.scale.y, 1));
         this.skeXiu.node.setScale(new Vec3(Math.abs(this.skeXiu.node.scale.x) * scaleX, this.skeXiu.node.scale.y, 1));
 
-        let randY = Math.random(); 
+        let randY = Math.random();
 
         if(randY < 0.5){
             targetY = this.node.getPosition().y + offy;
@@ -339,22 +338,22 @@ export class pet extends Component {
                 targetY = this.node.getPosition().y + offy;
             }
         }
-   
-        let duration = this.actimes[this.actionInd];  //行走的播放时间 
+
+        let duration = this.actimes[this.actionInd];
 
         this.walkTween = tween(this.node)
         .to(duration, {position: new Vec3(targetX, targetY, 0)})
-        // .call(()=>{
-        //     this.nodeSke.clearAnimations();
-        //     this.nodeSke.setAnimation(6,this.actions[6], true);
-        // })
-        // .delay(2)
+
+
+
+
+
         .call(()=>{
             this.updateAnima();
         })
         .start();
-    }  
-  
+    }
+
     update(dt: number) {
         if (this.state == 0){
             this.timeSta += dt;
@@ -381,9 +380,9 @@ export class pet extends Component {
             }
         }
     }
-  
-    // 显示状态提示  
-    public showStatusTip(newState:number = 0) {  
+
+
+    public showStatusTip(newState:number = 0) {
         if (newState == 0){
             this.state = 0;
             this.statusBg.scale = new Vec3(0,0,0);
@@ -392,12 +391,12 @@ export class pet extends Component {
         if (this.state != 0 && newState != 6){
             return
         }
-        // if ((newState == 4 || newState == 5) && this.state != 0){
-        //     return;
-        // }
-        // if (this.state == 1 || this.state == 2 ||this.state == 3){
-        //     return;
-        // }
+
+
+
+
+
+
 
         let str = "";
         this.state = newState;
@@ -429,16 +428,16 @@ export class pet extends Component {
         if (this.tipTween){
             this.tipTween.stop();
         }
-        //todo 气泡功能关闭
-        // this.tipTween = tween(this.statusBg)
-        //     .to(0.1,{scale:new Vec3(1,1,1)})
-        //     // .delay(3)
-        //     // .to(0.1,{scale:new Vec3(0,0,0)})
-        //     // .call(()=>{
-        //     //     this.state = 0;
-        //     // })
-        //     .start()
-    } 
+
+
+
+
+
+
+
+
+
+    }
 
 }
 

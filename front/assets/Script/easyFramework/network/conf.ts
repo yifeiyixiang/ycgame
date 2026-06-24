@@ -4,68 +4,68 @@ import ServerCtrJSF from "./ServerCtrJSF"
 export const GNetUrl = {
 
 	GetWsUrl: ()=>{
-		// return "wslocalhost:39101/sh"
-	
+
+
 	},
 	GetH1ttpUrl: ()=>{
-	
+
 	}
 }
 
 
-//操作状态
+
 export const GNetCmd = {
-	StickPack: 100000, // 粘包
-	Heartbeat: 101000, // 用户心跳
-	UserLogin: 101001, // 用户登录
-	UserRegister: 101002, // 用户注册
-	AntiAddiction: 101003, // 防沉迷认证
-	SensitiveWordsCheck: 101004, // 用户保存数据
-	UniqueLogin: 101005, // ---游客登录,facebook登录, google登录，返回登录的唯一标识，前端保存唯一标识，如果保存成功，那么就是记录一直传
+	StickPack: 100000,
+	Heartbeat: 101000,
+	UserLogin: 101001,
+	UserRegister: 101002,
+	AntiAddiction: 101003,
+	SensitiveWordsCheck: 101004,
+	UniqueLogin: 101005,
 
-	SaveUserRecord: 102003, // 用户保存数据
-	GetRegionData: 102004,// 查询用户某个分区的数据
-	GetRegionList: 102005,// 获取分区列表
-	SaveUserRecordAll: 102007,// 用户保存所有数据
-	UploadAvatar: 102008,//上传头像
-	GetUserDataByKey: 102009, // 获得用户数据
+	SaveUserRecord: 102003,
+	GetRegionData: 102004,
+	GetRegionList: 102005,
+	SaveUserRecordAll: 102007,
+	UploadAvatar: 102008,
+	GetUserDataByKey: 102009,
 
-	SaveUserRecordMulti: 102010, //用户保存数据多key和val
-	GetCodeDataByKey: 102011, // 获得兑换码数据
+	SaveUserRecordMulti: 102010,
+	GetCodeDataByKey: 102011,
 
-	ReqWxSession: 103001, // 微信接口返回值
-	ReqSendAuthCode: 103002, // 请求发送短信验证码
-	ReqPhoneLogin: 103003, // 请求使用手机登录
+	ReqWxSession: 103001,
+	ReqSendAuthCode: 103002,
+	ReqPhoneLogin: 103003,
 
-	BindFaceBook: 104001, //绑定facebook账号，并修改登录状态
-	BindGoogle: 104002, //绑定谷歌登录，并修改登录状态
-	ToClientNewMail: 104003, //下发邮件ID
-	GetActiveCode : 104004, //输入激活码领取激活码
+	BindFaceBook: 104001,
+	BindGoogle: 104002,
+	ToClientNewMail: 104003,
+	GetActiveCode : 104004,
 
-	SetPlayerPkgLog: 105001, //记录玩家背包日志，本地缓存批量入库
-	ReceiveGodWealth: 105002, //财神分享
+	SetPlayerPkgLog: 105001,
+	ReceiveGodWealth: 105002,
 
-	CreateChargeOrder: 106001, //創建充值订单，根据订单编号进行
-	UpdChargeOrderStatus: 106002, //编辑充值订单，修改订单状态
+	CreateChargeOrder: 106001,
+	UpdChargeOrderStatus: 106002,
 
-	GetRankInfo: 201001, //请求获得排行数据
-	GetInviteCode: 201002, //请求邀请码
-	GetInviteCodeReward: 201003, //新玩家，输入邀请码，获得邀请码奖励，标记为老用户
-	GetInviteLevelReward: 201004, //老玩家领取奖励
-	PushInviteProcess: 201005, //推送邀请进度
-	IsRankOpen: 201006, //是否开启排行榜
-	GetSomeonePlayerInfo: 201007, //获取其他玩家数据
+	GetRankInfo: 201001,
+	GetInviteCode: 201002,
+	GetInviteCodeReward: 201003,
+	GetInviteLevelReward: 201004,
+	PushInviteProcess: 201005,
+	IsRankOpen: 201006,
+	GetSomeonePlayerInfo: 201007,
 
-	GetMidAutumnRank: 301001, //中秋活动排行榜
-	SetMidAutumnRank: 301002, //中秋活动排行榜
-	GetWorldBossRank: 301003, //世界boss排行榜查看
-	SetWorldBossRank: 301004, //世界boss排行榜设置
-	PushWorldBossSettle: 301005, //世界boss结算完后推送消息到本地
-	SetWorldBossPlayerStatus: 301006, //设置世界boss挑战的状态
-	GetWorldBossPlayerStatus: 301007, //读取世界boss挑战的状态
+	GetMidAutumnRank: 301001,
+	SetMidAutumnRank: 301002,
+	GetWorldBossRank: 301003,
+	SetWorldBossRank: 301004,
+	PushWorldBossSettle: 301005,
+	SetWorldBossPlayerStatus: 301006,
+	GetWorldBossPlayerStatus: 301007,
 
-	GetEmpireSpotData: 302001, //帝国战争的数据读取，每秒
-	ActionEmpireSpot: 302002, //帝国战争对地块的行为，1占领 2攻占 3发起掠夺 4参与掠夺 5驱赶
+	GetEmpireSpotData: 302001,
+	ActionEmpireSpot: 302002,
 }
 
 export const GNetConst = {
@@ -80,8 +80,8 @@ export const GNetConst = {
 }
 
 export const GEvent = {
-	connect_fail: "connect_fail", //连不上服务器要提示
+	connect_fail: "connect_fail",
 	ws_reconnect: "ws_reconnect",
 	ws_colse: "ws_colse",
-	ws_open: "ws_open", //建立链接成功
+	ws_open: "ws_open",
 }

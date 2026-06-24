@@ -2,10 +2,10 @@ import { Button, find, instantiate, Node, Sprite, _decorator } from 'cc';
 import { Const } from '../../../config/Const';
 import { TujianState } from '../../../config/global';
 import BaseView from '../../../easyFramework/mgr/BaseView';
-import { uiManager } from '../../../easyFramework/mgr/uiManager';
-import tables from '../../../easyFramework/other/tables';
+import { UiLayerService } from '../../../easyFramework/mgr/uiManager';
+import TableDataService from '../../../easyFramework/other/tables';
 import { UtilPub } from '../../../easyFramework/utils/UtilPub';
-import { userData } from '../../comm/UserData';
+import { playerDataStore } from '../../comm/UserData';
 const { ccclass, property } = _decorator;
 
 @ccclass('ItemCodexLayer')
@@ -42,7 +42,7 @@ export class ItemCodexLayer extends BaseView {
     }
 
     initUI(propId: number) {
-        let propRow = tables.ins().getTableValueByID(Const.Tables.prop, propId);
+        let propRow = TableDataService.ins().getTableValueByID(Const.Tables.prop, propId);
         this.propId = propId;
         this.setString(this.nameNode, propRow.sonname);
 
@@ -69,7 +69,7 @@ export class ItemCodexLayer extends BaseView {
             if (pRow.id == propId) {
                 bgName = "grid_chose";
             } else {
-                if (userData.isGetPropTujian(pRow.id) == TujianState.unGet) {
+                if (playerDataStore.isGetPropTujian(pRow.id) == TujianState.unGet) {
                     wenhaoNode.active = true;
                     iconNode.active = false;
                     createIcon.active = false;
@@ -102,8 +102,8 @@ export class ItemCodexLayer extends BaseView {
 
     getPropRowArr() {
         let arr: any = [];
-        let propRow = tables.ins().getTableValueByID(Const.Tables.prop, this.propId);
-        let tb = tables.ins().getTable(Const.Tables.prop);
+        let propRow = TableDataService.ins().getTableValueByID(Const.Tables.prop, this.propId);
+        let tb = TableDataService.ins().getTable(Const.Tables.prop);
         for (let i in tb) {
             let row = tb[i];
             if (propRow.type == row.type && propRow.typeson == row.typeson) {
@@ -115,12 +115,12 @@ export class ItemCodexLayer extends BaseView {
 
     getPropFromArr() {
         let arr: any = [];
-        let tb = tables.ins().getTable(Const.Tables.prop);
-        let propRow = tables.ins().getTableValueByID(Const.Tables.prop, this.propId);
+        let tb = TableDataService.ins().getTable(Const.Tables.prop);
+        let propRow = TableDataService.ins().getTableValueByID(Const.Tables.prop, this.propId);
         let tempId = this.propId - propRow.luna + 1;
 
         let firstPropId = -1;
-        let firstPropRow = tables.ins().getTableValueByID(Const.Tables.prop, tempId);
+        let firstPropRow = TableDataService.ins().getTableValueByID(Const.Tables.prop, tempId);
         if (tempId != this.propId && firstPropRow && firstPropRow.type == propRow.type && firstPropRow.typeson == propRow.typeson) {
             firstPropId = tempId;
         }
@@ -160,18 +160,18 @@ export class ItemCodexLayer extends BaseView {
     onClickPropItem(btn: Button) {
         // @ts-ignore
         let propRow = btn.node.propRow;
-        // if (userData.isGetPropTujian(propRow.id) == TujianState.unGet) {
-        //     mergeBoardModel.showToast(localText.lockNoLook);
-        //     return;
-        // }
-        uiManager.instance.showDialog(Const.Dialogs.PropMinInfo, { propdata: propRow });
+
+
+
+
+        UiLayerService.instance.showDialog(Const.Dialogs.PropMinInfo, { propdata: propRow });
     }
 
     onClickBtnFromItem(btn: Button) {
         // @ts-ignore
         let propRow = btn.node.propRow;
         if (propRow.tan) {
-            uiManager.instance.showDialog(Const.Dialogs.PropItemInfo, { propdata: propRow });
+            UiLayerService.instance.showDialog(Const.Dialogs.PropItemInfo, { propdata: propRow });
         } else {
             this.show(propRow.id);
         }

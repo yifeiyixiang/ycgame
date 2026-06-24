@@ -1,27 +1,27 @@
 import { _decorator, Node, v3, v2, Vec2, Vec3, UITransform, Prefab, Scene, tween, SpriteFrame, Sprite, director } from 'cc';
 import { Const } from '../../config/Const';
 import { GCurFace, GIGridData, GISceneItemParent, GLockState, GSceneItemData, GSceneItemType, GSceneRoomReceiveState, GSceneRoomState, GSceneSkinState, GStreetQueueFlag, GTypeStrNode } from '../../config/global';
-import { comm } from '../../easyFramework/mgr/comm';
-import { poolManager } from '../../easyFramework/mgr/poolManager';
-import tables from '../../easyFramework/other/tables';
+import { BaseUiComponent } from '../../easyFramework/mgr/comm';
+import { NodePoolService } from '../../easyFramework/mgr/poolManager';
+import TableDataService from '../../easyFramework/other/tables';
 import { UtilPub } from '../../easyFramework/utils/UtilPub';
 import { grid } from '../UI/scene/grid';
 import { grid_wall } from '../UI/scene/grid_wall';
 import { guest_mgr } from '../UI/scene/guest_mgr';
-import { scene_item_parent } from '../UI/scene/scene_item_parent';
+import { SceneItemBaseController } from '../UI/scene/scene_item_parent';
 import { SceneData } from './SceneData';
-import { userData } from './UserData';
+import { playerDataStore } from './UserData';
 import GD from '../../config/GD';
 import { Notifications } from '../../easyFramework/mgr/notifications';
 import { guest } from '../UI/scene/guest';
 import ServerCtrJSF from '../../easyFramework/network/ServerCtrJSF';
 const { ccclass, property } = _decorator;
 
-/**
- * 本游戏中特有的工具类
- */
+
+
+
 @ccclass('UtilScene')
-export class UtilScene extends comm {
+export class UtilScene extends BaseUiComponent {
     public static restartGame() {
         Notifications.clear()
         ServerCtrJSF.GetInstance().isLoadAll = false
@@ -30,12 +30,12 @@ export class UtilScene extends comm {
         director.loadScene("loading")
     }
 
-    //最大和最�?
+
     public static maxVal: number = 3000
     public static minVal: number = 500
     public static initVal: number = 925
     public static ExpTimes: number = 5
-    //客人随机的最大客人数
+
     public static GuestMaxNum: Map<number, number> = new Map<number, number>()
 
     public static setSkinIcon(node: Sprite, skinData: any) {
@@ -57,58 +57,58 @@ export class UtilScene extends comm {
     public static hideDebugPoint1() {
         Const.FloorFixedNode.children.forEach((row) => {
             if (row.children.length > 0) {
-                // console.log("@@@@@@@@@@@@@@@)))", row.children[0])
+
                 row.children[0].getChildByName("points1")!.active = false
             }
         })
         Const.WallFixedNode.children.forEach((row) => {
             if (row.children.length > 0) {
-                // console.log("@@@@@@@@@@@@@@@)))", row.children[0])
+
                 row.children[0].getChildByName("points1")!.active = false
             }
         })
     }
 
-    //获得场景图片资源的路�?
+
     public static getResSceneIcon(path: string) {
         let reval = ""
-        if (path.indexOf("|") == -1) {//没配置就走默认的图标路径
+        if (path.indexOf("|") == -1) {
             reval = Const.resPath.defaultSceneIcons + path
         } else {
             reval = path
         }
-        // UtilPub.log("---------增加图标", reval)
+
         return reval
     }
 
-    //获得场景预制体资源的路径
+
     public static getResPrefabIcon(path: string) {
         let reval = ""
-        if (path.indexOf("|") == -1) {//没配置就走默认的图标路径
+        if (path.indexOf("|") == -1) {
             reval = Const.resPath.defaultScenePrefabs + path
         } else {
             reval = path
         }
-        // UtilPub.log("---------增加预制�?, reval)
+
         return reval
     }
 
-    //获得场景Spine资源的路�?
+
     public static getResSpineIcon(path: string) {
         let reval = ""
-        if (path.indexOf("|") == -1) {//没配置就走默认的图标路径
+        if (path.indexOf("|") == -1) {
             reval = Const.resPath.defaultGuestSpine + path
         } else {
             reval = path
         }
-        // UtilPub.log("---------增加Spine", reval)
+
         return reval
     }
 
-    /**
-     * 设置场景解锁动画
-     * @param node 
-     */
+
+
+
+
     public static setSceneItemAni(node: Node, cb?: Function) {
         let oriPos = node.position.clone()
         node.position = v3(oriPos.x, oriPos.y + 100, oriPos.z)
@@ -123,26 +123,26 @@ export class UtilScene extends comm {
     }
 
     public static setGuestMaxNum() {
-        let guestsData = tables.ins().getTableValuesByType(Const.Tables.scene_guest, "eff", "1")
+        let guestsData = TableDataService.ins().getTableValuesByType(Const.Tables.scene_guest, "eff", "1")
         guestsData.forEach((item) => {
             UtilScene.GuestMaxNum.set(item.id, UtilPub.ranInt(item.limit[0], item.limit[1]))
         })
     }
 
-    /**
-     * 获得解锁道具对应的的客人数据
-     * @returns 
-     */
+
+
+
+
     public static getUnlockGuestData() {
-        let guestsData = tables.ins().getTableValuesByType(Const.Tables.scene_guest, "eff", "1")
+        let guestsData = TableDataService.ins().getTableValuesByType(Const.Tables.scene_guest, "eff", "1")
         let unlockGuestsData: any = []
         guestsData.forEach((item) => {
-            //对应的皮肤解锁的那些客人才可以出�?
+
             if (SceneData.ins.getSceneSkinById(item.skin) == GSceneSkinState.gotted) {
-                //对应存在的客人数量不能超过最大数�?
+
                 let cur = UtilScene.getGuestCntById(item.id)
                 let max = UtilScene.GuestMaxNum.get(item.id)!
-                // UtilPub.log("客人情况-----", cur, max, UtilScene.GuestMaxNum, item.id)
+
                 if (cur < max) {
                     unlockGuestsData.push(item)
                 }
@@ -172,7 +172,7 @@ export class UtilScene extends comm {
     }
 
     public static calcRoomCompletionRatio(roomId: number) {
-        let roomItems = tables.ins().getTableValuesByType2(Const.Tables.scene_item, "room", roomId + "", "eff", "1")
+        let roomItems = TableDataService.ins().getTableValuesByType2(Const.Tables.scene_item, "room", roomId + "", "eff", "1")
         let totalStar: number = 0
         let finishedStar: number = 0
         for (let i = 0; i < roomItems.length; i++) {
@@ -190,11 +190,11 @@ export class UtilScene extends comm {
         return Math.min(1, finishedStar / totalStar)
     }
 
-    /**
-     * 根据地板的ID获得对应的节�?
-     * @param id 
-     * @returns 
-     */
+
+
+
+
+
     public static getFloorNodeById(id: number) {
         let resScript: GISceneItemParent = null!
         for (let i = 0; i < Const.FloorFixedNode.children.length; i++) {
@@ -220,11 +220,11 @@ export class UtilScene extends comm {
         return floorNode
     }
 
-    /**
-     * 根据墙壁的ID获得对应的节�?
-     * @param id 
-     * @returns 
-     */
+
+
+
+
+
     public static getWallNodeById(id: number) {
         let resScript: GISceneItemParent = null!
         for (let i = 0; i < Const.WallFixedNode.children.length; i++) {
@@ -238,15 +238,15 @@ export class UtilScene extends comm {
         return resScript
     }
 
-    //是否有场景的道具可以被建�?
+
     public static isSceneItemCouldBeBuild() {
         let needShowRooms = UtilScene.getNeedShowStarRooms()
         for (let i = 0; i < needShowRooms.length; i++) {
             let roomId = needShowRooms[i].id
             let items = UtilScene.getNeedShowStarSceneItems(roomId)
-            // console.log("----------是否有场景的道具可以被建�?--",roomId, userData.greenStar, items[0].stars.split(",")[1])
+
             if (items.length > 0) {
-                if (userData.greenStar >= items[0].stars.split(",")[1]) {
+                if (playerDataStore.greenStar >= items[0].stars.split(",")[1]) {
                     return true
                 }
             }
@@ -255,12 +255,12 @@ export class UtilScene extends comm {
     }
 
     public static getNeedShowStarSceneItems(roomId: number) {
-        let roomItems = tables.ins().getTableValuesByType2(Const.Tables.scene_item, "room", roomId + "", "eff", "1")
+        let roomItems = TableDataService.ins().getTableValuesByType2(Const.Tables.scene_item, "room", roomId + "", "eff", "1")
         roomItems.sort((a, b) => {
             return a.order - b.order
         })
 
-        //获得未解锁的场景道具
+
         let items: any = []
         for (let i = 0; i < roomItems.length; i++) {
             let itemData = roomItems[i]
@@ -274,26 +274,26 @@ export class UtilScene extends comm {
         return items
     }
 
-    /**
-     * 获得要展示的房间配表数据
-     * @returns 
-     */
+
+
+
+
     public static getNeedShowStarRooms() {
-        //展示已经解锁的房�?+ 未解锁的（达成等级条件的�?个房�?
-        let roomRows = tables.ins().getTableValuesByType(Const.Tables.scene_room, "type", "1")
+
+        let roomRows = TableDataService.ins().getTableValuesByType(Const.Tables.scene_room, "type", "1")
         let needShowRooms: any = []
         for (let i = 0; i < roomRows.length; i++) {
             let row = roomRows[i]
             if (SceneData.ins.getRoomLockInfoById(row.id) == GSceneRoomState.unlock) {
-                // UtilPub.log("####--------已解锁房�?, row.id)
+
                 let items = UtilScene.getNeedShowStarSceneItems(row.id)
-                if (items.length > 0 || SceneData.ins.getRoomReceiveInfoById(row.id) == GSceneRoomReceiveState.unReceive) { //至少有一个道具可以解�?
+                if (items.length > 0 || SceneData.ins.getRoomReceiveInfoById(row.id) == GSceneRoomReceiveState.unReceive) {
                     needShowRooms.push(row)
                 }
             } else {
-                //满足解锁条件
-                // UtilPub.log("####--------未解锁房间满足解锁条�?, userData.roleLv, row.id, row.lv)
-                if (userData.roleLv >= row.lv) {
+
+
+                if (playerDataStore.roleLv >= row.lv) {
                     needShowRooms.push(row)
                     break
                 }
@@ -302,9 +302,9 @@ export class UtilScene extends comm {
         return needShowRooms
     }
 
-    /**
-     * 获得场景道具，通过ID
-     */
+
+
+
     public static getSceneItemNodeById(sceneId: number): GISceneItemParent | undefined {
         let resScript: GISceneItemParent = null!
         for (let i = 0; i < Const.AllItems.length; i++) {
@@ -315,7 +315,7 @@ export class UtilScene extends comm {
             let script = UtilScene.getSceneNodeScript(item)
             if (script.id == sceneId) {
                 resScript = script
-                // console.log("------!!!!!xxxxxxxxxxxxxx", script.id)
+
                 break;
             }
         }
@@ -332,11 +332,11 @@ export class UtilScene extends comm {
         let s = ""
         arr.forEach(item => {
             let script = UtilScene.getSceneNodeScript(item)
-            let skinData = tables.ins().getTableValueByID(Const.Tables.scene_skin, script.skin)
-            // UtilPub.log(script.skin+" ", 
-            //     skinData.name+" 位置("+script.curGridPoint.x +","+script.curGridPoint.y+") 朝向curFace "+script.curFace
-            //     // " --位置Points", JSON.stringify(script.getPointsArr())
-            // )
+            let skinData = TableDataService.ins().getTableValueByID(Const.Tables.scene_skin, script.skin)
+
+
+
+
             s += skinData.name + "," + script.skin + "," + script.id + "," + "[" + script.curGridPoint.x + "_" + script.curGridPoint.y + "]" + "," + script.curFace + "\n"
 
         })
@@ -344,31 +344,31 @@ export class UtilScene extends comm {
     }
 
 
-    //房间中的障碍物，�?3x60中剔�?
-    public static roomEmptyGrids: Vec2[] = [] //房间空的地方
-    public static roomEmptyGridsMap: Map<string, number> = new Map<string, number>(); //房间空的地方
+
+    public static roomEmptyGrids: Vec2[] = []
+    public static roomEmptyGridsMap: Map<string, number> = new Map<string, number>();
     public static roomObstacles: Vec2[] = []
     public static roomObstaclesMap: Map<string, number> = new Map<string, number>();
-    //街道上的障碍物，�?8x88种剔�?
-    public static streetEmptyGrids: Vec2[] = [] //街道空的地方
-    public static streetEmptyGridsMap: Map<string, number> = new Map<string, number>(); //街道空的地方
+
+    public static streetEmptyGrids: Vec2[] = []
+    public static streetEmptyGridsMap: Map<string, number> = new Map<string, number>();
     public static streetObstacles: Vec2[] = []
     public static streetObstaclesMap: Map<string, number> = new Map<string, number>();
-    //初始位置
-    public static subway: Vec2 = v2(11, 0); //地铁
-    public static roomDoorPos: Vec2 = v2(12, 0); //房间门入�?
 
-    //街道
+    public static subway: Vec2 = v2(11, 0);
+    public static roomDoorPos: Vec2 = v2(12, 0);
+
+
     public static streetGrids: Map<string, number> = new Map<string, number>();
-    //底部的格�?
+
     public static grids: Map<string, number> = new Map<string, number>();
-    //侧向的格�?
+
     public static wallGrids: Map<string, number> = new Map<string, number>();
-    //临时显示的网格节点，当长按箭头后
+
     public static tmpGridsUI: Node[] = []
-    //初始化墙壁网�?
+
     public static initWallGrids() {
-        let len = 24  //88
+        let len = 24
         for (let i = 0; i < len; i++) {
             for (let j = 0; j < 8; j++) {
                 this.wallGrids.set(i + "," + j, 1)
@@ -383,13 +383,13 @@ export class UtilScene extends comm {
     }
 
     public static genWallGrids(grids: Map<string, number>) {
-        poolManager.instance.putNodeArr(this.tmpGridsUI)
+        NodePoolService.instance.putNodeArr(this.tmpGridsUI)
         UtilPub.getPrefab(Const.Prefabs.grid_wall, (p: Prefab) => {
             grids.forEach((value: number, key: string) => {
                 let arr = key.split(",")
                 let x = Number(arr[0])
                 let y = Number(arr[1])
-                let item = poolManager.instance.getNode(p, Const.WallGridParent, true)!
+                let item = NodePoolService.instance.getNode(p, Const.WallGridParent, true)!
                 item.getComponent(grid_wall)!.init(x, y)
                 UtilPub.log("-------日志--", x, -y)
                 if (x < 0) {
@@ -401,13 +401,13 @@ export class UtilScene extends comm {
                 }
                 this.tmpGridsUI.push(item)
             })
-            // item.getComponent()
-            // UtilPub.log("---直接�?scene_day222 挂到主菜单下----",this.SceneNode.layer, item.layer)
+
+
         })
     }
 
     public static initStreetGrids() {
-        //88x88, 11,0为地铁出口的位置�?16,22为街区入口位置， 12,0 为房间开始位�?
+
         for (let i = 0; i < 88; i++) {
             for (let j = 0; j < 23; j++) {
                 this.streetGrids.set(i + "," + j, 1)
@@ -422,18 +422,18 @@ export class UtilScene extends comm {
                 let arr = key.split(",")
                 let x = Number(arr[0])
                 let y = Number(arr[1])
-                let item = poolManager.instance.getNode(p, Const.StreetFixedNode, true)!
+                let item = NodePoolService.instance.getNode(p, Const.StreetFixedNode, true)!
                 item.getComponent(grid)!.init(x, y)
-                // UtilPub.log("-------日志--", x, -y)
+
                 item.position = UtilScene.getBottomGridPos(x, y)
             })
-            // item.getComponent()
-            // UtilPub.log("---直接�?scene_day222 挂到主菜单下----",this.SceneNode.layer, item.layer)
+
+
         })
     }
 
     public static initBottomGrids() {
-        //88x88
+
         for (let i = 0; i < Const.MaxRoomX; i++) {
             for (let j = 0; j < Const.MaxRoomY; j++) {
                 this.grids.set(i + "," + j, 1)
@@ -443,28 +443,28 @@ export class UtilScene extends comm {
     }
 
     public static genBottomGrids(grids: Map<string, number>) {
-        poolManager.instance.putNodeArr(this.tmpGridsUI)
+        NodePoolService.instance.putNodeArr(this.tmpGridsUI)
         UtilPub.getPrefab(Const.Prefabs.grid, (p: Prefab) => {
             grids.forEach((value: number, key: string) => {
                 let arr = key.split(",")
                 let x = Number(arr[0])
                 let y = Number(arr[1])
-                let item = poolManager.instance.getNode(p, Const.GridParent, true)!
+                let item = NodePoolService.instance.getNode(p, Const.GridParent, true)!
                 item.getComponent(grid)!.init(x, y)
-                // UtilPub.log("-------日志--", x, -y)
+
                 item.position = UtilScene.getBottomGridPos(x, y)
                 this.tmpGridsUI.push(item)
             })
-            // item.getComponent()
-            // UtilPub.log("---直接�?scene_day222 挂到主菜单下----",this.SceneNode.layer, item.layer)
+
+
         })
     }
 
-    /**
-     * 初始化场景中的障碍物节点，此时所有的节点都具备了
-     */
+
+
+
     public static initAStarObstacles() {
-        //初始化街�?
+
         UtilScene.streetEmptyGrids = []
         UtilScene.streetEmptyGridsMap = new Map<string, number>()
         UtilScene.streetObstacles = []
@@ -476,7 +476,7 @@ export class UtilScene extends comm {
 
         let tmp = new Map<string, number>()
         let tmpStreet = new Map<string, number>()
-        //初始化街道障碍物，遍历所有item类型的家具，设置
+
         Const.StreetFixedNode.children.forEach(item => {
             let script = UtilScene.getSceneNodeScript(item)
             if (script.type == GSceneItemType.street) {
@@ -513,13 +513,13 @@ export class UtilScene extends comm {
         }
 
 
-        //初始化房间的障碍�?
+
         Const.AllItems.forEach(item => {
             let script = UtilScene.getSceneNodeScript(item)
             if (script.type == GSceneItemType.item) {
                 for (let i = 0; i < script.itemSize.x; i++) {
                     for (let j = 0; j < script.itemSize.y; j++) {
-                        // UtilScene.roomObstacles.push(v2( script.curGridPoint.x + i, script.curGridPoint.y + j))
+
                         UtilScene.roomObstaclesMap.set((script.curGridPoint.x + i) + "," + (script.curGridPoint.y + j), 1)
                     }
                 }
@@ -528,42 +528,42 @@ export class UtilScene extends comm {
 
 
 
-        //遍历房间的障碍点
-        //房间要单独判断，未解锁的房间都是障碍�?
-        // for (let i = 0; i < Const.MaxRoomX; i++) {
-        //     for (let j = 0; j < Const.MaxRoomY; j++) {
-        //         tmp.set(i + "," + j, 1)
-        //     }
-        // }
-        let roomRows = tables.ins().getTableValuesByType(Const.Tables.scene_room, "type", "1")
+
+
+
+
+
+
+
+        let roomRows = TableDataService.ins().getTableValuesByType(Const.Tables.scene_room, "type", "1")
         roomRows.forEach((row: any) => {
-            //房间是否解锁
-            if (SceneData.ins.getRoomLockInfoById(row.id) == GSceneRoomState.locked) { //锁定的房间时障碍
+
+            if (SceneData.ins.getRoomLockInfoById(row.id) == GSceneRoomState.locked) {
                 let roomSize = v2(row.x, row.y)
                 let roomPoint = v2(row.offset[0], row.offset[1])
                 for (let i = 0; i < roomSize.x; i++) {
                     for (let j = 0; j < roomSize.y; j++) {
                         let x = i + roomPoint.x
                         let y = j + roomPoint.y
-                        // UtilScene.roomObstacles.push(v2( x, y))
+
                         UtilScene.roomObstaclesMap.set((x) + "," + (y), 1)
-                        // tmp.set((x) + "," + (y), 1)
-                        // if (tmp.get(x + "," + y) != null) {
-                        //     UtilPub.log("---------剔除房间----",roomSize, roomPoint)
-                        //     tmp.delete(x + "," + y)
-                        // }
+
+
+
+
+
                     }
                 }
-            } else { //解锁的房间格子是开方的
+            } else {
                 let roomSize = v2(row.x, row.y)
                 let roomPoint = v2(row.offset[0], row.offset[1])
                 for (let i = 0; i < roomSize.x; i++) {
                     for (let j = 0; j < roomSize.y; j++) {
                         let x = i + roomPoint.x
                         let y = j + roomPoint.y
-                        // UtilScene.roomObstacles.push(v2( x, y))
-                        // UtilPub.log("---------解锁房间----",roomSize, roomPoint)
-                        // UtilScene.roomObstaclesMap.set((x) + "," + (y), 1)
+
+
+
                         tmp.set((x) + "," + (y), 1)
 
                     }
@@ -571,7 +571,7 @@ export class UtilScene extends comm {
             }
         })
 
-        //遍历所有解锁的房间，然后填充空格子，再挖空处理掉障碍物
+
 
 
         for (let key of UtilScene.roomObstaclesMap.keys()) {
@@ -591,21 +591,21 @@ export class UtilScene extends comm {
             UtilScene.roomEmptyGridsMap.set(x + "," + y, 1)
         }
 
-        //debug显示的格�?
-        // this.grids = UtilScene.roomObstaclesMap
-        // this.grids = UtilScene.roomEmptyGridsMap
-        // this.genBottomGrids(this.grids)
-        // UtilPub.log("$$$------------空地的信�?,  UtilScene.roomEmptyGrids)
+
+
+
+
+
     }
 
-    /**
-     * 获得场景节点脚本
-     * @param node 
-     */
+
+
+
+
     public static getSceneNodeScript(node: Node) {
         let script = node.getComponent(node.name)!
         if (script == null) {
-            script = node.getComponent(scene_item_parent)!
+            script = node.getComponent(SceneItemBaseController)!
         }
         if (script == null) {
             UtilPub.error("场景脚本绑定错误，请修改----!!", node.name, node)
@@ -613,31 +613,31 @@ export class UtilScene extends comm {
         return script as unknown as GISceneItemParent
     }
 
-    /**
-     * 给场景节点设置脚�?
-     * @param node 
-     */
+
+
+
+
     public static setSceneNodeScript(node: Node) {
         if (node.getComponent(node.name) == null) {
             try {
                 node.addComponent(node.name)
             } catch (error) {
-                // UtilPub.log("-------未设置脚�?)
+
             }
         }
         if (node.getComponent(node.name) == null) {
-            node.addComponent(scene_item_parent)
+            node.addComponent(SceneItemBaseController)
         }
     }
 
     public static orderAllItems() {
-        // UtilPub.log("----触发排序------")
-        //获得所有item类型为场景的
-        Const.AllItems.sort((a, b) => { //按照x位置排一�?
+
+
+        Const.AllItems.sort((a, b) => {
             return UtilScene.getSortVal(a, b)
         })
 
-        Const.AllItems.sort((a, b) => { //按类型排1�?
+        Const.AllItems.sort((a, b) => {
             let a1 = UtilScene.getSceneNodeScript(a)
             let b1 = UtilScene.getSceneNodeScript(b)
             return a1.type - b1.type;
@@ -645,12 +645,12 @@ export class UtilScene extends comm {
 
     }
 
-    /**
-     * 返回底部的网格坐�?
-     * @param size 
-     * @param curPoint 
-     * @returns 
-     */
+
+
+
+
+
+
     public static getGridBottomPoint(size: Vec2, curPoint: Vec2) {
         if (curPoint == null) {
             return v2(0, 0)
@@ -666,33 +666,33 @@ export class UtilScene extends comm {
         return v2(curPoint.x + xPlus * size.x / 2, curPoint.y + yPlus * size.y / 2)
     }
 
-    /**
-     * 设置排序的�?
-     */
+
+
+
     public static getSortVal(a: Node, b: Node) {
         let a1 = UtilScene.getSceneNodeScript(a)
         let a1p = UtilScene.getGridBottomPoint(a1.itemSize, a1.curGridPoint)
         let b1 = UtilScene.getSceneNodeScript(b)
         let b1p = UtilScene.getGridBottomPoint(b1.itemSize, b1.curGridPoint)
-        // UtilPub.log("1-----", a1.id,a1.itemSize, "---", b1.id, b1.itemSize)
+
         let s1 = a1.itemSize
         let s2 = b1.itemSize
-        //特殊处理
-        // if(s1.x==5 && s1.y==2 && s2.x==5 && s2.y==2 ){
+
+
         if (s1.x / s1.y >= 2.5 && s2.x / s2.y >= 2.5) {
-            // UtilPub.log("2---x--", a1.curGridPoint.x - b1.curGridPoint.x, "--y-", a1.curGridPoint.y - b1.curGridPoint.y)
+
             if (Math.abs(a1.curGridPoint.x - b1.curGridPoint.x) == 2 || Math.abs(a1.curGridPoint.x - b1.curGridPoint.x) == 3 || Math.abs(a1.curGridPoint.x - b1.curGridPoint.x) == 4) {
                 let deltaX = a1.curGridPoint.x - b1.curGridPoint.x
-                // UtilPub.log("3xx---x--", deltaX)
+
                 return (Math.abs(a1p.x - deltaX + a1p.y)) - (Math.abs(b1p.x + b1p.y));
             }
         }
-        // if(s1.x==2 && s1.y==5 && s2.x==2 && s2.y==5){
+
         if (s1.y / s1.x >= 2.5 && s2.y / s2.x >= 2.5) {
-            // UtilPub.log("2--y---", a1.curGridPoint.x - b1.curGridPoint.x, "--y-", a1.curGridPoint.y - b1.curGridPoint.y)
+
             if (Math.abs(a1.curGridPoint.y - b1.curGridPoint.y) == 2 || Math.abs(a1.curGridPoint.y - b1.curGridPoint.y) == 3 || Math.abs(a1.curGridPoint.y - b1.curGridPoint.y) == 4) {
                 let deltaY = a1.curGridPoint.y - b1.curGridPoint.y
-                // UtilPub.log("3yy---y--", deltaY)
+
                 return (Math.abs(a1p.x + a1p.y)) - (Math.abs(b1p.x + b1p.y + deltaY));
             }
         }
@@ -701,10 +701,10 @@ export class UtilScene extends comm {
         return (Math.abs(a1p.x + a1p.y)) - (Math.abs(b1p.x + b1p.y));
     }
 
-    /**
-     * 场景内的排序
-     * @node 可以是item父节点，可以是pendant挂件父节点，可以是carpet父节�?
-     */
+
+
+
+
     public static orderSceneItemNodeChildren(node: Node) {
         let arr: Node[] = []
         node.children.forEach((item) => {
@@ -712,7 +712,7 @@ export class UtilScene extends comm {
         })
         node.removeAllChildren()
 
-        arr.sort((a, b) => { //按照x位置排一�?
+        arr.sort((a, b) => {
             return UtilScene.getSortVal(a, b)
         })
 
@@ -736,17 +736,17 @@ export class UtilScene extends comm {
         return Const.ItemParent
     }
 
-    //旋转超界不让�?
+
     public static isBottomGridOutBorder(realX: number, realY: number, itemSize: Vec2) {
         if (realX >= 0 && realX <= Const.MaxRoomX - itemSize.x && realY <= Const.MaxRoomY - itemSize.y && realY >= 0) {
             return { res: true, offset: v2() }
         } else {
             let offset = v2()
-            // UtilPub.log("-------1偏移Y�?偏移X----", realY, Const.MaxRoomY-itemSize.y)
+
             if (realY > Const.MaxRoomY - itemSize.y) {
                 offset.y = realY + itemSize.y - Const.MaxRoomY
             }
-            // UtilPub.log("-------2偏移Y�?偏移X----", realX, Const.MaxRoomY-itemSize.x)
+
             if (realX > Const.MaxRoomX - itemSize.x) {
                 offset.x = realX + itemSize.x - Const.MaxRoomX
             }
@@ -756,20 +756,20 @@ export class UtilScene extends comm {
 
     public static getSceneData(script: GISceneItemParent) {
         return {
-            id: script.id, //scene_item 表的id
-            pos: script.curGridPoint, //当前的坐标点
-            curFace: script.curFace, //当前的朝向，如果朝向超过faceMax，那么就等于faceMax
-            lockState: script.lockState, //如果锁定状态，必须是皮肤ID
-            curGridPoint: script.curGridPoint, //设定当前�?
-            type: script.type, //场景的道具类�?
-            skin: script.skin, //默认皮肤
+            id: script.id,
+            pos: script.curGridPoint,
+            curFace: script.curFace,
+            lockState: script.lockState,
+            curGridPoint: script.curGridPoint,
+            type: script.type,
+            skin: script.skin,
         }
     }
 
-    // public static isFinishInitRoomLoad:boolean = false //是否完成初始化加�?
-    /**
-     * 获得所有目前场景下的物体位置数�?
-     */
+
+
+
+
     public static getAllSceneData() {
         let dataObj: { [key: string]: GSceneItemData } = {}
         Const.ItemParent.children.forEach(item => {
@@ -800,9 +800,9 @@ export class UtilScene extends comm {
         UtilScene.hideDebugPoint1()
         UtilScene.orderAllItems()
         UtilScene.orderSceneItemNodeChildren(Const.ItemParent)
-        //如果是第一次登录保存场景数�?
+
         if (SceneData.ins.isInitSceneData() == false) {
-            // SceneData.ins.setSceneItems(UtilScene.getAllSceneData())
+
             SceneData.ins.setRoomLockInfoById(1001, GSceneRoomState.unlock)
             SceneData.ins.finishInitSceneData()
         }
@@ -815,15 +815,15 @@ export class UtilScene extends comm {
 
     }
 
-    //设置墙壁的边�?
+
     public static setMaxWall() {
-        //获得墙壁最大的格子�?
+
         Const.MaxWallXRight = 24
         Const.MaxWallXLeft = -24
-        let rows = tables.ins().getTableValuesByType(Const.Tables.scene_room, "type", "1")
+        let rows = TableDataService.ins().getTableValuesByType(Const.Tables.scene_room, "type", "1")
         for (let i = 0; i < rows.length; i++) {
             if (SceneData.ins.getRoomLockInfoById(rows[i].id) == GSceneRoomState.unlock) {
-                // UtilPub.log("=-#########====房间是否解锁---",  rows[i].wall, rows[i])
+
                 if (rows[i].wall == 1) {
                     Const.MaxWallXRight += rows[i].x
                 } else if (rows[i].wall == -1) {
@@ -832,69 +832,69 @@ export class UtilScene extends comm {
             }
         }
         UtilScene.initGridsWallData(Const.WallGridParent.getComponent(UITransform)!, Math.abs(Const.MaxWallXLeft), Math.abs(Const.MaxWallXRight))
-        // UtilPub.log("=-#########====房间是否解锁---1", Const.MaxWallXRight)
-        // UtilPub.log("=-#########====房间是否解锁---2", Const.MaxWallXLeft)
+
+
     }
 
     public static async initRoom() {
-        //获得所有解锁的房间一次性初始化
-        let rows = tables.ins().getTableValuesByType(Const.Tables.scene_room, "type", "1")
-        // UtilPub.log("--@@@--解锁房间---", rows)
+
+        let rows = TableDataService.ins().getTableValuesByType(Const.Tables.scene_room, "type", "1")
+
         for (let i = 0; i < rows.length; i++) {
             if (SceneData.ins.getRoomLockInfoById(rows[i].id) == GSceneRoomState.unlock) {
-                // UtilPub.log("--@@@--解锁房间---", rows[i].id)
+
                 await UtilScene.initRoomById(rows[i].id)
             }
         }
-        //初始化设置所有墙壁和地板
-        // let floors = tables.ins().getTableValuesByType(Const.Tables.scene_item, "type", GSceneItemType.floor+"")
-        // for (let i = 0; i < floors.length; i++) {
-        //     UtilPub.log("--@@@--刷新地板---", floors[i].id)
-        //     await UtilScene.initFloorById(floors[i].id)
-        // }
 
-        // //初始化设置所有墙壁和地板
-        // let walls = tables.ins().getTableValuesByType(Const.Tables.scene_item, "type", GSceneItemType.wall+"")
-        // for (let i = 0; i < walls.length; i++) {
-        //     UtilPub.log("--@@@--刷新墙壁---", walls[i].id)
-        //     await UtilScene.initWallById(walls[i].id)
-        // }
-        // UtilPub.log("--@@@--解锁房间---", Const.AllItems)
+
+
+
+
+
+
+
+
+
+
+
+
+
         this.initRoomFinishFn()
     }
 
 
-    /**
-     * 获得初始房间的配�?
-     */
+
+
+
     public static initRoomById(roomId: number) {
         return new Promise<void>((resolve, reject) => {
 
-            //读取第一个房间的数据
-            let rows = tables.ins().getTableValuesByType2(Const.Tables.scene_item, "eff", "1", "room", roomId + "")
-            //生成对应的预制体
+
+            let rows = TableDataService.ins().getTableValuesByType2(Const.Tables.scene_item, "eff", "1", "room", roomId + "")
+
             let idx = 0
             for (let i = 0; i < rows.length; i++) {
-                let sceneItemSkin = tables.ins().getTableValueByID(Const.Tables.scene_skin, rows[i].skin)
-                // if(rows[i].room!=roomId){
-                //     idx++
-                //     continue
-                // }
+                let sceneItemSkin = TableDataService.ins().getTableValueByID(Const.Tables.scene_skin, rows[i].skin)
+
+
+
+
                 if (rows[i].type == GSceneItemType.item || rows[i].type == GSceneItemType.carpet || rows[i].type == GSceneItemType.pendant) {
                     UtilPub.getPrefab(UtilScene.getResPrefabIcon(sceneItemSkin.prefab), (p: Prefab) => {
-                        // UtilPub.log("-----s加载资源1---", sceneItemSkin.prefab, rows[i].type)
-                        let item = poolManager.instance.getNode(p, UtilScene.getParentByType(rows[i].type)!)!
+
+                        let item = NodePoolService.instance.getNode(p, UtilScene.getParentByType(rows[i].type)!)!
                         UtilScene.setSceneNodeScript(item)
                         let script = UtilScene.getSceneNodeScript(item)
-                        // item.setSiblingIndex(Math.abs(script.curGridPoint.x) + Math.abs(script.curGridPoint.y))
+
                         script.initByConfigTable(rows[i])
-                        // UtilPub.log("-----寻找云端数据1---", script, SceneData.ins.getSceneItemById(script.id, script.type))
-                        let skinData = tables.ins().getTableValueByID(Const.Tables.scene_skin, script.skin)
+
+                        let skinData = TableDataService.ins().getTableValueByID(Const.Tables.scene_skin, script.skin)
                         UtilPub.log("-----s加载资源2---", skinData.id, script.skin, skinData.name)
 
-                        if (rows[i].type == GSceneItemType.pendant) {   //如果是挂�?
+                        if (rows[i].type == GSceneItemType.pendant) {
                             item.position = UtilScene.getWallGridPos(script.curGridPoint.x, script.curGridPoint.y)
-                        } else {   //如果是道具和地毯
+                        } else {
                             item.position = UtilScene.getBottomGridPos(script.curGridPoint.x + Const.OriOffset.x, script.curGridPoint.y + Const.OriOffset.y)
                         }
 
@@ -908,14 +908,14 @@ export class UtilScene extends comm {
 
                 } else if (rows[i].type == GSceneItemType.floor) {
                     let parent = UtilScene.getParentByType(rows[i].type)!.getChildByName("floor_" + rows[i].id)!
-                    poolManager.instance.putNodeArr(parent.children)
-                    //设定地毯的图片�?
+                    NodePoolService.instance.putNodeArr(parent.children)
+
                     UtilPub.getPrefab(UtilScene.getResPrefabIcon(sceneItemSkin.prefab), (p: Prefab) => {
-                        let item = poolManager.instance.getNode(p, parent)!
+                        let item = NodePoolService.instance.getNode(p, parent)!
                         UtilScene.setSceneNodeScript(item)
                         let script = UtilScene.getSceneNodeScript(item)
                         script.initByConfigTable(rows[i])
-                        // UtilPub.log("-----寻找云端数据2---", script, SceneData.ins.getSceneItemById(script.id, script.type), rows[i])
+
                         item.position = v3(0, 0, 0)
 
                         Const.AllItems.push(item)
@@ -923,22 +923,22 @@ export class UtilScene extends comm {
                         if (idx >= rows.length) {
                             UtilScene.setMaxWall()
                             resolve()
-                            // this.initRoomFinishFn(finishCb)
+
                         }
                     })
 
                 } else if (rows[i].type == GSceneItemType.wall) {
                     let parent = UtilScene.getParentByType(rows[i].type)!.getChildByName("wall_" + rows[i].id)!
-                    poolManager.instance.putNodeArr(parent.children)
-                    //TODO 设定墙壁的图片�?
-                    console.log("-----设定墙壁的图片�?----", sceneItemSkin.prefab)
+                    NodePoolService.instance.putNodeArr(parent.children)
+
+                    console.log("-----设定墙壁的图片�?----", sceneItemSkin.prefab)
                     UtilPub.getPrefab(UtilScene.getResPrefabIcon(sceneItemSkin.prefab), (p: Prefab) => {
-                        let item = poolManager.instance.getNode(p, parent)!
+                        let item = NodePoolService.instance.getNode(p, parent)!
                         UtilScene.setSceneNodeScript(item)
                         let script = UtilScene.getSceneNodeScript(item)
                         script.initByConfigTable(rows[i])
                         UtilPub.log("-----寻找云端数据3---", script, SceneData.ins.getSceneItemById(script.id, script.type), rows[i])
-                        //判断是否解锁了，如果没有解锁，那么显示对应的原始状态图�?
+
                         item.position = v3(0, 0, 0)
 
                         Const.AllItems.push(item)
@@ -946,7 +946,7 @@ export class UtilScene extends comm {
                         if (idx >= rows.length) {
                             UtilScene.setMaxWall()
                             resolve()
-                            // this.initRoomFinishFn(finishCb)
+
                         }
                     })
                 }
@@ -957,16 +957,16 @@ export class UtilScene extends comm {
 
     public static initFloorById(sceneItemData: any) {
         return new Promise<void>((resolve, reject) => {
-            let sceneItemSkin = tables.ins().getTableValueByID(Const.Tables.scene_skin, sceneItemData.skin)
+            let sceneItemSkin = TableDataService.ins().getTableValueByID(Const.Tables.scene_skin, sceneItemData.skin)
             let parent = UtilScene.getParentByType(sceneItemData.type)!.getChildByName("floor_" + sceneItemData.id)!
-            poolManager.instance.putNodeArr(parent.children)
-            //设定地毯的图片�?
+            NodePoolService.instance.putNodeArr(parent.children)
+
             UtilPub.getPrefab(UtilScene.getResPrefabIcon(sceneItemSkin.prefab), (p: Prefab) => {
-                let item = poolManager.instance.getNode(p, parent)!
+                let item = NodePoolService.instance.getNode(p, parent)!
                 UtilScene.setSceneNodeScript(item)
                 let script = UtilScene.getSceneNodeScript(item)
                 script.initByConfigTable(sceneItemData)
-                // UtilPub.log("-----寻找云端数据2---", script, SceneData.ins.getSceneItemById(script.id, script.type), rows[i])
+
                 item.position = v3(0, 0, 0)
                 Const.AllItems.push(item)
                 resolve()
@@ -977,16 +977,16 @@ export class UtilScene extends comm {
 
     public static initWallById(sceneItemData: any) {
         return new Promise<void>((resolve, reject) => {
-            let sceneItemSkin = tables.ins().getTableValueByID(Const.Tables.scene_skin, sceneItemData.skin)
+            let sceneItemSkin = TableDataService.ins().getTableValueByID(Const.Tables.scene_skin, sceneItemData.skin)
             let parent = UtilScene.getParentByType(sceneItemData.type)!.getChildByName("wall_" + sceneItemData.id)!
-            poolManager.instance.putNodeArr(parent.children)
-            //设定地毯的图片�?
+            NodePoolService.instance.putNodeArr(parent.children)
+
             UtilPub.getPrefab(UtilScene.getResPrefabIcon(sceneItemSkin.prefab), (p: Prefab) => {
-                let item = poolManager.instance.getNode(p, parent)!
+                let item = NodePoolService.instance.getNode(p, parent)!
                 UtilScene.setSceneNodeScript(item)
                 let script = UtilScene.getSceneNodeScript(item)
                 script.initByConfigTable(sceneItemData)
-                // UtilPub.log("-----寻找云端数据2---", script, SceneData.ins.getSceneItemById(script.id, script.type), rows[i])
+
                 item.position = v3(0, 0, 0)
                 Const.AllItems.push(item)
                 resolve()
@@ -995,9 +995,9 @@ export class UtilScene extends comm {
 
     }
 
-    /** 
-     * 1 3 �?2 4 是需要转面的，尺寸对�?
-    */
+
+
+
     public static getItemSize(size: Vec2, curFace: GCurFace): Vec2 {
         if (curFace == GCurFace.face2 || curFace == GCurFace.face4) {
             return v2(size.x, size.y)
@@ -1009,20 +1009,20 @@ export class UtilScene extends comm {
         return v2(size.x + Const.OriOffset.x, size.y + Const.OriOffset.y)
     }
 
-    //网格数据检索用
-    public static gridData: Map<string, GIGridData> = new Map<string, GIGridData>; //可以是网格点的世界坐标。val是对应网格点 10,0 左下角一个点�?
-    public static gridWallData: Map<string, GIGridData> = new Map<string, GIGridData>; //墙壁的格�?
-    //底部的格�?
+
+    public static gridData: Map<string, GIGridData> = new Map<string, GIGridData>;
+    public static gridWallData: Map<string, GIGridData> = new Map<string, GIGridData>;
+
     public static gridIntervalX: number = 40.40
     public static gridIntervalY: number = 23.1
     public static gridOffsetX: number = 40.40
     public static gridOffsetY: number = 23.1
 
-    //侧向的格�?
+
     public static wallGridIntervalX: number = 40.1
     public static wallGridIntervalY: number = 22.7
 
-    //获得墙体坐标位置
+
     public static getWallGridPos(x: number, y: number) {
         if (x < 0) {
             return v3(x * this.wallGridIntervalX, -y * (this.wallGridIntervalY + 25) + x * (this.wallGridIntervalY + 0.5) + 20, 0)
@@ -1031,7 +1031,7 @@ export class UtilScene extends comm {
         }
     }
 
-    //获得底部坐标位置
+
     public static getBottomGridPos(x: number, y: number) {
         return v3(x * this.gridIntervalX - y * this.gridOffsetX, -y * this.gridIntervalY - x * this.gridOffsetY, 0)
     }
@@ -1039,7 +1039,7 @@ export class UtilScene extends comm {
         return this.getBottomGridPos(pos.x, pos.y)
     }
 
-    //初始化格子数�?
+
     public static initGridsData(gridUIT: UITransform, leftDown: number, rightDown: number) {
         for (let x = 0; x < rightDown; x++) {
             for (let y = 0; y < leftDown; y++) {
@@ -1051,7 +1051,7 @@ export class UtilScene extends comm {
                 })
             }
         }
-        // UtilPub.log("-------初始化格子数据，", this.gridData)
+
     }
 
     public static initGridsWallData(gridUIT: UITransform, left: number, right: number) {
@@ -1075,7 +1075,7 @@ export class UtilScene extends comm {
                 })
             }
         }
-        // UtilPub.log("-------初始化墙壁格子数据，", this.gridWallData)
+
     }
 
 }

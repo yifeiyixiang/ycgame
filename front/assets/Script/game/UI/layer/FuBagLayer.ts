@@ -1,8 +1,8 @@
 import { Button, find, Node, Sprite, _decorator } from 'cc';
 import { Const } from '../../../config/Const';
 import BaseView from '../../../easyFramework/mgr/BaseView';
-import tables from '../../../easyFramework/other/tables';
-import { mergeBoardModel } from '../../comm/mergeBoardModel';
+import TableDataService from '../../../easyFramework/other/tables';
+import { mergeBoardStateStore } from '../../comm/mergeBoardModel';
 const { ccclass, property } = _decorator;
 
 @ccclass('FuBagLayer')
@@ -35,20 +35,20 @@ export class FuBagLayer extends BaseView {
     }
 
     initUI() {
-        let row = tables.ins().getTableValueByID(Const.Tables.fuBag, this.bagId);
+        let row = TableDataService.ins().getTableValueByID(Const.Tables.fuBag, this.bagId);
         this.scrollViewSetData(this.propList, row.price, this.refreshPropItem.bind(this));
     }
 
     refreshPropItem(itemUI: Node, prop: any) {
         let id = prop[0];
         let num = prop[1];
-        let row = tables.ins().getTableValueByID(Const.Tables.prop, id);
+        let row = TableDataService.ins().getTableValueByID(Const.Tables.prop, id);
 
         this.setSpriteFrame2(find("icon", itemUI)!.getComponent(Sprite)!, Const.resPath.icon + row.icon);
         this.setString(find("num", itemUI), num);
 
         let infoNode = find("info", itemUI)!;
-        if (mergeBoardModel.propCanCreateNewProp(id)) {
+        if (mergeBoardStateStore.propCanCreateNewProp(id)) {
             infoNode.active = true;
             this.bindButton(itemUI, this.onClickPropItem);
         } else {
@@ -60,7 +60,7 @@ export class FuBagLayer extends BaseView {
     onClickPropItem(btn: Button) {
         // @ts-ignore
         let propRow = btn.node.propRow;
-        mergeBoardModel.openPropInfoLayer(propRow.id);
+        mergeBoardStateStore.openPropInfoLayer(propRow.id);
     }
 
     onClickBtnSure() {

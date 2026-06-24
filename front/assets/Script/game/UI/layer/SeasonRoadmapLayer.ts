@@ -3,11 +3,11 @@ import { Const } from '../../../config/Const';
 import GD from '../../../config/GD';
 import { localText } from '../../../config/localText';
 import BaseView from '../../../easyFramework/mgr/BaseView';
-import { uiManager } from '../../../easyFramework/mgr/uiManager';
-import tables from '../../../easyFramework/other/tables';
+import { UiLayerService } from '../../../easyFramework/mgr/uiManager';
+import TableDataService from '../../../easyFramework/other/tables';
 import { UtilPub } from '../../../easyFramework/utils/UtilPub';
-import { mergeBoardModel } from '../../comm/mergeBoardModel';
-import { playerModel } from '../../comm/playerModel';
+import { mergeBoardStateStore } from '../../comm/mergeBoardModel';
+import { seasonProgressStore } from '../../comm/playerModel';
 const { ccclass, property } = _decorator;
 
 @ccclass('SeasonRoadmapLayer')
@@ -75,13 +75,13 @@ export class SeasonRoadmapLayer extends BaseView {
     }
 
     refreshTopLayer() {
-        let nextRow = tables.ins().getTableValueByID(Const.Tables.seasonPass, playerModel.seasonId + 1);
+        let nextRow = TableDataService.ins().getTableValueByID(Const.Tables.seasonPass, seasonProgressStore.seasonId + 1);
         if (nextRow) {
-            this.setString(this.scoreNode, playerModel.seasonScore + "/" + nextRow.num);
-            this.setProgressBar(this.nextProgress, playerModel.seasonScore / nextRow.num);
+            this.setString(this.scoreNode, seasonProgressStore.seasonScore + "/" + nextRow.num);
+            this.setProgressBar(this.nextProgress, seasonProgressStore.seasonScore / nextRow.num);
             this.setString(this.lvNode, nextRow.lv);
         } else {
-            this.setString(this.lvNode, playerModel.seasonId - 1);
+            this.setString(this.lvNode, seasonProgressStore.seasonId - 1);
             this.setString(this.scoreNode, localText.lvMax);
             this.setProgressBar(this.nextProgress, 1);
         }
@@ -89,7 +89,7 @@ export class SeasonRoadmapLayer extends BaseView {
 
     refreshListLayer() {
         this.itemLayer.removeAllChildren();
-        let tb = tables.ins().getTable(Const.Tables.seasonPass);
+        let tb = TableDataService.ins().getTable(Const.Tables.seasonPass);
         for (let i = tb.length - 1; i >= 0; i--) {
             let row = tb[i];
             let itemUI = instantiate(this.awardItem);
@@ -114,18 +114,18 @@ export class SeasonRoadmapLayer extends BaseView {
         this.progressNode.position = v3(0, -y);
 
         this.scheduleOnce(() => {
-            // 自动滚动到进度条位置
-            let dy = (chs.length - playerModel.seasonId - 5) * itemHeight;
+
+            let dy = (chs.length - seasonProgressStore.seasonId - 5) * itemHeight;
             this.listNode.getComponent(ScrollView)!.scrollToOffset(v2(0, dy));
         });
     }
 
     refreshProgressBar() {
-        let tb = tables.ins().getTable(Const.Tables.seasonPass);
-        let nextRow = tables.ins().getTableValueByID(Const.Tables.seasonPass, playerModel.seasonId + 1);
+        let tb = TableDataService.ins().getTable(Const.Tables.seasonPass);
+        let nextRow = TableDataService.ins().getTableValueByID(Const.Tables.seasonPass, seasonProgressStore.seasonId + 1);
         if (nextRow) {
             let oneP = 1 / (tb.length - 1);
-            let p = oneP * (playerModel.seasonId - 1) + playerModel.seasonScore / nextRow.num * oneP;
+            let p = oneP * (seasonProgressStore.seasonId - 1) + seasonProgressStore.seasonScore / nextRow.num * oneP;
             this.setProgressBar(this.progressNode, p);
         } else {
             this.setProgressBar(this.progressNode, 1);
@@ -135,10 +135,10 @@ export class SeasonRoadmapLayer extends BaseView {
     refreshAwardItem(itemUI: Node, row: any) {
         this.setString(find("rank/lv", itemUI), row.lv);
 
-        let info = playerModel.getSeasonPassInfoById(row.id);
+        let info = seasonProgressStore.getSeasonPassInfoById(row.id);
 
         let award1 = row.award1;
-        let propRow = tables.ins().getTableValueByID(Const.Tables.prop, award1[0]);
+        let propRow = TableDataService.ins().getTableValueByID(Const.Tables.prop, award1[0]);
         let award1Node = find("award1", itemUI)!;
         // @ts-ignore
         award1Node.row = row;
@@ -154,7 +154,7 @@ export class SeasonRoadmapLayer extends BaseView {
         }
 
         let award2 = row.award2;
-        propRow = tables.ins().getTableValueByID(Const.Tables.prop, award2[0]);
+        propRow = TableDataService.ins().getTableValueByID(Const.Tables.prop, award2[0]);
         let award2Node = find("award2", itemUI)!;
         // @ts-ignore
         award2Node.row = row;
@@ -175,7 +175,7 @@ export class SeasonRoadmapLayer extends BaseView {
     }
 
     updateSecond() {
-        let nowTime = mergeBoardModel.getCurrentTimestamp();
+        let nowTime = mergeBoardStateStore.getCurrentTimestamp();
 
         let tmpTime = new Date(nowTime);
         tmpTime.setMonth(tmpTime.getMonth() + 1);
@@ -202,42 +202,42 @@ export class SeasonRoadmapLayer extends BaseView {
     onClickAward1(btn: Button) {
         // @ts-ignore
         let row = btn.node.row;
-        let info = playerModel.getSeasonPassInfoById(row.id);
+        let info = seasonProgressStore.getSeasonPassInfoById(row.id);
         if (!info || info.a1) {
             return;
         }
-        playerModel.seasonGetAward1(row.id);
+        seasonProgressStore.seasonGetAward1(row.id);
         this.refreshAwardItem(btn.node.parent!, row);
     }
 
     onClickAward2(btn: Button) {
-        // TODO 是否已解锁高级奖�?
+
 
         // @ts-ignore
         let row = btn.node.row;
-        let info = playerModel.getSeasonPassInfoById(row.id);
+        let info = seasonProgressStore.getSeasonPassInfoById(row.id);
         if (!info || info.a2) {
             return;
         }
-        playerModel.seasonGetAward2(row.id);
+        seasonProgressStore.seasonGetAward2(row.id);
         this.refreshAwardItem(btn.node.parent!, row);
     }
 
     onClickBtnClose() {
         this.close();
 
-        // test
-        // playerModel.saveDayTime = new Date(new Date().getTime() - 31 * 24 * 60 * 60 * 1000);
-        // playerModel.addSeasonScore(100);
-        // this.refreshProgressBar();
+
+
+
+
     }
 
     onClickBtnHelp() {
-        uiManager.instance.showDialog(Const.Dialogs.SeasonGuideLayer);
+        UiLayerService.instance.showDialog(Const.Dialogs.SeasonGuideLayer);
     }
 
     onClickBtnBuy() {
-        uiManager.instance.showDialog(Const.Dialogs.SeasonAccessLayer);
+        UiLayerService.instance.showDialog(Const.Dialogs.SeasonAccessLayer);
     }
 
 }

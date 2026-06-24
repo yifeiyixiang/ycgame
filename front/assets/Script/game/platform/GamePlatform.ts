@@ -6,7 +6,7 @@ declare const wx: any;
 export type RewardResult = 1 | 2 | 0;
 
 export class GamePlatform {
-    // Fill this before release, for example: "adunit-xxxxxxxxxxxxxxxx".
+
     public static wechatRewardedVideoAdUnitId: string = "";
 
     private static rewardedVideoAd: any = null;
@@ -243,7 +243,7 @@ export class GamePlatform {
             return;
         }
 
-        // Native platform callbacks are registered by the host Android activity.
+
         // @ts-ignore
         window.videoRewardCallBack = () => success();
         // @ts-ignore

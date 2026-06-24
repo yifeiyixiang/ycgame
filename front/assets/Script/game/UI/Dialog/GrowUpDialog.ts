@@ -5,9 +5,9 @@ import BaseView from '../../../easyFramework/mgr/BaseView';
 import { GameStorage } from '../../../easyFramework/mgr/gameStorage';
 import { GNetCmd } from '../../../easyFramework/network/conf';
 import ServerCtrJSF from '../../../easyFramework/network/ServerCtrJSF';
-import tables from '../../../easyFramework/other/tables';
+import TableDataService from '../../../easyFramework/other/tables';
 import { ScrollViewUtil } from '../../comm/ScrollViewUtil';
-import { userData } from '../../comm/UserData';
+import { playerDataStore } from '../../comm/UserData';
 import { PropItem, PropItemFlag } from './PropItem';
 
 const { ccclass, property } = _decorator;
@@ -28,24 +28,24 @@ export class GrowUpDialog extends BaseView {
     }
 
     onEnable() {
-        // console.log("onMessageEvent --- 开始监听")
+
         director.off(GNetCmd.GetUserDataByKey.toString(), this.onMessageEvent, this);
         director.on(GNetCmd.GetUserDataByKey.toString(), this.onMessageEvent, this);
     }
 
     onDisable() {
-        //  console.log("onMessageEvent --- 取消监听")
+
         director.off(GNetCmd.GetUserDataByKey.toString(), this.onMessageEvent, this);
     }
 
     show(args: any) {
         super.show(args)
-        //   userData.setGetPropTujian(10005, Const.TujianState.geted)
+
         this.initData()
     }
 
     initData() {
-        let giftData = tables.ins().getTable(Const.Tables.task_growUp)
+        let giftData = TableDataService.ins().getTable(Const.Tables.task_growUp)
         let arr2 = [...giftData]
         let arr = []
         while (arr2.length > 0) {
@@ -85,7 +85,7 @@ export class GrowUpDialog extends BaseView {
         let lockLabel = itemUI.getChildByName("lockLabel")!.getComponent(Label)!
         itemUI.setSiblingIndex(1000 - index)
         console.log("self._isVip = ", self._isVip)
-        if (userData.isGrowUpunLock(item.lv) == TujianState.unGet) {
+        if (playerDataStore.isGrowUpunLock(item.lv) == TujianState.unGet) {
             itemUI.getChildByName("btnReceive")!.active = false
             lockLabel.node.active = true
             lockLabel.string = "未解锁"
@@ -93,10 +93,10 @@ export class GrowUpDialog extends BaseView {
             itemUI.getChildByName("btnReceive")!.active = false
             lockLabel.node.active = true
             lockLabel.string = "已解锁"
-        } else if (self._isVip && userData.isGrowUpunLock(item.lv) == TujianState.geted) {
+        } else if (self._isVip && playerDataStore.isGrowUpunLock(item.lv) == TujianState.geted) {
             itemUI.getChildByName("btnReceive")!.active = true
             lockLabel.node.active = false
-        } else if (self._isVip && userData.isGrowUpunLock(item.lv) == TujianState.received) {
+        } else if (self._isVip && playerDataStore.isGrowUpunLock(item.lv) == TujianState.received) {
             itemUI.getChildByName("btnReceive")!.active = false
             lockLabel.node.active = true
             lockLabel.string = "已领取"
@@ -106,13 +106,13 @@ export class GrowUpDialog extends BaseView {
         let progress = find("ProgressBar", itemUI)!
         progress.active = index > 0
 
-        if (userData.roleLv > item.lv) {
+        if (playerDataStore.roleLv > item.lv) {
             if (index - 1 >= 0 && self._giftData[index - 1]) {
                 let nextLevel = self._giftData[index - 1].lv
-                if (userData.roleLv >= nextLevel) {
+                if (playerDataStore.roleLv >= nextLevel) {
                     progress.getComponent(ProgressBar)!.progress = 1
                 } else {
-                    progress.getComponent(ProgressBar)!.progress = (userData.roleLv - item.lv) / (nextLevel - item.lv)
+                    progress.getComponent(ProgressBar)!.progress = (playerDataStore.roleLv - item.lv) / (nextLevel - item.lv)
                 }
             }
         } else {
@@ -134,8 +134,8 @@ export class GrowUpDialog extends BaseView {
     }
 
     onVideoBack(item: any) {
-        userData.setGrowUpState(item.lv, TujianState.received)
-        userData.getProp(item.price, v3(0, 0, 0), v3(0, 0, 0))
+        playerDataStore.setGrowUpState(item.lv, TujianState.received)
+        playerDataStore.getProp(item.price, v3(0, 0, 0), v3(0, 0, 0))
         this.giftScroll.getComponent(ScrollViewUtil)?.refreshList()
         this.giftScroll.getComponent(ScrollViewUtil)?.updateItemZindex()
     }

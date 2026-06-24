@@ -1,9 +1,9 @@
 import { _decorator, Component, error, warn, Node } from 'cc';
-import { ZCConfig } from './ZCConfig';
-import { AndroidSdk } from '../AndroidSdk';
+import { ZcEndpointConfig } from './ZCConfig';
+import { NativeSdkBridge } from '../AndroidSdk';
 const { ccclass, property } = _decorator;
 
-type HttpCallback = (ret: HttpReturn) => void;
+type HttpCallback = (ret: HttpResponsePacket) => void;
 
 var urls:any = {};
 var reqparams:any = {};
@@ -17,7 +17,7 @@ export enum HttpEvent {
     TIMEOUT = "http_request_timout"
 }
 
-export class HttpReturn {
+export class HttpResponsePacket {
 
     isSucc: boolean = false;
 
@@ -26,9 +26,9 @@ export class HttpReturn {
     err?: any;
 }
 
-export class HttpRequest {
-    
-    defaultUrl: string = "https://app.petlove.top" // "http://192.168.9.124:8000"  // "https://dev-8326.petfusion.xyz/"//"http://150.109.148.67:3000/"; //"http://122.114.74.62:9009/"; //"http://192.168.9.114:8008/" // "http://111.229.126.145:8098/" //"http://111.229.126.145:8098/"; // "http://192.168.9.78:8098/"//
+export class HttpRequestTransport {
+
+    defaultUrl: string = "https://app.petlove.top"
 
     h5defaultUrl:string =  "http://localhost:9991/"
 
@@ -37,15 +37,15 @@ export class HttpRequest {
     private header: Map<string, string> = new Map<string, string>();
 
     constructor() {
-        //this.defaultUrl = this.h5defaultUrl;
-        this.timeout = ZCConfig.httpServerTimeout;
+
+        this.timeout = ZcEndpointConfig.httpServerTimeout;
     }
 
-    /**
-     * @param {string} name    
-     * @param {string} value    
-     * @memberof HttpRequest
-     */
+
+
+
+
+
     addHeader(name:string, value:string) {
         this.header.set(name, value);
     }
@@ -62,9 +62,9 @@ export class HttpRequest {
         this.sendRequest(name, params, false, onComplete)
     }
 
-    getAsync(name:string, params:any = null): Promise<HttpReturn> {
+    getAsync(name:string, params:any = null): Promise<HttpResponsePacket> {
         return new Promise((resolve, reject) => {
-            this.sendRequest(name, params, false, (ret:HttpReturn) => {
+            this.sendRequest(name, params, false, (ret:HttpResponsePacket) => {
                 resolve(ret);
             });
         });
@@ -74,9 +74,9 @@ export class HttpRequest {
         this.sendRequest(name, params, false, onComplete, 'arraybuffer', false);
     }
 
-    getAsyncByArraybuffer(name:string, params:any = null): Promise<HttpReturn> {
+    getAsyncByArraybuffer(name:string, params:any = null): Promise<HttpResponsePacket> {
         return new Promise((resolve, reject) => {
-            this.sendRequest(name, params, false, (ret:HttpReturn) => {
+            this.sendRequest(name, params, false, (ret:HttpResponsePacket) => {
                 resolve(ret);
             }, 'arraybuffer', false);
         });
@@ -86,26 +86,26 @@ export class HttpRequest {
         this.sendRequest(name, params, true, onComplete);
     }
 
-    /**
-     * 
-     *
-     * @param {string} name
-     * @param {*} [params=null]
-     * @return {*}  {Promise<HttpReturn>}
-     * @memberof HttpRequest
-     */
-    postAsync(name:string, params:any = null): Promise<HttpReturn> {
+
+
+
+
+
+
+
+
+    postAsync(name:string, params:any = null): Promise<HttpResponsePacket> {
         return new Promise((resolve, reject) => {
-            this.sendRequest(name, params, true, (ret: HttpReturn) => {
+            this.sendRequest(name, params, true, (ret: HttpResponsePacket) => {
                 resolve(ret);
             });
         });
     }
 
-    /**
-     * @param {string} name
-     * @memberof HttpRequest
-     */
+
+
+
+
     abort(name:string) {
         var xhr = urls[this.defaultUrl + name];
         if (xhr) {
@@ -113,41 +113,41 @@ export class HttpRequest {
         }
     }
 
-    /**
-     * @private
-     * @param {string} name 
-     * @param {*} params 
-     * @param {boolean} isPost
-     * @param {HttpCallback} onComplete
-     * @param {string} [responseType] 
-     * @param {boolean} [isOpenTimeout=true]
-     * @return {*} 
-     * @memberof HttpRequest
-     */
+
+
+
+
+
+
+
+
+
+
+
     private sendRequest(name:string, params:any, isPost:boolean, onComplete:HttpCallback, responseType?:string, isOpenTimeout:boolean = true):void {
-        if (AndroidSdk.isLocal){
+        if (NativeSdkBridge.isLocal){
             return;
         }
         if (name == null || name == '') {
             return ;
         }
 
-        /** @type {string}  */
+
         var url:string;
 
-        /** @type {string}   */
+
         var newUrl:string;
 
-        var paramsStr:string = "";  
+        var paramsStr:string = "";
 
-        if (name.toLocaleLowerCase().indexOf("http") == 0) { 
+        if (name.toLocaleLowerCase().indexOf("http") == 0) {
             url = name;
         } else {
             url = this.defaultUrl + name;
         }
         if (params) {
             paramsStr = this.getParamString(params);
-            if (url.indexOf("?") > -1) {    
+            if (url.indexOf("?") > -1) {
                 newUrl = url + "&" + paramsStr;
             } else {
                 newUrl = url + "?" + paramsStr;
@@ -176,25 +176,25 @@ export class HttpRequest {
             xhr.setRequestHeader(key, value);
         }
 
-        // this.header.forEach((value, key) => {  
-        //     //console.log('Setting header:', key, value);  
-        //     xhr.setRequestHeader(key, value);  
-        // });
-        // xhr.setRequestHeader("Content-Type", "application/x-ww-form-urlencoded;charset=utf-8");
-        // xhr.setRequestHeader("Content-Type", "application/json; charset=utf-8");
+
+
+
+
+
+
 
         var data:any = {};
         data.url = url;
         data.params = params;
 
-        var ret: HttpReturn = new HttpReturn();
+        var ret: HttpResponsePacket = new HttpResponsePacket();
         if (isOpenTimeout) {
             xhr.timeout = this.timeout;
             xhr.ontimeout = () => {
                 this.deleteCache(newUrl);
 
                 ret.isSucc = false;
-                ret.err = HttpEvent.TIMEOUT; 
+                ret.err = HttpEvent.TIMEOUT;
                 onComplete(data);
             }
         }
@@ -243,11 +243,11 @@ export class HttpRequest {
             xhr.send();
         } else {
             if (isPost) {
-                if (AndroidSdk.isAndroid){
+                if (NativeSdkBridge.isAndroid){
                     xhr.send(this.getParamBodyAndroid(params));
                 }else{
-                    //xhr.send(this.getParamBody(params));
-                    
+
+
                     xhr.send(JSON.stringify(params));
                 }
             } else {
@@ -256,14 +256,14 @@ export class HttpRequest {
         }
     }
 
-    
-    /**
-     *
-     * @private
-     * @param {*} params
-     * @return {*}
-     * @memberof HttpRequest
-     */
+
+
+
+
+
+
+
+
     private getParamString(params:any): string {
         var result = "";
         for (var name in params) {
@@ -280,17 +280,17 @@ export class HttpRequest {
         return result.substring(0, result.length - 1);
     }
 
-    private getParamBodyAndroid(params: any): string {  
-        let data = '';  
-        for (let name in params) {  
-            if (data !== '') {  
-                data += '&';  
-            }  
-            let value = params[name];  
-            data += encodeURIComponent(name) + '=' + encodeURIComponent(value);  
-        }  
-        return data;  
-    }  
+    private getParamBodyAndroid(params: any): string {
+        let data = '';
+        for (let name in params) {
+            if (data !== '') {
+                data += '&';
+            }
+            let value = params[name];
+            data += encodeURIComponent(name) + '=' + encodeURIComponent(value);
+        }
+        return data;
+    }
 
     private getParamBody(params:any):FormData {
         if (!params){
@@ -301,7 +301,7 @@ export class HttpRequest {
             let value = params[name];
             data.append(name, String(value));
         }
-        
+
         return data;
     }
 

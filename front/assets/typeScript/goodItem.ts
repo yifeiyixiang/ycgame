@@ -1,63 +1,63 @@
 import { _decorator, Component, dragonBones, Label, Node,EventTouch,UITransform, randomRangeInt, SkeletalAnimation, sp, Sprite, SpriteFrame, Tween, tween, Vec2, Vec3 } from 'cc';
-import { BagPropData, gameData, petItemData, ShopCfg } from './gameData';
-import { ItemEnumId, ItemEnumType, LanauageManager, petConfig } from './LanauageManager';
-import { HttpClient } from './net/HttpClient';
-import { EventManger } from './EventManger';
+import { BagPropRecord, GameRuntimeData, PetProfileRecord, ShopConfigRecord } from './gameData';
+import { ItemEnumId, ItemEnumType, LanguageContentManager, PetConfigRecord } from './LanauageManager';
+import { GameHttpClient } from './net/HttpClient';
+import { GameEventManager } from './EventManger';
 import { Const } from '../Script/config/Const';
-import { uiManager } from '../Script/easyFramework/mgr/uiManager';
-import tables from '../Script/easyFramework/other/tables';
+import { UiLayerService } from '../Script/easyFramework/mgr/uiManager';
+import TableDataService from '../Script/easyFramework/other/tables';
 import BaseView from '../Script/easyFramework/mgr/BaseView';
-import { userData } from '../Script/game/comm/UserData';
+import { playerDataStore } from '../Script/game/comm/UserData';
 const { ccclass, property } = _decorator;
 
 @ccclass('goodItem')
-export class goodItem extends BaseView {
+export class GoodsItemDragController extends BaseView {
 
-    @property(Sprite)           //提示底
-    icon: Sprite = null;  
+    @property(Sprite)
+    icon: Sprite = null;
 
-    @property(Node)           
-    closeBtn: Node = null;  
-  
-    public bagData!:BagPropData;
+    @property(Node)
+    closeBtn: Node = null;
 
-    public shopCfg!:ShopCfg;
+    public bagData!:BagPropRecord;
 
-    //装饰ID
-    id:number = 0;   
+    public shopCfg!:ShopConfigRecord;
+
+
+    id:number = 0;
 
     private isDragging: boolean = false;
 
     private touchOffset: Vec3 = new Vec3();
 
     onLoad() {
-        // 启用节点触摸事件
+
         this.icon.node.on(Node.EventType.TOUCH_START, this.onTouchStart, this);
         this.icon.node.on(Node.EventType.TOUCH_MOVE, this.onTouchMove, this);
         this.icon.node.on(Node.EventType.TOUCH_END, this.onTouchEnd, this);
         this.icon.node.on(Node.EventType.TOUCH_CANCEL, this.onTouchEnd, this);
 
-        EventManger.eventTarget.on(EventManger.EEventName.REFRESH_GOOD_STATU, this.refreshStatu, this);
+        GameEventManager.eventTarget.on(GameEventManager.EEventName.REFRESH_GOOD_STATU, this.refreshStatu, this);
     }
 
     onDestroy() {
-        // 移除事件监听
+
         this.icon.node.off(Node.EventType.TOUCH_START, this.onTouchStart, this);
         this.icon.node.off(Node.EventType.TOUCH_MOVE, this.onTouchMove, this);
         this.icon.node.off(Node.EventType.TOUCH_END, this.onTouchEnd, this);
         this.icon.node.off(Node.EventType.TOUCH_CANCEL, this.onTouchEnd, this);
 
-        EventManger.eventTarget.off(EventManger.EEventName.REFRESH_GOOD_STATU, this.refreshStatu, this);
+        GameEventManager.eventTarget.off(GameEventManager.EEventName.REFRESH_GOOD_STATU, this.refreshStatu, this);
     }
 
-     init(bagData:BagPropData){
+     init(bagData:BagPropRecord){
 
         this.bagData = bagData;
 
         this.id = this.bagData.id
 
-        this.shopCfg = tables.ins().getTableValueByID(Const.Tables.new_prop, this.bagData.prop_id);
-        // this.nameLab.string = this.shopCfg.name;
+        this.shopCfg = TableDataService.ins().getTableValueByID(Const.Tables.new_prop, this.bagData.prop_id);
+
 
         this.node.setPosition(this.bagData.position_x, this.bagData.position_y, 0)
 
@@ -72,8 +72,8 @@ export class goodItem extends BaseView {
     }
 
     refreshStatu(){
-        //HttpClient.getInstance().updateGoodPos(this.id, this.node.position.x, this.node.position.y)
-        let data = gameData.getBagDataById(this.id)
+
+        let data = GameRuntimeData.getBagDataById(this.id)
         if (data){
             this.bagData = data;
         }
@@ -84,50 +84,50 @@ export class goodItem extends BaseView {
         if (!this.bagData.is_active){
             this.node.active = false;
         }
-        else if (userData.sceneStau == 1 && this.shopCfg.typeson == 1){
+        else if (playerDataStore.sceneStau == 1 && this.shopCfg.typeson == 1){
             this.node.active = true;
-        }else if (userData.sceneStau == 2 && this.shopCfg.typeson == 2){
+        }else if (playerDataStore.sceneStau == 2 && this.shopCfg.typeson == 2){
             this.node.active = true;
         }else{
             this.node.active = false;
         }
 
         if (this.node.active){
-            if (userData.goodIsCanOperate){
+            if (playerDataStore.goodIsCanOperate){
                 this.closeBtn.active = true;
             }else{
-                this.closeBtn.active = false;  
-            } 
+                this.closeBtn.active = false;
+            }
         }
     }
 
-    private onTouchStart(event: EventTouch) {  
-        if (!userData.goodIsCanOperate){
+    private onTouchStart(event: EventTouch) {
+        if (!playerDataStore.goodIsCanOperate){
             return;
         }
         this.isDragging = true;
-        
+
         const uiPos = event.getUILocation();
         const localTouchPos = this.node.parent.getComponent(UITransform).convertToNodeSpaceAR(new Vec3(uiPos.x, uiPos.y, 0));
-        
-        // 只记录偏移量
+
+
         this.touchOffset.set(
             localTouchPos.x - this.node.position.x,
             localTouchPos.y - this.node.position.y,
             0
         );
-        EventManger.eventTarget.emit(EventManger.EEventName.ID_Drangging,  this.isDragging)
+        GameEventManager.eventTarget.emit(GameEventManager.EEventName.ID_Drangging,  this.isDragging)
     }
 
     private onTouchMove(e: EventTouch): void {
-         if (!userData.goodIsCanOperate){
+         if (!playerDataStore.goodIsCanOperate){
             return;
         }
         if (!this.isDragging) return;
 
         const uiPos = e.getUILocation();
         const localPos = this.node.parent.getComponent(UITransform).convertToNodeSpaceAR(new Vec3(uiPos.x, uiPos.y, 0));
-        
+
         this.node.setPosition(
             localPos.x - this.touchOffset.x,
             localPos.y - this.touchOffset.y,
@@ -138,17 +138,17 @@ export class goodItem extends BaseView {
 
     private onTouchEnd() {
         this.isDragging = false;
-        if (!userData.goodIsCanOperate){
+        if (!playerDataStore.goodIsCanOperate){
             return;
         }
 
-        HttpClient.getInstance().sendGoodPos(1, this.bagData.id, this.node.position.x, this.node.position.y);
+        GameHttpClient.getInstance().sendGoodPos(1, this.bagData.id, this.node.position.x, this.node.position.y);
 
-        EventManger.eventTarget.emit(EventManger.EEventName.ID_Drangging,  this.isDragging)
+        GameEventManager.eventTarget.emit(GameEventManager.EEventName.ID_Drangging,  this.isDragging)
     }
 
     onCloseClick(){
-        HttpClient.getInstance().sendGoodPos(2, this.bagData.id, 0, 0);
+        GameHttpClient.getInstance().sendGoodPos(2, this.bagData.id, 0, 0);
     }
 }
 

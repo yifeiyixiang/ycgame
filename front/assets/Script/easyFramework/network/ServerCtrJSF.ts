@@ -1,6 +1,6 @@
 import { WmSocketJSF } from "./WmSocketJSF";
 
-//normal， new，hot，maintain
+
 export const ServerState = {
     Normal: 'normal',
     New: 'new',
@@ -13,10 +13,10 @@ import { HTML5 } from "cc/env";
 import { Const } from "../../config/Const";
 import GD from "../../config/GD";
 import { GAccountWay, GOrderStatus, GPlatform, GPromptType } from "../../config/global";
-import { mergeBoardModel } from "../../game/comm/mergeBoardModel";
+import { mergeBoardStateStore } from "../../game/comm/mergeBoardModel";
 import { GameStorage } from "../mgr/gameStorage";
 import { Notifications } from "../mgr/notifications";
-import { uiManager } from "../mgr/uiManager";
+import { UiLayerService } from "../mgr/uiManager";
 import { UtilPub } from "../utils/UtilPub";
 import { GNetCmd } from "./conf";
 import CronCtrJSF from "./CronCtrJSF";
@@ -46,7 +46,7 @@ export default class ServerCtrJSF {
     regionId: string = '';
     nickName: string = '胖啾啾啊';
     isLogin: boolean = true;
-    isLoadAll: boolean = false; //是否完全加载
+    isLoadAll: boolean = false;
 
 
     avatar: string = '';
@@ -63,7 +63,7 @@ export default class ServerCtrJSF {
 
     CheckIsHaveAccount() {
         if (!this.account || this.account == '') {
-            // 没有账号
+
             return false;
         }
         return true;
@@ -87,7 +87,7 @@ export default class ServerCtrJSF {
         GameStorage.setInt('login_gameTime', num);
     }
 
-    //_prodUrlVersion:string =""; //生产环境的url版本
+
     get prodUrlVersion() {
         return GameStorage.getStringDisk('prod_url_version', "");
     }
@@ -97,7 +97,7 @@ export default class ServerCtrJSF {
         GameStorage.setStringDisk('prod_url_version', str);
     }
 
-    //version 就是服务端版本号，如果本地缓存不等于服务端，那么提示重进游戏，并且标记本地缓存未服务端缓存。
+
     get version() {
         return GameStorage.getStringDisk('login_version', "");
     }
@@ -146,7 +146,7 @@ export default class ServerCtrJSF {
     }
 
     isOkToDownload() {
-        return mergeBoardModel.isHandDone() == true && ServerCtrJSF.GetInstance().gameTime() > 3 * 60
+        return mergeBoardStateStore.isHandDone() == true && ServerCtrJSF.GetInstance().gameTime() > 3 * 60
     }
 
     UpdateRegions(regions: any) {
@@ -187,7 +187,7 @@ export default class ServerCtrJSF {
         }
     }
 
-    // 获取最新的不在维护中服务器
+
     public GetLastNewServer() {
         let id = 1;
         for (const key in this.serverList) {
@@ -200,9 +200,9 @@ export default class ServerCtrJSF {
         return id;
     }
 
-    // public reqConnect() {
-    //     WmSocketJSF.getInstance().connect();
-    // }
+
+
+
 
     public reqRegister(account: any, password: any) {
         if (!WmSocketJSF.getInstance().isConnected()) return
@@ -262,7 +262,7 @@ export default class ServerCtrJSF {
         WmSocketJSF.getInstance().send({ "data": data });
     }
 
-    //领取别人的财神奖励  receicveIndex:0-5  ; -1查询
+
     public reqReceiveGodWealth(shareUserID: string, receicveIndex: number) {
         if (!WmSocketJSF.getInstance().isConnected()) return
         let data = {
@@ -275,7 +275,7 @@ export default class ServerCtrJSF {
         WmSocketJSF.getInstance().send({ "data": data });
     }
 
-    //请求背包日志
+
     public reqSetPlayerPkgLog(propId: string, propName: string, num: number, coming: string) {
         if (!WmSocketJSF.getInstance().isConnected()) return
         let data = {
@@ -319,26 +319,26 @@ export default class ServerCtrJSF {
         }
         console.log("--请求激活码---", data)
         WmSocketJSF.getInstance().send({ "data": data });
-        //{
-        // 	"msg":  "CodeIsNotExist", // "RewardsAlreadyGotted", //ActiveCodeExpired
-        // 	"status": util.RES_MSG_FAIL,
-        // }
-        //{
-        // 	"rewards": [{propId:xx, cnt:1}],
-        // 	"status":  util.RES_MSG_SUCCESS,
-        // }
+
+
+
+
+
+
+
+
     }
 
 
-    /**
-     * 创建充值订单
-     * @param orderNo 充值订单ID
-     * @param chargeVal 充值的金额，单位渠道默认
-     * @param chargeItemId 充值表ID
-     * @param chargeItemCnt 充值表奖励列表[[],[],[]] 转为字符串保存
-     * @param orderStatus 订单状态
-     * @returns 
-     */
+
+
+
+
+
+
+
+
+
     public reqCreateChargeOrder(orderNo: string, chargeVal: number, chargeItemId: number, chargeItemCnt: string, orderStatus: GOrderStatus) {
         if (!WmSocketJSF.getInstance().isConnected()) return
         let data = {
@@ -355,12 +355,12 @@ export default class ServerCtrJSF {
         WmSocketJSF.getInstance().send({ "data": data });
     }
 
-    /**
-     * 修改充值订单
-     * @param orderNo 充值订单ID
-     * @param orderStatus 订单状态
-     * @returns 
-     */
+
+
+
+
+
+
     public reqUpdChargeOrderStatus(orderNo: string, orderStatus: GOrderStatus) {
         if (!WmSocketJSF.getInstance().isConnected()) return
         let data = {
@@ -403,8 +403,8 @@ export default class ServerCtrJSF {
             "lang": "zh",
             "key": key,
             "token": this.token,
-            "type": "normal", //object
-            'model': "normal", //array
+            "type": "normal",
+            'model': "normal",
         }
         WmSocketJSF.getInstance().send({ "data": data });
     }
@@ -416,8 +416,8 @@ export default class ServerCtrJSF {
             "lang": "zh",
             "key": key,
             "token": this.token,
-            "type": "object", //object
-            'model': "normal", //array
+            "type": "object",
+            'model': "normal",
         }
         WmSocketJSF.getInstance().send({ "data": data });
     }
@@ -509,7 +509,7 @@ export default class ServerCtrJSF {
 
             if (value.cmd == GNetCmd.GetRegionData) {
                 if (value.isBlock) {
-                    uiManager.instance.showDialog(Const.Dialogs.prompt_sure, {
+                    UiLayerService.instance.showDialog(Const.Dialogs.ConfirmPromptDialogController, {
                         content: "您的账号已经被封，禁止登录，请联系社群。",
                         type: GPromptType.blockAccount,
                         cb: () => {
@@ -542,7 +542,7 @@ export default class ServerCtrJSF {
                 if (ctr.version == "" || ctr.version == value.version) {
                     console.log("----版本资源匹配--通过")
                 } else {
-                    uiManager.instance.showDialog(Const.Dialogs.prompt_sure, {
+                    UiLayerService.instance.showDialog(Const.Dialogs.ConfirmPromptDialogController, {
                         content: "您当前游戏版本不是最新的，请重新进入游戏！",
                         type: GPromptType.resNotNewest,
                         cb: () => {
@@ -552,12 +552,12 @@ export default class ServerCtrJSF {
                     return
                 }
 
-                //配置机器人逻辑
-               
+
+
                 GameStorage.clear()
                 let isRobot = GameStorage.isRobot
                 if(isRobot==true){
-                    //设置初始逻辑，机器人要资源全加载
+
                     Notifications.emit(GD.event.loadAll, () => {
                         this.isLoadAll = true
                     })
@@ -567,9 +567,9 @@ export default class ServerCtrJSF {
                     }
                     GameStorage.setStringDisk('login_account', ctr.Account);
                 }
-                
 
-                //如果玩家过了新手那么加载全部资源
+
+
                 if (ServerCtrJSF.GetInstance().isOkToDownload() == true) {
                     Notifications.emit(GD.event.loadAll, () => {
                         this.isLoadAll = true

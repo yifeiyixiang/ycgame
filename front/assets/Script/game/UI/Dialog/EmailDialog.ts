@@ -2,7 +2,7 @@ import { _decorator, Node, Label, find, Sprite, SpriteFrame, UITransform, math, 
 import { Const } from '../../../config/Const';
 import { Email, EmailRewardState, EmailState } from '../../../config/global';
 import BaseView from '../../../easyFramework/mgr/BaseView';
-import { uiManager } from '../../../easyFramework/mgr/uiManager';
+import { UiLayerService } from '../../../easyFramework/mgr/uiManager';
 import { EmailManager } from '../../comm/EmailManager';
 import { PropItem, PropItemFlag } from './PropItem';
 
@@ -68,7 +68,7 @@ export class EmailDialog extends BaseView {
     }
 
     onTouchEmail(event: any, data: Email) {
-        uiManager.instance.pushShowDialog(Const.Dialogs.EmailInfoDialog, { email: data })
+        UiLayerService.instance.pushShowDialog(Const.Dialogs.EmailInfoDialog, { email: data })
     }
 
     onClickRemove() {
@@ -89,7 +89,7 @@ export class EmailDialog extends BaseView {
         }
 
         if (arr.length > 0) {
-            uiManager.instance.pushShowDialog(Const.Dialogs.RewardDialog, { reward: arr })
+            UiLayerService.instance.pushShowDialog(Const.Dialogs.RewardDialog, { reward: arr })
         } else {
             this.toast("没有可领取的奖励")
         }

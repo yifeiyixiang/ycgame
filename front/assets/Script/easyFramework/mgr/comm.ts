@@ -6,14 +6,14 @@ import { WidgetType } from "../../config/global";
 import { AnimationCtrl } from "../../game/comm/AnimationCtrl";
 import { ScrollViewUtil } from "../../game/comm/ScrollViewUtil";
 import { UtilPub } from "../utils/UtilPub";
-import { audioManager } from "./audioManager";
+import { AudioPlaybackService } from "./audioManager";
 import { Notifications } from "./notifications";
-import { poolManager } from "./poolManager";
+import { NodePoolService } from "./poolManager";
 const { ccclass, property } = _decorator;
 
 @ccclass('comm')
-export class comm extends Component {
-    protected _clickEnable: boolean = true; // 控制能否点击的变量
+export class BaseUiComponent extends Component {
+    protected _clickEnable: boolean = true;
     calTime: number = 0
     aniTween: Tween<any> = new Tween()
     public _layerData: any = {};
@@ -23,55 +23,55 @@ export class comm extends Component {
             tween(this.node).delay(time).call(() => {
                 resolve();
             }).start();
-            // this.scheduleOnce(()=>{
-            // 	resolve();
-            // },time)
+
+
+
         })
-        // return new Promise(resolve=>{
-        // 	this.scheduleOnce(()=>{
-        // 		resolve();
-        // 	},time)
-        // })
+
+
+
+
+
     }
 
     gameStop() {
-        //游戏暂停
+
     }
 
     gameResume() {
-        //游戏继续
+
     }
 
 
-    /**
-     * 添加事件
-     * @param {string} eKey     识别key
-     * @param {object} eCall    回调函数
-     * @param {object} self     识别对象
-     */
+
+
+
+
+
+
     protected on(eKey: string, eCall: any, self?: Object | undefined) {
         Notifications.on(eKey, eCall, self ? self : this);
     }
     protected off(eKey: string, eCall: Object, self?: undefined) {
         Notifications.off(eKey, eCall);
     }
-    /**
-     * 通知事件
-     * @param {string} eKey     识别key
-     * @param parameters {}, {} 对象
-     */
+
+
+
+
+
     protected emit(eKey: string, ...parameters: any[]) {
         let a = Notifications.emit(eKey, ...parameters);
         if (a) {
             return a;
         }
     }
-    /**
-     * 绑定按钮点击事件,永久监听
-     * @param node 挂载了button组件的节点
-     * @param callback 回调
-     * @param opname 操作内容
-     */
+
+
+
+
+
+
     protected bindButton(node: Node, callback: (event?: any) => void, opname?: string): void {
         let btnComp = node.getComponent(Button);
         if (!btnComp) {
@@ -80,7 +80,7 @@ export class comm extends Component {
         }
         btnComp.zoomScale = 0.9;
         let btnCb = (event: any) => {
-            audioManager.instance.playSound(Const.Audio.btn)
+            AudioPlaybackService.instance.playSound(Const.Audio.btn)
             this.emit(GD.event.canvasTouchEvent)
             if (!this._clickEnable) return;
             this._clickEnable = false;
@@ -92,12 +92,12 @@ export class comm extends Component {
         node.on("click", btnCb, this);
     }
 
-    /**
-     * 绑定按钮点击事件,永久监听
-     * @param node 挂载了button组件的节点
-     * @param callback 回调
-     * @param opname 操作内容
-     */
+
+
+
+
+
+
     protected bindButtonNoAudio(node: Node, callback: (event?: any) => void, opname?: string): void {
         let btnComp = node.getComponent(Button);
         if (!btnComp) {
@@ -106,7 +106,7 @@ export class comm extends Component {
         }
         btnComp.zoomScale = 0.9;
         let btnCb = (event: any) => {
-            //audioManager.instance.playSound(Const.Audio.btn)
+
             this.emit(GD.event.canvasTouchEvent)
             if (!this._clickEnable) return;
             this._clickEnable = false;
@@ -118,12 +118,12 @@ export class comm extends Component {
         node.on("click", btnCb, this);
     }
 
-    /**
-     * 绑定按钮点击事件(只监听一次)
-     * @param node 挂载了button组件的节点
-     * @param callback 回调
-     * @param opname 操作内容
-     */
+
+
+
+
+
+
     protected bindButtonOce(node: Node, callback: (event?: any) => void, opname?: string): void {
         let btnComp = node.getComponent(Button);
         if (!btnComp) {
@@ -143,60 +143,60 @@ export class comm extends Component {
         node.once("click", btnCb, this);
     }
 
-    /**
-     *
-     * @param url 预制体的路径
-     * @param next 回调,返回预制体的主脚本
-     */
-    // showUI(url, next?) {
-    //     MgrView.showUI(url, next);
-    // }
-    // protected setBtnEnable(btnNode: Node, isEnable: boolean) {
-    //     let btnComp = btnNode.getComponent(Button);
-    //     if (btnComp) {
-    //         btnComp.enabled = isEnable;
-    //         if (isEnable) {
-    //             btnNode.color = Color.WHITE;
-    //         } else btnNode.color = Color.GRAY;
-    //     } else console.trace("BaseView setBtnEnable, no btn comp");
-    // }
 
-    // protected closeSelf() {
-    //     AD.clearBanner();
-    //     AD.destroyBanner();
-    //     //Public.log('关闭了什么界面',this.node.name)
-    //     this.node.destroy();
-    // }
 
-    /**
-     * 震动
-     */
-    // protected shock() {
-    //     if (WD.isOpenShake() && ChannelMgr.isWechatGame()) {
-    //         //Public.log('震动')
-    //         ChannelMgr.vibrateLong();
-    //     }
-    // }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     onDestroy() {
         Notifications.offTarget(this);
     }
 
-    /**
-     * 加载预制体，UI都用这个方法
-     * @param cPrefab 要生成的预制体
-     * @param cNode 父节点
-     * @param next 返回预制体的主脚本
-     */
+
+
+
+
+
+
     showUI(cPrefab: Prefab, cNode: Node, next?: { (comp: any): void; (arg0: Node | Component | null): any; }) {
         let node: Node = instantiate(cPrefab);
         node.parent = cNode;
         next && next(node.getComponent(node.name) ? node.getComponent(node.name) : node);
     }
 
-    // update (deltaTime: number) {
-    //     // [4]
-    // }
+
+
+
 
     addSpine(resPath: string, parentNode: Node, cb?: (err: any, aniCtrl: AnimationCtrl) => void) {
         UtilPub.loadSpineSkeletonData(resPath, (err: any, skeletonData: sp.SkeletonData) => {
@@ -244,7 +244,7 @@ export class comm extends Component {
                 }
                 return;
             }
-            // 重新加载默认图片
+
             this.setSpriteFrame(node, Const.resPath.icon + "prop_star", cb, customSize);
         })
     }
@@ -270,7 +270,7 @@ export class comm extends Component {
             if (refreshItemFunc) {
                 refreshItemFunc(itemUI, item, index, data);
             }
-            //  this.addButtonListener(itemUI);
+
         });
     }
     scrollViewRefreshList(scrollViewNode: Node) {
@@ -348,8 +348,8 @@ export class comm extends Component {
 
     addPrefab(prefabPath: string, parent: Node, callback: Function | undefined = null!, args: any = null!) {
         UtilPub.getPrefab(prefabPath, (p: Prefab) => {
-            let node = poolManager.instance.getNode(p, parent!)!
-            let script = node.getComponent(node.name) as comm
+            let node = NodePoolService.instance.getNode(p, parent!)!
+            let script = node.getComponent(node.name) as BaseUiComponent
             if (script && args) {
                 script!._layerData = args
             }
@@ -362,11 +362,11 @@ export class comm extends Component {
         let windowSize = view.getVisibleSize();
         let resolute = view.getDesignResolutionSize()
         let scale = windowSize.width / resolute.width
-        // if (windowSize.width / windowSize.height <= 720 / 1280) {
-        //     scale = windowSize.width / resolute.width
-        // } else {
-        //     scale = windowSize.height / resolute.height
-        // }
+
+
+
+
+
         scale = windowSize.height / resolute.height
         let height = node.getComponent(UITransform)!.height!
         let width = node.getComponent(UITransform)!.width!
@@ -378,14 +378,14 @@ export class comm extends Component {
         } else if (type & WidgetType.bottom) {
             y = 0 - windowSize.height / scale / 2 + posy + height / 2
         }
-        // if (type & Const.WidgetType.left) {
-        //     x = windowSize.height / scale / 2 + posy - height / 2
-        // }else if(type & Const.WidgetType.right){
-        //     y =  0 - windowSize.height / scale / 2 + posy + height / 2
-        // }
+
+
+
+
+
         node.position = v3(x, y, node.position.z)
 
-        // console.log("fitNodeWidget " + node.name, node.position.y)
+
     }
 
     addButtonHander(btnComponent: Node | Button, target: Node, com: string, hander: string, customEventData?: any) {

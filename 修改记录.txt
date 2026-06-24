@@ -23,3 +23,11 @@
   - front 全目录搜索以下旧词：无命中
     compose / seasonAward / RoleDressUp / dressMoney / ItemInsightLayer / prop_detail / ComposeLayer / composeModel / PropDetailLayer / SeasonAwardLayer
   - 文件名搜索这些旧词：无命中
+
+第三轮：
+ 主要处理： 
+  - 批量重命名了一批易联动的类名/单例名/数据类型名，例如 gameData -> GameRuntimeData、LanauageManager -> LanguageContentManager、EventManger -> GameEventManager、userData ->
+    playerDataStore、uiManager -> UiLayerService。 
+  - 清理了普通模板注释和注释化废代码。
+  - 保留了 @ts-ignore/@ts-nocheck 这类编译指令，以及 md5.js 的 MIT license/版权作者信息和 UtilPub.ts 的作者块；这类第三方/作者归属我不能移除。
+  - 没有发现明确的 watermark/水印代码。

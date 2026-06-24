@@ -1,26 +1,26 @@
 import { assetManager, director, EditBox, find, game, Game, Label, ProgressBar, tween, Tween, _decorator,PREVIEW } from 'cc';
 import { HTML5, NATIVE, WECHAT } from 'cc/env';
 import { Const } from "../../config/Const";
-import { audioManager } from "../../easyFramework/mgr/audioManager";
+import { AudioPlaybackService } from "../../easyFramework/mgr/audioManager";
 import BaseView from "../../easyFramework/mgr/BaseView";
-import { uiManager } from '../../easyFramework/mgr/uiManager';
+import { UiLayerService } from '../../easyFramework/mgr/uiManager';
 import { GNetCmd } from '../../easyFramework/network/conf';
 import CronCtrJSF from '../../easyFramework/network/CronCtrJSF';
 import ServerCtrJSF from '../../easyFramework/network/ServerCtrJSF';
-import tables from '../../easyFramework/other/tables';
+import TableDataService from '../../easyFramework/other/tables';
 import { UtilPub } from '../../easyFramework/utils/UtilPub';
-import { RechargeManager } from '../../Util/RechargeManager';
-import { mergeBoardModel } from '../comm/mergeBoardModel';
-import { userData } from '../comm/UserData';
+import { RewardVideoManager } from '../../Util/RechargeManager';
+import { mergeBoardStateStore } from '../comm/mergeBoardModel';
+import { playerDataStore } from '../comm/UserData';
 import GD from '../../config/GD';
 import { WmSocketJSF } from '../../easyFramework/network/WmSocketJSF';
 import { Notifications } from '../../easyFramework/mgr/notifications';
-import { HttpClient } from '../../../typeScript/net/HttpClient';
+import { GameHttpClient } from '../../../typeScript/net/HttpClient';
 import { GamePlatform } from '../platform/GamePlatform';
 const { ccclass, property } = _decorator;
 
 @ccclass('canvas_loading')
-export class canvas_loading extends BaseView {
+export class LoadingCanvasController extends BaseView {
     get versionTxt() { return find("loading/page/version", this.node)!.getComponent(Label)! }
     get title() { return find("loading/page/title", this.node)! }
 
@@ -75,46 +75,46 @@ export class canvas_loading extends BaseView {
 
         this.bindButton(find("loading/page/login/loginGoogle", this.node)!, this.loginBtnGoogle)
         this.bindButton(find("loading/page/login/loginFaceBook", this.node)!, () => {
-            RechargeManager.LoginFacebook()
+            RewardVideoManager.LoginFacebook()
         })
 
         this.bindButton(find("loading/privacyLabel", this.node)!, () => {
-            uiManager.instance.showDialog(Const.Dialogs.PrivacyDialog)
+            UiLayerService.instance.showDialog(Const.Dialogs.PrivacyDialog)
         })
 
         game.on(Game.EVENT_HIDE, () => {
             console.log("-------------暂停游戏")
-            game.pause();//暂停游戏
+            game.pause();
         });
         game.on(Game.EVENT_SHOW, () => {
             console.log("-------------恢复游戏")
-            game.resume();//恢复游戏
+            game.resume();
         });
 
-        //并发下载数量
+
         assetManager.downloader.maxConcurrency = 20
 
-        //设置版本号
+
         this.versionTxt.string = "版本号：" + Const.version
 
-        //初始化音乐配置
-        audioManager.instance.initMusic()
+
+        AudioPlaybackService.instance.initMusic()
         CronCtrJSF.GetInstance().init()
 
-        //初始化账号
+
         if (HTML5) {
             this.account.string = ServerCtrJSF.GetInstance().Account
         }
         this.account.string = ServerCtrJSF.GetInstance().Account
 
-        //开始加载
-        // this.login.active = false
+
+
         this.isLoaded = false
         this.isEnterGame = false
         this.cnt = 0
         this.bar.progress = 0
         this.loadPkg();
-        RechargeManager.initManager()
+        RewardVideoManager.initManager()
         GamePlatform.checkWechatUpdate()
         if (NATIVE) {
             console.log(" Window.toastInfo")
@@ -127,7 +127,7 @@ export class canvas_loading extends BaseView {
 
             //@ts-ignore
             window.Login = (str: string) => {
-                // this.toast(str)
+
                 console.log("AppActivity = ", str)
                 ServerCtrJSF.GetInstance().reqUniqueLoginByAccount(this.account.string.trim())
             }
@@ -139,32 +139,32 @@ export class canvas_loading extends BaseView {
 
     start() {
 
-        let url = window.location.href;  
+        let url = window.location.href;
 
-        // if (PREVIEW){
-            // url = "https://us.us818.com/?uid=1098";
-        // }
 
-        // 提取查询字符串部分  
-        let queryString = url.split('?')[1]; // ['api.coincraze.ai/api/user', 'user_id=1111111']  
-  
-        // 解析查询字符串  
-        let params:any = {};  
+
+
+
+
+        let queryString = url.split('?')[1];
+
+
+        let params:any = {};
         if (queryString){
-            queryString.split('&').forEach(function(pair) {  
-                let keyValue = pair.split('=');  
-                let key = decodeURIComponent(keyValue[0]);  
-                let value = decodeURIComponent(keyValue[1] || ''); // 如果没有=号，则value为空字符串  
-                params[key] = value;  
-            });  
+            queryString.split('&').forEach(function(pair) {
+                let keyValue = pair.split('=');
+                let key = decodeURIComponent(keyValue[0]);
+                let value = decodeURIComponent(keyValue[1] || '');
+                params[key] = value;
+            });
         }
 
         this.wxUid = params["uid"];
 
-        //HttpClient.getInstance().sendLogin(params["uid"]);
+
 
         console.log("-----------loading 场景--加载游戏--start---------")
-        //初始化态有趣SDK
+
         GamePlatform.init()
         GamePlatform.track("进入登录")
     }
@@ -176,24 +176,24 @@ export class canvas_loading extends BaseView {
 
     loginBtnGoogle() {
         console.log(" Window.loginBtnGoogle")
-        RechargeManager.LoginGoole()
+        RewardVideoManager.LoginGoole()
     }
 
 
     loginBtnHandler() {
-        //  RechargeManager.RechargeTest()
-        //  return
-        // if (WECHAT) {
-        //     ServerCtrJSF.GetInstance().wxLoginBegin()
-        // } else {
-        //网页调试模式可以输入账号ID
-        //ServerCtrJSF.GetInstance().reqUniqueLoginByAccount(this.account.string.trim())
+
+
+
+
+
+
+
         if (ServerCtrJSF.GetInstance().isOkToDownload() == true) {
             Notifications.emit(GD.event.loadAll, () => {
                 ServerCtrJSF.GetInstance().isLoadAll = true
             })
         } else {
-            ServerCtrJSF.GetInstance().isLoadAll = true         
+            ServerCtrJSF.GetInstance().isLoadAll = true
         }
         ServerCtrJSF.GetInstance().isLoadAll = true
         ServerCtrJSF.GetInstance().isLogin = true;
@@ -205,7 +205,7 @@ export class canvas_loading extends BaseView {
     }
 
     loadBundles() {
-        //并行加载安装包
+
         this.bar.progress = 0
         this.timeProgress = 1
         let per = 0.7 / this.arr.length
@@ -219,7 +219,7 @@ export class canvas_loading extends BaseView {
                 if (this.arr[i] == "d1audio") {
                     UtilPub.loadAudio("d1audio").then(() => { this.cnt += 1 })
                 } else if (this.arr[i] == "json") {
-                    tables.ins().loadTable().then(() => { this.cnt += 1 })
+                    TableDataService.ins().loadTable().then(() => { this.cnt += 1 })
                 }
             })
         }
@@ -227,9 +227,9 @@ export class canvas_loading extends BaseView {
 
     async loadPkg() {
         this.arr = [...Const.bundlesAhead1]
-        // if (NATIVE || HTML5) {
-        //     this.arr = [...Const.bundles]
-        // }
+
+
+
         this.cnt = 0
         this.loadBundles()
     }
@@ -254,7 +254,7 @@ export class canvas_loading extends BaseView {
     }
 
     private enterGame() {
-        // TyqEventMgr.ins.sendEvent('进入游戏');
+
         director.off(GNetCmd.GetRegionData.toString());
         director.off(GNetCmd.UniqueLogin.toString());
         director.off(GNetCmd.ReqWxSession.toString());
@@ -263,11 +263,11 @@ export class canvas_loading extends BaseView {
         this.timeProgress = 5
         this.txt.string = `正在为您设置场景...`
 
-        // 在启动场景中
+
         let self = this
         assetManager.loadBundle("scene", (err, bundle) => {
             if (err) return;
-            // 加载分包内的场景
+
                 self.preloadSence().then(() => {
                 self.bar.progress = 1
                 self.scheduleOnce(() => {
@@ -276,12 +276,12 @@ export class canvas_loading extends BaseView {
             })
         });
 
-        
+
 
     }
 
     loginClick(){
-        HttpClient.getInstance().sendLogin(this.wxUid, "测试", "", ()=>{
+        GameHttpClient.getInstance().sendLogin(this.wxUid, "测试", "", ()=>{
             this.isCanEnter = true;
 
             find("loading/page/loginBtn2", this.node).active = false;
@@ -299,12 +299,12 @@ export class canvas_loading extends BaseView {
             console.log("------全部资源加载完成------")
             this.isLoaded = false
 
-            uiManager.instance.showDialog(Const.Dialogs.fly_tip)
-            // if (WECHAT) {
-            //     this.login.active = false
-            // } else {
-            //     this.login.active = true
-            // }
+            UiLayerService.instance.showDialog(Const.Dialogs.FloatingTipPanelController)
+
+
+
+
+
         }
 
         if (this.isCanEnter && ServerCtrJSF.GetInstance().isLogin && ServerCtrJSF.GetInstance().isLoadAll && this.isEnterGame == false) {
@@ -316,12 +316,12 @@ export class canvas_loading extends BaseView {
             this.calTime += deltaTime
             if (this.calTime > 2) {
                 this.calTime = 0
-                // if (WmSocketJSF.getInstance().isConnected() && this.isStartLogin == false) {
-                //     this.isStartLogin = true
+
+
                     if (true|| WECHAT) {
                         this.loginBtnHandler();
                     }
-                //}
+
             }
         }
 

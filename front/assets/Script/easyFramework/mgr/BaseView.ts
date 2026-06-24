@@ -1,19 +1,19 @@
 import { CCInteger, Node, tween, Vec3, view, _decorator } from "cc";
 import { UtilPub } from "../utils/UtilPub";
-import { comm } from "./comm";
-import { uiManager } from "./uiManager";
+import { BaseUiComponent } from "./comm";
+import { UiLayerService } from "./uiManager";
 const { ccclass, property } = _decorator;
 
 @ccclass("BaseView")
-export default class BaseView extends comm {
+export default class BaseView extends BaseUiComponent {
 
     @property(CCInteger)
     zIndex: number = 100
 
     AniNode: Node = null!
-    dialogPath: string = "" //预制体路径
+    dialogPath: string = ""
 
-    // show(...parameters: any[]){
+
     show(args: any) {
         this._layerData = args
         this.AniNode = this.node.getChildByName("root")!
@@ -40,10 +40,10 @@ export default class BaseView extends comm {
             tween(this.AniNode).to(0.1, { scale: new Vec3(0.3, 0.3, 0.3) }).call(() => {
                 this.node.active = false
                 this.AniNode.scale = new Vec3(1, 1, 1)
-                uiManager.instance.hideDialog(this.dialogPath)
+                UiLayerService.instance.hideDialog(this.dialogPath)
             }).start()
         } else {
-            uiManager.instance.hideDialog(this.dialogPath)
+            UiLayerService.instance.hideDialog(this.dialogPath)
         }
         UtilPub.log("close---this.dialogPath----", this.dialogPath)
     }
@@ -54,10 +54,10 @@ export default class BaseView extends comm {
             tween(this.AniNode).to(0.1, { scale: new Vec3(0.3, 0.3, 0.3) }).call(() => {
                 this.node.active = false
                 this.AniNode.scale = new Vec3(1, 1, 1)
-                uiManager.instance.popHideDialog(this.dialogPath)
+                UiLayerService.instance.popHideDialog(this.dialogPath)
             }).start()
         } else {
-            uiManager.instance.popHideDialog(this.dialogPath)
+            UiLayerService.instance.popHideDialog(this.dialogPath)
         }
         UtilPub.log("popClose---this.dialogPath----", this.dialogPath)
     }

@@ -1,13 +1,13 @@
 import { find, Label, Node, Sprite, SpriteFrame, tween, v3, _decorator } from 'cc';
 import { Const } from '../../../config/Const';
 import { RoleSex } from '../../../config/global';
-import { audioManager } from '../../../easyFramework/mgr/audioManager';
+import { AudioPlaybackService } from '../../../easyFramework/mgr/audioManager';
 import BaseView from '../../../easyFramework/mgr/BaseView';
-import { resourceUtil } from '../../../easyFramework/mgr/resourceUtil';
-import { uiManager } from '../../../easyFramework/mgr/uiManager';
-import tables from '../../../easyFramework/other/tables';
+import { ResourceLoaderService } from '../../../easyFramework/mgr/resourceUtil';
+import { UiLayerService } from '../../../easyFramework/mgr/uiManager';
+import TableDataService from '../../../easyFramework/other/tables';
 import { aiRobot } from '../../comm/AIRobot';
-import { userData } from '../../comm/UserData';
+import { playerDataStore } from '../../comm/UserData';
 import { GamePlatform } from '../../platform/GamePlatform';
 
 const { ccclass, property } = _decorator;
@@ -27,10 +27,10 @@ export class AvatarListView extends BaseView {
 
     show(args: any) {
         super.show(args)
-        // if (userData.roleAvatar != "") {
-        //     //动态加载图片的方法
-        //     resourceUtil.setRemoteImage(userData.roleAvatar, this.avatarNode.getComponent(Sprite)!, () => { })
-        // }
+
+
+
+
         aiRobot.stopUpdate();
     }
 
@@ -39,15 +39,15 @@ export class AvatarListView extends BaseView {
     }
 
     openDuihuanMa() {
-        audioManager.instance.playSound(Const.Audio.btn)
+        AudioPlaybackService.instance.playSound(Const.Audio.btn)
 
         GamePlatform.track("查看设置-兑换码")
-        uiManager.instance.pushShowDialog(Const.Dialogs.CodeDialog)
+        UiLayerService.instance.pushShowDialog(Const.Dialogs.CodeDialog)
     }
 
     openRoleInfo() {
-        audioManager.instance.playSound(Const.Audio.btn)
-        uiManager.instance.pushShowDialog(Const.Dialogs.RoleInfoDialog)
+        AudioPlaybackService.instance.playSound(Const.Audio.btn)
+        UiLayerService.instance.pushShowDialog(Const.Dialogs.RoleInfoDialog)
     }
 }
 

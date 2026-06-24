@@ -2,15 +2,15 @@ import { Button, find, instantiate, Node, ProgressBar, Sprite, tween, v3, Vec3, 
 import { Const } from '../../../config/Const';
 import GD from '../../../config/GD';
 import BaseView from '../../../easyFramework/mgr/BaseView';
-import { uiManager } from '../../../easyFramework/mgr/uiManager';
-import tables from '../../../easyFramework/other/tables';
+import { UiLayerService } from '../../../easyFramework/mgr/uiManager';
+import TableDataService from '../../../easyFramework/other/tables';
 import { UtilPub } from '../../../easyFramework/utils/UtilPub';
-import { mergeBoardModel } from '../../comm/mergeBoardModel';
-import { userData } from '../../comm/UserData';
-import { petItemData, ShopCfg } from '../../../../typeScript/gameData';
-import { petConfig } from '../../../../typeScript/LanauageManager';
-import { resourceUtil } from '../../../easyFramework/mgr/resourceUtil';
-import { HttpClient } from '../../../../typeScript/net/HttpClient';
+import { mergeBoardStateStore } from '../../comm/mergeBoardModel';
+import { playerDataStore } from '../../comm/UserData';
+import { PetProfileRecord, ShopConfigRecord } from '../../../../typeScript/gameData';
+import { PetConfigRecord } from '../../../../typeScript/LanauageManager';
+import { ResourceLoaderService } from '../../../easyFramework/mgr/resourceUtil';
+import { GameHttpClient } from '../../../../typeScript/net/HttpClient';
 const { ccclass, property } = _decorator;
 
 @ccclass('PetListView')
@@ -36,9 +36,9 @@ export class PetListView extends BaseView {
 
     selectInd:number = 0;
 
-    selectData:petItemData = null!;
+    selectData:PetProfileRecord = null!;
 
-    selectCfg:ShopCfg = null!;
+    selectCfg:ShopConfigRecord = null!;
 
     onLoad() {
         this.bindButton(this.btnClose, this.onClickBtnClose);
@@ -47,26 +47,26 @@ export class PetListView extends BaseView {
             if (!this.selectData){
                 return
             }
-            uiManager.instance.showDialog(Const.Dialogs.PetNameView, this.selectData)
+            UiLayerService.instance.showDialog(Const.Dialogs.PetNameView, this.selectData)
         })
 
         this.bindButton(find("root/btnFangsheng", this.node)!, () => {
-            uiManager.instance.showDialog(Const.Dialogs.PetComonTipView, [1,this.selectData])
+            UiLayerService.instance.showDialog(Const.Dialogs.PetComonTipView, [1,this.selectData])
         })
 
         this.bindButton(find("root/btnDitials", this.node)!, () => {
-            uiManager.instance.showDialog(Const.Dialogs.PetDetialsView, this.selectData);
+            UiLayerService.instance.showDialog(Const.Dialogs.PetDetialsView, this.selectData);
         })
 
         this.bindButton(find("root/btnHome", this.node)!, () => {
-            uiManager.instance.showDialog(Const.Dialogs.PetComonTipView, [2,this.selectData])
+            UiLayerService.instance.showDialog(Const.Dialogs.PetComonTipView, [2,this.selectData])
         })
     }
 
     onEnable() {
         this.on(GD.event.updateGame, this.refresh)
 
-        HttpClient.getInstance().getPetList();
+        GameHttpClient.getInstance().getPetList();
     }
 
     onDisable() {
@@ -87,9 +87,9 @@ export class PetListView extends BaseView {
             }
         }
 
-        for (let index = 0; index < userData.pets.length; index++) {
-            const petData:petItemData = userData.pets[index];
-            let shopCfg:ShopCfg = tables.ins().getTableValueByID(Const.Tables.new_prop, petData.prop_id);
+        for (let index = 0; index < playerDataStore.pets.length; index++) {
+            const petData:PetProfileRecord = playerDataStore.pets[index];
+            let shopCfg:ShopConfigRecord = TableDataService.ins().getTableValueByID(Const.Tables.new_prop, petData.prop_id);
 
             let ele = this.listContent.children[index];
             if (!ele){
@@ -129,11 +129,11 @@ export class PetListView extends BaseView {
             this.showSke.getComponent("pet").init(this.selectData);
         }
 
-        // resourceUtil.loadResWithBundle( guestData.sp, sp.SkeletonData, (err, skedata) => {
-        //     this.guestSpine.skeletonData = skedata;
-        //     this.guestSpine.setSkin("skin1")
-        //     this.guestSpine.setAnimation(0, "idle1", true);
-        // })
+
+
+
+
+
     }
 
     onClickBtnClose() {

@@ -3,16 +3,16 @@ import { Const } from "../../config/Const";
 import GD from "../../config/GD";
 import { GameStorage } from "../../easyFramework/mgr/gameStorage";
 import { Notifications } from "../../easyFramework/mgr/notifications";
-import tables from "../../easyFramework/other/tables";
+import TableDataService from "../../easyFramework/other/tables";
 import { UtilPub } from "../../easyFramework/utils/UtilPub";
-import { mergeBoardModel } from "./mergeBoardModel";
-import { userData } from "./UserData";
+import { mergeBoardStateStore } from "./mergeBoardModel";
+import { playerDataStore } from "./UserData";
 
-class PlayerModel {
-    private static instance: PlayerModel = null!;
-    public static getInstance(): PlayerModel {
+class SeasonProgressStore {
+    private static instance: SeasonProgressStore = null!;
+    public static getInstance(): SeasonProgressStore {
         if (this.instance == null) {
-            this.instance = new PlayerModel();
+            this.instance = new SeasonProgressStore();
         }
         return this.instance;
     }
@@ -33,19 +33,19 @@ class PlayerModel {
         if (saveDayTime) {
             this.saveDayTime = new Date(saveDayTime);
         } else {
-            this.saveDayTime = new Date(mergeBoardModel.getCurrentTimestamp());
+            this.saveDayTime = new Date(mergeBoardStateStore.getCurrentTimestamp());
         }
 
-        mergeBoardModel.initData();
+        mergeBoardStateStore.initData();
 
         this.openUpdateSecond();
 
 
-        // 为了测试方便，暂时这么做
+
         // @ts-ignore
-        window.mergeBoardModel = mergeBoardModel;
+        window.mergeBoardStateStore = mergeBoardStateStore;
         // @ts-ignore
-        window.playerModel = this;
+        window.seasonProgressStore = this;
     }
 
     openUpdateSecond() {
@@ -57,8 +57,8 @@ class PlayerModel {
     }
 
     public roleLvUp() {
-        if (userData.roleLv >= tables.ins().config.seasonPassUnlock) {
-            // 解锁战令
+        if (playerDataStore.roleLv >= TableDataService.ins().config.seasonPassUnlock) {
+
             if (!this.seasonOpen) {
                 this.seasonOpen = 1;
                 GameStorage.setInt(Const.DataKeys.seasonOpen, this.seasonOpen);
@@ -77,9 +77,9 @@ class PlayerModel {
             return;
         }
         this.seasonScore += score;
-        let nextRow = tables.ins().getTableValueByID(Const.Tables.seasonPass, this.seasonId + 1);
+        let nextRow = TableDataService.ins().getTableValueByID(Const.Tables.seasonPass, this.seasonId + 1);
         if (nextRow && this.seasonScore >= nextRow.num) {
-            // 升级了
+
             this.seasonId++;
             GameStorage.setInt(Const.DataKeys.seasonId, this.seasonId);
             this.seasonScore -= nextRow.num;
@@ -88,11 +88,11 @@ class PlayerModel {
         GameStorage.setInt(Const.DataKeys.seasonScore, this.seasonScore);
         UtilPub.log("id:" + this.seasonId, "lv:" + (this.seasonId - 1), "score:" + this.seasonScore);
     }
-    /**
-     * 根据id，获得战令奖励领取情况
-     * @param id 战令id
-     * @returns 为空，表示还没达到领取条件
-     */
+
+
+
+
+
     public getSeasonPassInfoById(id: number) {
         let info = GameStorage.getObject(Const.DataKeys.seasonPassInfo + id);
         if (!info && id <= this.seasonId) {
@@ -103,37 +103,37 @@ class PlayerModel {
         }
         return info;
     }
-    /**
-     * 战令领取普通奖励
-     * @param id 战令id
-     * @returns 
-     */
+
+
+
+
+
     public seasonGetAward1(id: number,startPos:Vec3) {
         let info = this.getSeasonPassInfoById(id);
         if (!info || info.a1) {
             return;
         }
-        let row = tables.ins().getTableValueByID(Const.Tables.seasonPass, id);
-        mergeBoardModel.addPropNum(row.award1[0], row.award1[1],startPos);
+        let row = TableDataService.ins().getTableValueByID(Const.Tables.seasonPass, id);
+        mergeBoardStateStore.addPropNum(row.award1[0], row.award1[1],startPos);
         info.a1 = 1;
         GameStorage.setObject(Const.DataKeys.seasonPassInfo + id, info);
     }
-    /**
-     * 战令领取高级奖励
-     * @param id 战令id
-     * @returns 
-     */
+
+
+
+
+
     public seasonGetAward2(id: number,startPos:Vec3) {
         let info = this.getSeasonPassInfoById(id);
         if (!info || info.a2) {
             return;
         }
-        let row = tables.ins().getTableValueByID(Const.Tables.seasonPass, id);
-        mergeBoardModel.addPropNum(row.award2[0], row.award2[1],startPos);
+        let row = TableDataService.ins().getTableValueByID(Const.Tables.seasonPass, id);
+        mergeBoardStateStore.addPropNum(row.award2[0], row.award2[1],startPos);
         info.a2 = 1;
         GameStorage.setObject(Const.DataKeys.seasonPassInfo + id, info);
     }
-    // 重置战令系统
+
     public resetSeasonPass() {
         this.seasonId = 1;
         this.seasonScore = 0;
@@ -141,7 +141,7 @@ class PlayerModel {
         GameStorage.setInt(Const.DataKeys.seasonId, this.seasonId);
 
         let keyArr: any = [];
-        let tb = tables.ins().getTable(Const.Tables.seasonPass);
+        let tb = TableDataService.ins().getTable(Const.Tables.seasonPass);
         for (let i in tb) {
             let key = Const.DataKeys.seasonPassInfo + tb[i].id;
             keyArr.push(key);
@@ -155,16 +155,16 @@ class PlayerModel {
 
     public overMonth() {
         UtilPub.log("跨月了");
-        // this.resetSeasonPass();
+
     }
 
     public update() {
         if (director.getScene()!.name != "game") {
             return;
         }
-        // UtilPub.log(this.saveDayTime.toLocaleString());
 
-        let now = new Date(mergeBoardModel.getCurrentTimestamp());
+
+        let now = new Date(mergeBoardStateStore.getCurrentTimestamp());
         let overDay = false;
         if (this.saveDayTime.getDate() == now.getDate()) {
             if (now.getTime() - this.saveDayTime.getTime() >= 24 * 60 * 60 * 1000) {
@@ -195,7 +195,7 @@ class PlayerModel {
 
 }
 
-const playerModel = PlayerModel.getInstance();
+const seasonProgressStore = SeasonProgressStore.getInstance();
 
-export { playerModel };
+export { seasonProgressStore };
 

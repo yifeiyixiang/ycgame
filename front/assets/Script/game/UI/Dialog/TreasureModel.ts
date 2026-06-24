@@ -1,7 +1,7 @@
 import { _decorator, Node, Label, ScrollView, find, Sprite, instantiate, Vec3, ProgressBar, } from 'cc';
 import { Const } from '../../../config/Const';
-import tables from '../../../easyFramework/other/tables';
-import { userData } from '../../comm/UserData';
+import TableDataService from '../../../easyFramework/other/tables';
+import { playerDataStore } from '../../comm/UserData';
 
 const { ccclass, property } = _decorator;
 
@@ -14,14 +14,14 @@ export class TreasureModel {
     private static _timeData: any = null
     static get timeData() {
         if (this._timeData == null) {
-            this._timeData = tables.ins().getTableValueByKey(Const.Tables.privilege, "key", "10012")
+            this._timeData = TableDataService.ins().getTableValueByKey(Const.Tables.privilege, "key", "10012")
         }
         return this._timeData!
     }
 
     static initLimitData(force: boolean = false) {
-        let propData = tables.ins().getTableValuesByType(Const.Tables.prop, "abao1", "1")
-        let propData2 = tables.ins().getTableValuesByType(Const.Tables.prop, "abao2", "2")
+        let propData = TableDataService.ins().getTableValuesByType(Const.Tables.prop, "abao1", "1")
+        let propData2 = TableDataService.ins().getTableValuesByType(Const.Tables.prop, "abao2", "2")
         let bao1 = []
         let bao2 = []
 
@@ -31,7 +31,7 @@ export class TreasureModel {
         }
 
         this._treasureData = { bao1: bao1, bao2: bao2, receive: [0, 0, 0, 0, 0, 0, 0], freeReflesh: 0 }
-        this._treasureData = userData.getLimitTimeData(this.timeData.dataKey, this.timeData.cdTime, this._treasureData, force)
+        this._treasureData = playerDataStore.getLimitTimeData(this.timeData.dataKey, this.timeData.cdTime, this._treasureData, force)
         return this._treasureData
     }
 
@@ -43,7 +43,7 @@ export class TreasureModel {
     }
 
     static saveTreasureData() {
-        userData.getLimitTimeData(this.timeData.dataKey, this.timeData.cdTime, this.treasureData, true)
+        playerDataStore.getLimitTimeData(this.timeData.dataKey, this.timeData.cdTime, this.treasureData, true)
     }
 
 
@@ -67,7 +67,7 @@ export class TreasureModel {
     }
 
     static checkCompseHasProp(propId: number) {
-        return false //阿宝的货车功能关闭
+        return false
         for (let index = 0; index < 6; index++) {
             if (this.treasureData.bao1[index].id == propId && this.treasureData.receive[index] == 0) {
                 return true

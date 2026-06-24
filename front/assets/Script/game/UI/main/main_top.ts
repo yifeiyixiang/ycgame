@@ -3,15 +3,15 @@ import { Const } from '../../../config/Const';
 import GD from '../../../config/GD';
 import { WidgetType } from '../../../config/global';
 import BaseView from '../../../easyFramework/mgr/BaseView';
-import { uiManager } from '../../../easyFramework/mgr/uiManager';
-import tables from '../../../easyFramework/other/tables';
+import { UiLayerService } from '../../../easyFramework/mgr/uiManager';
+import TableDataService from '../../../easyFramework/other/tables';
 import { CdComponent, CDType } from '../../../easyFramework/utils/CdComponent';
 import { UtilPub } from '../../../easyFramework/utils/UtilPub';
-import { mergeBoardModel } from '../../comm/mergeBoardModel';
-import { numAction } from '../../comm/numAction';
-import { userData } from '../../comm/UserData';
+import { mergeBoardStateStore } from '../../comm/mergeBoardModel';
+import { NumberActionController } from '../../comm/numAction';
+import { playerDataStore } from '../../comm/UserData';
 import { handIndexs } from '../../data/handData';
-import { EventManger } from '../../../../typeScript/EventManger';
+import { GameEventManager } from '../../../../typeScript/EventManger';
 import { GameStorage } from '../../../easyFramework/mgr/gameStorage';
 const { ccclass, property } = _decorator;
 
@@ -75,19 +75,19 @@ export class main_top extends BaseView {
         this.fitNodeWidgetY(find("root/level", this.node)!, WidgetType.top, -20)
 
         this.bindButton(find("root/top/btnSet", this.node)!, () => {
-            uiManager.instance.pushShowDialog(Const.Dialogs.SetDialog)
+            UiLayerService.instance.pushShowDialog(Const.Dialogs.SetDialog)
         })
 
         this.bindButton(find("root/top/btnAvatar", this.node)!, () => {
-            uiManager.instance.pushShowDialog(Const.Dialogs.UserinfoView)
+            UiLayerService.instance.pushShowDialog(Const.Dialogs.UserinfoView)
         })
 
         this.bindButton(find("root/top/gold/addGoldBtn", this.node)!, () => {
-            uiManager.instance.pushShowDialog(Const.Dialogs.GetgoldView, 1)
+            UiLayerService.instance.pushShowDialog(Const.Dialogs.GetgoldView, 1)
         })
 
         this.bindButton(find("root/top/power/addGoldBtn", this.node)!, () => {
-            uiManager.instance.pushShowDialog(Const.Dialogs.GetgoldView, 2)
+            UiLayerService.instance.pushShowDialog(Const.Dialogs.GetgoldView, 2)
         })
 
         this.expPos =  new Vec3(this.addExpLab.node.parent.position.x, this.addExpLab.node.parent.position.y, this.addExpLab.node.parent.position.z);
@@ -99,10 +99,10 @@ export class main_top extends BaseView {
         this.on(GD.event.updateGame, this.refresh)
         this.updateMoney()
 
-        EventManger.eventTarget.on(EventManger.EEventName.ADD_EXP_ANIMATION, this.expAddAnimation, this);
+        GameEventManager.eventTarget.on(GameEventManager.EEventName.ADD_EXP_ANIMATION, this.expAddAnimation, this);
 
-        this.coinLabel.string = userData.coin + ""
-        this.diamondsLabel.string = userData.diamonds + ""
+        this.coinLabel.string = playerDataStore.coin + ""
+        this.diamondsLabel.string = playerDataStore.diamonds + ""
         main_top._topNode = this.node
         this.on(GD.event.refreshHandLayer, this.refreshHandLayerRet, this)
         this.refreshHandLayer();
@@ -110,26 +110,26 @@ export class main_top extends BaseView {
         this.refresh();
     }
 
-    
+
 
     refreshHandLayer() {
-        let handIndex = mergeBoardModel.getHandIndex();
+        let handIndex = mergeBoardStateStore.getHandIndex();
         if (handIndex == handIndexs.btnLvUp) {
             let obj: any = {};
             obj.id = handIndex;
             obj.node = find("root/level", this.node);
             obj.click2 = 1;
-            uiManager.instance.showDialog(Const.Dialogs.HandLayer, obj);
+            UiLayerService.instance.showDialog(Const.Dialogs.HandLayer, obj);
         }
         if (handIndex == handIndexs.btnLvUp3) {
-            let lvdata = tables.ins().getTableValueByID(Const.Tables.herolevel, userData.roleLv)
-            if (userData.roleExp >= lvdata.exp) {
+            let lvdata = TableDataService.ins().getTableValueByID(Const.Tables.herolevel, playerDataStore.roleLv)
+            if (playerDataStore.roleExp >= lvdata.exp) {
                 let obj: any = {};
                 obj.id = handIndex;
                 obj.node = find("root/level", this.node);
                 obj.click2 = 1;
-                uiManager.instance.showDialog(Const.Dialogs.HandLayer, obj);
-                //  mergeBoardModel.addHandIndex()
+                UiLayerService.instance.showDialog(Const.Dialogs.HandLayer, obj);
+
             }
         }
     }
@@ -144,7 +144,7 @@ export class main_top extends BaseView {
         this.off(GD.event.refreshHandLayer, this.refreshHandLayerRet)
         this.off(GD.event.updateGame, this)
 
-        EventManger.eventTarget.off(EventManger.EEventName.ADD_EXP_ANIMATION, this.expAddAnimation, this);
+        GameEventManager.eventTarget.off(GameEventManager.EEventName.ADD_EXP_ANIMATION, this.expAddAnimation, this);
     }
 
     start() {
@@ -156,59 +156,59 @@ export class main_top extends BaseView {
         find("root/top/power", this.node)!.active = (flag & main_top.ShowPower) != 0
         find("root/top/diamond", this.node)!.active = (flag & main_top.ShowDiamond) != 0
 
-        // find("root/level", this.node)!.active = false;
-        // find("root/top/diamond", this.node)!.active = false
 
-        
+
+
+
     }
 
     refresh(){
-        if (!userData.userInfodata){
+        if (!playerDataStore.userInfodata){
             return;
         }
-        this.powerLabel.string = userData.power + ""
-        this.coinLabel.string = userData.coin + ""
+        this.powerLabel.string = playerDataStore.power + ""
+        this.coinLabel.string = playerDataStore.coin + ""
 
-        this.diamondsLabel.string = userData.diamonds + ""
+        this.diamondsLabel.string = playerDataStore.diamonds + ""
 
-        this.nameLab.string = userData.userInfodata.nickname;
-        this.nameIdLab.string = "ID: " + userData.userInfodata.userid + "";
-        this.petCountLab.string = "宠物数量: " + userData.pet_count + "";
-        this.petScoreLab.string = "宠物积分: " + userData.pet_score + "";
+        this.nameLab.string = playerDataStore.userInfodata.nickname;
+        this.nameIdLab.string = "ID: " + playerDataStore.userInfodata.userid + "";
+        this.petCountLab.string = "宠物数量: " + playerDataStore.pet_count + "";
+        this.petScoreLab.string = "宠物积分: " + playerDataStore.pet_score + "";
 
-        this.lvLabelNew.string = userData.roleLv + ""
+        this.lvLabelNew.string = playerDataStore.roleLv + ""
     }
 
     updateMoney() {
         this.refresh();
-        this.powerLabel.string = userData.power + ""
-        //  this.coinLabel.string = userData.coin + ""
-        // this.diamondsLabel.string = userData.diamonds + ""
-        this.lvLabel2.string = userData.roleLv + ""
-        this.styleVoucherLabel.string = userData.styleVoucher + ""
-        let lvdata = tables.ins().getTableValueByID(Const.Tables.herolevel, userData.roleLv)
+        this.powerLabel.string = playerDataStore.power + ""
+
+
+        this.lvLabel2.string = playerDataStore.roleLv + ""
+        this.styleVoucherLabel.string = playerDataStore.styleVoucher + ""
+        let lvdata = TableDataService.ins().getTableValueByID(Const.Tables.herolevel, playerDataStore.roleLv)
         if (lvdata) {
-            // this.lvBar2.fillRange = userData.roleExp / lvdata.exp
-            this.lvBar2.progress = Math.min(1, userData.roleExp / lvdata.exp)
-            this.expLab2.string = userData.roleExp + "/" + lvdata.exp
+
+            this.lvBar2.progress = Math.min(1, playerDataStore.roleExp / lvdata.exp)
+            this.expLab2.string = playerDataStore.roleExp + "/" + lvdata.exp
         }
 
-        if (userData.power < 100) {
+        if (playerDataStore.power < 100) {
             this.timeLabel.getComponent(CdComponent)!.setCD(CDType.CDCountdown, "video_powerAuto", 2 * 60, (time: number) => {
-                if (userData.power + time >= 100) {
-                    userData.power = Math.max(userData.power, 100)
+                if (playerDataStore.power + time >= 100) {
+                    playerDataStore.power = Math.max(playerDataStore.power, 100)
                     this.timeLabel.getComponent(CdComponent)!.clearCD()
                 } else {
-                    userData.power += time
+                    playerDataStore.power += time
                     this.updateMoney()
                 }
-                this.powerLabel.string = userData.power + ""
+                this.powerLabel.string = playerDataStore.power + ""
             })
         } else {
             this.timeLabel.getComponent(CdComponent)!.clearCD()
         }
 
-        if (userData.roleExp >= lvdata.exp) {
+        if (playerDataStore.roleExp >= lvdata.exp) {
             this.levelEffect2.active = true
             tween(this.star2).to(0.6, { scale: v3(1.1, 1.1, 1.1) }).to(0.6, { scale: v3(1, 1, 1) }).union().repeatForever().start()
         } else {
@@ -219,60 +219,59 @@ export class main_top extends BaseView {
     }
 
     updateMoneyAction() {
-        let coinCom = this.coinLabel.getComponent(numAction) || this.coinLabel.addComponent(numAction)
-        coinCom!.setTargetNum(userData.coin)
+        let coinCom = this.coinLabel.getComponent(NumberActionController) || this.coinLabel.addComponent(NumberActionController)
+        coinCom!.setTargetNum(playerDataStore.coin)
 
-        let diamondsCom = this.diamondsLabel.getComponent(numAction) || this.diamondsLabel.addComponent(numAction)
-        diamondsCom!.setTargetNum(userData.diamonds)
+        let diamondsCom = this.diamondsLabel.getComponent(NumberActionController) || this.diamondsLabel.addComponent(NumberActionController)
+        diamondsCom!.setTargetNum(playerDataStore.diamonds)
 
-        let powerCom = this.powerLabel.getComponent(numAction) || this.powerLabel.addComponent(numAction)
-        powerCom!.setTargetNum(userData.power)
+        let powerCom = this.powerLabel.getComponent(NumberActionController) || this.powerLabel.addComponent(NumberActionController)
+        powerCom!.setTargetNum(playerDataStore.power)
 
-        let styleVoucherCom = this.styleVoucherLabel.getComponent(numAction) || this.styleVoucherLabel.addComponent(numAction)
-        styleVoucherCom!.setTargetNum(userData.styleVoucher)
+        let styleVoucherCom = this.styleVoucherLabel.getComponent(NumberActionController) || this.styleVoucherLabel.addComponent(NumberActionController)
+        styleVoucherCom!.setTargetNum(playerDataStore.styleVoucher)
     }
 
     addMoney(event: any, data: any) {
-        if (data == 1) { //  获得体力
-            //  userData.checkAndUsePower(2)
-            //  this.emit(GD.event.updateMoney)
-            uiManager.instance.showDialog(Const.Dialogs.ShopPowerDialog)
-            //    RechargeManager.RechargeTest()
-        } else if (data == 2) { // 获得金币
-            uiManager.instance.showDialog(Const.Dialogs.FreeGiftDialog, { type: "4" })
-            // if (NATIVE) {
-            //     return
-            // }
-            // uiManager.instance.showDialog(Const.Dialogs.ShopDialog)
-        } else if (data == 3) { // 获得钻石
-            // if (NATIVE) {
-            //     return
-            // }
-            // uiManager.instance.showDialog(Const.Dialogs.ShopSynthesisDialog)
-            uiManager.instance.showDialog(Const.Dialogs.FreeGiftDialog, { type: "1" })
+        if (data == 1) {
+
+            UiLayerService.instance.showDialog(Const.Dialogs.ShopPowerDialog)
+
+        } else if (data == 2) {
+            UiLayerService.instance.showDialog(Const.Dialogs.FreeGiftDialog, { type: "4" })
+
+
+
+
+        } else if (data == 3) {
+
+
+
+
+            UiLayerService.instance.showDialog(Const.Dialogs.FreeGiftDialog, { type: "1" })
 
         } else if (data == 4) {
-            uiManager.instance.showDialog(Const.Dialogs.FreeGiftDialog, { type: "3" })
+            UiLayerService.instance.showDialog(Const.Dialogs.FreeGiftDialog, { type: "3" })
         }
     }
 
     showLevelDialog() {
-        mergeBoardModel.closeHandLayer();
-        uiManager.instance.pushShowDialog(Const.Dialogs.LevelDialog)
+        mergeBoardStateStore.closeHandLayer();
+        UiLayerService.instance.pushShowDialog(Const.Dialogs.LevelDialog)
     }
 
     update() {
-        if (userData.power >= 100) {
+        if (playerDataStore.power >= 100) {
             this.timeLabel.string = ""
             this.timeLabel.getComponent(CdComponent)!.clearCD()
         }
     }
 
     lateUpdate() {
-        if (mergeBoardModel.getBoardEnergyCooldown() > 0) {
+        if (mergeBoardStateStore.getBoardEnergyCooldown() > 0) {
             this.powerLabel.node.active = false;
             this.wuxianEffect.active = true;
-            this.timeLabel.string = UtilPub.getDurationStr(mergeBoardModel.getBoardEnergyCooldown());
+            this.timeLabel.string = UtilPub.getDurationStr(mergeBoardStateStore.getBoardEnergyCooldown());
         } else {
             this.powerLabel.node.active = true;
             this.wuxianEffect.active = false;
@@ -280,8 +279,8 @@ export class main_top extends BaseView {
     }
 
     expAddAnimation(exp:number){
-        // console.log("合成新道�?);
-        userData.roleExp+=exp;
+
+        playerDataStore.roleExp+=exp;
         this.updateMoney();
         this.addExpLab.string = "exp +" + exp;
         let addNode = this.addExpLab.node.parent;

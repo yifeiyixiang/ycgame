@@ -2,18 +2,18 @@
 import { AssetManager, AudioClip, Color, Component, Label, Node, Prefab, SpriteFrame, TextAsset, Tween, UIOpacity, UITransform, Vec2, Vec3, _decorator, assetManager, renderer, sp, tween, v2, v3 } from 'cc';
 import { Const } from '../../config/Const';
 import DataManager from '../../config/DataManager';
-import { audioManager } from '../mgr/audioManager';
-import { poolManager } from '../mgr/poolManager';
-import { resourceUtil } from '../mgr/resourceUtil';
+import { AudioPlaybackService } from '../mgr/audioManager';
+import { NodePoolService } from '../mgr/poolManager';
+import { ResourceLoaderService } from '../mgr/resourceUtil';
 import { MathRandom, MathUtil } from './UtilsMath';
 const { ccclass, property } = _decorator;
 
 // @ts-ignore
 import md5 from "./md5.js";
 
-/**
- * 公共工具类
- */
+
+
+
 @ccclass('UtilPub')
 export class UtilPub extends Component {
 
@@ -21,7 +21,7 @@ export class UtilPub extends Component {
 
     public static randomString(len: number) {
         len = len || 32;
-        var $chars = 'ABCDEFGHJKMNPQRSTWXYZabcdefhijkmnprstwxyz2345678';    /****默认去掉了容易混淆的字符oOLl,9gq,Vv,Uu,I1****/
+        var $chars = 'ABCDEFGHJKMNPQRSTWXYZabcdefhijkmnprstwxyz2345678';
         var maxPos = $chars.length;
         var pwd = '';
         for (let i = 0; i < len; i++) {
@@ -34,14 +34,14 @@ export class UtilPub extends Component {
         return md5(info);
     }
 
-    /**
-     * 判断一个坐标点是否在多边形内
-     * @param polygon [[0,0],[3,0],[0,3]]
-     * @param point [4,4]
-     * @returns 
-     */
+
+
+
+
+
+
     public static insidePolygon(polygon: Array<Array<number>>, point: Array<number>) {
-        // UtilPub.log("----inside--", polygon, point)
+
         var x = point[0], y = point[1];
         var inside = false;
         for (var i = 0, j = polygon.length - 1; i < polygon.length; j = i++) {
@@ -53,22 +53,22 @@ export class UtilPub extends Component {
         return inside;
     }
 
-    /**
-     * 设置节点位置，位置与参考节点一致
-     * @param node 节点
-     * @param otherNode 参考节点
-     */
+
+
+
+
+
     public static setNodePositionByOtherNode(node: Node, otherNode: Node) {
         let pos = this.convertToWorldSpace(otherNode);
         pos = this.convertToNodeSpace(node, pos);
         node.position = pos;
     }
 
-    /**
-     * 数组排序
-     * @param arr 
-     * @param compareFunc 
-     */
+
+
+
+
+
     public static sortArr(arr: any, compareFunc: Function) {
         if (!arr || arr.length <= 1) {
             return arr;
@@ -85,13 +85,13 @@ export class UtilPub extends Component {
         }
     }
 
-    /**
-     * 根据权重从数组中返回指定的个数元素
-     * @param arr 数组
-     * @param num 返回个数
-     * @param canRepeat 是否可以重复取，默认不可以
-     * @returns {Array} 返回结果数组
-     */
+
+
+
+
+
+
+
     public static getRowsByWeightAndNum(arr: any, num: number, canRepeat?: boolean) {
         if (!num) {
             num = 1;
@@ -112,11 +112,11 @@ export class UtilPub extends Component {
         return ret;
     }
 
-    /**
-     * 根据权重从数组中返回一个元素
-     * @param arr
-     * @param totalWeight
-     */
+
+
+
+
+
     public static getRowByWeight(arr: any, totalWeight?: number) {
         if (!totalWeight) {
             totalWeight = 0;
@@ -147,12 +147,12 @@ export class UtilPub extends Component {
         return row;
     }
 
-    /**
-     * 从给定的数组中，随机取出一个元素
-     * @param arr 数组
-     * @param isRemove 是否将该元素从数组中移除
-     * @return {null|*} 返回随机到的元素
-     */
+
+
+
+
+
+
     public static getRandomItemByArr(arr: any, isRemove: boolean = false) {
         if (!arr || arr.length <= 0) {
             return null;
@@ -197,11 +197,11 @@ export class UtilPub extends Component {
         }
     }
 
-    /**
-     * 将node坐标转换为世界坐标
-     * @param node 
-     * @param isCenter 是否强制是node的中心点坐标
-     */
+
+
+
+
+
     public static convertToWorldSpace(node: Node, isCenter?: boolean): Vec3 {
         let transform = node.parent!.getComponent(UITransform);
 
@@ -222,11 +222,11 @@ export class UtilPub extends Component {
         return pos;
     }
 
-    /**
-     * 获得以node父节点锚点位置为原点的坐标系下的坐标
-     * @param node 注意，是同坐标系下的节点
-     * @param pos 世界坐标
-     */
+
+
+
+
+
     public static convertToNodeSpace(node: Node, pos: Vec3): Vec3 {
         if (node.parent == null) {
             return Vec3.ZERO
@@ -261,7 +261,7 @@ export class UtilPub extends Component {
         console.error(...parameters)
     }
 
-    //保留2位小数
+
     public static num2(num: number) {
         return Number(num.toFixed(2))
     }
@@ -284,7 +284,7 @@ export class UtilPub extends Component {
         }
     }
 
-    //加载包
+
     public static loadBundle(name: string) {
         return new Promise<AssetManager.Bundle>(result => {
             let b = assetManager.getBundle(name)
@@ -303,27 +303,27 @@ export class UtilPub extends Component {
         })
     }
 
-    //加载音乐包
+
     public static loadAudio(bundleName: string) {
         return new Promise<void>((resolve, reject) => {
-            resourceUtil.loadResDirWithBundle(bundleName, "./", (err, res) => {
+            ResourceLoaderService.loadResDirWithBundle(bundleName, "./", (err, res) => {
                 UtilPub.log("加载音乐数据----------", res.length)
                 for (let i = 0; i < res.length; i++) {
                     let audioClip = res[i] as AudioClip
-                    audioManager.instance.clips[audioClip.name] = audioClip
+                    AudioPlaybackService.instance.clips[audioClip.name] = audioClip
                 }
                 resolve()
             })
         })
     }
 
-    //加载配置
+
     public static loadConfig() {
         return new Promise<void>((resolve, reject) => {
-            resourceUtil.loadResDirWithBundle('config', "./", (err, res) => {
-                //表格数据处理
-                //Public.log("table err----------", err)
-                //Public.log("table data----------", res)
+            ResourceLoaderService.loadResDirWithBundle('config', "./", (err, res) => {
+
+
+
                 for (let i = 0; i < res.length; i++) {
                     let textAsset = res[i] as TextAsset
                     let items = textAsset.text.split("\n");
@@ -334,18 +334,18 @@ export class UtilPub extends Component {
         })
     }
 
-    //加载图片
+
     public static loadPic() {
         return new Promise<void>((resolve, reject) => {
-            resourceUtil.loadResDirWithBundle('img', "./icons", (err, res) => {
-                //表格数据处理
-                //Public.log("table err----------", err)
+            ResourceLoaderService.loadResDirWithBundle('img', "./icons", (err, res) => {
+
+
                 UtilPub.log("spriteFrames data----------", res.length)
                 for (let i = 0; i < res.length; i++) {
                     let spAsset = res[i] as SpriteFrame
-                    resourceUtil.spriteFrames[spAsset.name] = spAsset
+                    ResourceLoaderService.spriteFrames[spAsset.name] = spAsset
                 }
-                UtilPub.log("spriteFrames data----------", resourceUtil.spriteFrames.length)
+                UtilPub.log("spriteFrames data----------", ResourceLoaderService.spriteFrames.length)
                 resolve()
             })
         })
@@ -372,42 +372,42 @@ export class UtilPub extends Component {
     }
 
     public static getPic(pname: any, cb: Function) {
-        // console.log("图片----------", pname)
-        // UtilPub.log("图片----------", pname)
-        //如果有缓存预制体，那么直接返回
-        if (resourceUtil.spriteFrames.hasOwnProperty(pname)) {
-            let p = resourceUtil.spriteFrames[pname]
+
+
+
+        if (ResourceLoaderService.spriteFrames.hasOwnProperty(pname)) {
+            let p = ResourceLoaderService.spriteFrames[pname]
             cb(p)
         } else {
-            resourceUtil.loadResWithBundle(pname + "/spriteFrame", SpriteFrame, (err, sf) => {
-                // Public.log("-----------sf", sf)
+            ResourceLoaderService.loadResWithBundle(pname + "/spriteFrame", SpriteFrame, (err, sf) => {
+
                 if (err) {
                     console.error("-----------not find pname", pname)
                     return
                 }
-                resourceUtil.spriteFrames[pname] = sf;
-                cb(resourceUtil.spriteFrames[pname])
+                ResourceLoaderService.spriteFrames[pname] = sf;
+                cb(ResourceLoaderService.spriteFrames[pname])
             })
         }
     }
 
     public static getPic2(pname: any, cb: Function) {
-        // UtilPub.log("图片----------", pname)
-        //UtilPub.log("图片----------", pname)
-        //如果有缓存预制体，那么直接返回
-        if (resourceUtil.spriteFrames.hasOwnProperty(pname)) {
-            let p = resourceUtil.spriteFrames[pname]
+
+
+
+        if (ResourceLoaderService.spriteFrames.hasOwnProperty(pname)) {
+            let p = ResourceLoaderService.spriteFrames[pname]
             cb(p)
         } else {
-            resourceUtil.loadResWithBundle(pname + "/spriteFrame", SpriteFrame, (err, sf) => {
-                // Public.log("-----------sf", sf)
+            ResourceLoaderService.loadResWithBundle(pname + "/spriteFrame", SpriteFrame, (err, sf) => {
+
                 if (err) {
-                    // console.log("-----------not find pname", pname)
+
                     cb();
                     return
                 }
-                resourceUtil.spriteFrames[pname] = sf;
-                cb(resourceUtil.spriteFrames[pname])
+                ResourceLoaderService.spriteFrames[pname] = sf;
+                cb(ResourceLoaderService.spriteFrames[pname])
             })
         }
     }
@@ -415,42 +415,42 @@ export class UtilPub extends Component {
     public static getPrefab(prefabPath: string, cb: Function) {
         let arr = prefabPath.split("/")
         let pname = arr[arr.length - 1]
-        //如果有缓存预制体，那么直接生成
-        if (resourceUtil.prefabs.hasOwnProperty(pname)) {
-            let p = resourceUtil.prefabs[pname]
+
+        if (ResourceLoaderService.prefabs.hasOwnProperty(pname)) {
+            let p = ResourceLoaderService.prefabs[pname]
             cb(p)
         } else {
-            resourceUtil.loadResWithBundle(prefabPath, Prefab, (err, prefab) => {
+            ResourceLoaderService.loadResWithBundle(prefabPath, Prefab, (err, prefab) => {
                 if (err) {
                     console.log("========loadResWithBundle error:", prefabPath, err.message);
                 }
-                resourceUtil.prefabs[pname] = prefab
+                ResourceLoaderService.prefabs[pname] = prefab
                 cb(prefab)
             })
         }
     }
 
 
-    /**
-     * 获取性能等级
-     * -Android
-     * 设备性能等级，取值为：
-     * -2 或 0（该设备无法运行小游戏）
-     * -1（性能未知）
-     * >=1（设备性能值，该值越高，设备性能越好，目前最高不到50)
-     * -IOS
-     * 微信不支持IO性能等级
-     * iPhone 5s 及以下
-     * 设定为超低端机 benchmarkLevel = 5
-     * iPhone 6 ～ iPhone SE
-     * 设定为超低端机 benchmarkLevel = 15
-     * iPhone 7 ~ iPhone X
-     * 设定为中端机 benchmarkLevel = 25
-     * iPhone XS 及以上
-     * 设定为高端机 benchmarkLevel = 40
-     * -H5或其他
-     * -1（性能未知）
-     */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     public static getBenchmarkLevel(): number {
         // @ts-ignore
         if (window.wx) {
@@ -459,13 +459,13 @@ export class UtilPub extends Component {
             const isIOS = sys.system.indexOf('iOS') >= 0;
             if (isIOS) {
                 const model = sys.model;
-                // iPhone 5s 及以下
+
                 const ultraLowPhoneType = ['iPhone1,1', 'iPhone1,2', 'iPhone2,1', 'iPhone3,1', 'iPhone3,3', 'iPhone4,1', 'iPhone5,1', 'iPhone5,2', 'iPhone5,3', 'iPhone5,4', 'iPhone6,1', 'iPhone6,2'];
-                // iPhone 6 ~ iPhone SE
+
                 const lowPhoneType = ['iPhone6,2', 'iPhone7,1', 'iPhone7,2', 'iPhone8,1', 'iPhone8,2', 'iPhone8,4'];
-                // iPhone 7 ~ iPhone X
+
                 const middlePhoneType = ['iPhone9,1', 'iPhone9,2', 'iPhone9,3', 'iPhone9,4', 'iPhone10,1', 'iPhone10,2', 'iPhone10,3', 'iPhone10,4', 'iPhone10,5', 'iPhone10,6', 'iPhone11,2', 'iPhone11,4', 'iPhone11,6', 'iPhone11,8'];
-                // iPhone XS 及以上
+
                 const highPhoneType = ['iPhone12,1', 'iPhone12,3', 'iPhone12,5', 'iPhone12,8', 'iPhone13', 'iPhone14', 'iPhone15', 'iPhone16', 'iPhone17', 'iPhone18', 'iPhone19', 'iPhone20'];
                 for (let i = 0; i < ultraLowPhoneType.length; i++) {
                     if (model.indexOf(ultraLowPhoneType[i]) >= 0)
@@ -493,15 +493,15 @@ export class UtilPub extends Component {
         }
     }
 
-    /**
-     * 数字跳跃通用接口
-     * @param label 标签组件
-     * @param oriVal 原始值
-     * @param addVal 增加值
-     * @param perVal 每次增加多少
-     * @param perTime 每次增加的时间
-     * @returns 
-     */
+
+
+
+
+
+
+
+
+
     public static numberJump(label: Label, oriVal: number, addVal: number, cnt: number, cb: Function, perTime: number = 0.1) {
         if (cnt <= 0) {
             cb && cb()
@@ -514,90 +514,90 @@ export class UtilPub extends Component {
         }).start()
     }
 
-    /**
-     * 低端机判断
-     */
+
+
+
     public static checkIsLowPhone() {
         UtilPub.log("----判断低端机的性能等级", UtilPub.getBenchmarkLevel())
-        let checkBenchmark = 22; //判断低端机的性能等级
+        let checkBenchmark = 22;
         return UtilPub.getBenchmarkLevel() < checkBenchmark
     }
 
-    /**
-    * 通用贝塞尔接口
-    * @param startNode 起始节点
-    * @param endNode 目标节点
-    * @param radio 控制点偏移量 0.1-0.9 0.5是中点
-    * @param deltaX 控制点的相对中点的偏移量
-    * @param deltaY 控制点的相对中点的偏移量
-    * @param duration 总动画时长
-    * @param cb 回调函数
-    */
+
+
+
+
+
+
+
+
+
+
     public static Bezier2DShow(startNode: Node, endNode: Node, radio: number, deltaX: number, deltaY: number, duration: number, cb: Function) {
         let e = endNode.getComponent(UITransform)!.convertToWorldSpaceAR(new Vec3(0, 0, 0))
         let eNode = startNode.parent!.getComponent(UITransform)!.convertToNodeSpaceAR(e)
-        // console.log("eNode--------", startNode.position.x, startNode.position.y, eNode.x, eNode.y)
-        // tween(startNode).to(0.5, {position:eNode}).start()
+
+
 
         let pArr = []
         let p1 = startNode.position
         let p2 = eNode
         let cp = UtilPub.Bezier2DGetCtlPoint(p1, p2, radio, deltaX, deltaY)
-        // console.log("----ppc----", p1, p2, cp)
+
         for (let i = 0; i < 30; i++) {
             let p = UtilPub.BezierTwo(i / 30, p1, cp, p2)
             pArr.push(new Vec3(p[0], p[1], startNode.position.z))
-            // console.log("------p------", p)
+
         }
         pArr.push(eNode)
         UtilPub.Bezier2DRun(pArr, startNode, 0, duration, cb)
     }
 
-    /**
-     * 通用贝塞尔接口
-     * @param startNode 起始节点
-     * @param delta 坐标差
-     * @param radio 控制点偏移量 0.1-0.9 0.5是中点
-     * @param deltaX 控制点的相对中点的偏移量
-     * @param deltaY 控制点的相对中点的偏移量
-     * @param duration 总动画时长
-     * @param cb 回调函数
-     */
+
+
+
+
+
+
+
+
+
+
     public static Bezier2DShowPoint(startNode: Node, delta: Vec3, radio: number, deltaX: number, deltaY: number, duration: number, cb: Function) {
-        // tween(startNode).to(0.5, {position:eNode}).start()
+
 
         let pArr = []
         let p1 = startNode.position
         let p2 = new Vec3(startNode.position.x + delta.x, startNode.position.y + delta.y, startNode.position.z + delta.z)
         let cp = UtilPub.Bezier2DGetCtlPoint(p1, p2, radio, deltaX, deltaY)
-        // console.log("----ppc----", p1, p2, cp)
+
         for (let i = 0; i < 30; i++) {
             let p = UtilPub.BezierTwo(i / 30, p1, cp, p2)
             pArr.push(new Vec3(p[0], p[1], 0))
-            // console.log("------p------", p)
+
         }
         pArr.push(p2)
         UtilPub.Bezier2DRun(pArr, startNode, 0, duration, cb)
     }
 
-    /**
- * 通用贝塞尔接口
- * @param startNode 起始节点
- * @param endPoint 终点
- * @param radio 控制点偏移量 0.1-0.9 0.5是中点
- * @param deltaX 控制点的相对中点的偏移量
- * @param deltaY 控制点的相对中点的偏移量
- * @param duration 总动画时长
- * @param cb 回调函数
- */
+
+
+
+
+
+
+
+
+
+
     public static Bezier3DShowPoint(startNode: Node, endPoint: Vec3, radio: number, deltaX: number, deltaY: number, duration: number, cb: Function) {
-        // tween(startNode).to(0.5, {position:eNode}).start()
+
 
         let pArr = []
         let p1 = startNode.worldPosition
         let p2 = endPoint
         let cp = UtilPub.Bezier2DGetCtlPoint(p1, p2, radio, deltaX, deltaY)
-        // console.log("----ppc----", p1, p2, cp)
+
         for (let i = 0; i < 30; i++) {
             let p = UtilPub.BezierTwo(i / 30, p1, cp, p2)
             pArr.push(new Vec3(p[0], p[1], 0))
@@ -607,15 +607,15 @@ export class UtilPub extends Component {
         UtilPub.Bezier2DRun(pArr, startNode, 0, duration, cb)
     }
 
-    /**
-     *
-     * @param pArr
-     * @param startNode
-     * @param i
-     * @param cb
-     * @param duration 总动画时长
-     * @constructor
-     */
+
+
+
+
+
+
+
+
+
     public static Bezier2DRun(pArr: Vec3[], startNode: Node, i: number, duration: number, cb: Function) {
         if (i > pArr.length) {
             cb && cb()
@@ -627,24 +627,24 @@ export class UtilPub extends Component {
         }).start()
     }
 
-    /**
-     * 获得贝塞尔曲线的控制点
-     * @param p1 起始点
-     * @param p2 结束点
-     * @param radio 0.1-0.9  0.5就是中线
-     * @param deltaX 中点为原点的偏移量
-     * @param deltaY 中点为原点的偏移量
-     * @constructor
-     */
+
+
+
+
+
+
+
+
+
     public static Bezier2DGetCtlPoint(p1: any, p2: any, radio: any, deltaX: any, deltaY: any) {
         return new Vec3((p1.x + p2.x) * radio + deltaX, (p1.y + p2.y) * radio + deltaY, 1)
     }
-    /**
-    * @desc 一阶贝塞尔
-    * @param  t 当前百分比
-    * @param  p1 起点坐标
-    * @param  p2 终点坐标
-    */
+
+
+
+
+
+
     public static BezierOne(t: number, p1: any, p2: any) {
         const x1 = p1.x
         const x2 = p2.x
@@ -656,13 +656,13 @@ export class UtilPub extends Component {
         return [x, y];
     }
 
-    /**
-     * @desc 二阶贝塞尔
-     * @param {number} t 当前百分比
-     * @param {Array} p1 起点坐标
-     * @param {Array} cp 控制点
-     * @param {Array} p2 终点坐标
-     */
+
+
+
+
+
+
+
     public static BezierTwo(t: number, p1: any, cp: any, p2: any) {
         const x1 = p1.x
         const x2 = p2.x
@@ -674,39 +674,39 @@ export class UtilPub extends Component {
         let y = (1 - t) * (1 - t) * y1 + 2 * t * (1 - t) * cy + t * t * y2;
         return [Math.round(x), Math.round(y)];
     }
-    //
-    // /** TODO 改造为可用代码
-    //  * @desc 三阶贝塞尔
-    //  * @param {number} t 当前百分比
-    //  * @param {Array} p1 起点坐标
-    //  * @param {Array} p2 终点坐标
-    //  * @param {Array} cp1 控制点1
-    //  * @param {Array} cp2 控制点2
-    //  */
-    // threeBezier(t, p1, cp1, cp2, p2) {
-    //     const [x1, y1] = p1;
-    //     const [x2, y2] = p2;
-    //     const [cx1, cy1] = cp1;
-    //     const [cx2, cy2] = cp2;
-    //     let x =
-    //         x1 * (1 - t) * (1 - t) * (1 - t) +
-    //         3 * cx1 * t * (1 - t) * (1 - t) +
-    //         3 * cx2 * t * t * (1 - t) +
-    //         x2 * t * t * t;
-    //     let y =
-    //         y1 * (1 - t) * (1 - t) * (1 - t) +
-    //         3 * cy1 * t * (1 - t) * (1 - t) +
-    //         3 * cy2 * t * t * (1 - t) +
-    //         y2 * t * t * t;
-    //     return [x, y];
-    // }
 
-    /**
-     * 震动摄像机
-     * @constructor
-     * @param times 震动的次数
-     * @param range 震动的幅度 建议是5
-     */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     public static ShakeCamera(target: Node, times: number = 8, range: number = 0.1) {
         let oriPos = target.position
         UtilPub._ShakeCamera(target, new Vec3(oriPos.x, oriPos.y, oriPos.z), times, range)
@@ -728,7 +728,7 @@ export class UtilPub extends Component {
             }).start()
     }
 
-    //包含最大值，最小值
+
     public static ranInt(min: number, max: number) {
         if (min > max) {
             let tmp = min
@@ -740,7 +740,7 @@ export class UtilPub extends Component {
         return Math.round(Math.random() * (max - min) + min);
     }
 
-    //得到对象列表中某一列的值
+
     public static getObjKeysArr(obj: any[], key: string): any[] {
         let res = []
         for (let i = 0; i < obj.length; i++) {
@@ -751,7 +751,7 @@ export class UtilPub extends Component {
         return res
     }
 
-    //随机n个数，不重复
+
     public static ranInts(min: number, max: number, num: number) {
         let arr = []
         for (let i = min; i < max; i++) {
@@ -763,9 +763,9 @@ export class UtilPub extends Component {
     }
 
     private static getRandVal(arr: number[], num: number, res: number[]) {
-        // let rIdx= Public.ranInt(0, arr.length-1)
-        // res.push(arr[rIdx])
-        // delete arr[rIdx]
+
+
+
         UtilPub.shuffle(arr)
         let element = arr.shift()
         if (element) {
@@ -779,9 +779,9 @@ export class UtilPub extends Component {
         }
     }
 
-    //工具权重随机数据
+
     public static randInts(dataArr: any[], num: number) {
-        let res = [] //返回随机出来的数组下标
+        let res = []
         if (dataArr.length < num) {
             UtilPub.log("--------参数违规----!!!")
             return []
@@ -792,13 +792,13 @@ export class UtilPub extends Component {
             if (isExist == null) {
                 res.push(idx)
             }
-            // Public.log("-------寻找---", idx, isExist, res)
+
             if (res.length >= num) break;
         }
         return res
     }
 
-    //工具权重随机数据
+
     public static randIntsByWeight(dataArr: any[], num: number) {
         let weightIds = []
         let res: number[] = []
@@ -811,7 +811,7 @@ export class UtilPub extends Component {
             if (isExist == null) {
                 res.push(idx)
             }
-            // Public.log("-------寻找---", idx, isExist, res)
+
             if (res.length >= num) break;
         }
         return res
@@ -864,12 +864,12 @@ export class UtilPub extends Component {
             cur.lookAt(target)
             cur.eulerAngles = v3(oriX, cur.eulerAngles.y, oriZ)
         }
-        // cur.lookAt(target)
-        // cur.eulerAngles = v3(oriX, cur.eulerAngles.y, oriZ)
+
+
     }
 
 
-    //传入配表行信息
+
     public static getParam(row: any, lv: number) {
         let p = []
         for (let i = 1; i < 7; i++) {
@@ -885,7 +885,7 @@ export class UtilPub extends Component {
         return p
     }
 
-    //解析说明
+
     public static formatDesc(desc: string, ...args: any) {
         let str = desc;
         let len = args.length;
@@ -925,12 +925,12 @@ export class UtilPub extends Component {
         for (let i = 0; i < weightArr.length; i++) {
             totalWeight += weightArr[i];
         }
-        let ran = UtilPub.ranInt(1, totalWeight); //200
+        let ran = UtilPub.ranInt(1, totalWeight);
         let calWeight = 0;
         for (let i = 0; i < weightArr.length; i++) {
-            calWeight += weightArr[i]; //30...210,
-            // cc.log("---------calWeight----", calWeight, ran, totalWeight)
-            if (ran <= calWeight) { //200<=30, 200<=210
+            calWeight += weightArr[i];
+
+            if (ran <= calWeight) {
                 return idsArr[i];
             }
         }
@@ -946,7 +946,7 @@ export class UtilPub extends Component {
         for (let i = 0; i < weights.length; i++) {
             const weight = weights[i];
             if (ran <= weight) {
-                // Public.log("---------随机算法---", ran, totalWeight)
+
                 return i;
             }
             else {
@@ -956,17 +956,17 @@ export class UtilPub extends Component {
         return 0
     }
 
-    /**
-     * 只有一个子节点的情况，用于构筑场景中的唯一建筑
-     * @param prefabName 
-     * @param parentNode 
-     * @returns 
-     */
+
+
+
+
+
+
     public static loadOneRes(prefabName: string, parentNode: Node) {
         return new Promise<Node>((resolve, reject) => {
             if (parentNode.children.length == 0) {
-                resourceUtil.loadResWithBundle(prefabName, Prefab, (err, prefab) => {
-                    let item = poolManager.instance.getNode(prefab, parentNode)!
+                ResourceLoaderService.loadResWithBundle(prefabName, Prefab, (err, prefab) => {
+                    let item = NodePoolService.instance.getNode(prefab, parentNode)!
                     item.worldPosition = parentNode.worldPosition
                     resolve(item)
                 })
@@ -976,9 +976,9 @@ export class UtilPub extends Component {
         })
     }
 
-    //传入秒，获得倒计时 单位秒
+
     public static timerFormat(_time: number) {
-        // console.log("timerFormat:",_time);
+
         let time = Math.round(_time);
         let t = Number(time);
         let h = Math.floor(t / 3600);
@@ -1028,10 +1028,10 @@ export class UtilPub extends Component {
         return ret;
     }
 
-    /**
-     * 获取一段时长的显示字符串，如 1d2h5m6s
-     * @param duration 时长，单位：毫秒
-     */
+
+
+
+
     public static getDurationStr(duration: number) {
         if (duration < 0) {
             duration = 0;
@@ -1056,10 +1056,10 @@ export class UtilPub extends Component {
         return str;
     }
 
-    /**
-     * 获取一段时长的显示字符串，只显示最高的两位，如 1d2h5m6s，则返回 1d2h
-     * @param duration 时长，单位：毫秒
-     */
+
+
+
+
     public static getDurationStr2(duration: number) {
         if (duration < 0) {
             duration = 0;
@@ -1089,8 +1089,8 @@ export class UtilPub extends Component {
             tween()
                 .to(0.5, { scale: new Vec3(s * oriScale.x, s * oriScale.y, s * oriScale.z) })
                 .to(0.5, { scale: new Vec3(1 * oriScale.x, 1 * oriScale.y, 1 * oriScale.z) })
-            // .to(0.5, {scale:new Vec3(0.95*oriScale.x,0.95*oriScale.y,0.95*oriScale.z)})
-            // .to(0.5, {scale:new Vec3(1*oriScale.x,1*oriScale.y,1*oriScale.z)})
+
+
         ).start()
     }
 
@@ -1126,11 +1126,11 @@ export class UtilPub extends Component {
         ).start()
     }
 
-    /**
-     * 显示子节点
-     * @param node 
-     * @param idx 
-     */
+
+
+
+
+
     public static showSubNode(node: Node, idx: number) {
         for (let i = 0; i < node.children.length; i++) {
             node.children[i].active = (idx == i)
@@ -1147,10 +1147,10 @@ export class UtilPub extends Component {
         return pos
     }
 
-    /** 
-     * 中点坐标求法  left  mid  right 
-     * (x + y)/2 = mid 所以 y = 2z -x 
-    */
+
+
+
+
     public static getBehindPoint(left: Vec3, mid: Vec3): Vec3 {
         let vec = v3(0, 0, 0)
         vec.x = 2 * mid.x - left.x
@@ -1159,7 +1159,7 @@ export class UtilPub extends Component {
         return vec
     }
 
-    //爆炸动作
+
     public static ExplodeMotion(node: Node, center: Vec3 = null!) {
         let enemy = node.getChildByName("root")!
         let bottom = node.getChildByName("bottom")!
@@ -1172,12 +1172,12 @@ export class UtilPub extends Component {
         if (center) {
             let dis = MathUtil.getInstance().calcDistance3D(center, node.worldPosition)
             Vec3.subtract(delta, node.worldPosition, center)
-            //距离越大，系数越低
+
             let range = 2
             if (dis > range) dis = range
             let mul = 4.2 * ((range - dis) / range)
             delta.multiplyScalar(mul)
-            // Public.log("-----------delta", delta, dis, mul)
+
         }
         pos.x += delta.x
         pos.z += delta.z
@@ -1202,30 +1202,30 @@ export class UtilPub extends Component {
         tween(enemy)
             .to(1.5, { eulerAngles: v3(randAngle1, randAngle2, randAngle3) })
             .to(0.1, { eulerAngles: v3(0, randAngle2, 0) })
-            // .to(0.5, {eulerAngles:v3(randAngle4,randAngle5,randAngle6)})
-            // .to(0.3, {eulerAngles:v3(0,randAngle4,0)})
+
+
             .start()
 
 
     }
 
-    // public static getSoldier(node:Node):soldier{
-    //     let role:soldier = null!
-    //     let s1 = node.getComponent(prefab_soldier)!
-    //     if(s1) role= s1
-    //     let s2 = node.getComponent(prefab_enemy)!
-    //     if(s2) role= s2
-    //     let s3 = node.getComponent(player)!
-    //     if(s3) role= s3
-    //     return role
-    // }
 
-    /**
-     * 获得2个点之间的点
-     * @param sPos
-     * @param ePos
-     * @param cnt
-     */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     public static GetPoints(sPos: Vec3, ePos: Vec3, cnt: number = 30): Vec3[] {
         let pArr = []
         let p1 = v2(sPos.x, sPos.z)
@@ -1233,47 +1233,47 @@ export class UtilPub extends Component {
         for (let i = 0; i < cnt; i++) {
             let p = UtilPub.BezierOne(i / cnt, p1, p2)
             pArr.push(v3(p[0], ePos.y, p[1]))
-            // //Public.log("------p------", p)
+
         }
         pArr.push(ePos)
         return pArr
     }
 
-    /**
-     * 一个点是否在这个节点的区域内
-     * @param node 节点
-     * @param pos 触点坐标
-     * @constructor
-     */
+
+
+
+
+
+
     public static IsPointInNodeArea2D(node: Node, pos: Vec2) {
         const nodeUIT = node.getComponent(UITransform)!;
         let wordPos = nodeUIT.convertToWorldSpaceAR(new Vec3(0, 0, 0))
-        // UtilPub.log("-------触点到节点世界坐标---", wordPos, "----pos", pos, nodeUIT.width, nodeUIT.height)
-        //判断点击的位置是否在矩形区域内
+
+
         if (pos.x < wordPos.x + nodeUIT.width / 2 && pos.x > wordPos.x - nodeUIT.width / 2) {
-            // UtilPub.log("-------触点到节点世界坐标1---", wordPos.x + nodeUIT.width/2)
+
             if (pos.y < wordPos.y + nodeUIT.height / 2 && pos.y > wordPos.y - nodeUIT.height / 2) {
-                // UtilPub.log("-------触点到节点世界坐标2---", wordPos.x + nodeUIT.width/2)
+
                 return true
             }
         }
         return false
     }
-    /**
-    * 一个点是否在这个区域内
-    * @param node 节点
-    * @param pos 触点坐标
-    * @constructor
-    */
+
+
+
+
+
+
     public static IsPointInArea2D(pos: Vec3, wordPos: Vec3, width: number, height: number) {
-        // const nodeUIT = node.getComponent(UITransform)!;
-        // let wordPos = nodeUIT.convertToWorldSpaceAR(new Vec3(0, 0, 0))
-        // UtilPub.log("-------触点到节点世界坐标---", wordPos, "----pos", pos)
-        //判断点击的位置是否在矩形区域内
+
+
+
+
         if (pos.x < wordPos.x + width / 2 && pos.x > wordPos.x - width / 2) {
-            // UtilPub.log("-------触点到节点世界坐标1---", pos, wordPos )
+
             if (pos.y < wordPos.y + height / 2 && pos.y > wordPos.y - height / 2) {
-                // UtilPub.log("@@@@@@-------触点到节点世界坐标2---", pos, wordPos)
+
                 return true
             }
         }
@@ -1284,18 +1284,18 @@ export class UtilPub extends Component {
         return Math.floor(num * 100) / 100
     }
 
-    /**
-     * 渐变功能
-     * @param duration 秒 1.1
-     * @param frame 每秒多少帧，30
-     * @param cnt 总共需要调用多少次， 1.1 * 30 ， 每调用一次减1
-     * @param pass 渲染管线对象
-     * @param color 颜色，new Color(r,g,b,a)
-     * @param meshNode 网格节点
-     * @constructor
-     */
+
+
+
+
+
+
+
+
+
+
     public static FadePlane(duration: number, frame: number, cnt: number, pass: renderer.Pass, color: Color, meshNode: Node) {
-        // const pass = this.frameMesh.getMaterial(0)!.passes[0];
+
 
         if (cnt <= 0) {
             return
@@ -1303,10 +1303,10 @@ export class UtilPub extends Component {
         let interval = duration / frame
         let total = duration * frame
         let opacity = Math.round(255 * (cnt / total))
-        // //Public.log("pass--------", cnt, color.a, opacity)
+
         tween(meshNode).call(() => {
             const h = pass.getHandle('mainColor');
-            // pass.setUniform(h, new Color().fromHEX('#0000ff'));
+
             color.a = opacity
             pass.setUniform(h, color)
             cnt -= 1
@@ -1315,7 +1315,7 @@ export class UtilPub extends Component {
         }).start()
     }
 
-    //统一
+
     public static cntDown(node: Node, sec: number, cbEach: Function, cbFinal: Function) {
         setTimeout(() => {
             if (node.active) {
@@ -1324,7 +1324,7 @@ export class UtilPub extends Component {
                     cbEach && cbEach(sec)
                     this.cntDown(node, sec, cbEach, cbFinal)
                 } else {
-                    //领取奖励
+
                     cbFinal && cbFinal()
                 }
             }

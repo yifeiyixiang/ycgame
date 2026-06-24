@@ -4,7 +4,7 @@ const { ccclass, property } = _decorator;
 
 
 @ccclass('AdManager')
-export class AdManager {
+export class RewardAdBridge {
 
 
 

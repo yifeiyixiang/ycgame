@@ -4,8 +4,8 @@ import GD from '../../../config/GD';
 import BaseView from '../../../easyFramework/mgr/BaseView';
 import { GameStorage } from '../../../easyFramework/mgr/gameStorage';
 import ServerCtrJSF from '../../../easyFramework/network/ServerCtrJSF';
-import tables from '../../../easyFramework/other/tables';
-import { mergeBoardModel } from '../../comm/mergeBoardModel';
+import TableDataService from '../../../easyFramework/other/tables';
+import { mergeBoardStateStore } from '../../comm/mergeBoardModel';
 import { UtilScene } from '../../comm/UtilScene';
 
 const { ccclass, property } = _decorator;
@@ -24,11 +24,11 @@ export class DebugDialog extends BaseView {
     show(args: any) {
         super.show(args)
         this.initData()
-        //userData.diamonds += 10000
+
     }
 
     initData() {
-        let setData = tables.ins().getTable(Const.Tables.setting)
+        let setData = TableDataService.ins().getTable(Const.Tables.setting)
         this.scrollViewSetData(this.list, setData, this.initItem, this)
     }
 
@@ -61,7 +61,7 @@ export class DebugDialog extends BaseView {
         let item = data[0]
         GameStorage.setInt(item.key, GameStorage.getInt(item.key) - parseInt(itemUI.getChildByName("EditBox")!.getComponent(EditBox)!.string))
         this.emit(GD.event.updateMoney)
-        //  this.initData()
+
 
         itemUI.getChildByName("curNum")!.getComponent(Label)!.string = GameStorage.getInt(item.key, 0) + ""
 
@@ -73,7 +73,7 @@ export class DebugDialog extends BaseView {
         let item = data[0]
         GameStorage.setInt(item.key, GameStorage.getInt(item.key) + parseInt(itemUI.getChildByName("EditBox")!.getComponent(EditBox)!.string))
         this.emit(GD.event.updateMoney)
-        // this.initData()
+
         itemUI.getChildByName("curNum")!.getComponent(Label)!.string = GameStorage.getInt(item.key, 0) + ""
 
     }
@@ -83,9 +83,9 @@ export class DebugDialog extends BaseView {
         let item = data[0]
 
         let propId = parseInt(itemUI.getChildByName("EditBox")!.getComponent(EditBox)!.string)
-        let propData = tables.ins().getTableValueByID(Const.Tables.prop, propId)
+        let propData = TableDataService.ins().getTableValueByID(Const.Tables.prop, propId)
         if (propData) {
-            mergeBoardModel.addPropNum(propId, 1)
+            mergeBoardStateStore.addPropNum(propId, 1)
         } else {
             this.toast("道具ID 有误")
         }

@@ -6,7 +6,7 @@ import { Const } from '../../config/Const';
 import { localText } from '../../config/localText';
 import BaseView from '../../easyFramework/mgr/BaseView';
 import { UtilPub } from '../../easyFramework/utils/UtilPub';
-import { RechargeManager } from '../../Util/RechargeManager';
+import { RewardVideoManager } from '../../Util/RechargeManager';
 const { ccclass, property } = _decorator;
 
 enum HintBtnStatus {
@@ -76,15 +76,15 @@ export class HotUpdate extends BaseView {
                 break;
             case jsb.EventAssetsManager.ALREADY_UP_TO_DATE:
                 this.infoLabel.string = localText.hotupdate.alreadyNew;
-                // 自动进入初始场景
+
                 this.onClickBtnEnterGame();
                 break;
             case jsb.EventAssetsManager.NEW_VERSION_FOUND:
-                // let size = this.getSizeKB(this._am.getTotalBytes());
-                // let msg = localText.hotupdate.newVersionHint.format(this._am.getRemoteManifest().getVersion(), size);
-                // this.showHintLayer(msg, HintBtnStatus.update);
+
+
+
                 this.infoLabel.string = localText.hotupdate.updating;
-                // 直接更新
+
                 this.hotUpdate();
                 break;
             default:
@@ -116,8 +116,8 @@ export class HotUpdate extends BaseView {
 
                 var msg = event.getMessage();
                 if (msg) {
-                    // this.panel.info.string = 'Updated file: ' + msg;
-                    // cc.log(event.getPercent()/100 + '% : ' + msg);
+
+
                 }
                 break;
             case jsb.EventAssetsManager.ERROR_DOWNLOAD_MANIFEST:
@@ -127,7 +127,7 @@ export class HotUpdate extends BaseView {
                 break;
             case jsb.EventAssetsManager.ALREADY_UP_TO_DATE:
                 this.infoLabel.string = localText.hotupdate.alreadyNew;
-                // 自动进入初始场景
+
                 this.onClickBtnEnterGame();
                 failed = true;
                 break;
@@ -164,7 +164,7 @@ export class HotUpdate extends BaseView {
             var newPaths = this._am.getLocalManifest().getSearchPaths();
             console.log("manifest search paths:" + JSON.stringify(newPaths));
 
-            // 前置路径并去重
+
             searchPaths = newPaths.concat(searchPaths);
             let arr = [];
             for (let i in searchPaths) {
@@ -180,7 +180,7 @@ export class HotUpdate extends BaseView {
             console.log("HotUpdateSearchPaths:" + JSON.stringify(searchPaths));
 
             this.infoLabel.string = localText.hotupdate.autoRestart;
-            // 全部更新完毕，自动重启游戏
+
             this.scheduleOnce(() => {
                 game.restart();
             }, 0.5);
@@ -189,10 +189,10 @@ export class HotUpdate extends BaseView {
 
     retry() {
         if (!this._updating && this._canRetry) {
-            // this.panel.retryBtn.active = false;
+
             this._canRetry = false;
 
-            // this.panel.info.string = 'Retry failed Assets...';
+
             this._am.downloadFailedAssets();
         }
     }
@@ -244,13 +244,13 @@ export class HotUpdate extends BaseView {
     }
 
     onLoad() {
-        // // test
+
         console.log("hotupdate 1")
-        // this.scheduleOnce(() => {
-        //     this.infoLabel.string = "调用充值接口";
-        //     RechargeManager.RechargeTest();
-        // }, 3);
-        // return;
+
+
+
+
+
         director.loadScene("loading");
         return
 
@@ -309,21 +309,21 @@ export class HotUpdate extends BaseView {
         this._am = new jsb.AssetsManager('', this._storagePath, this.versionCompareHandle);
 
         this._am.setVerifyCallback(function (path: string, asset: any) {
-            // When asset is compressed, we don't need to check its md5, because zip file have been deleted.
+
             var compressed = asset.compressed;
-            // Retrieve the correct md5 value.
+
             var expectedMD5 = asset.md5;
-            // asset.path is relative path and path is absolute.
+
             var relativePath = asset.path;
-            // The size of asset file, but this value could be absent.
+
             var size = asset.size;
 
             let fileData = jsb.fileUtils.getDataFromFile(path);
             let md5Str = UtilPub.md5(fileData);
-            // console.log("file  md5:" + expectedMD5);
-            // console.log("check md5:" + md5Str);
+
+
             if (md5Str != expectedMD5) {
-                // md5验证失败
+
                 console.log("file  md5:" + expectedMD5);
                 console.log("check md5:" + md5Str);
                 console.log(relativePath + " md5 check fail.");
@@ -359,7 +359,7 @@ export class HotUpdate extends BaseView {
                 this.hotUpdate();
                 break;
             case HintBtnStatus.error:
-                //game.end();
+
                 director.loadScene("loading");
                 break;
             default:

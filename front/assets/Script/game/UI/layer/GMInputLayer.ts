@@ -48,12 +48,12 @@ export class GMInputLayer extends BaseView {
         UtilPub.log(str);
         switch (str) {
             case "tyq666":
-                // 开启机器人
+
                 GameStorageJSF.ins.setRobot(true);
                 UtilScene.restartGame();
                 break;
             case "666":
-                // 关闭机器人
+
                 GameStorageJSF.ins.setRobot(false);
                 UtilScene.restartGame();
                 break;

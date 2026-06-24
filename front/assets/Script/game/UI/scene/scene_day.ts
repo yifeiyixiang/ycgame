@@ -1,9 +1,9 @@
 import { _decorator } from 'cc';
-import { comm } from '../../../easyFramework/mgr/comm';
+import { BaseUiComponent } from '../../../easyFramework/mgr/comm';
 const { ccclass, property } = _decorator;
 
 @ccclass('scene_day')
-export class scene_day extends comm {
+export class scene_day extends BaseUiComponent {
     start() {
 
     }
@@ -12,7 +12,7 @@ export class scene_day extends comm {
         this.calTime+=deltaTime
         if(this.calTime>1){
             this.calTime=0
-            // UtilPub.log("scene_day---------", this.node.layer)
+
         }
     }
 }

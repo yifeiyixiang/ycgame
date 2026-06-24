@@ -20,7 +20,7 @@ export class GameStorageJSF extends Component {
         return this._instance;
     }
 
-    //是否是机器人，1为ture，0为否
+
     public setRobot(isRobot:boolean=false){
         let val = isRobot?"1":"0"
         sys.localStorage.setItem("login_isRobot", val);
@@ -43,24 +43,24 @@ export class GameStorageJSF extends Component {
 
      getStorage() {
         return GameMemoryStorage
-        // return Const.isActiveMemoryTmp?GameMemoryStorageTmp: GameMemoryStorage
+
     }
 
      getInt(key: string, def: number = 0) {
         let n = this.getStorage().getItem(this.Key(key));
 
-        // if (Const.isTest){
-        //     if(key == Const.DataKeys.roleExp){
-        //         return 10000;
-        //     }else if (key == Const.DataKeys.coin){
-        //         return 10000;
-        //     }
-        //     else if (key == Const.DataKeys.handIndex){
-        //         return 10000;
-        //     }
-        // }
 
-        //todo 跳过引导
+
+
+
+
+
+
+
+
+
+
+
         if(key == Const.DataKeys.handIndex){
             return 100000;
         }
@@ -127,7 +127,7 @@ export class GameStorageJSF extends Component {
         }
         return def;
     }
-    //登录部分信息才用
+
      getStringDisk(key: string, def: string = '') {
         let n = sys.localStorage.getItem(this.Key(key));
         if (n != null && n != "") {
@@ -239,23 +239,23 @@ export class GameStorageJSF extends Component {
     }
 
      clear() {
-        // console.log('清除数据:',localStorage.length)
+
 
         let list: string[] = [];
 
         for (let i = 0; i < sys.localStorage.length; i++) {
-            let key: string = sys.localStorage.key(i)!; //获取本地存储的Key
+            let key: string = sys.localStorage.key(i)!;
             if (key.indexOf(this.GameKey) >= 0 && key.indexOf('login') == -1 && key.indexOf(this.GameKey) >=0) {
-                // console.log("@@@@@@@@清理前检查key", key)
+
                 list.push(key);
             }
         }
 
         let keys = this.getStorage().keys();
         for (let i = 0; i < keys.length; i++) {
-            let key: string = keys[i]; //获取本地存储的Key
+            let key: string = keys[i];
             if (key.indexOf('login') == -1 && key.indexOf(this.GameKey) >=0) {
-                // console.log("@@@@@@@@清除key:",key)
+
                 list.push(key);
             }
         }
@@ -263,19 +263,19 @@ export class GameStorageJSF extends Component {
         for (let i = 0; i < list.length; i++) {
             const key = list[i];
             this.getStorage().removeItem(key);
-            // this.removeItem(key);
+
         }
         this.getStorage().clear()
-        //清空本地无用的缓存
 
-        //sys.localStorage.clear();
+
+
     }
 
-    //老用户不用改为内存
+
      clearByKey(gameKey: string) {
         let list: string[] = [];
         for (let i = 0; i < sys.localStorage.length; i++) {
-            let key: string = sys.localStorage.key(i)!; //获取本地存储的Key
+            let key: string = sys.localStorage.key(i)!;
             if (key.indexOf(gameKey) != -1) {
                 list.push(key);
             }
@@ -288,16 +288,16 @@ export class GameStorageJSF extends Component {
     }
 
      getStringArrayByKey(str: string) {
-        // console.log("获取列表:",str)
+
         let list: any[] = [];
         let list2: any[] = [];
         let keys = this.getStorage().keys();
         for (let i = 0; i < keys.length; i++) {
-            const key: string = keys[i]; //获取本地存储的Key
-            //console.log("key:",key);
+            const key: string = keys[i];
+
             if (key.indexOf(str) != -1) {
                 let n = this.getStorage().getItem(key);
-                // console.log("=====n:",n)
+
                 list.push(n);
                 list2.push(key)
             }
@@ -306,17 +306,17 @@ export class GameStorageJSF extends Component {
     }
 
      getObjectArrayByKey(str: string) {
-        // console.log("获取列表:",str)
+
         let list: any[] = [];
         let list2: any[] = [];
         let keys = this.getStorage().keys();
         str = this.Key(str);
         for (let i = 0; i < keys.length; i++) {
-            const key: string = keys[i]; //获取本地存储的Key
-            // console.log("key:",key);
+            const key: string = keys[i];
+
             if (key.indexOf(str) == 0) {
                 let n = this.getStorage().getItem(key);
-                //console.log("n:",n)
+
                 let value = null;
                 if (n != null && n != "") {
                     try {
@@ -337,11 +337,11 @@ export class GameStorageJSF extends Component {
         return { keys: list2, values: list };
     }
 
-    //老用户兼容使用，不改动，以及GM也使用这个接口上传数据到云端
+
      getAll(isFirst: boolean = false) {
         let jsonData: any = {}
         for (let i = 0; i < sys.localStorage.length; i++) {
-            const key: string = sys.localStorage.key(i)!; //获取本地存储的Key
+            const key: string = sys.localStorage.key(i)!;
             if (key.indexOf('login') != -1) {
                 continue;
             }
@@ -357,9 +357,9 @@ export class GameStorageJSF extends Component {
                 jsonData[key] = sys.localStorage.getItem(key)
             }
 
-            // console.log(key);
-            // console.log(localStorage.getItem(key));//所有value
-            // console.log("---------------------------------");
+
+
+
         }
 
         if (isFirst) {
@@ -367,15 +367,15 @@ export class GameStorageJSF extends Component {
             for (const key in jsonData) {
                 if (Object.prototype.hasOwnProperty.call(jsonData, key)) {
                     const value = jsonData[key];
-                    // 大数据拆分.
-                    // 1.装备
-                    // 2.玄天宝录
-                    // console.log("老用户数据处理key:",key,value);
+
+
+
+
                     switch (key) {
                         case GameStorage.GameKey + '_sect_xtbls':
                             {
                                 let datas = JSON.parse(value);
-                                // console.log("xtbl datas:",datas.length,datas);
+
                                 for (let i = 0; i < datas.length; i++) {
                                     const xtbl = datas[i];
                                     let data = {
@@ -383,7 +383,7 @@ export class GameStorageJSF extends Component {
                                         star: xtbl.star,
                                         debris: xtbl.debris
                                     }
-                                    // GameStorage.setObject('SectXtbl_'+xtbl.id,data);
+
                                     spliceDatas[GameStorage.GameKey + '_SectXtbl_' + xtbl.id] = JSON.stringify(data);
                                 }
                             }
@@ -391,7 +391,7 @@ export class GameStorageJSF extends Component {
                         case GameStorage.GameKey + '_pack_equips':
                             {
                                 let datas = JSON.parse(value);
-                                // console.log("equip datas:",datas.length,datas);
+
                                 for (let i = 0; i < datas.length; i++) {
                                     const equip = datas[i];
                                     let data = {
@@ -406,7 +406,7 @@ export class GameStorageJSF extends Component {
                                         skill_star: equip.skill_star,
                                         skill_star_attr: equip.skill_star_attr,
                                     };
-                                    // GameStorage.setObject('pack_equip_'+equip.index,data);
+
                                     spliceDatas[GameStorage.GameKey + 'pack_equip_' + equip.index] = JSON.stringify(data);
                                 }
                             }
@@ -423,7 +423,7 @@ export class GameStorageJSF extends Component {
             delete jsonData['zzdl_sect_xtbls'];
             delete jsonData['zzdl_pack_equips'];
 
-            // console.log("spliceDatas:",spliceDatas);
+
 
             for (const key in spliceDatas) {
                 const data = spliceDatas[key];
@@ -435,9 +435,9 @@ export class GameStorageJSF extends Component {
     }
 
      async setAll(jsonData: any) {
-        // console.log("11111覆盖数据")
+
         await this.clear();
-        // console.log("覆盖前清除所有数据........",jsonData)
+
 
         for (let key in jsonData) {
             await this.getStorage().setItem(key, jsonData[key])

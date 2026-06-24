@@ -2,13 +2,13 @@ import { _decorator, Node, Prefab, instantiate, Sprite, Label, UITransform, v3, 
 import { Const } from '../../../config/Const';
 import GD from '../../../config/GD';
 import { PriceType, GoodsType } from '../../../config/global';
-import { audioManager } from '../../../easyFramework/mgr/audioManager';
+import { AudioPlaybackService } from '../../../easyFramework/mgr/audioManager';
 import BaseView from '../../../easyFramework/mgr/BaseView';
-import { uiManager } from '../../../easyFramework/mgr/uiManager';
-import tables from '../../../easyFramework/other/tables';
-import { RechargeManager } from '../../../Util/RechargeManager';
-import { mergeBoardModel } from '../../comm/mergeBoardModel';
-import { userData } from '../../comm/UserData';
+import { UiLayerService } from '../../../easyFramework/mgr/uiManager';
+import TableDataService from '../../../easyFramework/other/tables';
+import { RewardVideoManager } from '../../../Util/RechargeManager';
+import { mergeBoardStateStore } from '../../comm/mergeBoardModel';
+import { playerDataStore } from '../../comm/UserData';
 import { handIndexs } from '../../data/handData';
 import { PropItem, PropItemFlag } from './PropItem';
 import { GamePlatform } from '../../platform/GamePlatform';
@@ -72,15 +72,15 @@ export class ShopSynthesisItem extends BaseView {
 
         let buyTime = 0
         if (data.cdKey > 0) {
-            let privilegeData = tables.ins().getTableValueByKey(Const.Tables.privilege, "key", data.cdKey)
+            let privilegeData = TableDataService.ins().getTableValueByKey(Const.Tables.privilege, "key", data.cdKey)
             if (data.type == 6) {
-                buyTime = userData.getReceiveTime(privilegeData.dataKey + itemData[0][0], privilegeData.cdTime)
+                buyTime = playerDataStore.getReceiveTime(privilegeData.dataKey + itemData[0][0], privilegeData.cdTime)
             } else {
-                buyTime = userData.getReceiveTime(privilegeData.dataKey + data.id, privilegeData.cdTime)
+                buyTime = playerDataStore.getReceiveTime(privilegeData.dataKey + data.id, privilegeData.cdTime)
             }
             this._limitTime = privilegeData
         } else {
-            buyTime = userData.propBuyTime(data.id)
+            buyTime = playerDataStore.propBuyTime(data.id)
             this._limitTime = null
         }
 
@@ -96,7 +96,7 @@ export class ShopSynthesisItem extends BaseView {
         let priceIcon = find("btnbg/Layout/prop_diamond1", this.node)!
 
         if (data.recharge && data.recharge > 0) {
-            let rechargeData = tables.ins().getTableValueByID(Const.Tables.recharge, data.recharge)
+            let rechargeData = TableDataService.ins().getTableValueByID(Const.Tables.recharge, data.recharge)
             this.priceLab.string = "￥" + rechargeData.cash
             priceIcon.active = false
 
@@ -106,14 +106,14 @@ export class ShopSynthesisItem extends BaseView {
                 }
             }
         } else {
-            // let icon = find("btnbg/Layout/prop_diamond1", this.node)!
+
             let price2 = data.price2
 
             if (data.typeson == 4) {
                 priceIcon.active = true
                 let price = price2[0]
                 this._priceType = PriceType.Coin
-                this._priceNum = (price[1] + userData.propBuyTime(data.id) * price[2])
+                this._priceNum = (price[1] + playerDataStore.propBuyTime(data.id) * price[2])
                 this.priceLab.string = "X" + this._priceNum
             }
 
@@ -147,20 +147,20 @@ export class ShopSynthesisItem extends BaseView {
 
         if (data.id == 18) {
 
-            let hadnIdnex = mergeBoardModel.getHandIndex();
+            let hadnIdnex = mergeBoardStateStore.getHandIndex();
             if (hadnIdnex == handIndexs.shopbuy) {
-                mergeBoardModel.closeHandLayer()
+                mergeBoardStateStore.closeHandLayer()
                 let obj: any = {};
                 obj.id = hadnIdnex;
                 obj.node = this.node;
                 obj.delayTime = 0.5;
-                uiManager.instance.showDialog(Const.Dialogs.HandLayer, obj);
+                UiLayerService.instance.showDialog(Const.Dialogs.HandLayer, obj);
             }
         }
     }
 
     onClickBuy(event: any) {
-        audioManager.instance.playSound(Const.Audio.btn)
+        AudioPlaybackService.instance.playSound(Const.Audio.btn)
         let targetPos: any = null
         if (event.target && event.target.parent) {
             targetPos = event.target.parent.getComponent(UITransform).convertToWorldSpaceAR(v3(0, 0, 0))
@@ -170,13 +170,13 @@ export class ShopSynthesisItem extends BaseView {
             GamePlatform.track("免费领取肥啾存钱罐")
             this.onBuySuccessCB(targetPos)
         } else if (this._priceType == PriceType.Video) {
-            //等待广告接入
-            RechargeManager.showVideo("免费获得" + this._layerData.data.typename, () => {
+
+            RewardVideoManager.showVideo("免费获得" + this._layerData.data.typename, () => {
                 this.onBuySuccessCB(targetPos)
             })
 
         } else if (this._priceType == PriceType.Coin) {
-            if (userData.checkAndUseCoin(this._priceNum)) {
+            if (playerDataStore.checkAndUseCoin(this._priceNum)) {
 
                 this.onBuySuccessCB(targetPos)
                 this.emit(GD.event.updateMoney)
@@ -184,7 +184,7 @@ export class ShopSynthesisItem extends BaseView {
                 this.toast("金币不足")
             }
         } else if (this._priceType == PriceType.Diamonds) {
-            if (userData.checkAndUseDiamonds(this._priceNum)) {
+            if (playerDataStore.checkAndUseDiamonds(this._priceNum)) {
                 this.onBuySuccessCB(targetPos)
                 this.emit(GD.event.updateMoney)
             } else {
@@ -200,10 +200,10 @@ export class ShopSynthesisItem extends BaseView {
 
     onBuySuccessCB(targetPos: any) {
 
-        let hadnIdnex = mergeBoardModel.getHandIndex();
+        let hadnIdnex = mergeBoardStateStore.getHandIndex();
         if (hadnIdnex == handIndexs.shopbuy) {
-            mergeBoardModel.closeHandLayer()
-            mergeBoardModel.addHandIndex()
+            mergeBoardStateStore.closeHandLayer()
+            mergeBoardStateStore.addHandIndex()
         }
         let shopData = this._layerData.data
         let itemData = this._layerData.item
@@ -212,16 +212,16 @@ export class ShopSynthesisItem extends BaseView {
             let item = itemData[index];
             if (this._limitTime) {
                 if (this._layerData.data.type == 6) {
-                    userData.setReceiveTime(this._limitTime.dataKey + itemData[0][0], this._limitTime.cdTime)
+                    playerDataStore.setReceiveTime(this._limitTime.dataKey + itemData[0][0], this._limitTime.cdTime)
                 } else {
-                    userData.setReceiveTime(this._limitTime.dataKey + shopData.id, this._limitTime.cdTime)
+                    playerDataStore.setReceiveTime(this._limitTime.dataKey + shopData.id, this._limitTime.cdTime)
                 }
             } else {
-                userData.addPropBuyTime(shopData.id)
+                playerDataStore.addPropBuyTime(shopData.id)
             }
-            mergeBoardModel.addPropNum(item[0], item[1], targetPos)
+            mergeBoardStateStore.addPropNum(item[0], item[1], targetPos)
 
-            let propRow = tables.ins().getTableValueByID(Const.Tables.prop, item[0]);
+            let propRow = TableDataService.ins().getTableValueByID(Const.Tables.prop, item[0]);
             if (propRow) {
                 if (this._priceType == PriceType.Coin) {
                     GamePlatform.track("金币-购买" + propRow.name)

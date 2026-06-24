@@ -4,9 +4,9 @@ import BaseView from '../../../easyFramework/mgr/BaseView';
 import { GameStorage } from '../../../easyFramework/mgr/gameStorage';
 import { GNetCmd } from '../../../easyFramework/network/conf';
 import ServerCtrJSF from '../../../easyFramework/network/ServerCtrJSF';
-import tables from '../../../easyFramework/other/tables';
+import TableDataService from '../../../easyFramework/other/tables';
 import { UtilPub } from '../../../easyFramework/utils/UtilPub';
-import { userData } from '../../comm/UserData';
+import { playerDataStore } from '../../comm/UserData';
 import { UtilGame } from '../../comm/UtilGame';
 import { PropItem, PropItemFlag } from '../Dialog/PropItem';
 
@@ -15,7 +15,7 @@ const { ccclass, property } = _decorator;
 
 
 @ccclass('firstRecharge')
-export class firstRecharge extends BaseView {
+export class FirstRechargeDialogController extends BaseView {
     @property({ type: Node, tooltip: "奖励列表" }) giftScroll: Node = null!;
 
     _isFirstRecharge = 0;
@@ -26,8 +26,8 @@ export class firstRecharge extends BaseView {
 
     show(args: any) {
         super.show(args)
-        //   userData.setGetPropTujian(10005, Const.TujianState.geted)
-        let fisrtData = tables.ins().getTableValueByKey(Const.Tables.shopTable, "type", 2)
+
+        let fisrtData = TableDataService.ins().getTableValueByKey(Const.Tables.shopTable, "type", 2)
         this.giftScroll.removeAllChildren()
         fisrtData.price3.forEach((element: any, index: number) => {
             this.addPrefab(Const.Prefabs.PropItem, this.giftScroll, (item: any) => {
@@ -50,13 +50,13 @@ export class firstRecharge extends BaseView {
     }
 
     onEnable() {
-        // console.log("onMessageEvent --- 开始监听")
+
         director.off(GNetCmd.GetUserDataByKey.toString(), this.onMessageEvent, this);
         director.on(GNetCmd.GetUserDataByKey.toString(), this.onMessageEvent, this);
     }
 
     onDisable() {
-        //console.log("onMessageEvent --- 取消监听")
+
         director.off(GNetCmd.GetUserDataByKey.toString(), this.onMessageEvent, this);
     }
 
@@ -71,14 +71,14 @@ export class firstRecharge extends BaseView {
                     this._isFirstRecharge = parseInt(data.val + "")
                 }
             }
-            //  console.log("this._isFirstRecharge = ", this._isFirstRecharge)
+
             this.initRechargeState()
         }
     }
 
     onClickGet(event: any, item: any) {
         if (this._isFirstRecharge == 1) {
-            let fisrtData = tables.ins().getTableValueByKey(Const.Tables.shopTable, "type", 2)
+            let fisrtData = TableDataService.ins().getTableValueByKey(Const.Tables.shopTable, "type", 2)
             this.onVideoBack(fisrtData.price3)
         } else if (this._isFirstRecharge == 0) {
             GameStorage.setInt(Const.MoneyKeys.FirstCharge, 1)
@@ -88,7 +88,7 @@ export class firstRecharge extends BaseView {
 
     onVideoBack(item: any) {
         GameStorage.setInt(Const.MoneyKeys.FirstCharge, 2)
-        userData.getProp(item,null,null)
+        playerDataStore.getProp(item,null,null)
         this._isFirstRecharge = 2
         this.initRechargeState()
 

@@ -2,67 +2,67 @@ import { find, js, v3, Vec3,Sprite,assetManager,SpriteFrame,ImageAsset,Texture2D
 import { Const } from "../../config/Const";
 import { ActivityLockType, GoodsType, TujianState } from "../../config/global";
 import { GameStorage } from "../../easyFramework/mgr/gameStorage";
-import { uiManager } from "../../easyFramework/mgr/uiManager";
+import { UiLayerService } from "../../easyFramework/mgr/uiManager";
 import { default as ServerCtr, default as ServerCtrJSF } from "../../easyFramework/network/ServerCtrJSF";
 import TimeCtrJSF from "../../easyFramework/network/TimeCtrJSF";
-import tables from "../../easyFramework/other/tables";
+import TableDataService from "../../easyFramework/other/tables";
 import { aiRobot } from "./AIRobot";
-import { mergeBoardModel } from "./mergeBoardModel";
+import { mergeBoardStateStore } from "./mergeBoardModel";
 import { GetAnimalLayer } from "./GetAnimalLayer";
-import { playerModel } from "./playerModel";
-import { AdPropCount, BagPropData, FriendData, petItemData, PropCountData, TaskStateData, UserInfoData } from "../../../typeScript/gameData";
-import { HttpClient } from "../../../typeScript/net/HttpClient";
+import { seasonProgressStore } from "./playerModel";
+import { AdRewardCounterRecord, BagPropRecord, FriendProfileRecord, PetProfileRecord, WalletPropCountRecord, TaskProgressRecord, UserProfileRecord } from "../../../typeScript/gameData";
+import { GameHttpClient } from "../../../typeScript/net/HttpClient";
 import { GamePlatform } from '../platform/GamePlatform';
 
 
-class UserData {
-    private static _instance: UserData = null!
+class PlayerDataStore {
+    private static _instance: PlayerDataStore = null!
     private static _isMergeSave = false;
 
-    /**1.室外�?室内 */
+
     public sceneStau:number = 1;
 
-    /**用户信息 */
-    public userInfodata!: UserInfoData;
 
-    /**活动类型 1 2 3 4 */
+    public userInfodata!: UserProfileRecord;
+
+
     public activity: number = 1;
 
-    /**背包信息 */
-    public bagProps:BagPropData[] = [];
 
-    /**宠物数量 */
+    public bagProps:BagPropRecord[] = [];
+
+
     public pet_count:number = 0;
 
-     /**宠物积分 */
+
     public pet_score:number = 0;
 
-    /**宠物数组 */
-    public pets:petItemData[] = [];
 
-    /**好友信息数组 */
-    public friendList:FriendData[] = [];
+    public pets:PetProfileRecord[] = [];
 
-    /**推荐好友，申请列�?数组 */
-    public curFriendList:FriendData[] = [];
 
-    /**任务数组 */
-    public taskDataList:TaskStateData[] = [];
+    public friendList:FriendProfileRecord[] = [];
 
-    /**商店物品广告统计 */
-    public adProps:AdPropCount[] = [];
 
-    /**是否可以操作装饰�?*/
+    public curFriendList:FriendProfileRecord[] = [];
+
+
+    public taskDataList:TaskProgressRecord[] = [];
+
+
+    public adProps:AdRewardCounterRecord[] = [];
+
+
     public goodIsCanOperate: boolean = false;
 
     public static getInstance() {
         if (this._instance == null) {
-            this._instance = new UserData()
+            this._instance = new PlayerDataStore()
         }
         return this._instance
     }
 
-    public set coinprop(coinprop:PropCountData[]) {
+    public set coinprop(coinprop:WalletPropCountRecord[]) {
         for (let index = 0; index < coinprop.length; index++) {
             const propData = coinprop[index];
             if (propData.prop_id == 101){
@@ -77,9 +77,9 @@ class UserData {
         }
     }
 
-    /**
-        * 玩家头像
-        */
+
+
+
     public get roleAvatar() {
         return GameStorage.getString(Const.DataKeys.roleAvatar, ServerCtr.GetInstance().avatar)
     }
@@ -87,9 +87,9 @@ class UserData {
     public set roleAvatar(roleAvatar) {
         GameStorage.setString(Const.DataKeys.roleAvatar, roleAvatar)
     }
-    /**
-     * 玩家名字
-     */
+
+
+
     public get roleName() {
         return GameStorage.getString(Const.DataKeys.roleName, ServerCtrJSF.GetInstance().nickName)
     }
@@ -98,9 +98,9 @@ class UserData {
         GameStorage.setString(Const.DataKeys.roleName, name)
     }
 
-    /**
-       * 玩家ID
-       */
+
+
+
     public get roleID() {
         return ServerCtr.GetInstance().uid
     }
@@ -109,27 +109,27 @@ class UserData {
         ServerCtr.GetInstance().uid = id
         GameStorage.setString(Const.DataKeys.roleID, id)
     }
-    /**
-     * 玩家等级
-     */
+
+
+
     public get roleLv() {
         return GameStorage.getInt(Const.DataKeys.roleLv, 1)
     }
 
     public set roleLv(lv) {
         GameStorage.setInt(Const.DataKeys.roleLv, lv)
-        mergeBoardModel.addManagerVal(Const.ManagerTypes.roleLv);
+        mergeBoardStateStore.addManagerVal(Const.ManagerTypes.roleLv);
 
-        // 玩家等级发生变化�?
-        playerModel.roleLvUp();
+
+        seasonProgressStore.roleLvUp();
 
         this.checkActivityOpen()
-        HttpClient.getInstance().updateGold()
+        GameHttpClient.getInstance().updateGold()
     }
 
-    /**
-     * 玩家经验
-     */
+
+
+
     public get roleExp() {
         return GameStorage.getInt(Const.DataKeys.roleExp, 0)
     }
@@ -146,9 +146,9 @@ class UserData {
         return false
     }
 
-    /**
-     * 仓库里的道具
-     */
+
+
+
 
     public propWarehouse(id: number) {
         return GameStorage.getObject(Const.DataKeys.warehouseProp, [])
@@ -169,9 +169,9 @@ class UserData {
         }
     }
 
-    /**
-     * -----店长装扮 ----------
-     */
+
+
+
     public get avatarLookId() {
         let lookId = GameStorage.getInt(Const.DataKeys.avatarLookId, 0)
         if (lookId == 0) {
@@ -182,7 +182,7 @@ class UserData {
             }
         }
         if (lookId == 0) {
-            let styleRows = tables.ins().getTableValuesByType(Const.Tables.avatarStyle, "type", "2")
+            let styleRows = TableDataService.ins().getTableValuesByType(Const.Tables.avatarStyle, "type", "2")
             for (let index = 0; index < styleRows.length; index++) {
                 const element = styleRows[index];
                 if (element.price == 0) {
@@ -211,16 +211,16 @@ class UserData {
     public unlockAvatarLook(id: number) {
         return GameStorage.setInt(Const.DataKeys.avatarLookOwned + id, 1)
     }
-    //---------------------
 
-    //----钻石
+
+
     public get diamonds() {
-        return GameStorage.getInt(Const.DataKeys.diamonds, tables.ins().config[Const.config.basicDiamons])
+        return GameStorage.getInt(Const.DataKeys.diamonds, TableDataService.ins().config[Const.config.basicDiamons])
     }
 
     public set diamonds(num) {
         GameStorage.setInt(Const.DataKeys.diamonds, num)
-        HttpClient.getInstance().updateGold()
+        GameHttpClient.getInstance().updateGold()
     }
 
     public checkAndUseDiamonds(num: number) {
@@ -229,19 +229,19 @@ class UserData {
             return true
         }
 
-        uiManager.instance.showDialog(Const.Dialogs.FreeGiftDialog, { type: "1" })
+        UiLayerService.instance.showDialog(Const.Dialogs.FreeGiftDialog, { type: "1" })
 
         return false
     }
 
-    //----体力
+
     public get power() {
-        return GameStorage.getInt(Const.DataKeys.power, tables.ins().config[Const.config.energyMax])
+        return GameStorage.getInt(Const.DataKeys.power, TableDataService.ins().config[Const.config.energyMax])
     }
 
     public set power(num) {
         GameStorage.setInt(Const.DataKeys.power, num)
-        HttpClient.getInstance().updateGold()
+        GameHttpClient.getInstance().updateGold()
     }
 
     public checkAndUsePower(num: number) {
@@ -249,18 +249,18 @@ class UserData {
             this.power -= num
             return true
         }
-        uiManager.instance.showDialog(Const.Dialogs.FreeGiftDialog, { type: "2" })
+        UiLayerService.instance.showDialog(Const.Dialogs.FreeGiftDialog, { type: "2" })
         return false
     }
 
-    //----金币
+
     public get coin() {
-        return GameStorage.getInt(Const.DataKeys.coin, tables.ins().config[Const.config.basicGold])
+        return GameStorage.getInt(Const.DataKeys.coin, TableDataService.ins().config[Const.config.basicGold])
     }
 
     public set coin(num) {
         GameStorage.setInt(Const.DataKeys.coin, num)
-        HttpClient.getInstance().updateGold()
+        GameHttpClient.getInstance().updateGold()
     }
 
     public checkAndUseCoin(num: number) {
@@ -268,26 +268,26 @@ class UserData {
             this.coin -= num
             return true
         }
-        uiManager.instance.showDialog(Const.Dialogs.FreeGiftDialog, { type: "4" })
+        UiLayerService.instance.showDialog(Const.Dialogs.FreeGiftDialog, { type: "4" })
         return false
     }
 
-    //-----装扮�?
+
     public get dressValue() {
-        return GameStorage.getInt(Const.DataKeys.dressValue, tables.ins().config[Const.config.basicDress])
+        return GameStorage.getInt(Const.DataKeys.dressValue, TableDataService.ins().config[Const.config.basicDress])
     }
 
     public set dressValue(num) {
         GameStorage.setInt(Const.DataKeys.dressValue, num)
     }
 
-    //-----装扮�?
+
     public get styleVoucher() {
         let voucher = GameStorage.getInt(Const.DataKeys.styleVoucher, -1)
         if (voucher >= 0) {
             return voucher
         }
-        return GameStorage.getInt(Const.DataKeys.legacyStyleVoucher, tables.ins().config[Const.config.basicStyleVoucher])
+        return GameStorage.getInt(Const.DataKeys.legacyStyleVoucher, TableDataService.ins().config[Const.config.basicStyleVoucher])
     }
 
     public set styleVoucher(num) {
@@ -299,15 +299,15 @@ class UserData {
             this.styleVoucher -= num
             return true
         }
-        uiManager.instance.showDialog(Const.Dialogs.FreeGiftDialog, { type: "3" })
+        UiLayerService.instance.showDialog(Const.Dialogs.FreeGiftDialog, { type: "3" })
         return false
     }
-    //-----绿色星星
+
     public get greenStar() {
-        return GameStorage.getInt(Const.DataKeys.greenStar, tables.ins().config[Const.config.basicGreenStar])
+        return GameStorage.getInt(Const.DataKeys.greenStar, TableDataService.ins().config[Const.config.basicGreenStar])
     }
 
-    //-----绿色星星
+
     public set greenStar(num) {
         GameStorage.setInt(Const.DataKeys.greenStar, num)
     }
@@ -321,10 +321,10 @@ class UserData {
         return false
     }
 
-    /**
-     * 获得道具
-     * @param args "101,1000" 或�?[101,1000] 或者[[101,1000] ,[102,1000]] 
-     */
+
+
+
+
     public getProp(args: any, starPos: Vec3 | null, endPos: Vec3 | null) {
         let fun = (propdata: any, num: number) => {
             switch (propdata.type) {
@@ -358,19 +358,19 @@ class UserData {
         let num = 0
         if (typeof (args) == "string") {
             let reward = args.split(",")
-            propdata = tables.ins().getTableValueByID(Const.Tables.prop, parseInt(reward[0]))
+            propdata = TableDataService.ins().getTableValueByID(Const.Tables.prop, parseInt(reward[0]))
             num = parseInt(reward[1])
             fun(propdata, num)
         } else if (args instanceof Array && args.length > 0) {
             if (args[0] instanceof Array) {
                 for (let index = 0; index < args.length; index++) {
                     const element = args[index];
-                    propdata = tables.ins().getTableValueByID(Const.Tables.prop, element[0])
+                    propdata = TableDataService.ins().getTableValueByID(Const.Tables.prop, element[0])
                     num = parseInt(element[1])
                     fun(propdata, num)
                 }
             } else if (args instanceof Array) {
-                propdata = tables.ins().getTableValueByID(Const.Tables.prop, args[0])
+                propdata = TableDataService.ins().getTableValueByID(Const.Tables.prop, args[0])
                 num = parseInt(args[1])
                 fun(propdata, num)
             }
@@ -388,20 +388,20 @@ class UserData {
             }
             return
         }
-        uiManager.instance.showDialog(Const.Prefabs.GetAnimalLayer, { propId: propId, startPos: startPos, endPos: endPos, num: showNum })
-        // UtilPub.getPrefab(Const.Prefabs.GetAnimalLayer, (p: Prefab) => {
-        //     let node = poolManager.instance.getNode(p, find("Canvas")!)
-        //     let script = node.getComponent(node.name) as comm
-        //     if (script) {
-        //         script!._layerData = { propId: propId, startPos: startPos, num: showNum }
-        //     }
-        //     find("Canvas")?.addChild(node)
-        // })
+        UiLayerService.instance.showDialog(Const.Prefabs.GetAnimalLayer, { propId: propId, startPos: startPos, endPos: endPos, num: showNum })
+
+
+
+
+
+
+
+
     }
 
     public checkAndUseProp(args: any) {
         if (args instanceof Array) {
-            let propdata = tables.ins().getTableValueByID(Const.Tables.prop, parseInt(args[0]))
+            let propdata = TableDataService.ins().getTableValueByID(Const.Tables.prop, parseInt(args[0]))
             if (propdata.type == GoodsType.Coin) {
                 return this.checkAndUseCoin(args[1])
             } else if (propdata.type == GoodsType.Diamonds) {
@@ -418,7 +418,7 @@ class UserData {
     }
 
     public curPropNum(id: number) {
-        let propdata = tables.ins().getTableValueByID(Const.Tables.prop, id)
+        let propdata = TableDataService.ins().getTableValueByID(Const.Tables.prop, id)
         if (propdata.type == GoodsType.Coin) {
             return this.coin
         } else if (propdata.type == GoodsType.Diamonds) {
@@ -444,11 +444,11 @@ class UserData {
         return GameStorage.setInt(Const.DataKeys.propBuyTime + id, this.propBuyTime(id) + 1)
     }
 
-    //----图鉴
+
     private _tujianArr: any = []
     public get TujianArr() {
         if (this._tujianArr.length < 6) {
-            let propData = tables.ins().getTable(Const.Tables.prop)
+            let propData = TableDataService.ins().getTable(Const.Tables.prop)
             propData.forEach((element: any, index: number) => {
                 if (!this._tujianArr[element.type - 1] && element.type >= 1 && element.type <= 6) {
                     this._tujianArr[element.type - 1] = element
@@ -458,11 +458,11 @@ class UserData {
         return this._tujianArr
     }
 
-    //----装扮图鉴
+
     private _tujianSceneArr: any = []
     public get TujianSceneArr() {
         if (this._tujianSceneArr.length < 4) {
-            let propData = tables.ins().getTable(Const.Tables.scene_room)
+            let propData = TableDataService.ins().getTable(Const.Tables.scene_room)
             propData.forEach((element: any, index: number) => {
                 if (!this._tujianSceneArr[element.complete] && element.complete > 0) {
                     this._tujianSceneArr[element.complete - 1] = element
@@ -500,7 +500,7 @@ class UserData {
 
     public checkTujianRedPoint(type = 0) {
         if (type > 0) {
-            let propData = tables.ins().getTableValuesByType(Const.Tables.prop, "type", type)
+            let propData = TableDataService.ins().getTableValuesByType(Const.Tables.prop, "type", type)
             if (!propData) {
                 return false
             }
@@ -511,7 +511,7 @@ class UserData {
                 }
             }
         } else {
-            let propData = tables.ins().getTable(Const.Tables.prop)
+            let propData = TableDataService.ins().getTable(Const.Tables.prop)
             if (!propData) {
                 return false
             }
@@ -529,14 +529,14 @@ class UserData {
 
     public checkTujianSceneRedPoint(id = 0) {
         if (id > 0) {
-            let itemData = tables.ins().getTableValuesByType(Const.Tables.scene_item, "room", id)
+            let itemData = TableDataService.ins().getTableValuesByType(Const.Tables.scene_item, "room", id)
             for (let index = 0; index < itemData.length; index++) {
                 const element = itemData[index];
-                let skinData = tables.ins().getTableValuesByType(Const.Tables.scene_skin, "scene", element.id)
+                let skinData = TableDataService.ins().getTableValuesByType(Const.Tables.scene_skin, "scene", element.id)
                 skinData.forEach(skin => {
                     let index = skin.id % element.id
                     if (index > 0) {
-                        if (userData.isGetPropTujian(skin.id, Const.DataKeys.tujianScene) == TujianState.geted) {
+                        if (playerDataStore.isGetPropTujian(skin.id, Const.DataKeys.tujianScene) == TujianState.geted) {
                             return true
                         }
                     }
@@ -544,18 +544,18 @@ class UserData {
             }
             return false
         } else {
-            let roomData = tables.ins().getTable(Const.Tables.scene_room)
+            let roomData = TableDataService.ins().getTable(Const.Tables.scene_room)
             for (let i = 0; i < roomData.length; i++) {
                 if (roomData[i].complete > 0) {
-                    let itemData = tables.ins().getTableValuesByType(Const.Tables.scene_item, "room", roomData[i].id)
+                    let itemData = TableDataService.ins().getTableValuesByType(Const.Tables.scene_item, "room", roomData[i].id)
                     for (let index = 0; index < itemData.length; index++) {
                         const element = itemData[index];
-                        let skinData = tables.ins().getTableValuesByType(Const.Tables.scene_skin, "scene", element.id)
+                        let skinData = TableDataService.ins().getTableValuesByType(Const.Tables.scene_skin, "scene", element.id)
                         for (let j = 0; j < skinData.length; j++) {
                             const skin = skinData[j];
                             let index = skin.id % element.id
                             if (index > 0) {
-                                if (userData.isGetPropTujian(skin.id, Const.DataKeys.tujianScene) == TujianState.geted) {
+                                if (playerDataStore.isGetPropTujian(skin.id, Const.DataKeys.tujianScene) == TujianState.geted) {
                                     return true
                                 }
                             }
@@ -578,13 +578,13 @@ class UserData {
     public setGrowUpState(lv: number, state: number) {
         GameStorage.setInt(Const.DataKeys.growUp + lv, state)
     }
-    //----
+
     public savePropData() {
-        // GameStorage.setObject("$propData", this.$propData)
-        // this.$propData.forEach(element => {
-        //     GameStorage.setObject("$propData_" + element.id, element)
-        // });
-        // this.$propData = GameStorage.getObjectArrayByKey("$propData_")
+
+
+
+
+
     }
 
     public get buyPowerTime() {
@@ -604,11 +604,11 @@ class UserData {
 
     public addBuyPowerTime() {
         let buyTime = GameStorage.getInt(Const.DataKeys.buyPowerTime, 1)
-        GameStorage.setInt(Const.DataKeys.buyPowerTime, buyTime * tables.ins().config[Const.config.diamonsPower][2])
+        GameStorage.setInt(Const.DataKeys.buyPowerTime, buyTime * TableDataService.ins().config[Const.config.diamonsPower][2])
     }
 
     public saveItem(key: string, value: any) {
-        if (UserData._isMergeSave) {
+        if (PlayerDataStore._isMergeSave) {
             return
         }
         GameStorage.setObject(key, value)
@@ -624,7 +624,7 @@ class UserData {
     }
 
     public checkActivityOpen() {
-        let data = tables.ins().getTable(Const.Tables.lockActivity_item)
+        let data = TableDataService.ins().getTable(Const.Tables.lockActivity_item)
         data.forEach((activity: any) => {
             if (activity.cdType == ActivityLockType.type_Level) {
                 if (this.roleLv >= activity.openLevel) {
@@ -638,12 +638,12 @@ class UserData {
         });
     }
 
-    /**
-     *  循环间隔 时间 CD
-     * @param key 
-     * @param time  cd 时间 单位�?
-     * @returns 
-     */
+
+
+
+
+
+
     public checkCDTime(key: string, time: number, startTime: number = 0) {
         let lastTime = GameStorage.getInt(key + "_time", 0) || startTime
         let curTime = Math.floor(TimeCtrJSF.GetInstance().ServerTime)
@@ -681,19 +681,19 @@ class UserData {
     public checkLimitTime(key: string, limitTime: number) {
         let startTime = GameStorage.getInt(key + "_time", 0)
         if (startTime <= 0) {
-            return 0 //活动未开�?
+            return 0
         }
         let endTime = startTime + limitTime
         let curTime = Math.floor(TimeCtrJSF.GetInstance().ServerTime)
         return endTime - curTime
     }
 
-    /**
-     * 返回当前已经领取的次�?
-     * @param key 活动key
-     * @param interval  间隔多少时间刷新次数  单位分钟
-     * @returns 
-     */
+
+
+
+
+
+
     public getReceiveTime(key: string, interval: number) {
         let lastTime = GameStorage.getInt(key + "_time", 0)
         let curTime = Math.floor(TimeCtrJSF.GetInstance().ServerTime)
@@ -711,12 +711,12 @@ class UserData {
     }
 
 
-    /**
- * 返回当前活动已经领取的次�?
- * @param key 活动key
- * @param interval  
- * @returns 
- */
+
+
+
+
+
+
     public getActivityReceiveTime(key: string) {
         return GameStorage.getInt(key, 0)
     }
@@ -769,12 +769,12 @@ class UserData {
         }
     }
 
-    /**
-  * 返回当前暂时的数�?
-  * @param key 活动key
-  * @param interval  间隔多少时间刷新次数  单位分钟
-  * @returns 
-  */
+
+
+
+
+
+
     public getIntervalData(key: string, interval: number, data: string) {
         let lastTime = GameStorage.getInt(key + "_time", 0)
         let curTime = Math.floor(TimeCtrJSF.GetInstance().ServerTime)
@@ -798,44 +798,44 @@ class UserData {
     }
 
     public showGodWealthOther() {
-        if (mergeBoardModel.isHandDone()) {
+        if (mergeBoardStateStore.isHandDone()) {
             let params = GamePlatform.getLaunchQuery()
             console.error("params = ", params)
-            // let params: any = { propList: "20011,30055,20022,20013,30057,20013", shareName: "胖啾啾啊", shareUserId: "444456302229491712" }
+
             if (params && params.shareUserId) {
                 let propList = params.propList
                 params.propList = propList.split(",")
                 console.error("params2 = ", params)
 
-                if (params.shareUserId == userData.roleID + "") {
-                    uiManager.instance.showDialog(Const.Dialogs.GodWealthLayer);
+                if (params.shareUserId == playerDataStore.roleID + "") {
+                    UiLayerService.instance.showDialog(Const.Dialogs.GodWealthLayer);
                 } else {
-                    uiManager.instance.showDialog(Const.Dialogs.GodWealthOther, { params: params });
+                    UiLayerService.instance.showDialog(Const.Dialogs.GodWealthOther, { params: params });
                 }
                 params = null
             }
         }
     }
 
-    /**远程加载图片资源 */
+
     public replaceHead(sp:Sprite, remoteUrl:string){
         if (remoteUrl == undefined || remoteUrl == null){
             return;
         }
-        // assetManager.loadRemote<ImageAsset>(remoteUrl + ".png", function (err:any, imageAsset:any) {
-        //     if (err){
-        //         console.log("加载失败" + err);
-        //         return;
-        //     }
-        //     const spriteFrame = new SpriteFrame();
-        //     const texture = new Texture2D();
-        //     texture.image = imageAsset;
-        //     spriteFrame.texture = texture;
-        //     sp.spriteFrame = spriteFrame;
-            
-        // });
 
-        // 远程 url 不带图片后缀名，此时必须指定远程图片文件的类�?
+
+
+
+
+
+
+
+
+
+
+
+
+
         assetManager.loadRemote<ImageAsset>(remoteUrl, {ext: '.png'}, function (err, imageAsset) {
             const spriteFrame = new SpriteFrame();
             const texture = new Texture2D();
@@ -846,8 +846,8 @@ class UserData {
 
     }
 
-    
+
 }
 
 
-export const userData = UserData.getInstance();
+export const playerDataStore = PlayerDataStore.getInstance();

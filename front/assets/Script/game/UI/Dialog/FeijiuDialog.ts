@@ -2,8 +2,8 @@ import { _decorator, Node, Label, find, Sprite, SpriteFrame, tween, v3, UITransf
 import { Const } from '../../../config/Const';
 import { GSceneSkinState } from '../../../config/global';
 import BaseView from '../../../easyFramework/mgr/BaseView';
-import { comm } from '../../../easyFramework/mgr/comm';
-import tables from '../../../easyFramework/other/tables';
+import { BaseUiComponent } from '../../../easyFramework/mgr/comm';
+import TableDataService from '../../../easyFramework/other/tables';
 import { SceneData } from '../../comm/SceneData';
 import { GamePlatform } from '../../platform/GamePlatform';
 const { ccclass, property } = _decorator;
@@ -30,7 +30,7 @@ export class FeijiuDialog extends BaseView {
 
     openTujianArr() {
 
-        let propData = tables.ins().getTable(Const.Tables.scene_guest)
+        let propData = TableDataService.ins().getTable(Const.Tables.scene_guest)
         let dataArr: any = []
 
         propData.forEach((element: any) => {

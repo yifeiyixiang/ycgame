@@ -7,9 +7,9 @@ import { GameStorage } from '../../../easyFramework/mgr/gameStorage';
 import { GNetCmd } from '../../../easyFramework/network/conf';
 import ServerCtrJSF from '../../../easyFramework/network/ServerCtrJSF';
 import TimeCtrJSF from '../../../easyFramework/network/TimeCtrJSF';
-import tables from '../../../easyFramework/other/tables';
+import TableDataService from '../../../easyFramework/other/tables';
 import { CdComponent, CDType } from '../../../easyFramework/utils/CdComponent';
-import { userData } from '../../comm/UserData';
+import { playerDataStore } from '../../comm/UserData';
 
 const { ccclass, property } = _decorator;
 
@@ -31,11 +31,11 @@ export class MonthCard extends BaseView {
     }
 
     public static get MonthCardData() {
-        return tables.ins().getTableValuesByType2ByOne(Const.Tables.shopTable, "type", shopType.MonthCard + "", "dc", "2")
+        return TableDataService.ins().getTableValuesByType2ByOne(Const.Tables.shopTable, "type", shopType.MonthCard + "", "dc", "2")
     }
 
     public static get WeekCardData() {
-        return tables.ins().getTableValuesByType2ByOne(Const.Tables.shopTable, "type", shopType.MonthCard + "", "dc", "1")
+        return TableDataService.ins().getTableValuesByType2ByOne(Const.Tables.shopTable, "type", shopType.MonthCard + "", "dc", "1")
     }
 
     public static checkMonthCard(value: any) {
@@ -95,7 +95,7 @@ export class MonthCard extends BaseView {
             this._weekCardVal = MonthCard.checkWeekCard(value)
             this.initWeekCardBtn()
         }
-    
+
     }
 
     initMonthCardBtn() {
@@ -128,12 +128,12 @@ export class MonthCard extends BaseView {
         totalList.removeAllChildren()
 
         if (monthCardData) {
-            let rechargeData = tables.ins().getTableValueByID(Const.Tables.recharge, monthCardData.recharge)
+            let rechargeData = TableDataService.ins().getTableValueByID(Const.Tables.recharge, monthCardData.recharge)
             find("btnBuy/Label", dialog)!.getComponent(Label)!.string = "$" + rechargeData.cash
             let privilegeList = monthCardData.price3
             for (let index = 0; index < privilegeList.length; index++) {
                 let element = privilegeList[index];
-                let privilegeData = tables.ins().getTableValueByKey(Const.Tables.privilege, "key", element[0])
+                let privilegeData = TableDataService.ins().getTableValueByKey(Const.Tables.privilege, "key", element[0])
                 if (privilegeData.type == 1) {
                     let item = instantiate(this.rewardItem)
                     item.position = v3(0, 0, 0)
@@ -141,12 +141,12 @@ export class MonthCard extends BaseView {
                     this.setSpriteFrame(find("icon", item)!.getComponent(Sprite)!, Const.resPath.icon + privilegeData.icon, () => { }, 80)
                     find("Label", item)!.getComponent(Label)!.string = privilegeData.ps
                 } else if (privilegeData.type == 2) {
-                    let rewardData = privilegeData.value
-                    rewardData.forEach((element: any) => {
+                    let RewardItemRecord = privilegeData.value
+                    RewardItemRecord.forEach((element: any) => {
                         let item = instantiate(this.rewardItem)
                         item.position = v3(0, 0, 0)
                         nowRewardList.addChild(item)
-                        let propdata = tables.ins().getTableValueByID(Const.Tables.prop, element[0])
+                        let propdata = TableDataService.ins().getTableValueByID(Const.Tables.prop, element[0])
                         this.setSpriteFrame(find("icon", item)!.getComponent(Sprite)!, Const.resPath.icon + propdata.icon, () => { }, 80)
                         find("Label", item)!.getComponent(Label)!.string = "" + element[1]
 
@@ -164,9 +164,9 @@ export class MonthCard extends BaseView {
 
 
     initReceiveBtn(itemUI: Node, item: any) {
-        // itemUI.getChildByName("infoLabel")!.getComponent(Label)!.string = item.info
-        let receiveTime = userData.getReceiveTime(item.dataKey, item.cdTime)
-        // find("numLabel", itemUI)!.getComponent(Label)!.string = "已领取次数" + receiveTime
+
+        let receiveTime = playerDataStore.getReceiveTime(item.dataKey, item.cdTime)
+
         if (receiveTime < item.receiveTime) {
             this.addButtonHander(itemUI.getChildByName("btnReceive")!, this.node, "MonthCard", "onClickGet", item)
             find("timelabel", itemUI)!.getComponent(Label)!.string = ""
@@ -178,40 +178,39 @@ export class MonthCard extends BaseView {
 
     onClickGet(event: any, item: any) {
         console.log("event = ", event)
-        // let reward = item.value
+
         this.onVideoBack(item.value)
         this.emit(GD.event.updateMoney)
-        userData.setReceiveTime(item.dataKey, item.cdTime)
+        playerDataStore.setReceiveTime(item.dataKey, item.cdTime)
         this.initReceiveBtn(event.target.parent, item)
     }
 
     onVideoBack(item: any) {
-        userData.getProp(item,null,null)
+        playerDataStore.getProp(item,null,null)
     }
 
     onClickBuyMonth() {
         if (this._MonthCardVal) {
-            // if (this._MonthCardVal.dayReceive) {
-            //     return
-            // } else {
-            //     let monthCardData = tables.ins().getTableValuesByType2ByOne(Const.Tables.shopTable, "type", "3", "typeson", "2")
-            //     let privilegeList = monthCardData.price3
-            //     for (let index = 0; index < privilegeList.length; index++) {
-            //         let element = privilegeList[index];
-            //         let privilegeData = tables.ins().getTableValueByKey(Const.Tables.privilege, "key", element[0])
-            //         if (privilegeData.type == 2) {
-            //             let id = privilegeData.value
-            //             let num = element[1]
-            //             userData.getProp([id, num])
-            //         }
-            //     }
-            //     GameStorage.setObject(Const.MoneyKeys.MonthCharge, { month: 1, dayReceive: 1 })
-            //     ServerCtr.GetInstance().reqGetUserDataObjByKey(GameStorage.Key(Const.MoneyKeys.MonthCharge))
-            //     this.emit(GD.event.updateMoney)
-            // }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         } else {
-            let fisrtData = tables.ins().getTableValueByKey(Const.Tables.shopTable, "type", 2)
-            userData.getProp(fisrtData.first,null,null)
+            let fisrtData = TableDataService.ins().getTableValueByKey(Const.Tables.shopTable, "type", 2)
+            playerDataStore.getProp(fisrtData.first,null,null)
             this.emit(GD.event.updateMoney)
             GameStorage.setObject(Const.MoneyKeys.MonthCharge, { month: 1, dayReceive: 0, buyTime: Math.floor(TimeCtrJSF.GetInstance().ServerTime) })
             ServerCtrJSF.GetInstance().reqGetUserDataObjByKey(GameStorage.Key(Const.MoneyKeys.MonthCharge))

@@ -11,13 +11,13 @@ export class FrameAnimation extends Component {
         tooltip : "帧动画合图"
     })
     protected atlas : SpriteAtlas|null = null;
-    
+
     @property({tooltip:"切割下标的符号"})
     private splitter : string = "=";
 
     @property({tooltip:"每多少秒播放一张图"})
     protected interval : number = 0.05;
-    
+
     @property({tooltip:"是否循环播放"})
     private loop : boolean = false;
 
@@ -40,23 +40,23 @@ export class FrameAnimation extends Component {
     protected endCallback: Array<EventHandler> = [];
 
 
-    /**是否在播放中 */
+
     private running : boolean = false;
 
-    /**当前展示的图片索引*/
+
     private currentIndex : number = 0;
-    
+
     private frameStep = 0;
 
-    /**是否循环播放*/
+
     public get Loop() : boolean { return this.loop; }
 
-    /**是否在播放中 */
+
     public get Running () : boolean { return this.running; }
 
     private frameCount : number = 0;
 
-    //名字头
+
     private frameNamHead : string = "";
 
     protected onLoad () : void {
@@ -92,12 +92,12 @@ export class FrameAnimation extends Component {
             this.frameStep-= this.interval;
             this.ChangeFrame();
         }
-   
+
     }
 
-    /**
-     * 改变帧动画的图片
-     */
+
+
+
     private ChangeFrame() : void{
         let isIndexEnd = this.currentIndex >= this.frameCount;
 
@@ -112,7 +112,7 @@ export class FrameAnimation extends Component {
             this.completeCallback.forEach(callback => { callback.emit([]); });
             this.currentIndex = 0;
         }
-        //这儿还加了1
+
         let tail : any = this.currentIndex + 1;
         if(tail < 10 && this.fixedZero) {
             tail = "0" + tail;
@@ -130,37 +130,37 @@ export class FrameAnimation extends Component {
         ++this.currentIndex;
     }
 
-    /**
-     * 更换图集
-     * @param atlas cc.SpriteAtlas
-     */
+
+
+
+
     public setAtlas(atlas: SpriteAtlas) : void {
         this.atlas = atlas;
         this.InitAtlas();
     }
 
-    /**
-     * 执行帧动画,执行时会从第一张图开始
-     * @param loop 是否循环播放
-     */
+
+
+
+
     public Play(loop : boolean = false) : void {
-        
+
         this.loop = loop;
         this.running = true;
 
         this.currentIndex = 0;
 
-        //调用一次，马上生效
+
         this.ChangeFrame();
     }
 
-    /**
-     * 恢复执行帧动画，会从当前帧继续执行
-     */
+
+
+
     public Resume(loop : boolean = false) : void {
         this.loop = loop;
         this.running = true;
-        //调用一次，马上生效
+
         this.ChangeFrame();
     }
 
@@ -168,9 +168,9 @@ export class FrameAnimation extends Component {
         this.running = false;
     }
 
-    /**
-     * 停止
-     */
+
+
+
     public Stop() : void {
         this.running = false;
         this.runAtStart = false;

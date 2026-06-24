@@ -1,18 +1,18 @@
 import { _decorator, Component, Node } from 'cc';
-import { HttpRequest } from './ZCHttpRequest';
+import { HttpRequestTransport } from './ZCHttpRequest';
 
 const { ccclass, property } = _decorator;
 
-export class zc {
-    public static instance:zc = null;
+export class ZcApiGateway {
+    public static instance:ZcApiGateway = null;
 
-    public static getInstance():zc{
+    public static getInstance():ZcApiGateway{
         if (this.instance === null) {
-            this.instance = new zc();
+            this.instance = new ZcApiGateway();
         }
 
         return this.instance;
     }
 
-    public static http:HttpRequest = new HttpRequest();
+    public static http:HttpRequestTransport = new HttpRequestTransport();
 }

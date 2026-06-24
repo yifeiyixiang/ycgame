@@ -51,93 +51,93 @@
         };
     }
 
-    /**
-     * @method hex
-     * @memberof md5
-     * @description Output hash as hex string
-     * @param {String|Array|Uint8Array|ArrayBuffer} message message to hash
-     * @returns {String} Hex string
-     * @example
-     * md5.hex('The quick brown fox jumps over the lazy dog');
-     * // equal to
-     * md5('The quick brown fox jumps over the lazy dog');
-     */
-    /**
-     * @method digest
-     * @memberof md5
-     * @description Output hash as bytes array
-     * @param {String|Array|Uint8Array|ArrayBuffer} message message to hash
-     * @returns {Array} Bytes array
-     * @example
-     * md5.digest('The quick brown fox jumps over the lazy dog');
-     */
-    /**
-     * @method array
-     * @memberof md5
-     * @description Output hash as bytes array
-     * @param {String|Array|Uint8Array|ArrayBuffer} message message to hash
-     * @returns {Array} Bytes array
-     * @example
-     * md5.array('The quick brown fox jumps over the lazy dog');
-     */
-    /**
-     * @method arrayBuffer
-     * @memberof md5
-     * @description Output hash as ArrayBuffer
-     * @param {String|Array|Uint8Array|ArrayBuffer} message message to hash
-     * @returns {ArrayBuffer} ArrayBuffer
-     * @example
-     * md5.arrayBuffer('The quick brown fox jumps over the lazy dog');
-     */
-    /**
-     * @method buffer
-     * @deprecated This maybe confuse with Buffer in node.js. Please use arrayBuffer instead.
-     * @memberof md5
-     * @description Output hash as ArrayBuffer
-     * @param {String|Array|Uint8Array|ArrayBuffer} message message to hash
-     * @returns {ArrayBuffer} ArrayBuffer
-     * @example
-     * md5.buffer('The quick brown fox jumps over the lazy dog');
-     */
-    /**
-     * @method base64
-     * @memberof md5
-     * @description Output hash as base64 string
-     * @param {String|Array|Uint8Array|ArrayBuffer} message message to hash
-     * @returns {String} base64 string
-     * @example
-     * md5.base64('The quick brown fox jumps over the lazy dog');
-     */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     var createOutputMethod = function (outputType) {
         return function (message) {
             return new Md5(true).update(message)[outputType]();
         };
     };
 
-    /**
-     * @method create
-     * @memberof md5
-     * @description Create Md5 object
-     * @returns {Md5} Md5 object.
-     * @example
-     * var hash = md5.create();
-     */
-    /**
-     * @method update
-     * @memberof md5
-     * @description Create and update Md5 object
-     * @param {String|Array|Uint8Array|ArrayBuffer} message message to hash
-     * @returns {Md5} Md5 object.
-     * @example
-     * var hash = md5.update('The quick brown fox jumps over the lazy dog');
-     * // equal to
-     * var hash = md5.create();
-     * hash.update('The quick brown fox jumps over the lazy dog');
-     */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     var createMethod = function () {
         var method = createOutputMethod('hex');
         if (NODE_JS) {
-            // method = nodeWrap(method);
+
         }
         method.create = function () {
             return new Md5();
@@ -175,12 +175,12 @@
         return nodeMethod;
     };
 
-    /**
-     * Md5 class
-     * @class Md5
-     * @description This is internal class.
-     * @see {@link md5.create}
-     */
+
+
+
+
+
+
     function Md5(sharedMemory) {
         if (sharedMemory) {
             blocks[0] = blocks[16] = blocks[1] = blocks[2] = blocks[3] =
@@ -203,15 +203,15 @@
         this.first = true;
     }
 
-    /**
-     * @method update
-     * @memberof Md5
-     * @instance
-     * @description Update hash
-     * @param {String|Array|Uint8Array|ArrayBuffer} message message to hash
-     * @returns {Md5} Md5 object.
-     * @see {@link md5.update}
-     */
+
+
+
+
+
+
+
+
+
     Md5.prototype.update = function (message) {
         if (this.finalized) {
             return;
@@ -509,16 +509,16 @@
         }
     };
 
-    /**
-     * @method hex
-     * @memberof Md5
-     * @instance
-     * @description Output hash as hex string
-     * @returns {String} Hex string
-     * @see {@link md5.hex}
-     * @example
-     * hash.hex();
-     */
+
+
+
+
+
+
+
+
+
+
     Md5.prototype.hex = function () {
         this.finalize();
 
@@ -542,28 +542,28 @@
             HEX_CHARS[(h3 >> 28) & 0x0F] + HEX_CHARS[(h3 >> 24) & 0x0F];
     };
 
-    /**
-     * @method toString
-     * @memberof Md5
-     * @instance
-     * @description Output hash as hex string
-     * @returns {String} Hex string
-     * @see {@link md5.hex}
-     * @example
-     * hash.toString();
-     */
+
+
+
+
+
+
+
+
+
+
     Md5.prototype.toString = Md5.prototype.hex;
 
-    /**
-     * @method digest
-     * @memberof Md5
-     * @instance
-     * @description Output hash as bytes array
-     * @returns {Array} Bytes array
-     * @see {@link md5.digest}
-     * @example
-     * hash.digest();
-     */
+
+
+
+
+
+
+
+
+
+
     Md5.prototype.digest = function () {
         this.finalize();
 
@@ -576,28 +576,28 @@
         ];
     };
 
-    /**
-     * @method array
-     * @memberof Md5
-     * @instance
-     * @description Output hash as bytes array
-     * @returns {Array} Bytes array
-     * @see {@link md5.array}
-     * @example
-     * hash.array();
-     */
+
+
+
+
+
+
+
+
+
+
     Md5.prototype.array = Md5.prototype.digest;
 
-    /**
-     * @method arrayBuffer
-     * @memberof Md5
-     * @instance
-     * @description Output hash as ArrayBuffer
-     * @returns {ArrayBuffer} ArrayBuffer
-     * @see {@link md5.arrayBuffer}
-     * @example
-     * hash.arrayBuffer();
-     */
+
+
+
+
+
+
+
+
+
+
     Md5.prototype.arrayBuffer = function () {
         this.finalize();
 
@@ -610,29 +610,29 @@
         return buffer;
     };
 
-    /**
-     * @method buffer
-     * @deprecated This maybe confuse with Buffer in node.js. Please use arrayBuffer instead.
-     * @memberof Md5
-     * @instance
-     * @description Output hash as ArrayBuffer
-     * @returns {ArrayBuffer} ArrayBuffer
-     * @see {@link md5.buffer}
-     * @example
-     * hash.buffer();
-     */
+
+
+
+
+
+
+
+
+
+
+
     Md5.prototype.buffer = Md5.prototype.arrayBuffer;
 
-    /**
-     * @method base64
-     * @memberof Md5
-     * @instance
-     * @description Output hash as base64 string
-     * @returns {String} base64 string
-     * @see {@link md5.base64}
-     * @example
-     * hash.base64();
-     */
+
+
+
+
+
+
+
+
+
+
     Md5.prototype.base64 = function () {
         var v1, v2, v3, base64Str = '', bytes = this.array();
         for (var i = 0; i < 15;) {
@@ -656,23 +656,23 @@
     if (COMMON_JS) {
         module.exports = exports;
     } else {
-        /**
-         * @method md5
-         * @description Md5 hash function, export to global in browsers.
-         * @param {String|Array|Uint8Array|ArrayBuffer} message message to hash
-         * @returns {String} md5 hashes
-         * @example
-         * md5(''); // d41d8cd98f00b204e9800998ecf8427e
-         * md5('The quick brown fox jumps over the lazy dog'); // 9e107d9d372bb6826bd81d3542a419d6
-         * md5('The quick brown fox jumps over the lazy dog.'); // e4d909c290d0fb1ca068ffaddf22cbd0
-         *
-         * // It also supports UTF-8 encoding
-         * md5('中文'); // a7bac2239fcdcb3a067903d8077c4a07
-         *
-         * // It also supports byte `Array`, `Uint8Array`, `ArrayBuffer`
-         * md5([]); // d41d8cd98f00b204e9800998ecf8427e
-         * md5(new Uint8Array([])); // d41d8cd98f00b204e9800998ecf8427e
-         */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         root.md5 = exports;
         if (AMD) {
             define(function () {

@@ -3,9 +3,9 @@ import { Const } from '../../../config/Const';
 import GD from '../../../config/GD';
 import { localText } from '../../../config/localText';
 import BaseView from '../../../easyFramework/mgr/BaseView';
-import { uiManager } from '../../../easyFramework/mgr/uiManager';
-import tables from '../../../easyFramework/other/tables';
-import { mergeBoardModel } from '../../comm/mergeBoardModel';
+import { UiLayerService } from '../../../easyFramework/mgr/uiManager';
+import TableDataService from '../../../easyFramework/other/tables';
+import { mergeBoardStateStore } from '../../comm/mergeBoardModel';
 import { handIndexs } from '../../data/handData';
 const { ccclass, property } = _decorator;
 
@@ -38,7 +38,7 @@ export class NewItemLayer extends BaseView {
     show(propId: any) {
         super.show(propId);
 
-        let propRow = tables.ins().getTableValueByID(Const.Tables.prop, propId);
+        let propRow = TableDataService.ins().getTableValueByID(Const.Tables.prop, propId);
         this.setString(this.nameNode, propRow.name);
         this.setString(this.lvNode, propRow.luna + localText.lv);
         this.setSpriteFrame2(this.iconNode.getComponent(Sprite)!, Const.resPath.icon + propRow.icon);
@@ -46,14 +46,14 @@ export class NewItemLayer extends BaseView {
 
         this.bindButton(this.btnClose, this.onClickBtnClose);
 
-        let handIndex = mergeBoardModel.getHandIndex();
+        let handIndex = mergeBoardStateStore.getHandIndex();
         if (handIndex == handIndexs.boardItemReveal) {
-            mergeBoardModel.addHandIndex();
+            mergeBoardStateStore.addHandIndex();
             let obj: any = {};
             obj.id = handIndex;
             obj.node = this.btnClose;
             obj.delayTime = 0.5;
-            uiManager.instance.showDialog(Const.Dialogs.HandLayer, obj);
+            UiLayerService.instance.showDialog(Const.Dialogs.HandLayer, obj);
         }
 
         this.produceLayer.removeAllChildren();
@@ -64,7 +64,7 @@ export class NewItemLayer extends BaseView {
                 let itemUI = instantiate(this.propItem);
                 itemUI.parent = this.produceLayer;
                 itemUI.active = true;
-                let pRow = tables.ins().getTableValueByID(Const.Tables.prop, id);
+                let pRow = TableDataService.ins().getTableValueByID(Const.Tables.prop, id);
                 this.setString(find("name", itemUI), pRow.name);
                 this.setSpriteFrame2(find("icon", itemUI)!.getComponent(Sprite)!, Const.resPath.icon + pRow.icon);
             }
@@ -73,7 +73,7 @@ export class NewItemLayer extends BaseView {
 
     onClickBtnClose() {
         this.close();
-        mergeBoardModel.closeHandLayer();
+        mergeBoardStateStore.closeHandLayer();
         this.emit(GD.event.refreshHandLayer);
     }
 

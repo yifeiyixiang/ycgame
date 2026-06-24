@@ -1,33 +1,33 @@
 import { _decorator,sp,resources } from 'cc';
-import { resourceUtil } from '../mgr/resourceUtil';
+import { ResourceLoaderService } from '../mgr/resourceUtil';
 import { UtilPub } from '../utils/UtilPub';
 import { Const } from '../../config/Const';
-import { petItemData } from '../../../typeScript/gameData';
+import { PetProfileRecord } from '../../../typeScript/gameData';
 const { ccclass, property } = _decorator;
 
-/**
- * @description 读取resoucres/json下的.json文件
- */
-export default class tables {
-	private static _instance: tables;
 
-	public static ins(): tables {
+
+
+export default class TableDataService {
+	private static _instance: TableDataService;
+
+	public static ins(): TableDataService {
 		if (!this._instance) {
-			this._instance = new tables();
+			this._instance = new TableDataService();
 		}
 		return this._instance;
 	}
 
-	public tables: any = {};
+	public TableDataService: any = {};
 
-	// 零散数据表
+
 	public config: any = {};
 
 	public async loadTable() {
 		return new Promise<void>(resolve => {
 			console.log("表格数据处理")
-			resourceUtil.loadResDirWithBundle('json', "./", (err, assets) => {
-				//表格数据处理
+			ResourceLoaderService.loadResDirWithBundle('json', "./", (err, assets) => {
+
 				console.log("table err----------", err)
 				console.log("table data----------", assets.length)
 				if (err) {
@@ -43,13 +43,13 @@ export default class tables {
 					let asset = assets[i];
 
 					//@ts-ignore
-					this.tables[asset.name] = asset.json;
+					this.TableDataService[asset.name] = asset.json;
 					console.log("xxxxx--------aasset:", asset.name)
 					if (asset.name == "config_table") {
-						for (let index = 0; index < this.tables[asset.name].length; index++) {
-							let row = this.tables[asset.name][index];
+						for (let index = 0; index < this.TableDataService[asset.name].length; index++) {
+							let row = this.TableDataService[asset.name][index];
 							this.config[row.key] = row.value;
-							//	UtilPub.log("config_table:",row.key,this.config[row.key])
+
 						}
 					}
 				}
@@ -59,7 +59,7 @@ export default class tables {
 	}
 
 	public getTable(name: string) {
-		return this.tables[name];
+		return this.TableDataService[name];
 	}
 	public getTableValueByID(name: string, id: number) {
 		let table = this.getTable(name);
@@ -84,13 +84,13 @@ export default class tables {
 				return JSON.parse(JSON.stringify(t));
 			}
 		}
-		// UtilPub.error("---配表错误，无法找到ID---", name, id)
+
 	}
-	/**
-	 * 获得最后一行
-	 * @param name 
-	 * @returns 
-	 */
+
+
+
+
+
 	public getTableLastOne(name: string) {
 		let table = this.getTable(name);
 		return JSON.parse(JSON.stringify(table[table.length - 1]));

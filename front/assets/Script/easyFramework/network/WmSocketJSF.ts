@@ -12,14 +12,14 @@ export class WmSocketJSF{
     public isWsConnect:boolean=false;
 	ws:WebSocket = null!;
 	wxws:any= null;
-	msgBuff:any = {}; //key为stickId, val为stick数组
-	// Stick_Id = "stick_id"
-	// Stick_Len = "stick_len"
-	// Stick_No = "stick_no" //服务端不处理，只判断字符总长度，前端自己用是否发送结束
-	// Stick_Body = "stick_val"
-	/**
-     * 单例
-     */
+	msgBuff:any = {};
+
+
+
+
+
+
+
     private static _instance: WmSocketJSF;
     public static getInstance(): WmSocketJSF {
         if (!this._instance) {
@@ -42,11 +42,11 @@ export class WmSocketJSF{
     }
 
 	respStickPack(data:any){
-    	// cc.log("粘包接受情况--", data)
+
 		if(data["isEnd"]==false){
 			this.sendStickPack(data["stick_id"], data["idx"]+1)
 		}else{
-			delete this.msgBuff[data["stick_id"]] //清空本地缓存
+			delete this.msgBuff[data["stick_id"]]
 		}
 	}
 
@@ -77,12 +77,12 @@ export class WmSocketJSF{
 			"isStart": i==0,
 			"idx":i
 		}
-		// cc.log("分段存储", data)
+
 		WmSocketJSF.getInstance().sendSP(JSON.stringify(data));
 	}
 
     onReconnect(){
-        // 重连..
+
 		if(this.isFirst){
 			this.isFirst = false;
 			this.connect();
@@ -96,7 +96,7 @@ export class WmSocketJSF{
     }
 
     onClose(){
-        // 断开连接..
+
         if (!this.isConnected()) {
             return;
         }
@@ -111,12 +111,12 @@ export class WmSocketJSF{
     }
 
     ws_connect(){
-	
+
     }
 
     onMessage(resp:string){
 		let respJson = JSON.parse(resp)
-		// console.log("------接受来自服务器的数据----：",respJson)
+
 		director.emit(respJson.cmd+"" , respJson)
     }
 
@@ -124,13 +124,13 @@ export class WmSocketJSF{
     	return this.isWsConnect;
     }
     sendSP(jsonData:string){
-	
+
 	}
 
     send(netdata:any){
-		// console.log("###请求参数 :", netdata)
+
 
     }
-    
+
 }
 

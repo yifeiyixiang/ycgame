@@ -8,7 +8,7 @@ import { GamePlatform } from "../game/platform/GamePlatform";
 const { ccclass } = _decorator;
 
 @ccclass("RechargeManager")
-export class RechargeManager {
+export class RewardVideoManager {
     private static videoCallBack: Function | null = null;
     private static failCallBack: Function | null = null;
 

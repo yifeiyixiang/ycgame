@@ -1,8 +1,8 @@
 import { _decorator, Node, Prefab, instantiate, Sprite, Label, UITransform, v3, SpriteFrame } from 'cc';
 import { Const } from '../../../config/Const';
 import BaseView from '../../../easyFramework/mgr/BaseView';
-import { uiManager } from '../../../easyFramework/mgr/uiManager';
-import tables from '../../../easyFramework/other/tables';
+import { UiLayerService } from '../../../easyFramework/mgr/uiManager';
+import TableDataService from '../../../easyFramework/other/tables';
 const { ccclass, property } = _decorator;
 
 
@@ -37,14 +37,14 @@ export class PropItem extends BaseView {
     }
 
     setData(id: number, flag: number = 0, num: number = 0) {
-        //console.log("setData id = ", id)
+
         this._propid = id
 
 
-        let data = tables.ins().getTableValueByID(Const.Tables.prop, id)
+        let data = TableDataService.ins().getTableValueByID(Const.Tables.prop, id)
         this._propdata = data
 
-        let dataNew = tables.ins().getTableValueByID(Const.Tables.new_prop, id)
+        let dataNew = TableDataService.ins().getTableValueByID(Const.Tables.new_prop, id)
 
         if (!this._propdata && dataNew){
             this.setSpriteFrame(this.icon.getComponent(Sprite)!, Const.resPath.icon + dataNew.icon, () => { }, 120)
@@ -110,8 +110,8 @@ export class PropItem extends BaseView {
         } else {
             this.numLabel.node.active = false
         }
-        // this.numLabel.string = id+""
-        // this.numLabel.node.active = true
+
+
 
         return this
     }
@@ -122,7 +122,7 @@ export class PropItem extends BaseView {
         this.lvLabel.active = false
         this.bg.getComponent(Sprite)!.spriteFrame = null
 
-        let data = tables.ins().getTableValueByID(Const.Tables.scene_skin, id)
+        let data = TableDataService.ins().getTableValueByID(Const.Tables.scene_skin, id)
         this._propdata = data
 
         this.setSpriteFrame(this.icon.getComponent(Sprite)!, Const.resPath.icon + data.icon0, () => { }, 300)
@@ -161,14 +161,14 @@ export class PropItem extends BaseView {
 
     onOpenPropInfo() {
         if (this._propdata.type <= 6 || this._propdata.type > 100 || this._propdata.type == 15 || this._propdata.type == 16 || this._propdata.type == 17 || this._propdata.type == 18) {
-            uiManager.instance.showDialog(Const.Dialogs.ItemCodexLayer, this._propdata.id);
+            UiLayerService.instance.showDialog(Const.Dialogs.ItemCodexLayer, this._propdata.id);
         } else {
-            uiManager.instance.showDialog(Const.Dialogs.PropItemInfo, { propdata: this._propdata })
+            UiLayerService.instance.showDialog(Const.Dialogs.PropItemInfo, { propdata: this._propdata })
         }
     }
 
     onOpenPropMinInfo() {
-        uiManager.instance.showDialog(Const.Dialogs.PropMinInfo, { propdata: this._propdata })
+        UiLayerService.instance.showDialog(Const.Dialogs.PropMinInfo, { propdata: this._propdata })
     }
 
     getPropId() {

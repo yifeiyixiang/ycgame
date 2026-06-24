@@ -1,12 +1,12 @@
 import { _decorator, Node, Label, find, Sprite, instantiate, v3, SpriteFrame, LabelOutline, color, Button, } from 'cc';
 import { Const } from '../../../config/Const';
 import BaseView from '../../../easyFramework/mgr/BaseView';
-import { uiManager } from '../../../easyFramework/mgr/uiManager';
-import tables from '../../../easyFramework/other/tables';
-import { RechargeManager } from '../../../Util/RechargeManager';
+import { UiLayerService } from '../../../easyFramework/mgr/uiManager';
+import TableDataService from '../../../easyFramework/other/tables';
+import { RewardVideoManager } from '../../../Util/RechargeManager';
 import { SignState, SignUtil } from '../../comm/SignUtil';
-import { HttpClient } from '../../../../typeScript/net/HttpClient';
-import { userData } from '../../comm/UserData';
+import { GameHttpClient } from '../../../../typeScript/net/HttpClient';
+import { playerDataStore } from '../../comm/UserData';
 import GD from '../../../config/GD';
 
 const { ccclass, property } = _decorator;
@@ -32,9 +32,9 @@ export class SignDialog extends BaseView {
 
     show(args: any) {
         super.show(args)
-       // this.btnReceive.active = false
+
        this.refresh();
-       
+
     }
 
     onEnable() {
@@ -51,13 +51,13 @@ export class SignDialog extends BaseView {
             this.initDayItem(find("day" + i, this.dayRoot)!, i)
         }
 
-        find("Layout/Label", this.btnReceive)!.getComponent(Label).string = userData.userInfodata.user_sign.sign_status==1?"已签到":"签到";
+        find("Layout/Label", this.btnReceive)!.getComponent(Label).string = playerDataStore.userInfodata.user_sign.sign_status==1?"已签到":"签到";
 
-        this.btnReceive.getComponent(Button)!.interactable = userData.userInfodata.user_sign.sign_status==0
+        this.btnReceive.getComponent(Button)!.interactable = playerDataStore.userInfodata.user_sign.sign_status==0
     }
 
     initDayItem(dayParent: Node, day: number) {
-        let data = tables.ins().getTableValueByID(Const.Tables.new_sign, day)
+        let data = TableDataService.ins().getTableValueByID(Const.Tables.new_sign, day)
         let dayNode = dayParent.getChildByName("dayItem")
         if (dayNode == null) {
             dayNode = instantiate(this.dayItem)
@@ -75,26 +75,26 @@ export class SignDialog extends BaseView {
         let propId = data.sign_in_rewards[0][0]
         let num = data.sign_in_rewards[0][1]
 
-        let propData = tables.ins().getTableValueByID(Const.Tables.new_prop, propId)   //data.type == 1 ? tables.ins().getTableValueByID(Const.Tables.prop, propId) : tables.ins().getTableValueByID(Const.Tables.scene_skin, propId)
+        let propData = TableDataService.ins().getTableValueByID(Const.Tables.new_prop, propId)
 
         numLabel!.string = "x" + num
         this.setSpriteFrame(icon.getComponent(Sprite)!, Const.resPath.icon + propData.icon, () => { }, 100)
 
-        // if (data.type == 1) {
-        //     numLabel!.string = "x" + num
-        //     this.setSpriteFrame(icon.getComponent(Sprite)!, Const.resPath.icon + propData.icon, () => { }, 60)
-        // } else {
-        //     numLabel!.string = propData.name
-        //     this.setSpriteFrame(icon.getComponent(Sprite)!, Const.resPath.icon + propData.icon0, () => { }, 100)
-        // }
 
 
 
-    
+
+
+
+
+
+
+
+
         find("qdbk", dayNode)!.active = false
         let signState = SignUtil.getInstance().getSignDay(day)
 
-        if (userData.userInfodata.user_sign.sign_in_days >= day){
+        if (playerDataStore.userInfodata.user_sign.sign_in_days >= day){
             signState =  SignState.receiced
         }else{
             signState =  SignState.canReceive
@@ -114,11 +114,11 @@ export class SignDialog extends BaseView {
         }
 
         find("qdbk", dayNode)!.active = false;
-        
-        // if (this._curSignDay == day) {
-        //     this.initBtn(null, { day: day, signState: signState })
-        // }
-        //this.addButtonHander(dayNode, this.node, "SignDialog", "initBtn", { day: day, signState: signState })
+
+
+
+
+
     }
 
     initBtn(event: any, data: any) {
@@ -160,25 +160,25 @@ export class SignDialog extends BaseView {
 
 
     onClickReceive(event: any, data: any) {
-        // SignUtil.getInstance().signDay(data.day)
-        // this.initDayItem(find("day" + data.day, this.dayRoot)!, data.day)
-        // let signState = SignUtil.getInstance().getSignDay(data.day)
-        // this.initBtn(event,  { day: data.day, signState: signState })
 
-        // let signdata = tables.ins().getTableValueByID(Const.Tables.sign, data.day)
-        // signdata.reward[2] = signdata.type
-        // uiManager.instance.pushShowDialog(Const.Dialogs.RewardDialog, { reward: [signdata.reward] })
 
-        HttpClient.getInstance().sendSign();
+
+
+
+
+
+
+
+        GameHttpClient.getInstance().sendSign();
 
     }
 
     onClickResign() {
-        // RechargeManager.showVideo("七日签到-补签", () => {
-        //     this.onClickReceive(event, data)
-        // })
 
-        HttpClient.getInstance().sendSign();
+
+
+
+        GameHttpClient.getInstance().sendSign();
     }
 }
 

@@ -2,11 +2,11 @@ import { _decorator, Node, Label, ScrollView, find, Sprite, instantiate, Vec3, P
 import { Const } from '../../../config/Const';
 import GD from '../../../config/GD';
 import BaseView from '../../../easyFramework/mgr/BaseView';
-import tables from '../../../easyFramework/other/tables';
+import TableDataService from '../../../easyFramework/other/tables';
 import { CdComponent, CDType } from '../../../easyFramework/utils/CdComponent';
-import { RechargeManager } from '../../../Util/RechargeManager';
-import { mergeBoardModel } from '../../comm/mergeBoardModel';
-import { userData } from '../../comm/UserData';
+import { RewardVideoManager } from '../../../Util/RechargeManager';
+import { mergeBoardStateStore } from '../../comm/mergeBoardModel';
+import { playerDataStore } from '../../comm/UserData';
 import { PropItem, PropItemFlag } from './PropItem';
 import { TreasureModel } from './TreasureModel';
 

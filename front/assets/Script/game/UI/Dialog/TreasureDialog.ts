@@ -2,11 +2,11 @@ import { _decorator, Node, Label, ScrollView, find, Sprite, instantiate, Vec3, P
 import { Const } from '../../../config/Const';
 import GD from '../../../config/GD';
 import BaseView from '../../../easyFramework/mgr/BaseView';
-import tables from '../../../easyFramework/other/tables';
+import TableDataService from '../../../easyFramework/other/tables';
 import { CdComponent, CDType } from '../../../easyFramework/utils/CdComponent';
-import { RechargeManager } from '../../../Util/RechargeManager';
-import { mergeBoardModel } from '../../comm/mergeBoardModel';
-import { userData } from '../../comm/UserData';
+import { RewardVideoManager } from '../../../Util/RechargeManager';
+import { mergeBoardStateStore } from '../../comm/mergeBoardModel';
+import { playerDataStore } from '../../comm/UserData';
 import { PropItem, PropItemFlag } from './PropItem';
 import { TreasureModel } from './TreasureModel';
 import { GamePlatform } from '../../platform/GamePlatform';
@@ -96,7 +96,7 @@ export class TreasureDialog extends BaseView {
         } else {
             labelReceive.active = false
             btnReceive.active = true
-            let hasInfo = mergeBoardModel.getRoomDataHasInfoById(TreasureModel.treasureData.bao1[index].id);
+            let hasInfo = mergeBoardStateStore.getRoomDataHasInfoById(TreasureModel.treasureData.bao1[index].id);
             let showNum = hasInfo.num;
             if (showNum > 0) {
                 btnReceive.getComponent(Sprite)!.grayscale = false
@@ -115,8 +115,8 @@ export class TreasureDialog extends BaseView {
     }
 
     onClickGet(event: any, index: any) {
-        mergeBoardModel.consumeProp(TreasureModel.treasureData.bao1[index].id, 1)
-        mergeBoardModel.addPropNum(TreasureModel.treasureData.bao2[index].id, 1)
+        mergeBoardStateStore.consumeProp(TreasureModel.treasureData.bao1[index].id, 1)
+        mergeBoardStateStore.addPropNum(TreasureModel.treasureData.bao2[index].id, 1)
         TreasureModel.treasureData.receive[index] = 1
         TreasureModel.saveTreasureData()
         this.initItem(event.target.parent, index)
@@ -140,14 +140,14 @@ export class TreasureDialog extends BaseView {
             TreasureModel.treasureData.freeReflesh++
             TreasureModel.saveTreasureData()
         } else {
-            RechargeManager.showVideo("刷新阿宝的货车", reflesh)
+            RewardVideoManager.showVideo("刷新阿宝的货车", reflesh)
         }
 
     }
 
     onClickBtnAllReceive() {
         TreasureModel.receiveGift = 1
-        mergeBoardModel.addPropNum(901, 1)
+        mergeBoardStateStore.addPropNum(901, 1)
         this.initProgress()
     }
 

@@ -2,14 +2,14 @@ import { _decorator, Node, Label, ScrollView, find, Sprite, SpriteFrame, tween, 
 import { Const } from '../../../config/Const';
 import GD from '../../../config/GD';
 import { RoleSex } from '../../../config/global';
-import { audioManager } from '../../../easyFramework/mgr/audioManager';
+import { AudioPlaybackService } from '../../../easyFramework/mgr/audioManager';
 import BaseView from '../../../easyFramework/mgr/BaseView';
-import { comm } from '../../../easyFramework/mgr/comm';
-import { resourceUtil } from '../../../easyFramework/mgr/resourceUtil';
-import { uiManager } from '../../../easyFramework/mgr/uiManager';
-import tables from '../../../easyFramework/other/tables';
+import { BaseUiComponent } from '../../../easyFramework/mgr/comm';
+import { ResourceLoaderService } from '../../../easyFramework/mgr/resourceUtil';
+import { UiLayerService } from '../../../easyFramework/mgr/uiManager';
+import TableDataService from '../../../easyFramework/other/tables';
 import { ScrollViewUtil } from '../../comm/ScrollViewUtil';
-import { userData } from '../../comm/UserData';
+import { playerDataStore } from '../../comm/UserData';
 import { UtilGame } from '../../comm/UtilGame';
 import { GamePlatform } from '../../platform/GamePlatform';
 
@@ -38,18 +38,18 @@ export class AvatarStyleLayer extends BaseView {
     }
 
     selectWomen() {
-        let dressData = tables.ins().getTableValuesByType(Const.Tables.avatarStyle, "type", RoleSex.women)
+        let dressData = TableDataService.ins().getTableValuesByType(Const.Tables.avatarStyle, "type", RoleSex.women)
         this.scrollViewSetData(this.scrollViewNode, dressData, this.initItem, this)
     }
 
     selectMen() {
-        let dressData = tables.ins().getTableValuesByType(Const.Tables.avatarStyle, "type", RoleSex.men)
+        let dressData = TableDataService.ins().getTableValuesByType(Const.Tables.avatarStyle, "type", RoleSex.men)
         this.scrollViewSetData(this.scrollViewNode, dressData, this.initItem, this)
     }
 
     initInfo() {
-        let item = tables.ins().getTableValueByID(Const.Tables.avatarStyle, userData.avatarLookId)
-        resourceUtil.loadResWithBundle(Const.resPath.roleSpine + item.spine, sp.SkeletonData, (err, skedata) => {
+        let item = TableDataService.ins().getTableValueByID(Const.Tables.avatarStyle, playerDataStore.avatarLookId)
+        ResourceLoaderService.loadResWithBundle(Const.resPath.roleSpine + item.spine, sp.SkeletonData, (err, skedata) => {
             this.roleSpine.skeletonData = skedata;
             this.roleSpine.setSkin(item.spineSkin)
             this.roleSpine.setAnimation(0, item.spineAni, true);
@@ -58,7 +58,7 @@ export class AvatarStyleLayer extends BaseView {
 
     show(args: any) {
         super.show(args)
-        let item = tables.ins().getTableValueByID(Const.Tables.avatarStyle, userData.avatarLookId)
+        let item = TableDataService.ins().getTableValueByID(Const.Tables.avatarStyle, playerDataStore.avatarLookId)
         if (item.type == RoleSex.men) {
             this.selectMen()
         } else {
@@ -66,11 +66,11 @@ export class AvatarStyleLayer extends BaseView {
         }
         this.initInfo()
 
-        find("root/dressbg1/Label", this.node)!.getComponent(Label)!.string = userData.dressValue + ""
+        find("root/dressbg1/Label", this.node)!.getComponent(Label)!.string = playerDataStore.dressValue + ""
     }
 
     openSkinDetail(event: any, data: any) {
-        uiManager.instance.showDialog(Const.Dialogs.scene_ui_skin_detail, { dressUpData: data })
+        UiLayerService.instance.showDialog(Const.Dialogs.SceneSkinDetailController, { dressUpData: data })
 
     }
 
@@ -80,10 +80,10 @@ export class AvatarStyleLayer extends BaseView {
         self.clearButtonHander(itemUI.getChildByName("gantan")!)
         self.addButtonHander(itemUI.getChildByName("gantan")!, self.node, "AvatarStyleLayer", "openSkinDetail", item)
 
-        if (userData.isAvatarLookOwned(item.id) || item.price == 0) {
+        if (playerDataStore.isAvatarLookOwned(item.id) || item.price == 0) {
             itemUI.getChildByName("btnBuy")!.active = false
             itemUI.getChildByName("hua1")!.active = false
-            if (userData.avatarLookId == item.id) {
+            if (playerDataStore.avatarLookId == item.id) {
                 itemUI.getChildByName("btnWear")!.active = false
                 itemUI.getChildByName("wearlab")!.active = true
             } else {
@@ -97,7 +97,7 @@ export class AvatarStyleLayer extends BaseView {
             itemUI.getChildByName("btnBuy")!.active = true
 
             let itemId = item.price[0][0]
-            let itemData = tables.ins().getTableValueByID(Const.Tables.prop, itemId)
+            let itemData = TableDataService.ins().getTableValueByID(Const.Tables.prop, itemId)
             self.setSpriteFrame(find("btnBuy/Node/icon", itemUI)!.getComponent(Sprite)!, Const.resPath.icon + itemData.icon, undefined, 40)
             find("btnBuy/Node/Label", itemUI)!.getComponent(Label)!.string = "x" + item.price[0][1]
 
@@ -112,9 +112,9 @@ export class AvatarStyleLayer extends BaseView {
     }
 
     onChangeWear(event: any, item: any) {
-        audioManager.instance.playSound(Const.Audio.btn)
-        //  this.setSpriteFrame(find("root/RoleIcon", this.node)!.getComponent(Sprite)!, Const.resPath.icon + data.icon)
-        resourceUtil.loadResWithBundle(Const.resPath.roleSpine + item.spine, sp.SkeletonData, (err, skedata) => {
+        AudioPlaybackService.instance.playSound(Const.Audio.btn)
+
+        ResourceLoaderService.loadResWithBundle(Const.resPath.roleSpine + item.spine, sp.SkeletonData, (err, skedata) => {
             this.roleSpine.skeletonData = skedata;
             this.roleSpine.setSkin(item.spineSkin)
             this.roleSpine.setAnimation(0, item.spineAni, true);
@@ -122,25 +122,25 @@ export class AvatarStyleLayer extends BaseView {
     }
 
     onClickWear(event: any, data: any) {
-        audioManager.instance.playSound(Const.Audio.btn)
-        userData.avatarLookId = data.id
+        AudioPlaybackService.instance.playSound(Const.Audio.btn)
+        playerDataStore.avatarLookId = data.id
         this.updateDressUp()
-        //  this.setSpriteFrame(find("root/RoleIcon", this.node)!.getComponent(Sprite)!, Const.resPath.icon + data.icon)
+
     }
 
     updateDressUp() {
-        find("root/dressbg1/Label", this.node)!.getComponent(Label)!.string = userData.dressValue + ""
+        find("root/dressbg1/Label", this.node)!.getComponent(Label)!.string = playerDataStore.dressValue + ""
         this.scrollViewNode.getComponent(ScrollViewUtil)?.refreshList()
         this.initInfo()
     }
 
     onClickBuy(event: any, data: any) {
-        audioManager.instance.playSound(Const.Audio.btn)
-        if (data.price == 0 || userData.checkAndUseProp(data.price[0])) {
-            userData.unlockAvatarLook(data.id)
+        AudioPlaybackService.instance.playSound(Const.Audio.btn)
+        if (data.price == 0 || playerDataStore.checkAndUseProp(data.price[0])) {
+            playerDataStore.unlockAvatarLook(data.id)
             GamePlatform.track("buy role skin " + data.name)
-            userData.dressValue += data.changeZhi
-            find("root/dressbg1/Label", this.node)!.getComponent(Label)!.string = userData.dressValue + ""
+            playerDataStore.dressValue += data.changeZhi
+            find("root/dressbg1/Label", this.node)!.getComponent(Label)!.string = playerDataStore.dressValue + ""
             this.scrollViewNode.getComponent(ScrollViewUtil)!.refreshList()
         } else {
             this.emit(GD.event.showTip, { msg: UtilGame.language("lackGold") })

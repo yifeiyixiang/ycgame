@@ -1,5 +1,5 @@
 import { Color, Component, Material, sp, UIRenderer, v4, Vec4, _decorator } from 'cc';
-import { resourceUtil } from '../mgr/resourceUtil';
+import { ResourceLoaderService } from '../mgr/resourceUtil';
 import { UtilPub } from './UtilPub';
 const { ccclass, property } = _decorator;
 
@@ -34,7 +34,7 @@ export class ShineColor extends Component {
 
     setMaterialProperty(val: number) {
         if (this.isSpine) {
-            // @ts-ignore 
+            // @ts-ignore
             let cache: any = this.uiRenderer._materialCache;
             for (let i in cache) {
                 let material = cache[i];
@@ -48,12 +48,12 @@ export class ShineColor extends Component {
 
         let material = this.uiRenderer.getMaterialInstance(0)!;
         let uRate = material.passes[0].getHandle("u_rate");
-        // if(val<0.5) val=0.5
+
         val = this.ctlVal(val)
-        // UtilPub.log("------闪白值---", val)
+
         material.passes[0].setUniform(uRate, val);
         if (this.vColor) {
-            // let vColor = v4(1, 0, 0, 1);
+
             let uColor = material.passes[0].getHandle("u_color");
             material.passes[0].setUniform(uColor, this.vColor);
         }
@@ -79,18 +79,18 @@ export class ShineColor extends Component {
     removeShineColorMaterial() {
         this.uiRenderer.customMaterial = this.orignMaterial;
         if (this.isSpine) {
-            // spine动画，需要重新激活，否则替换材质后会不显示
+
             this.uiRenderer.enabled = false;
             this.uiRenderer.enabled = true;
         }
     }
 
-    /**
-     * 闪颜色
-     * @param materialPath 材质路径 
-     * @param color 闪的颜色
-     * @param duration 闪的时间
-     */
+
+
+
+
+
+
     startShine(materialPath: string, duration: number = 0.3, rate:number=0, color?: Color) {
         this.isCycle = false
         this.duration = duration;
@@ -99,10 +99,10 @@ export class ShineColor extends Component {
         if (color) {
             this.vColor = v4(color.r / 255, color.g / 255, color.b / 255, color.a / 255);
         } else {
-            // 默认闪白
+
             this.vColor = v4(1, 1, 1, 1);
         }
-        resourceUtil.loadResWithBundle(materialPath, Material, (err, material) => {
+        ResourceLoaderService.loadResWithBundle(materialPath, Material, (err, material) => {
             this._time = this.duration;
             this.uiRenderer.customMaterial = material;
             this.setMaterialProperty(rate);
@@ -113,16 +113,16 @@ export class ShineColor extends Component {
         this.isCycle = true
         this.duration = 2;
         this.materialPath = materialPath
-        this.rate = rate 
+        this.rate = rate
         this._median = this.duration / 2;
         if (color) {
             this.vColor = v4(color.r / 255, color.g / 255, color.b / 255, color.a / 255);
         } else {
-            // 默认闪白
+
             this.vColor = v4(1, 1, 1, 1);
         }
-        resourceUtil.loadResWithBundle(materialPath, Material, (err, material) => {
-            // UtilPub.log("---------获得的材质是---", material)
+        ResourceLoaderService.loadResWithBundle(materialPath, Material, (err, material) => {
+
             this._time = this.duration;
             this.uiRenderer.customMaterial = material;
             this.setMaterialProperty(rate);
@@ -131,7 +131,7 @@ export class ShineColor extends Component {
 
     closeFlash(){
         this.isCycle=false
-        // this._time = 0
-        // this.removeShineColorMaterial();
+
+
     }
 }

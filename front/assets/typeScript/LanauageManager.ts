@@ -1,11 +1,11 @@
 import { _decorator, Component, EventTarget, Node, resources, Sprite, SpriteFrame } from 'cc';
-import { AdPropCount, coinType, gameData, petItemData, taskStateData } from './gameData';
-import { EventManger } from './EventManger';
-import { userData } from '../Script/game/comm/UserData';
+import { AdRewardCounterRecord, WalletCoinType, GameRuntimeData, PetProfileRecord, TaskProgressRecord } from './gameData';
+import { GameEventManager } from './EventManger';
+import { playerDataStore } from '../Script/game/comm/UserData';
 const { ccclass, property } = _decorator;
 
 @ccclass('LanauageManager')
-export class LanauageManager {
+export class LanguageContentManager {
 
     public static languageType:number = 1;
 
@@ -17,32 +17,32 @@ export class LanauageManager {
 
     public static isLoad:boolean = false;
 
-    /**任务配表 */
+
     public static taskConfig = []
     public static languageConfig = []
-    /**宠物配表*/
+
     public static petConfigs = []
 
-    public static petCatConfig = []     //宠物猫配表
+    public static petCatConfig = []
 
-    public static petDogConfig = []        //宠物狗配表
+    public static petDogConfig = []
 
-    /**道具表*/
+
     public static itemConfigs = []
-    /**任务配表*/
-    public static taskConfigs = []
-    /**主线任务 */
-    public static taskLineConfigs = []
-    public static jiabnConfig = []      //羁绊配表
 
-    /**签到配表 */
+    public static taskConfigs = []
+
+    public static taskLineConfigs = []
+    public static jiabnConfig = []
+
+
     public static checkConfigs = []
-    /**支付相关，礼包配表 */
+
     public static giftConfigs = []
-    /**商品类型名称 */
+
     public static shopTileNames = []
     public static shopCateNames = []
-    
+
     public static itemBaseUrl = "image/itemImg/"
 
     public static giftBaseUrl = "image/gift/"
@@ -50,7 +50,7 @@ export class LanauageManager {
     public static petBaseUrl = "image/pet/"
 
 
-    /**通用的获取表数据 */
+
     public static getConfigDataById(id:number, config:any[]){
         if (!config){
             return null;
@@ -76,7 +76,7 @@ export class LanauageManager {
         return null
     }
 
-        /**将reward 转换为数组返回 */
+
         public static setRewardConfig(element:any){
             if (!element){
                 return null;
@@ -90,37 +90,37 @@ export class LanauageManager {
             return element;
         }
 
-    public static getPetConfigsByType(petType:enumPetType){
-        if (LanauageManager.petCatConfig.length == 0){
+    public static getPetConfigsByType(petType:PetSpeciesType){
+        if (LanguageContentManager.petCatConfig.length == 0){
             for (let index = 0; index < this.petConfigs.length; index++) {
-                const element:petConfig = this.petConfigs[index];
-                if (element.types == enumPetType.cat){
-                    LanauageManager.petCatConfig.push(element);
+                const element:PetConfigRecord = this.petConfigs[index];
+                if (element.types == PetSpeciesType.cat){
+                    LanguageContentManager.petCatConfig.push(element);
                 }else{
-                    LanauageManager.petDogConfig.push(element);
+                    LanguageContentManager.petDogConfig.push(element);
                 }
             }
         }
 
-        if (petType == enumPetType.cat){
-            return LanauageManager.petCatConfig;
+        if (petType == PetSpeciesType.cat){
+            return LanguageContentManager.petCatConfig;
         }else{
-            return LanauageManager.petDogConfig;
+            return LanguageContentManager.petDogConfig;
         }
     }
 
-   
+
     public static getDesStrById(id:number){
         if (id == 0){
             return "";
         }
-        let lang = LanauageManager.languageConfig[id-1];
+        let lang = LanguageContentManager.languageConfig[id-1];
         let str:string = "";
         if (lang){
-            if (LanauageManager.languageType == 1){
+            if (LanguageContentManager.languageType == 1){
                 str = lang.english;
             }
-            else if (LanauageManager.languageType == 2){
+            else if (LanguageContentManager.languageType == 2){
                 str = lang.chinese;
             }
         }
@@ -128,12 +128,12 @@ export class LanauageManager {
     }
 
     public static getShopItemData(id:number){
-        return LanauageManager.getConfigDataById(id, this.itemConfigs);
+        return LanguageContentManager.getConfigDataById(id, this.itemConfigs);
     }
 
     public static getItemNumById(id:number):number{
-        for (let index = 0; index < gameData.saveData.backList.length; index++) {
-            let element = gameData.saveData.backList[index];
+        for (let index = 0; index < GameRuntimeData.saveData.backList.length; index++) {
+            let element = GameRuntimeData.saveData.backList[index];
             if (element.id == id){
                 return element.num;
             }
@@ -142,8 +142,8 @@ export class LanauageManager {
     }
 
     public static getTaskDataById(id:number):any{
-        for (let index = 0; index < LanauageManager.taskConfig.length; index++) {
-            let element = LanauageManager.taskConfig[index];
+        for (let index = 0; index < LanguageContentManager.taskConfig.length; index++) {
+            let element = LanguageContentManager.taskConfig[index];
             if (element.id == id){
                 return element;
             }
@@ -151,93 +151,93 @@ export class LanauageManager {
         return null;
     }
 
-    /**resources 动态 加载图片 */
-    public static loadImage(url: string, spr:Sprite) {   
-        if (url == "" || url == undefined || url == LanauageManager.itemBaseUrl){
+
+    public static loadImage(url: string, spr:Sprite) {
+        if (url == "" || url == undefined || url == LanguageContentManager.itemBaseUrl){
             return;
         }
-        resources.load(url + "/spriteFrame", SpriteFrame, (err, spriteFrame) => {  
-            if (err) { 
-                console.error(err);  
-                return;  
-            }  
+        resources.load(url + "/spriteFrame", SpriteFrame, (err, spriteFrame) => {
+            if (err) {
+                console.error(err);
+                return;
+            }
             spr.spriteFrame = spriteFrame;
-        });  
-    } 
+        });
+    }
 
-    /**resources 动态 加载道具图片 */
+
     public static loadImageById(id:number, spr:Sprite) {
-        let itemCfg:itemConfig = LanauageManager.getConfigDataById(id, this.itemConfigs);
+        let itemCfg:ItemConfigRecord = LanguageContentManager.getConfigDataById(id, this.itemConfigs);
         if (!itemCfg){
             console.log("dont have:  " + id);
         }
-        let url = LanauageManager.itemBaseUrl + itemCfg.iconUrl;
-        LanauageManager.loadImage(url, spr); 
-    } 
+        let url = LanguageContentManager.itemBaseUrl + itemCfg.iconUrl;
+        LanguageContentManager.loadImage(url, spr);
+    }
 
-    public static roundToTwoDecimals(num: number, num2:number = 100): number {  
-        return Math.floor(num * num2) / num2;  
-    } 
+    public static roundToTwoDecimals(num: number, num2:number = 100): number {
+        return Math.floor(num * num2) / num2;
+    }
 
     public static getCoinNumString(coinNum:number = 0, type:number = 1){
         let num = coinNum;
         if (num == 0){
-            num = gameData.saveData.coin;
-        } 
-        let unitIndex = 0;   
+            num = GameRuntimeData.saveData.coin;
+        }
+        let unitIndex = 0;
 
-        const units = ['', 'w', 'm', 'b', 't', 'q'];  
+        const units = ['', 'w', 'm', 'b', 't', 'q'];
         let num1 = 1000;
         if (num > 9999.99){
             unitIndex = 1
             num1 = 10000;
         }else{
-            return LanauageManager.roundToTwoDecimals(num, type == 2?1000:100).toString()   //.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+            return LanguageContentManager.roundToTwoDecimals(num, type == 2?1000:100).toString()
         }
-        num = Number(LanauageManager.roundToTwoDecimals(num/num1).toString());  
-        let  goldNum = num.toFixed(2) //.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-        return goldNum + units[unitIndex]; 
+        num = Number(LanguageContentManager.roundToTwoDecimals(num/num1).toString());
+        let  goldNum = num.toFixed(2)
+        return goldNum + units[unitIndex];
     }
 
     public static getCoinNumByType(type:number){
         let num:number = 0
-        if (type == coinType.coin1){
-            num = gameData.saveData.coin2;
+        if (type == WalletCoinType.coin1){
+            num = GameRuntimeData.saveData.coin2;
         }
-        else if (type == coinType.coin2){
-            num = gameData.saveData.coin;
+        else if (type == WalletCoinType.coin2){
+            num = GameRuntimeData.saveData.coin;
         }
-        else if (type == coinType.coin3){
-            num = gameData.saveData.coin3;
+        else if (type == WalletCoinType.coin3){
+            num = GameRuntimeData.saveData.coin3;
         }
         return num;
     }
 
-    /**获取任务状态信息 */
-    private static getTaskInfoState(id:number, isLine:boolean =false):taskStateData{
+
+    private static getTaskInfoState(id:number, isLine:boolean =false):TaskProgressRecord{
         if (isLine){
-            for (let index = 0; index < gameData.severData.taskMainStatetList.length; index++) {
-                const element = gameData.severData.taskMainStatetList[index];
+            for (let index = 0; index < GameRuntimeData.severData.taskMainStatetList.length; index++) {
+                const element = GameRuntimeData.severData.taskMainStatetList[index];
                 if (element.id == id){
                     return element;
                 }
             }
 
         }else{
-            for (let index = 0; index < gameData.severData.taskStatetList.length; index++) {
-                const element = gameData.severData.taskStatetList[index];
+            for (let index = 0; index < GameRuntimeData.severData.taskStatetList.length; index++) {
+                const element = GameRuntimeData.severData.taskStatetList[index];
                 if (element.id == id){
                     return element;
                 }
             }
         }
-        
+
         return null;
     }
 
-    //任务状态 1 not, 2 complete ,3 received
+
     public static getTaskState(id:number, isLine:boolean =false):number{
-        let data:taskStateData = LanauageManager.getTaskInfoState(id, isLine);
+        let data:TaskProgressRecord = LanguageContentManager.getTaskInfoState(id, isLine);
         if (!data){
             return 1;
         }
@@ -251,45 +251,45 @@ export class LanauageManager {
     }
 
     public static playSound(index:number = 0){
-        EventManger.eventTarget.emit(EventManger.EEventName.PLAY_SOUND_INDEX, index)
+        GameEventManager.eventTarget.emit(GameEventManager.EEventName.PLAY_SOUND_INDEX, index)
     }
- 
-    public static truncateString(str: string, maxLength: number = 15, type:number = 1): string {  
+
+    public static truncateString(str: string, maxLength: number = 15, type:number = 1): string {
         let showStr:string = "";
         if (!str){
             return "";
         }
-        if (str.length <= maxLength) {  
-            return str;  
-        }   
+        if (str.length <= maxLength) {
+            return str;
+        }
         if (type == 1){
-            showStr = str.substring(0, maxLength - 3) + '...';  
+            showStr = str.substring(0, maxLength - 3) + '...';
         }else if (type == 2){
             showStr = str.substring(0, 4) + '...' + str.slice(-4);
         }
         return showStr
-    } 
-
-    public static copyText(str:string){
-        LanauageManager.playSound();
-        if (navigator.clipboard) {  
-            navigator.clipboard.writeText(str)  
-                .then(() => {   
-                })  
-                .catch(err => {  
-                });  
-        }
-        try {  
-            var successful = document.execCommand(str);  
-            var msg = successful ? 'successful' : 'unsuccessful';  
-            EventManger.eventTarget.emit(EventManger.EEventName.SHOW_TIP, ("copy success")) 
-        } catch (err) {  
-            EventManger.eventTarget.emit(EventManger.EEventName.SHOW_TIP, ("copy fail"))   
-        } 
     }
 
-    /**获取宠物特性 */
-    public static getShowCharacterCon(petData:petItemData):string{
+    public static copyText(str:string){
+        LanguageContentManager.playSound();
+        if (navigator.clipboard) {
+            navigator.clipboard.writeText(str)
+                .then(() => {
+                })
+                .catch(err => {
+                });
+        }
+        try {
+            var successful = document.execCommand(str);
+            var msg = successful ? 'successful' : 'unsuccessful';
+            GameEventManager.eventTarget.emit(GameEventManager.EEventName.SHOW_TIP, ("copy success"))
+        } catch (err) {
+            GameEventManager.eventTarget.emit(GameEventManager.EEventName.SHOW_TIP, ("copy fail"))
+        }
+    }
+
+
+    public static getShowCharacterCon(petData:PetProfileRecord):string{
         let str:string = ""
         for (let index = 0; index < petData.characteristics.length; index++) {
             const element = petData.characteristics[index];
@@ -307,12 +307,12 @@ export class LanauageManager {
         return str;
     }
 
-    /**获取宠物 当前水量，总水量 */
+
     public static getPetValueSumCon(valType:ItemValType):[number, number]{
         let curNum:number = 0;
         let curSum:number = 0;
-        for (let index = 0; index < gameData.severData.petList.length; index++) {
-            const element:petItemData = gameData.severData.petList[index];
+        for (let index = 0; index < GameRuntimeData.severData.petList.length; index++) {
+            const element:PetProfileRecord = GameRuntimeData.severData.petList[index];
             if (element){
                if (valType == ItemValType.FoodBowl){
                     curNum += element.satiety;
@@ -328,26 +328,26 @@ export class LanauageManager {
         return [curNum, curSum];
     }
 
-    /**获取道具 具体属性 */
-    public static getItemValByType(item:itemConfig, valType:number){
 
-        let array = JSON.parse(item.val_type.toString());  
+    public static getItemValByType(item:ItemConfigRecord, valType:number){
+
+        let array = JSON.parse(item.val_type.toString());
         for (let index = 0; index < array.length; index++) {
             const element = array[index];
             if (element == valType){
-                let numArr = JSON.parse(item.val_num.toString());  
+                let numArr = JSON.parse(item.val_num.toString());
                 return numArr[index];
             }
-            
+
         }
         return 0;
     }
 
-    /**获取道具组 根据类型 */
+
     public static getItemCfgsByType(types:number){
-        let cfgs:itemConfig[] = [];
+        let cfgs:ItemConfigRecord[] = [];
         for (let index = 0; index < this.itemConfigs.length; index++) {
-            const element:itemConfig = LanauageManager.setRewardConfig(this.itemConfigs[index]);
+            const element:ItemConfigRecord = LanguageContentManager.setRewardConfig(this.itemConfigs[index]);
             if (element.types == types){
                 cfgs.push(element);
             }
@@ -355,12 +355,12 @@ export class LanauageManager {
         return cfgs;
     }
 
-    //-----------------------------------------------------------------------------
 
-    /**获取广告次数 */
+
+
     public static getAdCountById(propId:number):number{
-        for (let index = 0; index < userData.adProps.length; index++) {
-            let element = userData.adProps[index];
+        for (let index = 0; index < playerDataStore.adProps.length; index++) {
+            let element = playerDataStore.adProps[index];
             if (element && element.prop_id == propId){
                 return element.ad_count;
             }
@@ -369,37 +369,37 @@ export class LanauageManager {
     }
 }
 
-export enum enumPetType{
+export enum PetSpeciesType{
     cat = 0,
     dog = 1,
 }
 
-/**宠物表数据 */
-export class petConfig{
+
+export class PetConfigRecord{
 
     id:number = 0;
 
     types:number = 0;
 
-    species:string = "Cat";    //猫 Cat， 狗 Dog
+    species:string = "Cat";
 
-    name:string = "";  
+    name:string = "";
 
-    variety:string = "";        //英文名字
+    variety:string = "";
 
     stage:string;
 
-    iconUrl:string;     //图片
+    iconUrl:string;
 
-    // foodLimitNum:number = 100;
 
-    // waiterLimitNum:number = 100;
 
-    // cleanLimitNum:number = 100;
+
+
+
 }
 
-/**道具信息 */
-export class itemConfig{
+
+export class ItemConfigRecord{
 
     id:number;
 
@@ -426,8 +426,8 @@ export class itemConfig{
     fee:number;
 }
 
-/**礼包配置信息 */
-export class giftConfig{
+
+export class GiftConfigRecord{
 
     id:number;
 
@@ -439,7 +439,7 @@ export class giftConfig{
 
     nameEn:string;
 
-    // des:string;
+
 
     iconUrl:string;
 
@@ -451,12 +451,12 @@ export class giftConfig{
 
     fee:number;
 
-    /**等级限制 */
+
     levelUsage:number
 }
 
-/**签到信息 */
-export class checkConfig{
+
+export class CheckInConfigRecord{
 
     id:number;
 
@@ -470,7 +470,7 @@ export class checkConfig{
 }
 
 
-export class randItemData{
+export class RankRewardRecord{
 
     userId:number;
 
@@ -485,94 +485,94 @@ export class randItemData{
     rank:number = 0;
 }
 
-/**道具奖励类型 */
+
 export enum ItemEnumId{
-    petCoin = 1,        //宠物币
-    biscuit,            //小饼干
-    HPC,                //快乐币
-    AICoin,             //AI币
-    water,              //水
-    food,               //粮食
-    exp = 9,            //经验
-    aiCount = 10,        //ai冒险次数
-    petCount = 11,       //宠物栏位
+    petCoin = 1,
+    biscuit,
+    HPC,
+    AICoin,
+    water,
+    food,
+    exp = 9,
+    aiCount = 10,
+    petCount = 11,
 }
 
-/**道具类型 */
+
 export enum ItemEnumType{
-    petCoin = 1,        //宠物币
-    biscuit,            //小饼干
-    HPC,                //快乐币
-    AICoin,             //AI币
-    WaterBowl = 7,          //水盆
-    FoodBowl = 8,           //饭盆
+    petCoin = 1,
+    biscuit,
+    HPC,
+    AICoin,
+    WaterBowl = 7,
+    FoodBowl = 8,
 }
 
-/**数值类型 */
+
 export enum ItemValType{
-    WaterBowl = 5,          //水盆水量
-    FoodBowl = 6,           //饭盆饭量
+    WaterBowl = 5,
+    FoodBowl = 6,
 }
 
-/**任务配置类型 */
-export enum TaskConifgType{
-    /** 收养一只萌宠*/
-    taskType1 = 1,	
-    /** 置办水盆*/
+
+export enum TaskConfigType{
+
+    taskType1 = 1,
+
     taskType2 = 2,
-    /** 置办饭盆*/
-    taskType3 = 3,	
-    /**水盆补充一次水 */
-    taskType4 = 4,	
-    /**饭盆补充一次粮 */
-    taskType5 = 5,	
-    /** 拾取宠物币*/
-    taskType6 = 6,	
-    /**完成3个每日任务 */
-    taskType7 = 7,	
-    /** 和宠物互动X次*/
-    taskType8 = 8,	
-    /** 添置新的装扮*/
-    taskType9 = 9,	
-    /** 给任意一只宠物洗澡*/
-    taskType10 = 10,	
-    /** 大厅等级达到{p0}*/
-    taskType11 = 11,	
-    /** 每日签到*/
-    taskType12 = 12,	
-    /**完成一次冒险 */
-    taskType14 = 14,	
-    /** 和宠物进行一次聊天*/
-    taskType15 = 15,	
-    /**关注我们的频道 */
-    taskType16 = 16,	
-    /**加入我们的TG */
-    taskType17 = 17,	
-    /**关注我们的推特 */
-    taskType18 = 18,	
-    /**加入我们的DC */
-    taskType19 = 19,	
-    /** RT 我们的推文*/
-    taskType20 = 20,	
-    /**喜欢我们的推文 */
-    taskType21 = 21,	
-    /** 评论我们的推文*/
-    taskType22 = 22,	
-    /**关注合作方的频道 */
-    taskType23 = 23,	
-    /** 加入合作方的TG*/
-    taskType24 = 24,	
-    /**关注合作方的推特 */
-    taskType25 = 25,	
-    /**加入合作方的DC */
-    taskType26 = 26,	
-    /** RT 合作方的推文*/
-    taskType27 = 27,	
-    /**喜欢合作方的推文 */
-    taskType28 = 28,	
-    /**评论合作方的推文 */
-    taskType29 = 29,	
-    /**访问合作方的网站 */
-    taskType30 = 30,	
+
+    taskType3 = 3,
+
+    taskType4 = 4,
+
+    taskType5 = 5,
+
+    taskType6 = 6,
+
+    taskType7 = 7,
+
+    taskType8 = 8,
+
+    taskType9 = 9,
+
+    taskType10 = 10,
+
+    taskType11 = 11,
+
+    taskType12 = 12,
+
+    taskType14 = 14,
+
+    taskType15 = 15,
+
+    taskType16 = 16,
+
+    taskType17 = 17,
+
+    taskType18 = 18,
+
+    taskType19 = 19,
+
+    taskType20 = 20,
+
+    taskType21 = 21,
+
+    taskType22 = 22,
+
+    taskType23 = 23,
+
+    taskType24 = 24,
+
+    taskType25 = 25,
+
+    taskType26 = 26,
+
+    taskType27 = 27,
+
+    taskType28 = 28,
+
+    taskType29 = 29,
+
+    taskType30 = 30,
 }
 

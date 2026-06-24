@@ -3,11 +3,11 @@ import { Const } from '../../../config/Const';
 import GD from '../../../config/GD';
 import { PriceType, shopType } from '../../../config/global';
 import BaseView from '../../../easyFramework/mgr/BaseView';
-import { uiManager } from '../../../easyFramework/mgr/uiManager';
-import tables from '../../../easyFramework/other/tables';
+import { UiLayerService } from '../../../easyFramework/mgr/uiManager';
+import TableDataService from '../../../easyFramework/other/tables';
 import { CdComponent, CDType } from '../../../easyFramework/utils/CdComponent';
-import { mergeBoardModel } from '../../comm/mergeBoardModel';
-import { userData } from '../../comm/UserData';
+import { mergeBoardStateStore } from '../../comm/mergeBoardModel';
+import { playerDataStore } from '../../comm/UserData';
 import { handIndexs } from '../../data/handData';
 const { ccclass, property } = _decorator;
 
@@ -25,7 +25,7 @@ export class ShopSynthesisDialog extends BaseView {
     show(args: any) {
         super.show(args)
         this.bindButton(find("root/btnClose", this.node)!, this.close)
-        //   userData.setGetPropTujian(10005, Const.TujianState.geted)
+
         this.showList()
 
 
@@ -33,21 +33,21 @@ export class ShopSynthesisDialog extends BaseView {
 
     onEnable() {
         this.on(GD.event.updateShopItem, this.updateShopItem)
-        // setTimeout(() => {
-        //     let hadnIdnex = mergeBoardModel.getHandIndex();
-        //     let node = find("root/ScrollView2/view/content", this.node)!
-        //     if (node.children.length > 0) {
-        //         let node1 = find("Layout", node.children[0])!.children[0]
-        //         if (node1 && hadnIdnex == handIndexs.shopbuy) {
-        //             mergeBoardModel.closeHandLayer()
-        //             let obj: any = {};
-        //             obj.id = hadnIdnex;
-        //             obj.node = node1;
-        //             obj.delayTime = 0.2;
-        //             uiManager.instance.showDialog(Const.Dialogs.HandLayer, obj);
-        //         }
-        //     }
-        // }, 800);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     }
 
     onDisable() {
@@ -55,9 +55,9 @@ export class ShopSynthesisDialog extends BaseView {
     }
 
     showList() {
-        let propData = tables.ins().getTableValuesByType(Const.Tables.shopTable, "type", shopType.ToolBox)
-        let propData2 = tables.ins().getTableValuesByType(Const.Tables.shopTable, "type", shopType.ResourceBox)
-        let propData3 = tables.ins().getTableValuesByType(Const.Tables.shopTable, "type", shopType.LimitProp)
+        let propData = TableDataService.ins().getTableValuesByType(Const.Tables.shopTable, "type", shopType.ToolBox)
+        let propData2 = TableDataService.ins().getTableValuesByType(Const.Tables.shopTable, "type", shopType.ResourceBox)
+        let propData3 = TableDataService.ins().getTableValuesByType(Const.Tables.shopTable, "type", shopType.LimitProp)
 
         let dataArr: any = []
         if (propData2.length > 0) {
@@ -65,8 +65,8 @@ export class ShopSynthesisDialog extends BaseView {
             if (!dataArr[element.typeson - 1]) {
                 dataArr[element.typeson - 1] = []
             }
-            let timeData = tables.ins().getTableValueByKey(Const.Tables.privilege, "key", "10007")
-            dataArr[element.typeson - 1].push(userData.getLimitTimeData(timeData.dataKey, timeData.cdTime, element))
+            let timeData = TableDataService.ins().getTableValueByKey(Const.Tables.privilege, "key", "10007")
+            dataArr[element.typeson - 1].push(playerDataStore.getLimitTimeData(timeData.dataKey, timeData.cdTime, element))
         }
         if (propData3.length > 0) {
             let element = propData3[0]
@@ -94,14 +94,14 @@ export class ShopSynthesisDialog extends BaseView {
     }
 
     initLimitData(force: boolean = false) {
-        let propData3 = tables.ins().getTableValuesByType(Const.Tables.shopTable, "type", shopType.LimitProp)
+        let propData3 = TableDataService.ins().getTableValuesByType(Const.Tables.shopTable, "type", shopType.LimitProp)
 
         if (propData3.length > 0) {
             let element = propData3[0]
-            // if (!dataArr[element.typeson - 1]) {
-            //     dataArr[element.typeson - 1] = []
-            // }
-            let propArr = tables.ins().getTableValuesByType(Const.Tables.prop, "xian", "1")
+
+
+
+            let propArr = TableDataService.ins().getTableValuesByType(Const.Tables.prop, "xian", "1")
             let limitProp = []
             let isHave: any = {}
             for (let index = 0; index < 6;) {
@@ -122,18 +122,18 @@ export class ShopSynthesisDialog extends BaseView {
                     index++
                 }
             }
-            let timeData = tables.ins().getTableValueByKey(Const.Tables.privilege, "key", "10009")
-            //  dataArr[element.typeson - 1] = userData.getLimitTimeData(timeData.dataKey, timeData.cdTime, limitProp)
-            return userData.getLimitTimeData(timeData.dataKey, timeData.cdTime, limitProp, force)
+            let timeData = TableDataService.ins().getTableValueByKey(Const.Tables.privilege, "key", "10009")
+
+            return playerDataStore.getLimitTimeData(timeData.dataKey, timeData.cdTime, limitProp, force)
         }
     }
 
     initItemInfo(itemUI: Node, itemData: any) {
-        //  console.log("itemData = ", itemData)
+
         if (itemData.length > 0) {
             itemUI.getChildByName("titl2")!.getChildByName("title")!.getComponent(Label)!.string = itemData[0].typename + ""
             if (itemData[0].cdKey > 0) {
-                let timeData = tables.ins().getTableValueByKey(Const.Tables.privilege, "key", itemData[0].cdKey)
+                let timeData = TableDataService.ins().getTableValueByKey(Const.Tables.privilege, "key", itemData[0].cdKey)
                 find("titl2/cdtime", itemUI)!.active = true
                 find("titl2/cdtime", itemUI)!.getComponent(CdComponent)!.setCD(CDType.CDIneterVal, timeData.dataKey, timeData.cdTime)
             } else {
@@ -174,7 +174,7 @@ export class ShopSynthesisDialog extends BaseView {
 
     reflashItemData(event: any, data: any) {
 
-        uiManager.instance.showDialog(Const.Dialogs.RefleshDialog, { itemData: data })
+        UiLayerService.instance.showDialog(Const.Dialogs.RefleshDialog, { itemData: data })
 
     }
 

@@ -1,13 +1,13 @@
 Date.prototype.format = function(fmt) {
     let ret;
     const opt = {
-        "Y+": this.getFullYear().toString(),        // 年
-        "m+": (this.getMonth() + 1).toString(),     // 月
-        "d+": this.getDate().toString(),            // 日
-        "H+": this.getHours().toString(),           // 时
-        "M+": this.getMinutes().toString(),         // 分
-        "S+": this.getSeconds().toString()          // 秒
-        // 有其他格式化字符需求可以继续添加，必须转化成字符串
+        "Y+": this.getFullYear().toString(),
+        "m+": (this.getMonth() + 1).toString(),
+        "d+": this.getDate().toString(),
+        "H+": this.getHours().toString(),
+        "M+": this.getMinutes().toString(),
+        "S+": this.getSeconds().toString()
+
     };
     for (let k in opt) {
         ret = new RegExp("(" + k + ")").exec(fmt);

@@ -4,7 +4,7 @@ import GD from '../../config/GD';
 import { GoodsType } from '../../config/global';
 import BaseView from '../../easyFramework/mgr/BaseView';
 import { Notifications } from '../../easyFramework/mgr/notifications';
-import tables from '../../easyFramework/other/tables';
+import TableDataService from '../../easyFramework/other/tables';
 import { UtilPub } from '../../easyFramework/utils/UtilPub';
 import { main_top } from '../UI/main/main_top';
 import { MovePath } from './MovePath';
@@ -21,7 +21,7 @@ export class GetAnimalLayer extends BaseView {
 
     _propdata: any = null
     start() {
-        // console.log("this._layerData = ", this._layerData)
+
     }
     _dir = 0
 
@@ -31,8 +31,8 @@ export class GetAnimalLayer extends BaseView {
     }
 
     showAni() {
-        this._propdata = tables.ins().getTableValueByID(Const.Tables.prop, this._layerData.propId)
-        //  let endPos = v3(0, 500, 0)
+        this._propdata = TableDataService.ins().getTableValueByID(Const.Tables.prop, this._layerData.propId)
+
         let target = null
         if (this._propdata.type == GoodsType.Coin) {
             target = find("root/top/gold/jb", this.main_top)!
@@ -44,15 +44,15 @@ export class GetAnimalLayer extends BaseView {
             target = find("root/top/dressup/jb", this.main_top)!
         }
         let startPos = this._layerData.startPos
-        // let endPos = this._layerData.endPos
+
         let endPos = target != null ? target!.parent!.getComponent(UITransform)!.convertToWorldSpaceAR(target!.position) : this._layerData.endPos
-        // endPos = this.node.getComponent(UITransform)!.convertToNodeSpaceAR(pos)
+
         let delay = this._propdata.type < 100 ? this.node.children.length * 0.1 : 0
 
         let cb = (sprite: any) => {
             this.setImageCustomSize(this.icon.node, this._propdata.type > 100 ? 70 : 120)
             this.playCoinFlyAnim(this._layerData.num, startPos, endPos, 50, delay)
-            //   this.playCoinFlyAnim(this._layerData.num, this.node.getComponent(UITransform)!.convertToWorldSpaceAR(v3(0, 0, 0)), endPos, 50, 0)
+
         }
 
         this.setSpriteFrame(this.icon, Const.resPath.icon + this._propdata.icon, cb)
@@ -61,21 +61,21 @@ export class GetAnimalLayer extends BaseView {
     }
 
     checkClose() {
-        //  console.log("this.node.children.length= ", this.node.children.length)
+
         if (this.node.children.length <= 1) {
             this.close()
         }
     }
 
-    /**金币落袋具体实现方法 */
+
     protected playCoinFlyAnim(count: number, startPos: any, endPos: any, r: number = 50, delay = 0) {
-        //金币分散成圆
+
         let dir = this._dir == 0 ? (Math.random() > 0.5 ? 1 : -1) : this._dir
         this._dir = dir
         for (let index = 0; index < count; index++) {
             let coin = instantiate(this.icon.node);
             coin.active = false
-            //  coin.position =   UtilPub.convertToNodeSpace(coin, startPos);
+
             this.node.addChild(coin);
 
             let endCb = () => {
@@ -99,7 +99,7 @@ export class GetAnimalLayer extends BaseView {
         let coinNodeList = points.map(pos => {
             var coin = instantiate(this.icon.node);
             coin.active = true
-            // cc.find('Canvas').addChild(coin);
+
             this.node.addChild(coin);
             coin.position = v3(pos.x, pos.y, 0);
             coin.scale = v3(0, 0, 0)
@@ -113,14 +113,14 @@ export class GetAnimalLayer extends BaseView {
             }
         })
 
-        //执行动作
+
         let i = 0;
         coinNodeList.forEach((item, idx) => {
             i++;
             tween(item.node)
-                .to(0.15, { position: v3(item.midPos.x, item.midPos.y, 0) })//初始位置
+                .to(0.15, { position: v3(item.midPos.x, item.midPos.y, 0) })
                 .delay(idx * 0.05 + 0.5 + delay)
-                .to(0.35, { position: v3(item.endPos.x, item.endPos.y, 0) })//终点
+                .to(0.35, { position: v3(item.endPos.x, item.endPos.y, 0) })
                 .call(() => {
                     item.node.destroy();
                 })
@@ -140,11 +140,11 @@ export class GetAnimalLayer extends BaseView {
         return points
     }
 
-    /**
-* 已知两点求距离
-* @param {cc.Vec2} pos1
-* @param {cc.Vec2} pos2
-*/
+
+
+
+
+
     public calcDistance(pos1: any, pos2: any) {
         let xdiff = pos1.x - pos2.x;
         let ydiff = pos1.y - pos2.y;

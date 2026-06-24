@@ -69,11 +69,11 @@ export class AnimationCtrl extends Component {
             this.spineSkeleton.setAnimation(0, name, isLoop);
             if (completeCb) {
                 this.spineSkeleton.setCompleteListener(() => {
-                    // 每次循环结束都会回调
+
                     completeCb(name);
                 });
             } else {
-                // 置空回调
+
                 this.spineSkeleton.setCompleteListener(null!);
             }
             return;

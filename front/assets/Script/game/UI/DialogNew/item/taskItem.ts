@@ -2,21 +2,21 @@ import { Component,Button, find, instantiate, Node, ProgressBar, Sprite, tween, 
 import { Const } from '../../../../config/Const';
 import GD from '../../../../config/GD';
 import BaseView from '../../../../easyFramework/mgr/BaseView';
-import { uiManager } from '../../../../easyFramework/mgr/uiManager';
-import tables from '../../../../easyFramework/other/tables';
+import { UiLayerService } from '../../../../easyFramework/mgr/uiManager';
+import TableDataService from '../../../../easyFramework/other/tables';
 import { UtilPub } from '../../../../easyFramework/utils/UtilPub';
-import { mergeBoardModel } from '../../../comm/mergeBoardModel';
-import { audioManager } from '../../../../easyFramework/mgr/audioManager';
-import { ShopCfg, TaskCfg, TaskStateData } from '../../../../../typeScript/gameData';
-import { userData } from '../../../comm/UserData';
-import { HttpClient } from '../../../../../typeScript/net/HttpClient';
+import { mergeBoardStateStore } from '../../../comm/mergeBoardModel';
+import { AudioPlaybackService } from '../../../../easyFramework/mgr/audioManager';
+import { ShopConfigRecord, TaskConfigRecord, TaskProgressRecord } from '../../../../../typeScript/gameData';
+import { playerDataStore } from '../../../comm/UserData';
+import { GameHttpClient } from '../../../../../typeScript/net/HttpClient';
 const { ccclass, property } = _decorator;
 
 @ccclass('taskItem')
-export class taskItem extends BaseView {
+export class TaskItemCellController extends BaseView {
 
-    // @property({ type: Sprite })
-    // icon: Sprite = null!;
+
+
 
     @property({ type: Label })
     desLab: Label = null!;
@@ -36,7 +36,7 @@ export class taskItem extends BaseView {
     @property({ type: Label })
     btnLab: Label = null!;
 
-    taskData!:TaskStateData;
+    taskData!:TaskProgressRecord;
 
     onLoad() {
 
@@ -45,14 +45,14 @@ export class taskItem extends BaseView {
     refreshData(data:any){
         this.taskData = data
         if (!this.taskData){
-            // this.node.active = false;
+
             return;
         }
 
         this.proLab.string = this.taskData.done_count + "/" + this.taskData.task_count;
         this.progressBar.progress = this.taskData.done_count/this.taskData.task_count;
 
-        let cfg:TaskCfg = tables.ins().getTableValueByID(Const.Tables.new_task, this.taskData.task_id);
+        let cfg:TaskConfigRecord = TableDataService.ins().getTableValueByID(Const.Tables.new_task, this.taskData.task_id);
         if(this.taskData.task_type == 1){
             this.desLab.string = "当日签到";
         }
@@ -81,9 +81,9 @@ export class taskItem extends BaseView {
 
 
     onClickHandler(eve:Event, str:string){
-        audioManager.instance.playSound(Const.Audio.btn)
+        AudioPlaybackService.instance.playSound(Const.Audio.btn)
         if (str == "receive"){
-            HttpClient.getInstance().sendRecivieTaskReward(this.taskData?.task_type);
+            GameHttpClient.getInstance().sendRecivieTaskReward(this.taskData?.task_type);
         }
         else if (str == "ad"){
 

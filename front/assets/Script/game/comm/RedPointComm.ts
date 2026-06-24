@@ -1,10 +1,10 @@
 import { _decorator, Node, Vec3, v3, Sprite } from 'cc';
-import { comm } from '../../easyFramework/mgr/comm';
+import { BaseUiComponent } from '../../easyFramework/mgr/comm';
 import { redPointManager, RPointEvent } from './RedPointManager';
 const { ccclass, property } = _decorator;
 
 @ccclass('RedPointComm')
-export class RedPointComm extends comm {
+export class RedPointComm extends BaseUiComponent {
 
     private redFlag: RPointEvent = null!
     private redPointNode: Node = null!
@@ -36,7 +36,7 @@ export class RedPointComm extends comm {
         this.calTime += deltaTime
         if (this.calTime > 1.5) {
             this.calTime = 0
-            // console.log("-------------红点测试----", this.redFlag)
+
             if (this.redFlag && this.redPointNode) {
                 this.redPointNode.active = this._isFore || redPointManager.checkIsShowRedPoint(this.redFlag)
             }

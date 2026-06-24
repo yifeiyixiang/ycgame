@@ -1,12 +1,12 @@
 import { _decorator, Component, Node, find, Label } from 'cc';
 import { Const } from '../../../config/Const';
 import { GGridType } from '../../../config/global';
-import { comm } from '../../../easyFramework/mgr/comm';
+import { BaseUiComponent } from '../../../easyFramework/mgr/comm';
 import { UtilPub } from '../../../easyFramework/utils/UtilPub';
 const { ccclass, property } = _decorator;
 
 @ccclass('grid_wall')
-export class grid_wall extends comm {
+export class grid_wall extends BaseUiComponent {
 
     x:number=0
     y:number=0
@@ -24,14 +24,14 @@ export class grid_wall extends comm {
         this.node.children.forEach(item=>{
             item.active = (item.name==this.gridType)
         })
-        this.label.string = (this.x-Const.OriOffset.x)+","+(this.y-Const.OriOffset.y) 
+        this.label.string = (this.x-Const.OriOffset.x)+","+(this.y-Const.OriOffset.y)
         this.label.node.active = Const.isDebug
-        
+
     }
 
     start() {
         if(Const.isDebug){
-            // this.bindButton(this.node, this.clickGrid)
+
         }
     }
 

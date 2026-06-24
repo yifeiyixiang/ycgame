@@ -6,79 +6,79 @@ const { ccclass, property } = _decorator;
 
 @ccclass('Const')
 export class Const {
-    // private static _instance: Const;
-    // static get instance () {
-    //     if (this._instance) {
-    //         return this._instance;
-    //     }T
 
-    //     this._instance = new Const();
-    //     return this._instance;
-    // }
 
-    public static isTest = true;    //鏄惁娴嬭瘯鐗堟湰
 
-    // app鎵撳寘鐗堟湰鍙?
+
+
+
+
+
+
+
+    public static isTest = true;
+
+
     public static appBuildVersion = 0;
-    // 鐑洿鏂扮増鏈彿
+
     public static hotupdateVersion = "0.0.0";
 
-    public static gameName: string = "Fitness Party" // share title
+    public static gameName: string = "Fitness Party"
 
-    //todo 涓存椂璋冩暣
-    public static isOnline: boolean = false //鏄惁涓婄嚎锛屼笂绾垮悗鍏抽棴鏃ュ織
-    public static isOpenCheat: boolean = true //鏄惁寮€鍚綔寮婂櫒
 
-    public static isDebug: boolean = false //鏄惁璋冭瘯
-    public static version: string = "1.0.9" //鐗堟湰鍙?
-    public static SaveHead: string = "JSF_" //淇敼鏍囬澶达紝鍙互鍒锋柊鐜╁鏁版嵁
-    public static camera3D: Node = null! //3D闀滃ご
-    public static cameraParam: number = null! //3D闀滃ご绯绘暟
-    public static isLow: boolean = true //鏄惁鏄綆绔満
+    public static isOnline: boolean = false
+    public static isOpenCheat: boolean = true
 
-    public static CameraScene: Camera = null! //鍦烘櫙鐩告満
-    public static SceneNode: Node = null! //鍦烘櫙鑺傜偣
-    public static SceneBottom: Node = null! //鍦烘櫙搴曢儴
-    public static ShadowParent: Node = null! //闃村奖鐨勭埗鑺傜偣
-    public static ShadowWallParent: Node = null! //澧欏闃村奖鐨勭埗鑺傜偣
-    public static GridParent: Node = null! //鏍煎瓙鐨勭埗鑺傜偣
-    public static WallGridParent: Node = null! //澧欑殑鏍煎瓙鐨勭埗鑺傜偣
-    public static ItemParent: Node = null! //鍦烘櫙閬撳叿鐨勭埗鑺傜偣
-    public static CarpetParent: Node = null! //鍦烘櫙鍦版鐨勭埗鑺傜偣
-    public static PendantParent: Node = null! //鎸備欢鐨勭埗鑺傜偣
-    public static WallFixedNode: Node = null! //澧欎綋鐨勭埗鑺傜偣
-    public static StreetFixedNode: Node = null! //琛楅亾鐨勭埗鑺傜偣
-    public static FloorFixedNode: Node = null! //鍦版澘鐨勭埗鑺傜偣
-    public static SelSceneNode: Node = null! //閫夋嫨鐨勫満鏅妭鐐?
-    public static GuestStartPos: Node = null! //瀹汉璧风偣浣嶇疆锛屽湴閾佸彛澶?
-    public static LightParent: Node = null! //璺伅鐨勭埗鑺傜偣
-    public static IsShowOpsDialog: boolean = null! //鏄惁鏄剧ず鎿嶄綔鐣岄潰
-    public static isGodWealthShow: boolean = false // 鏄惁鏄剧ず璐㈢浜?
+    public static isDebug: boolean = false
+    public static version: string = "1.0.9"
+    public static SaveHead: string = "JSF_"
+    public static camera3D: Node = null!
+    public static cameraParam: number = null!
+    public static isLow: boolean = true
 
-    public static FloatStarParent: Node = null! //娴姩鏄熸槦鐖惰妭鐐?
-    public static SelBuildingParent: Node = null! //鎿嶄綔鎸夐挳鐨勭埗鑺傜偣
+    public static CameraScene: Camera = null!
+    public static SceneNode: Node = null!
+    public static SceneBottom: Node = null!
+    public static ShadowParent: Node = null!
+    public static ShadowWallParent: Node = null!
+    public static GridParent: Node = null!
+    public static WallGridParent: Node = null!
+    public static ItemParent: Node = null!
+    public static CarpetParent: Node = null!
+    public static PendantParent: Node = null!
+    public static WallFixedNode: Node = null!
+    public static StreetFixedNode: Node = null!
+    public static FloorFixedNode: Node = null!
+    public static SelSceneNode: Node = null!
+    public static GuestStartPos: Node = null!
+    public static LightParent: Node = null!
+    public static IsShowOpsDialog: boolean = null!
+    public static isGodWealthShow: boolean = false
 
-    public static AllItems: Node[] = [] //鎴块棿鍐呮墍鏈夊彲浠ouch鐨勭偣
-    public static Guests: Node[] = [] //鎵€鏈夊浜鸿妭鐐逛俊鎭?
+    public static FloatStarParent: Node = null!
+    public static SelBuildingParent: Node = null!
 
-    public static OriOffset: Vec2 = v2(0, 0) //鍘熷鍋忕Щ鍊?
-    public static MaxStreetX: number = 66 //琛楀尯鏈€澶鏂瑰悜,鍙充笅瑙掍负x鏂瑰悜
-    public static MaxStreetY: number = 23 //琛楀尯鏈€澶鏂瑰悜
-    public static MaxRoomX: number = 88 //88鏈€澶鏂瑰悜锛屽彲鏍规嵁鎴块棿瑙ｉ攣鎯呭喌鏀瑰彉
-    public static MaxRoomY: number = 88 //88鏈€澶鏂瑰悜锛屽彲鏍规嵁鎴块棿瑙ｉ攣鎯呭喌鏀瑰彉
-    public static MaxWallXRight: number = 24 //88*2鏈€澶鏂瑰悜锛屽彲鏍规嵁鎴块棿瑙ｉ攣鎯呭喌鏀瑰彉
-    public static MaxWallXLeft: number = -24 //88*2鏈€澶鏂瑰悜锛屽彲鏍规嵁鎴块棿瑙ｉ攣鎯呭喌鏀瑰彉
-    public static MaxWallY: number = 8 //8鏈€澶鏂瑰悜锛屽彲鏍规嵁鎴块棿瑙ｉ攣鎯呭喌鏀瑰彉
-    public static GuestSpeedTime: number = 0.66 //瀹汉閫熷害澶氬皯鍊?
-    public static UICanvas: Node = null! //UI鐢诲竷鑺傜偣
-    public static SceneOffsetX: number = 10000 //瀹汉閫熷害澶氬皯鍊?
+    public static AllItems: Node[] = []
+    public static Guests: Node[] = []
 
-    public static skillTitleColor: string[] = ['#74e530', '#30d1ff', '#ee51ff', '#ff8230'] //鐧斤紝缁匡紝钃濓紝绱紝姗欙紝绾?
-    public static skillTitleColorOutline: string[] = ['#026900', '#003270', '#54015e', '#8f3710']  //鐧斤紝缁匡紝钃濓紝绱紝姗欙紝绾?
+    public static OriOffset: Vec2 = v2(0, 0)
+    public static MaxStreetX: number = 66
+    public static MaxStreetY: number = 23
+    public static MaxRoomX: number = 88
+    public static MaxRoomY: number = 88
+    public static MaxWallXRight: number = 24
+    public static MaxWallXLeft: number = -24
+    public static MaxWallY: number = 8
+    public static GuestSpeedTime: number = 0.66
+    public static UICanvas: Node = null!
+    public static SceneOffsetX: number = 10000
 
-    public static weaponColorOutline: string[] = ['#6f6b54', '#0c5a1a', '#022867', '#4f0059', '#741602', '#6c100e'] //鐧借壊锛岀豢鑹诧紝钃濊壊锛岀传鑹诧紝姗欒壊锛岀孩鑹?
-    public static weaponColor: string[] = ['#e3dcb9', '#54d240', '#37bfff', '#d45afd', '#ff9437', '#fc3737'] //鐧借壊锛岀豢鑹诧紝钃濊壊锛岀传鑹诧紝姗欒壊锛岀孩鑹?
-    public static weaponHead: string[] = ['white', 'green', 'blue', 'purple', 'orange', 'red'] // weapon labels
+    public static skillTitleColor: string[] = ['#74e530', '#30d1ff', '#ee51ff', '#ff8230']
+    public static skillTitleColorOutline: string[] = ['#026900', '#003270', '#54015e', '#8f3710']
+
+    public static weaponColorOutline: string[] = ['#6f6b54', '#0c5a1a', '#022867', '#4f0059', '#741602', '#6c100e']
+    public static weaponColor: string[] = ['#e3dcb9', '#54d240', '#37bfff', '#d45afd', '#ff9437', '#fc3737']
+    public static weaponHead: string[] = ['white', 'green', 'blue', 'purple', 'orange', 'red']
     public static weaponColorName: string[] = ['white', 'green', 'blue', 'purple', 'orange', 'red']
 
     public static bundlesAhead1 = ["json", "font", "d1prefabUI", "d1pub", "d1audio", "d1scene","d1scene2", "prefabUI", "prop1", "prop3"]
@@ -87,87 +87,87 @@ export class Const {
 
     public static bundles = [...Const.bundlesAhead1, ...Const.bundlesAhead2, ...Const.bundlesGame]
 
-    public static GodWealthRefleshTime = 1  // 璐㈢瑙嗛鍒锋柊娆℃暟
-    public static LimitShopRefleshPrice = 20 //鍟嗗簵閽荤煶鍒锋柊浠锋牸
-    public static GodWealthReceiveOtherTime = 2  // 璐㈢棰嗗彇鍒汉娆℃暟
+    public static GodWealthRefleshTime = 1
+    public static LimitShopRefleshPrice = 20
+    public static GodWealthReceiveOtherTime = 2
 
 
-    /** 杞洏寮€1娆℃秷鑰楅噾甯?*/
-    public static TURNTABLE_GOLD_COST: number = 300; // 瀵瑰簲ID:1
 
-    /** 鏀瑰悕瀛楁秷鑰楅噾甯?*/
-    public static NAME_CHANGE_GOLD_COST: number = 300; // 瀵瑰簲ID:2
+    public static TURNTABLE_GOLD_COST: number = 300;
 
-    /** 鐪嬪箍鍛婄粰閲戝竵鏁伴噺 */
-    public static AD_GOLD_REWARD: number = 300; // 瀵瑰簲ID:3
 
-    /** 鐪嬪箍鍛婄粰閲戝竵姣忔棩娆℃暟涓婇檺 */
-    public static AD_GOLD_DAILY_LIMIT: number = 5; // 瀵瑰簲ID:4
+    public static NAME_CHANGE_GOLD_COST: number = 300;
 
-    /** 鐪嬪箍鍛婄粰浣撳姏鏁伴噺 */
-    public static AD_ENERGY_REWARD: number = 5; // 瀵瑰簲ID:5
 
-    /** 鐪嬪箍鍛婄粰浣撳姏姣忔棩娆℃暟涓婇檺 */
-    public static AD_ENERGY_DAILY_LIMIT: number = 5; // 瀵瑰簲ID:6
+    public static AD_GOLD_REWARD: number = 300;
 
-    /** 瀹跺洯瀹犵墿蹇冩儏搴﹁“鍑忛棿闅旓紙绉掞級 */
-    public static HOME_MOOD_DECAY_SECONDS: number = 3600; // 瀵瑰簲ID:7
 
-    /** 瀹跺洯瀹犵墿楗ラタ搴﹁“鍑忛棿闅旓紙绉掞級 */
-    public static HOME_HUNGER_DECAY_SECONDS: number = 3600; // 瀵瑰簲ID:8
+    public static AD_GOLD_DAILY_LIMIT: number = 5;
 
-    /** 瀹跺洯瀹犵墿娓呮磥搴﹁“鍑忛棿闅旓紙绉掞級 */
-    public static HOME_CLEAN_DECAY_SECONDS: number = 3600; // 瀵瑰簲ID:9
 
-    /** 瀹犵墿蹇冩儏搴﹀洖鏀堕槇鍊?*/
-    public static MOOD_RECALL_THRESHOLD: number = 20; // 瀵瑰簲ID:10
+    public static AD_ENERGY_REWARD: number = 5;
 
-    /** 瀹犵墿楗ラタ搴﹀洖鏀堕槇鍊?*/
-    public static HUNGER_RECALL_THRESHOLD: number = 20; // 瀵瑰簲ID:11
 
-    /** 瀹犵墿娓呮磥搴﹀洖鏀堕槇鍊?*/
-    public static CLEAN_RECALL_THRESHOLD: number = 20; // 瀵瑰簲ID:12
+    public static AD_ENERGY_DAILY_LIMIT: number = 5;
 
-    /** 鏈斁缃疇鐗╅ゥ楗垮害琛板噺闂撮殧锛堢锛?*/
-    public static UNPLACED_HUNGER_DECAY_SECONDS: number = 86400; // 瀵瑰簲ID:13
 
-    /** 鏈斁缃疇鐗╂竻娲佸害琛板噺闂撮殧锛堢锛?*/
-    public static UNPLACED_CLEAN_DECAY_SECONDS: number = 86400; // 瀵瑰簲ID:14
+    public static HOME_MOOD_DECAY_SECONDS: number = 3600;
 
-    /** 瀹犵墿楗ラタ搴﹀綊闆跺悗鑷姩鍒犻櫎澶╂暟 */
-    public static HUNGER_AUTO_DELETE_DAYS: number = 7; // 瀵瑰簲ID:15
 
-    /** 瀹犵墿娓呮磥搴﹀綊闆跺悗鑷姩鍒犻櫎澶╂暟 */
-    public static CLEAN_AUTO_DELETE_DAYS: number = 7; // 瀵瑰簲ID:16
+    public static HOME_HUNGER_DECAY_SECONDS: number = 3600;
 
-    /** 瀹犵墿楗ラタ搴︾姝㈡斁缃槇鍊?*/
-    public static HUNGER_PLACE_BAN_THRESHOLD: number = 20; // 瀵瑰簲ID:17
 
-    /** 瀹犵墿娓呮磥搴︾姝㈡斁缃槇鍊?*/
-    public static CLEAN_PLACE_BAN_THRESHOLD: number = 20; // 瀵瑰簲ID:18
+    public static HOME_CLEAN_DECAY_SECONDS: number = 3600;
 
-    /** 瀹犵墿鏀瑰悕娑堣€楅噾甯?*/
-    public static PET_NAME_CHANGE_GOLD_COST: number = 300; // 瀵瑰簲ID:19
 
-    /** 瀹犵墿楗ラタ搴﹂ゥ楗跨姸鎬侀槇鍊?*/
-    public static PET_HUNGER_STARVATION_THRESHOLD: number = 30; // 瀵瑰簲ID:20
+    public static MOOD_RECALL_THRESHOLD: number = 20;
 
-    /** 楗ラタ鐘舵€佹彁绀鸿锛?=鏄剧ず锛?*/
-    public static HUNGER_WARNING_MESSAGE: number = 1; // 瀵瑰簲ID:21
 
-    /** 瀹犵墿娓呮磥搴﹁剰鑴忕姸鎬侀槇鍊?*/
-    public static PET_CLEAN_DIRTY_THRESHOLD: number = 30; // 瀵瑰簲ID:22
+    public static HUNGER_RECALL_THRESHOLD: number = 20;
 
-    /** 鑴忚剰鐘舵€佹彁绀鸿锛?=鏄剧ず锛?*/
-    public static CLEAN_WARNING_MESSAGE: number = 2; // 瀵瑰簲ID:23
 
-    /** 濂藉弸鏁伴噺涓婇檺 */
-    public static FRIEND_MAX_COUNT: number = 50; // 瀵瑰簲ID:24
+    public static CLEAN_RECALL_THRESHOLD: number = 20;
 
-    /** 瀹犵墿浜掑姩澧炲姞蹇冩儏鍊?*/
-    public static PET_INTERACTION_MOOD_BOOST: number = 30; // 瀵瑰簲ID:25
 
-    /**寮€蹇?楗ラタ 娓呮磥 鎬绘暟 */
+    public static UNPLACED_HUNGER_DECAY_SECONDS: number = 86400;
+
+
+    public static UNPLACED_CLEAN_DECAY_SECONDS: number = 86400;
+
+
+    public static HUNGER_AUTO_DELETE_DAYS: number = 7;
+
+
+    public static CLEAN_AUTO_DELETE_DAYS: number = 7;
+
+
+    public static HUNGER_PLACE_BAN_THRESHOLD: number = 20;
+
+
+    public static CLEAN_PLACE_BAN_THRESHOLD: number = 20;
+
+
+    public static PET_NAME_CHANGE_GOLD_COST: number = 300;
+
+
+    public static PET_HUNGER_STARVATION_THRESHOLD: number = 30;
+
+
+    public static HUNGER_WARNING_MESSAGE: number = 1;
+
+
+    public static PET_CLEAN_DIRTY_THRESHOLD: number = 30;
+
+
+    public static CLEAN_WARNING_MESSAGE: number = 2;
+
+
+    public static FRIEND_MAX_COUNT: number = 50;
+
+
+    public static PET_INTERACTION_MOOD_BOOST: number = 30;
+
+
     public static CLEAN_FULL:number = 100;
 
 
@@ -180,31 +180,31 @@ export class Const {
     }
 
     public static ManagerTypes = {
-        // 瑙掕壊杈惧埌%d绾?
+
         roleLv: 1,
-        // 鍙戝皠浠绘剰鍙戠敓鍣ㄦ鏁?
+
         roomClickAdd: 2,
-        // 瀹屾垚璁㈠崟鏁伴噺
+
         taskDone: 3,
-        // 瑙ｉ攣绮夎壊鎵嬫彁鍖呮鏁?
+
         unlockPinkBag: 4,
-        // 鍦ㄦ鐩樺悎鎴愭鏁?
+
         mergeActionCount: 5,
-        // 涓哄仴韬埧寤洪€犳鏁?
+
         buildCount: 6,
-        // 娑堣€楅捇鐭宠喘涔拌兘閲忔鏁?
+
         diamondBuyPower: 7,
-        // 鍦ㄦ鐩樹笂鍑哄敭浠绘剰鐗╁搧娆℃暟
+
         roomSell: 8,
-        // 鍔犻€熷彂灏勫櫒娆℃暟
+
         roomSpeedUp: 9,
-        // 绱娑堣€楄兘閲忔暟閲?
+
         powerCost: 10,
-        // 鍚堟垚鏈€楂樼瓑绾ч噾甯佷釜鏁?
+
         coinPeakMergeCount: 11,
-        // 鍚堟垚鏈€楂樼瓑绾ц兘閲忕悆涓暟
+
         energyPeakMergeCount: 12,
-        // 绱娑堣€楅噾甯佹暟閲?
+
         coinCost: 13,
     };
 
@@ -214,65 +214,65 @@ export class Const {
     }
 
     public static DataKeys = {
-        isInitData: "isInitData", //鏄惁鍒濆鍖栬繃鏁版嵁
-        roleLv: "roleLv", // 鐜╁绛夌骇
-        roleName: "roleName", // 鐜╁鍚嶅瓧
-        roleID: "roleID", // 鐜╁ID
-        roleAvatar: "roleAvatar", // 鐜╁澶村儚
+        isInitData: "isInitData",
+        roleLv: "roleLv",
+        roleName: "roleName",
+        roleID: "roleID",
+        roleAvatar: "roleAvatar",
 
 
-        roleExp: "roleExp", // 鐜╁缁忛獙
-        coin: "coin", // 閲戝竵
-        diamonds: "diamonds", // 閽荤煶
-        power: "power", //浣撳姏
+        roleExp: "roleExp",
+        coin: "coin",
+        diamonds: "diamonds",
+        power: "power",
 
-        tujianProp: "tujianProp",  // 鍥鹃壌閬撳叿
-        tujianScene: "tujianScene",  // 鍥鹃壌閬撳叿
+        tujianProp: "tujianProp",
+        tujianScene: "tujianScene",
 
-        growUp: "growUp",  // 鍥鹃壌閬撳叿
-        warehouseProp: "warehouseProp", // 浠撳簱閬撳叿
+        growUp: "growUp",
+        warehouseProp: "warehouseProp",
 
 
-        sceneHead: "sceneHead_", //鍦烘櫙瀛樺偍鐨勫ご閮ㄤ俊鎭?
-        sceneItem: "sceneHead_item_", //鍦烘櫙閬撳叿绫诲瀷瀛樺偍
-        sceneCarpet: "sceneHead_carpet_", //鍦烘櫙鍦板灚鏁版嵁
-        scenePendant: "sceneHead_pendant_", //鍦烘櫙鎸備欢鏁版嵁
-        sceneWall: "sceneHead_wall_", //鍦烘櫙澧欎綋
-        sceneFloor: "sceneHead_floor_", //鍦烘櫙鍦版澘
+        sceneHead: "sceneHead_",
+        sceneItem: "sceneHead_item_",
+        sceneCarpet: "sceneHead_carpet_",
+        scenePendant: "sceneHead_pendant_",
+        sceneWall: "sceneHead_wall_",
+        sceneFloor: "sceneHead_floor_",
 
-        // 璺ㄥぉ淇濆瓨鏃堕棿鐐?
+
         saveDayTime: "saveDayTime",
 
-        // 鎴樹护绉垎
+
         seasonScore: "seasonScore",
-        // 鎴樹护id
+
         seasonId: "seasonId",
-        // 鎴樹护瀵瑰簲id濂栧姳鎯呭喌
+
         seasonPassInfo: String.fromCharCode(115, 101, 97, 115, 111, 110, 65, 119, 97, 114, 100, 73, 110, 102, 111, 95),
-        // 鎴樹护瑙ｉ攣
+
         seasonOpen: "seasonOpen",
 
-        // 涓荤嚎妫嬬洏鏁版嵁
+
         boardRoomData: String.fromCharCode(99, 111, 109, 112, 111, 115, 101, 82, 111, 111, 109, 68, 97, 116, 97),
-        // 涓荤嚎浠诲姟鍒楄〃
+
         boardOrderQueue: String.fromCharCode(99, 111, 109, 112, 111, 115, 101, 84, 97, 115, 107, 65, 114, 114),
-        // 搴楅暱鍊肩彮鏃?
+
         boardMilestoneArr: String.fromCharCode(99, 111, 109, 112, 111, 115, 101, 77, 97, 110, 97, 103, 101, 114, 65, 114, 114),
-        // 鏄惁鏄凡缁忓叏閮ㄥ畬鎴愬簵闀垮€肩彮鏃?
+
         boardMilestoneAllClaimed: String.fromCharCode(99, 111, 109, 112, 111, 115, 101, 77, 97, 110, 97, 103, 101, 114, 65, 108, 108, 71, 101, 116),
-        // 鍗＄墖鍒楄〃
+
         boardCardArr: String.fromCharCode(99, 111, 109, 112, 111, 115, 101, 67, 97, 114, 100, 65, 114, 114),
-        // 鍚堟垚UI閬撳叿鑾峰緱娆℃暟鏍囪
+
         boardItemCount: String.fromCharCode(99, 111, 109, 112, 111, 115, 101, 80, 114, 111, 112, 67, 111, 117, 110, 116, 95),
-        // 鏃犻檺鑳介噺鏃堕棿
+
         boardEnergyReadyAt: String.fromCharCode(99, 111, 109, 112, 111, 115, 101, 80, 111, 119, 101, 114, 84, 105, 109, 101),
 
-        // 鏂版墜鏁欑▼-寮哄紩瀵肩储寮?
+
         handIndex: "handIndex",
 
-        sceneSkinIsGotted: "sceneSkinIsGotted_", //+鐨偆琛↖D锛屽満鏅噷鐨勭毊鑲ゆ槸鍚﹁幏寰楋紝0鏈幏寰楋紝1鑾峰緱锛?
-        sceneRoomIsUnlock: "sceneRoomIsUnlock_", //+鎴块棿ID锛屽満鏅噷鐨勬埧闂存槸鍚﹁В閿侊紝0鏈В閿侊紝1瑙ｉ攣锛?
-        sceneRoomIsUnReceive: "sceneRoomIsUnReceive_", //+鎴块棿ID锛屽満鏅噷鐨勬埧闂存槸鍚﹀凡棰嗗彇锛? 銆?锛?
+        sceneSkinIsGotted: "sceneSkinIsGotted_",
+        sceneRoomIsUnlock: "sceneRoomIsUnlock_",
+        sceneRoomIsUnReceive: "sceneRoomIsUnReceive_",
 
         dailyTime: "dailyTime",
         buyPowerTime: "buyPowerTime1",
@@ -319,47 +319,47 @@ export class Const {
     }
 
     public static Tables = {
-        scene_item: "scene_item", //鍦烘櫙閬撳叿琛?
-        scene_skin: "scene_skin", //鍦烘櫙閬撳叿鐨偆琛?
-        scene_room: "scene_room", //鍦烘櫙鎴块棿琛?
-        scene_guest: "scene_guest", //鍦烘櫙瀹汉琛?
-        scene_guest_ani: "scene_guest_ani", //鍦烘櫙瀹汉鍔ㄧ敾琛?
-        const: "const", //鍏ㄥ眬甯搁噺琛?
-        ui: "ui_table", //ui鏂囧瓧琛?
-        draw: "draw_table", //ui鏂囧瓧琛?
-        resTable: "res_table", //ui鏂囧瓧琛?
+        scene_item: "scene_item",
+        scene_skin: "scene_skin",
+        scene_room: "scene_room",
+        scene_guest: "scene_guest",
+        scene_guest_ani: "scene_guest_ani",
+        const: "const",
+        ui: "ui_table",
+        draw: "draw_table",
+        resTable: "res_table",
 
-        // 閬撳叿琛?
+
         prop: "prop_prop",
-        // 鍚堟垚棰濆濂栧姳
+
         mergeReward: "prop_mergeReward",
-        // 鑳屽寘鎵╁
+
         bagGrid: "prop_bagGrid",
-        // 璁㈠崟鐢熸垚琛?
+
         taskType: "task_orderType",
 
         taskMainType: "taskMain_orderType",
         taskUnlock: "taskMain_taskUnlock",
 
-        // 搴楅暱鍊兼棩琛?
+
         manager: "task_manager",
-        // 妫嬬洏鍒濆鍖?
+
         boardSeed: "prop_new",
-        // 鏂版墜寮曞浠诲姟
+
         handTask: "task_newTask",
-        // 淇濆簳浠诲姟
+
         leastTask: "task_SafeTask",
-        // 鎴樹护
+
         seasonPass: "task_seasonPass",
-        // 绂忚
+
         fuBag: "prop_FuBag",
 
-        // 鏈哄櫒浜?妫嬬洏鍒濆鍖?
+
         botBoardSeed: "robot_boardSeed",
 
-        herolevel: "herolevel_table", //瑙掕壊绛夌骇琛?
+        herolevel: "herolevel_table",
 
-        setting: "setting_table", //debug琛?
+        setting: "setting_table",
 
         shopTable: "shop_shop",
         recharge: "recharge_recharge",
@@ -382,11 +382,11 @@ export class Const {
         saleshop_RechargeReward: "saleshop_RechargeReward",
         lockActivity_item: "lockActivity_item",
 
-        new_prop:"new_prop",    //閬撳叿琛?
-        new_sign:"new_sign",    //绛惧埌琛?
-        new_turn:"new_turn",    //杞洏琛?
-        new_task:"new_task",    //浠诲姟琛?
-        new_activityPrpgress:"new_activityPrpgress",    //娲诲姩杩涘害琛?
+        new_prop:"new_prop",
+        new_sign:"new_sign",
+        new_turn:"new_turn",
+        new_task:"new_task",
+        new_activityPrpgress:"new_activityPrpgress",
     }
 
     public static Shaders = {
@@ -394,16 +394,16 @@ export class Const {
     }
 
     public static Icons = {
-        default: "img|icons/default", //榛樿鍥炬爣
+        default: "img|icons/default",
     }
 
-    //鎵€鏈夊璇濇鍔犺浇鐨勫湴鍧€
+
     public static Dialogs = {
-        //閽辨湁鍏崇殑
-        gold_no_enough: 'd1prefabUI|UI/money/gold_no_enough',
-        diamond_no_enough: 'd1prefabUI|UI/money/diamond_no_enough',
-        tick_no_enough: 'd1prefabUI|UI/money/tick_no_enough',
-        firstRecharge: "d1prefabUI|UI/money/firstRecharge",
+
+        GoldNotEnoughDialogController: 'd1prefabUI|UI/money/gold_no_enough',
+        DiamondNotEnoughDialogController: 'd1prefabUI|UI/money/diamond_no_enough',
+        TicketNotEnoughDialogController: 'd1prefabUI|UI/money/tick_no_enough',
+        FirstRechargeDialogController: "d1prefabUI|UI/money/firstRecharge",
         MonthCard: "d1prefabUI|UI/money/MonthCard",
 
         SaleDailyDialog: "d2prefabUI|shopLayer/SaleDailyDialog",
@@ -413,59 +413,59 @@ export class Const {
         TotalRechargeDialog: "d2prefabUI|shopLayer/TotalRechargeDialog",
 
 
-        //瑁呮壆鍒囨崲鐣岄潰
-        scene_ui_skin: 'd1prefabUI|UI/scene/scene_ui_skin/scene_ui_skin',
-        scene_ui_skin_detail: 'd1prefabUI|UI/scene/scene_ui_skin/scene_ui_skin_detail',
-        scene_ui_skin_detailList: 'd1prefabUI|UI/scene/scene_ui_skin/scene_ui_skin_detailList',
 
-        build_list: 'd1prefabUI|UI/main/build_list', //寤洪€犳竻鍗曞垪琛?
-        build_prompt: 'd1prefabUI|UI/main/build_prompt', //鎻愮ず寤洪€犵殑鐣岄潰
-        build_info: 'd1prefabUI|UI/main/build_info', //鎻愮ず寤洪€犵殑鐣岄潰
+        SceneSkinPanelController: 'd1prefabUI|UI/scene/scene_ui_skin/scene_ui_skin',
+        SceneSkinDetailController: 'd1prefabUI|UI/scene/scene_ui_skin/scene_ui_skin_detail',
+        SceneSkinDetailListController: 'd1prefabUI|UI/scene/scene_ui_skin/scene_ui_skin_detailList',
+
+        BuildListPanelController: 'd1prefabUI|UI/main/build_list',
+        BuildPromptDialogController: 'd1prefabUI|UI/main/build_prompt',
+        BuildInfoPanelController: 'd1prefabUI|UI/main/build_info',
 
 
-        pop_reward_item: "d1prefabUI|UI/main/pop_reward_item",
+        RewardPopupItemController: "d1prefabUI|UI/main/pop_reward_item",
 
         AvatarStyleLayer: 'd2prefabUI|avatarStyle/AvatarStyleLayer',
         RoleInfoDialog: 'd2prefabUI|avatarStyle/RoleInfoDialog',
 
-        // 鎴樹护濂栧姳鐣岄潰
+
         SeasonRoadmapLayer: 'd2prefabUI|seasonPass/SeasonRoadmapLayer',
         SeasonPassLayer: 'd2prefabUI|seasonPass/SeasonPassLayer',
-        // 鎴樺姏璇存槑椤甸潰
+
         SeasonGuideLayer: 'd2prefabUI|seasonPass/SeasonGuideLayer',
-        // 鎴樺姏璐拱鐣岄潰
+
         SeasonAccessLayer: 'd2prefabUI|seasonPass/SeasonAccessLayer',
 
-        // 璐㈢鐣岄潰
+
         GodWealthLayer: 'd1prefabUI|godWealth/GodWealthLayer',
-        // 绂忚鐣岄潰
+
         FuBagLayer: 'd1prefabUI|godWealth/FuBagLayer',
         FuBagReceiveLayer: 'd1prefabUI|godWealth/FuBagReceiveLayer',
         GodWealthOther: 'd1prefabUI|godWealth/GodWealthOther',
 
 
-        // 鍚堟垚鐣岄潰
+
         MergeBoardLayer: 'prefabUI|UI/MergeBoardLayer',
         more_game: 'prefabUI|UI/more_game',
-        main: 'd1prefabUI|UI/main/main', // 涓婚〉
-        fly_tip: 'd1prefabUI|UI/main/fly_tip',
-        prompt_sure: 'd1prefabUI|UI/main/prompt_sure', //鎻愮ず纭畾
+        main: 'd1prefabUI|UI/main/main',
+        FloatingTipPanelController: 'd1prefabUI|UI/main/fly_tip',
+        ConfirmPromptDialogController: 'd1prefabUI|UI/main/prompt_sure',
         LevelDialog: 'd1prefabUI|UI/LevelDialog/LevelDialog',
         GMInputLayer: 'prefabUI|UI/GMInputLayer',
 
-        // 鑳屽寘鐣岄潰
+
         BagLayer: 'prefabUI|UI/BagLayer',
-        // 搴楅暱鍊肩彮鏃ョ晫闈?
+
         ManagerLayer: 'prefabUI|UI/ManagerLayer',
-        // 鏂版墜鏁欑▼鐣岄潰
+
         HandLayer: 'prefabUI|UI/HandLayer',
-        // 鑾峰緱鏂扮墿鍝?
+
         NewItemLayer: 'prefabUI|UI/NewItemLayer',
-        // 閬撳叿璇︽儏椤?
+
         ItemCodexLayer: 'prefabUI|UI/ItemCodexLayer',
-        // 璁㈠崟鍒楄〃
+
         TaskListLayer: 'prefabUI|UI/TaskListLayer',
-        // 鏂拌偉楣?
+
         NewGuest: 'd1prefabUI|UI/main/NewGuest',
 
         Tujian: "d1prefabUI|UI/Tujian/TujianDialog",
@@ -479,7 +479,7 @@ export class Const {
         DebugDialog: "d2prefabUI|shopLayer/DebugDialog",
         ShopDialog: "d2prefabUI|shopLayer/ShopDialog",
 
-        /**璁剧疆鐣岄潰 */
+
         SetDialog: "d2prefabUI|setting/SetDialog",
         CodeDialog: "d2prefabUI|setting/DuihuanDialog",
 
@@ -487,7 +487,7 @@ export class Const {
         ActivityDialog: "d2prefabUI|activity/ActivityDialog",
         FreeGiftDialog: "d2prefabUI|activity/FreeGiftDialog",
 
-        /**绛惧埌鐣岄潰 */
+
         SignDialog: "d1prefabUI|UI/sign/SignDialog",
 
         GrowUpDialog: "d2prefabUI|activity/GrowUpDialog",
@@ -498,64 +498,64 @@ export class Const {
         FeijiuDialog: "d2prefabUI|setting/FeijiuDialog",
 
         FeijiuInfoDialog: "d2prefabUI|setting/FeijiuInfoDialog",
-        /**淇敼鏄电О */
+
         ModifyDailog: "d2prefabUI|setting/ModifyDailog",
 
         RefleshDialog: "d2prefabUI|shopLayer/RefleshDialog",
 
-        //闃垮疂鐨勮揣杞?
+
         TreasureDialog: "d2prefabUI|Treasure/TreasureDialog",
         TreasureFinishDialog: "d2prefabUI|Treasure/TreasureFinishDialog",
 
-        //闅愮鏀跨瓥
+
         PrivacyDialog: "d2prefabUI|setting/PrivacyDialog",
 
-        /**杞洏鐣岄潰 */
+
         TurnTableView:'d1prefabUI|UI/DialogNew/TurntableView',
 
-        /**浠诲姟鐣岄潰 */
+
         TaskView:'d1prefabUI|UI/DialogNew/TaskView',
 
-        /**涓汉淇℃伅鐣岄潰 */
+
         UserinfoView:'d1prefabUI|UI/DialogNew/UserinfoView',
 
-        /**澶村儚鍒囨崲 */
+
         AvatarListView:'d1prefabUI|UI/DialogNew/AvatarListView',
 
-        /**鑾峰緱浣撳姏锛岄噾甯?/
-        GetgoldView:'d1prefabUI|UI/DialogNew/GetgoldView',
 
-        /**瀹犵墿 鍒楄〃*/
+
+
+
         PetListView:'d1prefabUI|UI/DialogNew/PetListView',
 
-        /**瀹犵墿 璇︽儏鐣岄潰*/
+
         PetDetialsView:'d1prefabUI|UI/DialogNew/PetDetialsView',
 
-        /**瀹犵墿 淇敼鏄电О */
+
         PetNameView:'d1prefabUI|UI/DialogNew/PetNameView',
 
-        /**瀹犵墿鏀剧敓 閫氱敤鎻愮ず妗?*/
+
         PetComonTipView:'d1prefabUI|UI/DialogNew/PetComonTipView',
 
-        /**濂藉弸 鍒楄〃*/
+
         FriendListView:'d1prefabUI|UI/DialogNew/FriendListView',
 
-        /**濂藉弸 寮规*/
+
         FriendDialogView:'d1prefabUI|UI/DialogNew/FriendDialogView',
 
-        /**鏂拌儗鍖呯晫闈?*/
+
         BagNewLayer:'d1prefabUI|UI/DialogNew/BagNewLayer',
 
-        /**鏄惁鍑哄敭 浜岀骇闈㈡澘 */
+
         ItmeComonTipView:'d1prefabUI|UI/DialogNew/ItmeComonTipView',
 
-        /**鏂?鍟嗗簵鐣岄潰 */
+
         ShopNewView:'d1prefabUI|UI/DialogNew/ShopNewView',
 
-        /**楗板搧鐣岄潰 */
+
         ZhuanshiView:'d1prefabUI|UI/DialogNew/ZhuangshiLayer',
 
-        /**鐩茬洅娲诲姩鐣岄潰 */
+
         ActivityView:'d1prefabUI|UI/DialogNew/ActivityView',
     }
 
@@ -569,12 +569,12 @@ export class Const {
 
         heroIcon: "textures|heroIcon/",
 
-        defaultGuestSpine: "d2scene|guests/", //榛樿鍦烘櫙瀹汉
-        defaultSceneIcons: "d2scene|icons/", //榛樿鍦烘櫙鍥炬爣
-        defaultScenePrefabs: 'd2scene|items/', //榛樿鍦烘櫙棰勫埗浣?
+        defaultGuestSpine: "d2scene|guests/",
+        defaultSceneIcons: "d2scene|icons/",
+        defaultScenePrefabs: 'd2scene|items/',
 
         Tujian: "d1prefabUI|UI/Tujian/res/",
-        mergeSpine: "prefabUI|mergeBoard/spine/",// 鍚堟垚妯″潡spine鍔ㄧ敾鐩綍
+        mergeSpine: "prefabUI|mergeBoard/spine/",
         mergeIcon: "prefabUI|mergeBoard/icon/",
         common: "d1prefabUI|common/",
 
@@ -587,22 +587,22 @@ export class Const {
 
     }
 
-    //棰勫埗浣撳姞杞?
+
     public static Prefabs = {
 
-        //UI-涓荤晫闈?
+
         main_top: 'd1prefabUI|UI/main/main_top',
-        fly_tip_item: 'd1prefabUI|UI/main/fly_tip_item',
-        build_list_item: 'd1prefabUI|UI/main/build_list_item', //寤虹瓚娓呭崟鐨勯€夐」
-        pop_reward_item: 'd1prefabUI|UI/main/pop_reward_item', //璺冲嚭鐨勮祫婧愬皬妗?
-        float_star: 'd1prefabUI|UI/main/float_star', //瀹跺叿涓婇潰椋樼潃鐨勬槦鏄?
-        flash_star: 'd1prefabUI|UI/main/flash_star', //闂儊鐨勬槦鏄?
+        FloatingTipItemController: 'd1prefabUI|UI/main/fly_tip_item',
+        BuildListItemController: 'd1prefabUI|UI/main/build_list_item',
+        RewardPopupItemController: 'd1prefabUI|UI/main/pop_reward_item',
+        FloatingStarController: 'd1prefabUI|UI/main/float_star',
+        FlashStarController: 'd1prefabUI|UI/main/flash_star',
         scene_day: 'd1prefabUI|UI/scene/scene_day/scene_day',
         grid: 'd1prefabUI|UI/scene/grid/grid',
         grid_wall: 'd1prefabUI|UI/scene/grid_wall/grid_wall',
-        scene_ui_ops: 'd1prefabUI|UI/scene/scene_ui_ops/scene_ui_ops',
-        scene_ui_arrow: 'd1prefabUI|UI/scene/scene_ui_ops/scene_ui_arrow',
-        store_skin_item: 'd1prefabUI|UI/scene/scene_ui_skin/store_skin_item', //瑁呮壆閫夐」
+        SceneOperationPanelController: 'd1prefabUI|UI/scene/scene_ui_ops/scene_ui_ops',
+        SceneArrowIndicatorController: 'd1prefabUI|UI/scene/scene_ui_ops/scene_ui_arrow',
+        StoreSkinItemController: 'd1prefabUI|UI/scene/scene_ui_skin/store_skin_item',
         guest: 'd1scene2|guests/guest',
 
         Main_top: "d1prefabUI|UI/main/main_top",
@@ -642,7 +642,7 @@ export class Const {
         mergeTap: 'd1audio|mergeTap',
 
         ack: 'd2audio|ack',
-        // bubble: 'd2audio|bubble',
+
         aim: 'd2audio|aim',
         card: 'd2audio|card',
         fireball: 'd2audio|fireball',
@@ -688,7 +688,7 @@ export class Const {
         CardAddPower: "CardAddPower",
     }
 
-    //澹伴煶鐨勯暱搴︾粺璁★紝鐢ㄤ簬骞跺彂鎺у埗锛屽崟浣嶆绉?
+
     public static AudioCnt: number = 6
     public static AudioTime: { [key: string]: number } = {
         "alarm": 4640,

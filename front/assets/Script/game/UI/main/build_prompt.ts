@@ -2,38 +2,38 @@ import { find, Label, ProgressBar, sp, Sprite, tween, v3, _decorator } from 'cc'
 import { Const } from '../../../config/Const';
 import GD from '../../../config/GD';
 import { GBuildType, GISceneItemParent, GLockState, GSceneRoomState, GSceneSkinState } from '../../../config/global';
-import { audioManager } from '../../../easyFramework/mgr/audioManager';
+import { AudioPlaybackService } from '../../../easyFramework/mgr/audioManager';
 import BaseView from '../../../easyFramework/mgr/BaseView';
-import { uiManager } from '../../../easyFramework/mgr/uiManager';
-import tables from '../../../easyFramework/other/tables';
+import { UiLayerService } from '../../../easyFramework/mgr/uiManager';
+import TableDataService from '../../../easyFramework/other/tables';
 import { UtilPub } from '../../../easyFramework/utils/UtilPub';
-import { mergeBoardModel } from '../../comm/mergeBoardModel';
+import { mergeBoardStateStore } from '../../comm/mergeBoardModel';
 import { SceneData } from '../../comm/SceneData';
-import { userData } from '../../comm/UserData';
+import { playerDataStore } from '../../comm/UserData';
 import { UtilScene } from '../../comm/UtilScene';
 import { handIndexs } from '../../data/handData';
 import { PropItem, PropItemFlag } from '../Dialog/PropItem';
-import { flash_star } from './flash_star';
+import { FlashStarController } from './flash_star';
 const { ccclass, property } = _decorator;
 
 @ccclass('build_prompt')
-export class build_prompt extends BaseView {
-    //星星
+export class BuildPromptDialogController extends BaseView {
+
     get starNode() { return find("root/LayoutLeft/buildList/star", this.node)! }
     get spineAni() { return find("root/spineAni", this.node)!.getComponent(sp.Skeleton)! }
     get btnClose() { return find("root/btnClose", this.node)! }
 
-    //顶部的星星数
+
     get starLabel() { return find("root/LayoutLeft/buildList/starLabel", this.node)!.getComponent(Label)! }
-    //顶部道具标题
+
     get titleLabel() { return find("root/titleLabel", this.node)!.getComponent(Label)! }
 
-    //礼物按钮，建造进�?
+
     get gift() { return find("root/topBg/gift", this.node)! }
     get roomBar() { return find("root/topBg/roomBar", this.node)!.getComponent(ProgressBar)! }
     get roomBarLabel() { return find("root/topBg/roomBar/roomBarLabel", this.node)!.getComponent(Label)! }
 
-    //右边奖励和建造按�?
+
     get rewards() { return find("root/bgIcon/rewards", this.node)! }
     get btnBuild() { return find("root/bgIcon/btnBuild", this.node)! }
     get goToMergeBoard() { return find("root/bgIcon/goToMergeBoard", this.node)! }
@@ -41,7 +41,7 @@ export class build_prompt extends BaseView {
 
     get btnBuildLabel() { return find("root/bgIcon/btnBuild/btnBuildLabel", this.node)!.getComponent(Label)! }
 
-    //左边图标
+
     get icon() { return find("root/bgIcon/leftIcon/icon", this.node)!.getComponent(Sprite)! }
     get dressLabel() { return find("root/bgIcon/leftIcon/dressLabel", this.node)!.getComponent(Label)! }
     get sceneItemNameLabel() { return find("root/bgIcon/leftIcon/sceneItemNameLabel", this.node)!.getComponent(Label)! }
@@ -59,47 +59,47 @@ export class build_prompt extends BaseView {
         })
 
         this.bindButton(this.gift, () => {
-            //弹出奖励提示�?
-            let roomData = tables.ins().getTableValueByID(Const.Tables.scene_room, this.sceneItemData.room)
+
+            let roomData = TableDataService.ins().getTableValueByID(Const.Tables.scene_room, this.sceneItemData.room)
             let pos = UtilPub.convertToWorldSpace(this.gift)
-            uiManager.instance.showDialog(Const.Dialogs.pop_reward_item, { rewardData: roomData.resAll, pos: pos })
+            UiLayerService.instance.showDialog(Const.Dialogs.RewardPopupItemController, { RewardItemRecord: roomData.resAll, pos: pos })
         })
 
         this.bindButton(this.btnBuild, this.onClickBtnBuild);
 
         this.bindButton(this.goToMergeBoard, () => {
             this.close()
-            uiManager.instance.showDialog(Const.Dialogs.MergeBoardLayer)
+            UiLayerService.instance.showDialog(Const.Dialogs.MergeBoardLayer)
         })
 
-        //完成监听
+
         this.spineAni.setCompleteListener((trackEntry: any) => {
             let name = trackEntry.animation ? trackEntry.animation.name : '';
-            if (name == "animation") {// 动画结束后执行自己的逻辑
+            if (name == "animation") {
 
-                let handIndex = mergeBoardModel.getHandIndex();
+                let handIndex = mergeBoardStateStore.getHandIndex();
                 if (handIndex == handIndexs.buildCashDesk) {
-                    mergeBoardModel.addHandIndex();
-                    mergeBoardModel.addHandIndex();
-                    mergeBoardModel.closeHandLayer();
+                    mergeBoardStateStore.addHandIndex();
+                    mergeBoardStateStore.addHandIndex();
+                    mergeBoardStateStore.closeHandLayer();
                 }
 
                 this.emit(GD.event.chgGreenStar)
 
-                audioManager.instance.playSound(Const.Audio.flash_show)
+                AudioPlaybackService.instance.playSound(Const.Audio.flash_show)
                 let script = UtilScene.getSceneItemNodeById(this.sceneItemData.id)!
 
-                //如果道具是地毯，家具，挂机，那么调用一次性动�?
+
                 if (this.type != GBuildType.room) {
                     this.emit(GD.event.popOpsWindow, UtilScene.getSceneItemNodeById(this.sceneItemData.id)!.node)
-                    //在目标节点上展示星星动画
-                    this.addPrefab(Const.Prefabs.flash_star, script.node, (itemNode: any) => {
-                        itemNode.getComponent(flash_star).init()
+
+                    this.addPrefab(Const.Prefabs.FlashStarController, script.node, (itemNode: any) => {
+                        itemNode.getComponent(FlashStarController).init()
                     })
 
                 }
 
-                if (mergeBoardModel.isHandDone()) {
+                if (mergeBoardStateStore.isHandDone()) {
                     this.scheduleOnce(() => {
                         UtilScene.setSceneItemAni(script.node, () => {
 
@@ -126,13 +126,13 @@ export class build_prompt extends BaseView {
         this.id = args.id
         this.type = args.type
 
-        this.sceneItemData = tables.ins().getTableValueByID(Const.Tables.scene_item, this.id)
-        let roomData = tables.ins().getTableValueByID(Const.Tables.scene_room, this.sceneItemData.room)
+        this.sceneItemData = TableDataService.ins().getTableValueByID(Const.Tables.scene_item, this.id)
+        let roomData = TableDataService.ins().getTableValueByID(Const.Tables.scene_room, this.sceneItemData.room)
 
-        let itemSkinData = tables.ins().getTableValueByID(Const.Tables.scene_skin, this.sceneItemData.skin)
+        let itemSkinData = TableDataService.ins().getTableValueByID(Const.Tables.scene_skin, this.sceneItemData.skin)
 
         this.titleLabel.string = roomData.name
-        this.starLabel.string = userData.greenStar + ""
+        this.starLabel.string = playerDataStore.greenStar + ""
         this.btnBuildLabel.string = "Build"
 
         this.sceneItemNameLabel.string = "搭建" + itemSkinData.name
@@ -146,11 +146,11 @@ export class build_prompt extends BaseView {
 
         if (this.sceneItemData.reward.length > 0) {
             this.rewards.removeAllChildren()
-            // this.sceneItemData.reward.forEach((element: any) => {
-            //     this.addPrefab(Const.Prefabs.PropItem, this.rewards, (propItem: any) => {
-            //         propItem.getComponent(PropItem).setData(element[0], PropItemFlag.ShowNum, element[1]).setSize(100)
-            //     })
-            // });
+
+
+
+
+
             this.addPrefab(Const.Prefabs.PropItem, this.rewards, (propItem: any) => {
                 propItem.getComponent(PropItem).setData(this.sceneItemData.reward[0], PropItemFlag.TouchInfo, this.sceneItemData.reward[1]).setSize(100)
             })
@@ -159,45 +159,45 @@ export class build_prompt extends BaseView {
             })
         }
 
-        //判断房间是否解锁
-        // if(SceneData.ins.getRoomLockInfoById(sceneItemData.room)==GSceneRoomState.locked){
-        // }else{
-        // }
+
+
+
+
         let isShowBuild = false
         if (this.type == GBuildType.room) {
-            //解锁房间，奖励取房间表拿
+
             let star = roomData.stars.split(",")[1]
-            isShowBuild = (userData.greenStar >= star)
+            isShowBuild = (playerDataStore.greenStar >= star)
         } else {
-            //设置场景道具，奖励取场景道具表拿
-            //如果星星不足
+
+
             let star = this.sceneItemData.stars.split(",")[1]
-            isShowBuild = (userData.greenStar >= star)
+            isShowBuild = (playerDataStore.greenStar >= star)
         }
 
-        //如果星星不足
-        // let star = this.sceneItemData.stars.split(",")[1]
-        // let isShowBuild = (userData.greenStar >= star)
+
+
+
         this.btnBuild.active = isShowBuild
         this.goToMergeBoard.active = !isShowBuild
 
-        let handIndex = mergeBoardModel.getHandIndex();
+        let handIndex = mergeBoardStateStore.getHandIndex();
         if (handIndex == handIndexs.buildCashDesk) {
             let obj: any = {};
-            obj.id = mergeBoardModel.getHandIndex() + 1;
+            obj.id = mergeBoardStateStore.getHandIndex() + 1;
             obj.node = this.btnBuild;
             obj.delayTime = 0.5;
-            uiManager.instance.showDialog(Const.Dialogs.HandLayer, obj);
+            UiLayerService.instance.showDialog(Const.Dialogs.HandLayer, obj);
         }
 
-        //设置道具图标
-        // this.icon = 
-        let skinData = tables.ins().getTableValueByID(Const.Tables.scene_skin, this.sceneItemData.unlockSkin)
+
+
+        let skinData = TableDataService.ins().getTableValueByID(Const.Tables.scene_skin, this.sceneItemData.unlockSkin)
         UtilScene.setSkinIcon(this.icon, skinData)
     }
 
     close() {
-        uiManager.instance.hideDialog(this.dialogPath)
+        UiLayerService.instance.hideDialog(this.dialogPath)
     }
 
     onClickBtnBuild() {
@@ -207,50 +207,49 @@ export class build_prompt extends BaseView {
         star = parseInt(star);
 
         if (this.type == GBuildType.room) {
-            //解锁房间，奖励取房间表拿
-            let roomData = tables.ins().getTableValueByID(Const.Tables.scene_room, this.sceneItemData.room)
+
+            let roomData = TableDataService.ins().getTableValueByID(Const.Tables.scene_room, this.sceneItemData.room)
             star = roomData.stars.split(",")[1]
         }
 
-        if (userData.checkAndUseGreenStar(star)) {
+        if (playerDataStore.checkAndUseGreenStar(star)) {
             this.isBtnActive = true
-            audioManager.instance.playSound(Const.Audio.star_touch)
-            mergeBoardModel.addManagerVal(Const.ManagerTypes.buildCount);
+            AudioPlaybackService.instance.playSound(Const.Audio.star_touch)
+            mergeBoardStateStore.addManagerVal(Const.ManagerTypes.buildCount);
 
             this.spineAni.node.active = true
             this.spineAni.setAnimation(0, "animation", false)
 
-            //解锁房间
+
             if (this.type == GBuildType.room) {
-                //初始化这个房间的东西，然后再继续
+
                 SceneData.ins.setRoomLockInfoById(this.sceneItemData.room, GSceneRoomState.unlock)
                 UtilScene.initRoomById(this.sceneItemData.room).then(() => {
-                    // this.emit(GD.event.chgGreenStar)
                 })
 
             } else {
-                //解锁场景的道�?
+
                 let script = UtilScene.getSceneItemNodeById(this.sceneItemData.id)!
                 SceneData.ins.setSceneSkinById(this.sceneItemData.unlockSkin, GSceneSkinState.gotted)
                 this.setScript(script, this.sceneItemData.unlockSkin)
             }
             this.emit(GD.event.goToBuildScene, this.id, this.type)
 
-            //增加经验
-            userData.roleExp += star * UtilScene.ExpTimes
+
+            playerDataStore.roleExp += star * UtilScene.ExpTimes
             this.emit(GD.event.updateMoney);
 
-            //赋予奖励
-            mergeBoardModel.addPropNum(this.sceneItemData.reward[0], this.sceneItemData.reward[1], v3(), v3(), true)
 
-            //进度条动�?
+            mergeBoardStateStore.addPropNum(this.sceneItemData.reward[0], this.sceneItemData.reward[1], v3(), v3(), true)
+
+
             if (this.type != GBuildType.room) {
                 let val = UtilScene.calcRoomCompletionRatio(this.sceneItemData.room)
                 tween(this.roomBar).to(0.3, { progress: val }).start()
                 this.roomBarLabel.string = Math.round(val * 100) + "%"
             }
 
-            //监听spine完成的事件进行结�?
+
         }
     }
 

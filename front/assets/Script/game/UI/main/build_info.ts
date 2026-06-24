@@ -1,11 +1,11 @@
 import { find, Label, Node, Prefab, Sprite, _decorator } from 'cc';
 import { Const } from '../../../config/Const';
 import BaseView from '../../../easyFramework/mgr/BaseView';
-import tables from '../../../easyFramework/other/tables';
+import TableDataService from '../../../easyFramework/other/tables';
 const { ccclass, property } = _decorator;
 
 @ccclass('build_info')
-export class build_info extends BaseView {
+export class BuildInfoPanelController extends BaseView {
 
     @property({ type: Label }) titleLabel: Label = null!
     @property({ type: Label }) infoLabel: Label = null!
@@ -27,7 +27,7 @@ export class build_info extends BaseView {
     }
 
     initInfo(id: number) {
-        let roomData = tables.ins().getTableValueByID(Const.Tables.scene_room, id)
+        let roomData = TableDataService.ins().getTableValueByID(Const.Tables.scene_room, id)
         this.titleLabel.string = roomData.name
         this.infoLabel.string = roomData.desc
         this.setSpriteFrame(this.icon, Const.resPath.buildpicture + roomData.picture)

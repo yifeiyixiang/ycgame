@@ -1,7 +1,7 @@
 import { _decorator, Node, Prefab, instantiate, Sprite, find, ProgressBar, Label, SpriteComponent, SpriteFrame, v3, UITransform } from 'cc';
 import { Const } from '../../../config/Const';
 import BaseView from '../../../easyFramework/mgr/BaseView';
-import tables from '../../../easyFramework/other/tables';
+import TableDataService from '../../../easyFramework/other/tables';
 import { PropItem, PropItemFlag } from './PropItem';
 const { ccclass, property } = _decorator;
 
@@ -33,7 +33,7 @@ export class PropItemInfo extends BaseView {
                 item.getComponent(PropItem).setData(this._propdata.id, PropItemFlag.ShowLevel | PropItemFlag.HideName).setBg(this.iconbg)
             })
         } else {
-            let xilie = tables.ins().getTableValuesByType(Const.Tables.prop, "type", this._propdata.type)
+            let xilie = TableDataService.ins().getTableValuesByType(Const.Tables.prop, "type", this._propdata.type)
             if (xilie.length > 0) {
                 let parent = xilie.length >= 4 ? this.curItemGrid : this.curItem
                 let maxSize = xilie.length >= 4 ? 115 : 170
@@ -59,7 +59,7 @@ export class PropItemInfo extends BaseView {
     }
 
     changePropInfo(event: any, id: number) {
-        let propData = tables.ins().getTableValueByID(Const.Tables.prop, id)
+        let propData = TableDataService.ins().getTableValueByID(Const.Tables.prop, id)
         this.initPropList(propData)
 
         let children = this.curItemGrid.children

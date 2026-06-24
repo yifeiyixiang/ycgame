@@ -2,7 +2,7 @@ import { _decorator, Node, Label, ScrollView, find, Sprite, SpriteFrame, tween, 
 import { Const } from '../../../config/Const';
 import { Email, EmailRewardState, EmailState } from '../../../config/global';
 import BaseView from '../../../easyFramework/mgr/BaseView';
-import { uiManager } from '../../../easyFramework/mgr/uiManager';
+import { UiLayerService } from '../../../easyFramework/mgr/uiManager';
 import { EmailManager } from '../../comm/EmailManager';
 import { PropItem, PropItemFlag } from './PropItem';
 import { GamePlatform } from '../../platform/GamePlatform';
@@ -61,17 +61,17 @@ export class EmailInfoDialog extends BaseView {
     }
 
     onClickReceive() {
-        // let reward = this._layerData.email.reward
-        // for (let index = 0; index < reward.length; index++) {
-        //     const element = reward[index];
-        //     //  mergeBoardModel.addPropNum(element.propId, element.num)
-        // }
-        uiManager.instance.pushShowDialog(Const.Dialogs.RewardDialog, { reward: this._layerData.email.reward })
+
+
+
+
+
+        UiLayerService.instance.pushShowDialog(Const.Dialogs.RewardDialog, { reward: this._layerData.email.reward })
 
         this._email.receicedState = EmailRewardState.received
         this.initBtns()
         EmailManager.getInstance().saveEmail(this._email)
-        
+
     }
 
 

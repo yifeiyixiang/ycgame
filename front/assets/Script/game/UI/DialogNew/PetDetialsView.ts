@@ -2,13 +2,13 @@ import { Button, find, instantiate, Node, ProgressBar, Sprite, tween, v3, Vec3, 
 import { Const } from '../../../config/Const';
 import GD from '../../../config/GD';
 import BaseView from '../../../easyFramework/mgr/BaseView';
-import { uiManager } from '../../../easyFramework/mgr/uiManager';
-import tables from '../../../easyFramework/other/tables';
+import { UiLayerService } from '../../../easyFramework/mgr/uiManager';
+import TableDataService from '../../../easyFramework/other/tables';
 import { UtilPub } from '../../../easyFramework/utils/UtilPub';
-import { mergeBoardModel } from '../../comm/mergeBoardModel';
-import { BagPropData, gameData, petItemData, ShopCfg } from '../../../../typeScript/gameData';
-import { userData } from '../../comm/UserData';
-import { HttpClient } from '../../../../typeScript/net/HttpClient';
+import { mergeBoardStateStore } from '../../comm/mergeBoardModel';
+import { BagPropRecord, GameRuntimeData, PetProfileRecord, ShopConfigRecord } from '../../../../typeScript/gameData';
+import { playerDataStore } from '../../comm/UserData';
+import { GameHttpClient } from '../../../../typeScript/net/HttpClient';
 const { ccclass, property } = _decorator;
 
 @ccclass('PetDetialsView')
@@ -50,11 +50,11 @@ export class PetDetialsView extends BaseView {
     @property({ type: Node })
     petShowPfb: Node = null!;
 
-    curData:petItemData = null!;
+    curData:PetProfileRecord = null!;
 
-    curCfg:ShopCfg = null!;
+    curCfg:ShopConfigRecord = null!;
 
-    curItemType:number = 2;     //当前道具类型 2宠物食物，3 宠物服饰
+    curItemType:number = 2;
 
     curContent:Node;
 
@@ -62,15 +62,15 @@ export class PetDetialsView extends BaseView {
         this.bindButton(this.btnClose, this.onClickBtnClose);
 
         this.bindButton(find("root/nameBg/btnName", this.node)!, () => {
-            uiManager.instance.showDialog(Const.Dialogs.PetNameView, this.curData)
+            UiLayerService.instance.showDialog(Const.Dialogs.PetNameView, this.curData)
         })
 
         this.bindButton(find("root/btnFangsheng", this.node)!, () => {
-            uiManager.instance.showDialog(Const.Dialogs.PetComonTipView, [1, this.curData])
+            UiLayerService.instance.showDialog(Const.Dialogs.PetComonTipView, [1, this.curData])
         })
 
         this.bindButton(find("root/btnXiuxi", this.node)!, () => {
-            uiManager.instance.showDialog(Const.Dialogs.PetComonTipView, [3, this.curData])
+            UiLayerService.instance.showDialog(Const.Dialogs.PetComonTipView, [3, this.curData])
         })
 
         this.shuxingNode.active = true
@@ -89,16 +89,16 @@ export class PetDetialsView extends BaseView {
         super.show(args);
 
         this.curData = args;
-        this.curCfg = tables.ins().getTableValueByID(Const.Tables.new_prop, this.curData.prop_id);
+        this.curCfg = TableDataService.ins().getTableValueByID(Const.Tables.new_prop, this.curData.prop_id);
 
-        //this.refresh();
+
 
         this.getData();
     }
 
     getData(){
-        HttpClient.getInstance().getPetList();
-        HttpClient.getInstance().sednBagInfo(this.curItemType);
+        GameHttpClient.getInstance().getPetList();
+        GameHttpClient.getInstance().sednBagInfo(this.curItemType);
     }
 
     refresh(){
@@ -108,7 +108,7 @@ export class PetDetialsView extends BaseView {
             return;
         }
 
-        this.curData = gameData.getPetDataById(this.curData.id);
+        this.curData = GameRuntimeData.getPetDataById(this.curData.id);
 
         if (!this.curData){
             this.close();
@@ -139,7 +139,7 @@ export class PetDetialsView extends BaseView {
             this.curItemType = 3;
             this.curContent = this.skinContent;
 
-            this.noSkinNode.active = userData.bagProps.length == 0;
+            this.noSkinNode.active = playerDataStore.bagProps.length == 0;
         }
 
         for (let index = 0; index < this.curContent.children.length; index++) {
@@ -149,9 +149,9 @@ export class PetDetialsView extends BaseView {
             }
         }
 
-        for (let index = 0; index < userData.bagProps.length; index++) {
-            const bagData:BagPropData = userData.bagProps[index];
-            let shopCfg:ShopCfg = tables.ins().getTableValueByID(Const.Tables.new_prop, bagData.prop_id);
+        for (let index = 0; index < playerDataStore.bagProps.length; index++) {
+            const bagData:BagPropRecord = playerDataStore.bagProps[index];
+            let shopCfg:ShopConfigRecord = TableDataService.ins().getTableValueByID(Const.Tables.new_prop, bagData.prop_id);
 
             let ele = this.curContent.children[index];
             if (!ele){
@@ -179,9 +179,9 @@ export class PetDetialsView extends BaseView {
                 ele.getChildByName("dressd").active = false;
 
                 ele.getChildByName("btnUse").on("click", ()=>{
-                    //使用道具
-                    HttpClient.getInstance().sendPetAction(4, this.curData.id, shopCfg.id, 0, "", ()=>{
-                        HttpClient.getInstance().sednBagInfo(2);
+
+                    GameHttpClient.getInstance().sendPetAction(4, this.curData.id, shopCfg.id, 0, "", ()=>{
+                        GameHttpClient.getInstance().sednBagInfo(2);
                     })
                 }, this);
             }else{
@@ -190,14 +190,14 @@ export class PetDetialsView extends BaseView {
                 ele.getChildByName("dressd").active = bagData.is_active;
 
                 ele.getChildByName("btnDress").on("click", ()=>{
-                    //穿戴
-                    HttpClient.getInstance().sendPetAction(5, this.curData.id, shopCfg.id, bagData.id);
+
+                    GameHttpClient.getInstance().sendPetAction(5, this.curData.id, shopCfg.id, bagData.id);
                 }, this);
             }
         }
 
         this.petShowPfb.getComponent("pet").init(this.curData);
-      
+
     }
 
     onClickHandler(eve:Event, str:string){
@@ -206,7 +206,7 @@ export class PetDetialsView extends BaseView {
             this.skinNode.active = false
             this.curItemType = 2
             this.getData();
-            
+
         }else if (str == "togSkin"){
             this.shuxingNode.active = false
             this.skinNode.active = true
@@ -214,7 +214,7 @@ export class PetDetialsView extends BaseView {
             this.getData();
         }
     }
-    
+
     onClickBtnClose() {
         this.close();
     }

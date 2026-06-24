@@ -4,14 +4,14 @@ import { Const } from '../../../config/Const';
 import { GodWealthData } from '../../../config/global';
 import BaseView from '../../../easyFramework/mgr/BaseView';
 import { GameStorage } from '../../../easyFramework/mgr/gameStorage';
-import { resourceUtil } from '../../../easyFramework/mgr/resourceUtil';
-import { uiManager } from '../../../easyFramework/mgr/uiManager';
+import { ResourceLoaderService } from '../../../easyFramework/mgr/resourceUtil';
+import { UiLayerService } from '../../../easyFramework/mgr/uiManager';
 import { GNetCmd } from '../../../easyFramework/network/conf';
 import ServerCtrJSF from '../../../easyFramework/network/ServerCtrJSF';
 import TimeCtrJSF from '../../../easyFramework/network/TimeCtrJSF';
-import tables from '../../../easyFramework/other/tables';
-import { mergeBoardModel } from '../../comm/mergeBoardModel';
-import { userData } from '../../comm/UserData';
+import TableDataService from '../../../easyFramework/other/tables';
+import { mergeBoardStateStore } from '../../comm/mergeBoardModel';
+import { playerDataStore } from '../../comm/UserData';
 import { GamePlatform } from '../../platform/GamePlatform';
 const { ccclass, property } = _decorator;
 
@@ -57,7 +57,7 @@ export class GodWealthOther extends BaseView {
 
     get timeData() {
         if (this._timeData == null) {
-            this._timeData = tables.ins().getTableValueByKey(Const.Tables.privilege, "key", "10011")
+            this._timeData = TableDataService.ins().getTableValueByKey(Const.Tables.privilege, "key", "10011")
         }
         return this._timeData!
     }
@@ -70,7 +70,7 @@ export class GodWealthOther extends BaseView {
         this.bindButton(this.btnClose, this.onClickBtnClose);
         this.bindButton(this.btnReceive, this.onClickBtnReceive);
 
-        //  director.on(GNetCmd.GetUserDataByKey.toString(), this.onMessageEvent, this);
+
     }
 
     onEnable() {
@@ -88,7 +88,7 @@ export class GodWealthOther extends BaseView {
         let params = this._layerData.params
         this._curShareUserID = params.shareUserId
         this._curRewardData = params.propList
-        // ServerCtrJSF.GetInstance().reqGetUserDataByKey(GameStorage.Key(Const.DataKeys.GodWealthData + "_" + this._curShareUserID))
+
         ServerCtrJSF.GetInstance().reqReceiveGodWealth(this._curShareUserID + "", -1)
 
         this.refreshSelectLayer();
@@ -99,9 +99,9 @@ export class GodWealthOther extends BaseView {
                     console.error("res = ", res)
                     let avatarUrl = res && (res.avatarUrl || (res.userInfo && res.userInfo.avatarUrl))
                     if (avatarUrl) {
-                        userData.roleAvatar = avatarUrl
+                        playerDataStore.roleAvatar = avatarUrl
                     }
-                    console.error("userData.roleAvatar = ", userData.roleAvatar)
+                    console.error("userData.roleAvatar = ", playerDataStore.roleAvatar)
                 }).catch(() => { })
                 GameStorage.setInt(Const.DataKeys.authSetting, 1)
             }
@@ -119,7 +119,7 @@ export class GodWealthOther extends BaseView {
             console.log("请求失败~!")
             return null;
         }
-        let godWealthData: GodWealthData = { shareUserId: userData.roleID, shareName: this._layerData.params.shareName, propList: this._curRewardData, receiveUser: [], shareTime: Math.floor(TimeCtrJSF.GetInstance().ServerTime) }
+        let godWealthData: GodWealthData = { shareUserId: playerDataStore.roleID, shareName: this._layerData.params.shareName, propList: this._curRewardData, receiveUser: [], shareTime: Math.floor(TimeCtrJSF.GetInstance().ServerTime) }
         if (value.shareData) {
             godWealthData = value.shareData
             console.error("godWealthData = ", value.shareData)
@@ -145,7 +145,7 @@ export class GodWealthOther extends BaseView {
             console.log("请求失败~!")
             return null;
         }
-        let godWealthData: GodWealthData = { shareUserId: userData.roleID, shareName: this._layerData.params.shareName, propList: this._curRewardData, receiveUser: [], shareTime: Math.floor(TimeCtrJSF.GetInstance().ServerTime) }
+        let godWealthData: GodWealthData = { shareUserId: playerDataStore.roleID, shareName: this._layerData.params.shareName, propList: this._curRewardData, receiveUser: [], shareTime: Math.floor(TimeCtrJSF.GetInstance().ServerTime) }
         if (value.key.indexOf(GameStorage.Key(Const.DataKeys.GodWealthData)) >= 0) {
             if (value.val != "") {
                 godWealthData = JSON.parse(value.val)
@@ -174,30 +174,30 @@ export class GodWealthOther extends BaseView {
                 console.error("receiveData" + i, receiveData[i])
 
                 if (receiveUser) {
-                    if (receiveUser.userID == userData.roleID + "") {
+                    if (receiveUser.userID == playerDataStore.roleID + "") {
                         myChose.active = true
                         receiveTime++
 
                         this._isReceived = true
-                        let curTime = userData.getReceiveTime(this.timeData.dataKey + GodWealthOther.key_receiveOther, this.timeData.cdTime)
-                        if (curTime < 1 || userData.getIntervalData(this.timeData.dataKey + GodWealthOther.key_shareUserID + (curTime - 1), this.timeData.cdTime, this._curShareUserID + "") != this._curShareUserID + "") {
-                            mergeBoardModel.addPropNum(this._curRewardData[i], 1)
-                            userData.setIntervarData(this.timeData.dataKey + GodWealthOther.key_shareUserID + curTime, this.timeData.cdTime, this._curShareUserID + "")
-                            userData.setReceiveTime(this.timeData.dataKey + GodWealthOther.key_receiveOther, this.timeData.cdTime)
+                        let curTime = playerDataStore.getReceiveTime(this.timeData.dataKey + GodWealthOther.key_receiveOther, this.timeData.cdTime)
+                        if (curTime < 1 || playerDataStore.getIntervalData(this.timeData.dataKey + GodWealthOther.key_shareUserID + (curTime - 1), this.timeData.cdTime, this._curShareUserID + "") != this._curShareUserID + "") {
+                            mergeBoardStateStore.addPropNum(this._curRewardData[i], 1)
+                            playerDataStore.setIntervarData(this.timeData.dataKey + GodWealthOther.key_shareUserID + curTime, this.timeData.cdTime, this._curShareUserID + "")
+                            playerDataStore.setReceiveTime(this.timeData.dataKey + GodWealthOther.key_receiveOther, this.timeData.cdTime)
                         }
 
                     } else if (receiveUser.userID != "") {
                         otherChose.active = true
                         receiveTime++
                         if (receiveUser.avatar != "") {
-                            //动态加载图片的方法
-                            resourceUtil.setRemoteImage(receiveUser.avatar, find("head/icon", otherChose)!.getComponent(Sprite)!, () => { })
+
+                            ResourceLoaderService.setRemoteImage(receiveUser.avatar, find("head/icon", otherChose)!.getComponent(Sprite)!, () => { })
                         }
 
                         if (receiveUser.userID == this._curShareUserID) {
                             if (receiveUser.avatar != "") {
-                                //动态加载图片的方法
-                                resourceUtil.setRemoteImage(receiveUser.avatar, find("root/shareicon", this.node)!.getComponent(Sprite)!, () => { })
+
+                                ResourceLoaderService.setRemoteImage(receiveUser.avatar, find("root/shareicon", this.node)!.getComponent(Sprite)!, () => { })
                             }
                         }
                     }
@@ -222,18 +222,18 @@ export class GodWealthOther extends BaseView {
     }
 
     initBtns() {
-        let curTime = userData.getReceiveTime(this.timeData.dataKey + GodWealthOther.key_receiveOther, this.timeData.cdTime)
+        let curTime = playerDataStore.getReceiveTime(this.timeData.dataKey + GodWealthOther.key_receiveOther, this.timeData.cdTime)
 
         if (curTime >= Const.GodWealthReceiveOtherTime) {
             this.btnReceive.active = false
             this.receivedLabel.active = true
-            if(userData.getIntervalData(this.timeData.dataKey + GodWealthOther.key_shareUserID + (0), this.timeData.cdTime, this._curShareUserID + "") == this._curShareUserID + "" ||userData.getIntervalData(this.timeData.dataKey + GodWealthOther.key_shareUserID + (1), this.timeData.cdTime, this._curShareUserID + "") == this._curShareUserID + ""){
+            if(playerDataStore.getIntervalData(this.timeData.dataKey + GodWealthOther.key_shareUserID + (0), this.timeData.cdTime, this._curShareUserID + "") == this._curShareUserID + "" ||playerDataStore.getIntervalData(this.timeData.dataKey + GodWealthOther.key_shareUserID + (1), this.timeData.cdTime, this._curShareUserID + "") == this._curShareUserID + ""){
                 this.receivedLabel.getComponent(Label)!.string = "Received"
             }else{
                 this.receivedLabel.getComponent(Label)!.string = "Receive limit used"
             }
         } else {
-            if (curTime == 1 && userData.getIntervalData(this.timeData.dataKey + GodWealthOther.key_shareUserID + (curTime - 1), this.timeData.cdTime, this._curShareUserID + "") == this._curShareUserID + "") {
+            if (curTime == 1 && playerDataStore.getIntervalData(this.timeData.dataKey + GodWealthOther.key_shareUserID + (curTime - 1), this.timeData.cdTime, this._curShareUserID + "") == this._curShareUserID + "") {
                 this.btnReceive.active = false
                 this.receivedLabel.active = true
                 this.receivedLabel.getComponent(Label)!.string = "Received"
@@ -258,9 +258,9 @@ export class GodWealthOther extends BaseView {
     }
 
     initPropItem(id: number, item: Node, index: number) {
-        let data = tables.ins().getTableValueByID(Const.Tables.prop, id)
+        let data = TableDataService.ins().getTableValueByID(Const.Tables.prop, id)
         this.bindButton(find("btnPropInfo", item)!, () => {
-            uiManager.instance.showDialog(Const.Dialogs.ItemCodexLayer, id);
+            UiLayerService.instance.showDialog(Const.Dialogs.ItemCodexLayer, id);
         })
         this.setSpriteFrame(find("icon", item)!.getComponent(Sprite)!, Const.resPath.icon + data.icon, () => { }, 120)
         find("val", item)!.getComponent(Label)!.string = data.name
@@ -288,7 +288,7 @@ export class GodWealthOther extends BaseView {
     onClickPropInfo(btn: Button) {
         // @ts-ignore
         let bagId = btn.node.bagId;
-        uiManager.instance.showDialog(Const.Dialogs.FuBagLayer, bagId);
+        UiLayerService.instance.showDialog(Const.Dialogs.FuBagLayer, bagId);
     }
 
     onClickBtnReceive() {
@@ -298,32 +298,32 @@ export class GodWealthOther extends BaseView {
         }
         ServerCtrJSF.GetInstance().reqReceiveGodWealth(this._curShareUserID + "", this._curSelectIndex)
 
-        // let curTime = userData.getReceiveTime(this.timeData.dataKey + GodWealthOther.key_receiveOther, this.timeData.cdTime)
 
-        // if (curTime >= Const.GodWealthReceiveOtherTime) {
-        //     return
-        // } else {
-        //     if (curTime == 1 && userData.getIntervalData(this.timeData.dataKey + GodWealthOther.key_shareUserID + (curTime - 1), this.timeData.cdTime, this._curShareUserID + "") == this._curShareUserID + "") {
-        //         return
-        //     }
-        // }
 
-        // let propID = this._curRewardData[this._curSelectIndex]
-        // mergeBoardModel.addPropNum(propID, 1, this.node.getComponent(UITransform)!.convertToWorldSpaceAR(Vec3.ZERO))
-        //  userData.setIntervarData(this.timeData.dataKey + GodWealthOther.key_shareUserID + curTime, this.timeData.cdTime, this._curShareUserID + "")
-        // userData.setReceiveTime(this.timeData.dataKey + GodWealthOther.key_receiveOther, this.timeData.cdTime)
-        // this.initBtns()
+
+
+
+
+
+
+
+
+
+
+
+
+
     }
 
     wxScopeHead() {
         if (WECHAT) {
             GamePlatform.requestWechatUserInfo().then((res: any) => {
-                //   console.error("res = ", res)
+
                 let avatarUrl = res && (res.avatarUrl || (res.userInfo && res.userInfo.avatarUrl))
                 if (avatarUrl) {
-                    userData.roleAvatar = avatarUrl
+                    playerDataStore.roleAvatar = avatarUrl
                 }
-                //  console.error("userData.roleAvatar = ", userData.roleAvatar)
+
             }).catch(() => { })
         }
     }

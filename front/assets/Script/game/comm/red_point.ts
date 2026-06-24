@@ -1,21 +1,21 @@
 import { _decorator, tween, Vec3, v3,Sprite } from 'cc';
 import {  GRedPoint } from '../../config/global';
-import { comm } from '../../easyFramework/mgr/comm';
+import { BaseUiComponent } from '../../easyFramework/mgr/comm';
 const { ccclass, property } = _decorator;
 
 @ccclass('red_point')
-export class red_point extends comm {
+export class RedPointIndicatorController extends BaseUiComponent {
     @property({ type: GRedPoint, displayName: "埋点信息" })
     redPointPos: number = -1;
 
     data:any=null!
-    skillId:number=0 //技能升级的技能ID
-    petId:number=0 //宠物的ID
+    skillId:number=0
+    petId:number=0
     sp:Sprite=null!
     oriAngle:Vec3=null!
-    onlineItemData:any={} //在线奖励的配表数据
-    dailyTaskData:any={} //每日任务的配表数据
-    
+    onlineItemData:any={}
+    dailyTaskData:any={}
+
     start() {
         this.oriAngle= this.node.eulerAngles.clone()
         this.ani()
@@ -39,13 +39,13 @@ export class red_point extends comm {
         this.sp = this.node.getComponent(Sprite)!
         this.sp.enabled = this.isShowRedPointPos(this.redPointPos)
     }
-    
-    //是否显示红点信息
+
+
     isShowRedPointPos(pos:number){
         return false
     }
 
-  
+
 
     update(deltaTime: number) {
         this.calTime+=deltaTime

@@ -2,56 +2,56 @@ import { _decorator, Component, EventTarget, Node } from 'cc';
 const { ccclass, property } = _decorator;
 
 @ccclass('EventManger')
-export class EventManger {
+export class GameEventManager {
     public static eventTarget:EventTarget = new EventTarget();
 
     static EEventName = {
 
-        REFRESH_GAME: "REFRESH_GAME",     
+        REFRESH_GAME: "REFRESH_GAME",
 
-        SHOW_TIP:"SHOW_TIP",    
-
-        /**场景内增加 装饰 */
-        ADD_ZHUNASHI:"ADD_ZHUNASHI",   
-
-        /**是否拖动装饰中 */
-        ID_Drangging:"isDragging",  
-
-        REFRESH_PET_DATA: "REFRESH_PET_DATA",   //宠物列表数据更新
-
-        REFRESH_GOOD_STATU: "REFRESH_GOOD_STATU",   //装饰品状态 更新
-
-        REFRESH_FRIEND_DATA: "REFRESH_FRIEND_DATA",   //好友数据更新
-
-        ADD_EXP_ANIMATION: "ADD_EXP_ANIMATION",   //经验动画
+        SHOW_TIP:"SHOW_TIP",
 
 
+        ADD_ZHUNASHI:"ADD_ZHUNASHI",
+
+
+        ID_Drangging:"isDragging",
+
+        REFRESH_PET_DATA: "REFRESH_PET_DATA",
+
+        REFRESH_GOOD_STATU: "REFRESH_GOOD_STATU",
+
+        REFRESH_FRIEND_DATA: "REFRESH_FRIEND_DATA",
+
+        ADD_EXP_ANIMATION: "ADD_EXP_ANIMATION",
 
 
 
-        SHOW_GOLDOUT_TIP:"SHOW_GOLDOUT_TIP",  
 
-        PET_REWARD_DROP: "PET_REWARD_DROP",   //宠物交互，奖励动画
 
-        PET_AICHAT_REFRESH: "PET_AICHAT_REFRESH",   //AI聊天刷新
+        SHOW_GOLDOUT_TIP:"SHOW_GOLDOUT_TIP",
 
-        TASK_CLICK_HANDLER: "TASK_CLICK_HANDLER",   //任务点击
+        PET_REWARD_DROP: "PET_REWARD_DROP",
 
-        HAPPY_REFRESH_GAME: "HAPPY_REFRESH_GAME",   //快来玩法数据更新
+        PET_AICHAT_REFRESH: "PET_AICHAT_REFRESH",
 
-        HAPPY_NOT_CLICK: "HAPPY_NOT_CLICK",   //快来玩法丢失
+        TASK_CLICK_HANDLER: "TASK_CLICK_HANDLER",
 
-        HAPPY_GAME_OVER: "HAPPY_REFRESH_GAME",   //快来玩法结束
+        HAPPY_REFRESH_GAME: "HAPPY_REFRESH_GAME",
 
-        PLAY_ANIMATION_TASK:"PLAY_ANIMATION_TASK", 
+        HAPPY_NOT_CLICK: "HAPPY_NOT_CLICK",
 
-        OUT_SUCCESS_PANEL:"OUT_SUCCESS_PANEL", 
+        HAPPY_GAME_OVER: "HAPPY_REFRESH_GAME",
 
-        PASS_LEVEL_START:"PASS_LEVEL_START",  
+        PLAY_ANIMATION_TASK:"PLAY_ANIMATION_TASK",
 
-        RESET_RESET_GAME:"RESET_RESET_GAME", 
+        OUT_SUCCESS_PANEL:"OUT_SUCCESS_PANEL",
 
-        IS_SHOW_MAINVIEW:"IS_SHOW_MAINVIEW", 
+        PASS_LEVEL_START:"PASS_LEVEL_START",
+
+        RESET_RESET_GAME:"RESET_RESET_GAME",
+
+        IS_SHOW_MAINVIEW:"IS_SHOW_MAINVIEW",
 
         BLINK_ANIMATION:"BLINK_ANIMATION",
 
@@ -75,7 +75,7 @@ export class EventManger {
     };
 
     static EventNameNew = {
-        
+
     }
 }
 

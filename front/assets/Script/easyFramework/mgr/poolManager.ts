@@ -4,39 +4,39 @@ import { UtilPub } from "../utils/UtilPub";
 const { ccclass, property } = _decorator;
 
 @ccclass("poolManager")
-export class poolManager extends Component {
+export class NodePoolService extends Component {
     dictPool: { [name: string]: NodePool }= {}
     dictPrefab: { [name: string]: Prefab } = {}
 
-    static _instance: poolManager;
+    static _instance: NodePoolService;
 
     static get instance () {
         if (this._instance) {
             return this._instance;
         }
 
-        this._instance = new poolManager();
+        this._instance = new NodePoolService();
         return this._instance;
     }
 
-    isTimeToClear:boolean = false 
+    isTimeToClear:boolean = false
     markTime:Date=new Date()
-    
 
-    /**
-     * 根据预设从对象池中获取对应节点
-     */
+
+
+
+
     getNode (prefab: Prefab, parent: Node, isActive:boolean=true) {
-        // if(new Date().getTime() - this.markTime.getTime()>6000){
-        //     this.markTime = new Date()
-        //     this.clearCompatPool()
-        // }
+
+
+
+
         try{
             let name = prefab.data.name;
             this.dictPrefab[name] = prefab;
             let node: Node;
             if (this.dictPool.hasOwnProperty(name)) {
-                //已有对应的对象池
+
                 let pool = this.dictPool[name];
                 if (pool.size() > 0) {
                     node = pool.get()!;
@@ -47,14 +47,14 @@ export class poolManager extends Component {
                     node = instantiate(prefab);
                 }
             } else {
-                //没有对应对象池，创建他！
+
                 let pool = new NodePool();
                 this.dictPool[name] = pool;
                 node = instantiate(prefab);
             }
-    
+
             node.parent = parent;
-            node.active = isActive 
+            node.active = isActive
             return node;
         }catch(e:any){
             console.log("===================getNode",e.message,e.stackTrace,e.stack);
@@ -62,37 +62,37 @@ export class poolManager extends Component {
         return null;
     }
 
-    /**
-     * 将对应节点放回对象池中
-     */
+
+
+
     putNode (node: Node) {
-        if(node==null) return 
+        if(node==null) return
         let name = node.name;
         let pool = null;
         if (this.dictPool.hasOwnProperty(name)) {
-            //已有对应的对象池
+
             pool = this.dictPool[name];
         } else {
-            //没有对应对象池，创建他！
+
             pool = new NodePool();
             this.dictPool[name] = pool;
         }
         node.parent = null;
-        node.active = false 
+        node.active = false
         pool.put(node);
     }
 
     putNodeArr(nodes: Node[]){
-        if(nodes.length==0) return 
+        if(nodes.length==0) return
         for(let i=0; i<nodes.length; i++){
-            poolManager.instance.putNode(nodes[i])
+            NodePoolService.instance.putNode(nodes[i])
         }
     }
 
     putNodeObjString(nodes:GTypeStrNode){
         for(let key in nodes){
             if(nodes.hasOwnProperty(key)){
-                poolManager.instance.putNode(nodes[key])
+                NodePoolService.instance.putNode(nodes[key])
             }
         }
     }
@@ -100,14 +100,14 @@ export class poolManager extends Component {
     putNodeObjNumber(nodes:{[key: number]: Node}){
         for(let key in nodes){
             if(nodes.hasOwnProperty(key)){
-                poolManager.instance.putNode(nodes[key])
+                NodePoolService.instance.putNode(nodes[key])
             }
         }
     }
 
-    /**
-     * 根据名称，清除对应对象池
-     */
+
+
+
     clearPool (name: string) {
         if (this.dictPool.hasOwnProperty(name)) {
             let pool = this.dictPool[name];
@@ -121,15 +121,15 @@ export class poolManager extends Component {
                 let pool = this.dictPool[nodeName]
                 if(nodeName=="player"){continue}
                 else if(nodeName=="prefab_building"){continue}
-                // else if(nodeName=="prefab_mushroom"){continue}
-                // else if(nodeName=="prefab_paopaolong"){continue}
-                // else if(nodeName=="prefab_water_gourd"){continue}
-                // else if(nodeName=="prefab_bomb"){continue}
-                // else if(nodeName=="item_bomb"){continue}
+
+
+
+
+
                 else if(nodeName=="loading"){continue}
-          
-                // delete this.dictPool[nodeName]
-                // pool.clear()
+
+
+
                 UtilPub.warn("---------pool名称---", nodeName, pool.size())
             }
         }
@@ -138,7 +138,7 @@ export class poolManager extends Component {
                 cb && cb()
             },0.3)
         }
-       
+
     }
-    
+
 }

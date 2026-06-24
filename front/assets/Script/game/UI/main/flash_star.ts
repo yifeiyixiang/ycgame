@@ -1,10 +1,10 @@
 import { _decorator, Component, Node } from 'cc';
-import { comm } from '../../../easyFramework/mgr/comm';
-import { poolManager } from '../../../easyFramework/mgr/poolManager';
+import { BaseUiComponent } from '../../../easyFramework/mgr/comm';
+import { NodePoolService } from '../../../easyFramework/mgr/poolManager';
 const { ccclass, property } = _decorator;
 
 @ccclass('flash_star')
-export class flash_star extends comm {
+export class FlashStarController extends BaseUiComponent {
     init(): void {
         this.calTime=0
     }
@@ -13,7 +13,7 @@ export class flash_star extends comm {
         if(this.calTime>3){
             this.calTime = 0
             console.log("------------caltime---", this.calTime)
-            poolManager.instance.putNode(this.node)
+            NodePoolService.instance.putNode(this.node)
         }
     }
 }

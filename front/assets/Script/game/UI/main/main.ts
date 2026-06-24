@@ -1,19 +1,19 @@
 import { director, find, Label, _decorator } from 'cc';
 import { Const } from '../../../config/Const';
 import GD from '../../../config/GD';
-import { audioManager } from '../../../easyFramework/mgr/audioManager';
+import { AudioPlaybackService } from '../../../easyFramework/mgr/audioManager';
 import BaseView from '../../../easyFramework/mgr/BaseView';
-import { uiManager } from '../../../easyFramework/mgr/uiManager';
+import { UiLayerService } from '../../../easyFramework/mgr/uiManager';
 import { GNetCmd } from '../../../easyFramework/network/conf';
 import ServerCtrJSF from '../../../easyFramework/network/ServerCtrJSF';
 import { CdComponent, CDType } from '../../../easyFramework/utils/CdComponent';
 import { UtilPub } from '../../../easyFramework/utils/UtilPub';
 import { aiRobot } from '../../comm/AIRobot';
-import { mergeBoardModel } from '../../comm/mergeBoardModel';
-import { playerModel } from '../../comm/playerModel';
+import { mergeBoardStateStore } from '../../comm/mergeBoardModel';
+import { seasonProgressStore } from '../../comm/playerModel';
 import { redPointManager, RPointEvent } from '../../comm/RedPointManager';
 import { SignUtil } from '../../comm/SignUtil';
-import { userData } from '../../comm/UserData';
+import { playerDataStore } from '../../comm/UserData';
 import { handIndexs } from '../../data/handData';
 import { TreasureModel } from '../Dialog/TreasureModel';
 import { main_top } from './main_top';
@@ -23,16 +23,16 @@ const { ccclass, property } = _decorator;
 @ccclass('main')
 export class main extends BaseView {
 
-    //星星
+
     get starNode() { return find("root/LayoutLeft/buildList/star", this.node)! }
 
-    //场景父节�?
+
     get sceneNode() { return find("root/sceneNode", this.node)! }
 
-    //进入合成按钮
+
     get menuBtnForMergeBoard() { return find("root/bottom/mergeBoard", this.node)! }
 
-    //建造清单节�?
+
     get buildListNode() { return find("root/LayoutLeft/buildList", this.node)! }
     get buildListStarLabel() { return find("root/LayoutLeft/buildList/starLabel", this.node)!.getComponent(Label)! }
 
@@ -41,125 +41,125 @@ export class main extends BaseView {
         this.on(GD.event.chgGreenStar, this.chgGreenStar, this)
         this.on(GD.event.SceneNodeScale, this.SceneNodeScale, this)
 
-        // this.on(GEvent.e.diamondUpd, this.diamondUpd)
-        // this.on(GEvent.e.clickMenu, this.showContent)
+
+
 
         this.bindButton(find("root/top/btnTurntable", this.node)!, () => {
-            uiManager.instance.showDialog(Const.Dialogs.TurnTableView)
+            UiLayerService.instance.showDialog(Const.Dialogs.TurnTableView)
         })
 
         this.bindButton(find("root/top/btnActivity", this.node)!, () => {
-            uiManager.instance.showDialog(Const.Dialogs.ActivityView)
+            UiLayerService.instance.showDialog(Const.Dialogs.ActivityView)
         })
 
         this.bindButton(find("root/top/btnTask", this.node)!, () => {
-            uiManager.instance.showDialog(Const.Dialogs.TaskView)
+            UiLayerService.instance.showDialog(Const.Dialogs.TaskView)
 
-            //uiManager.instance.showDialog(Const.Dialogs.PetDetialsView)
+
         })
 
-        
+
         this.bindButton(find("root/bottom/btnFriend", this.node)!, () => {
 
-            uiManager.instance.showDialog(Const.Dialogs.FriendListView)
+            UiLayerService.instance.showDialog(Const.Dialogs.FriendListView)
         })
 
         this.bindButton(find("root/bottom/btnBag", this.node)!, () => {
 
-            uiManager.instance.showDialog(Const.Dialogs.BagNewLayer)
+            UiLayerService.instance.showDialog(Const.Dialogs.BagNewLayer)
         })
 
         this.bindButton(find("root/bottom/btnShop", this.node)!, () => {
 
-            uiManager.instance.showDialog(Const.Dialogs.ShopNewView)
+            UiLayerService.instance.showDialog(Const.Dialogs.ShopNewView)
         })
 
         this.bindButton(find("root/bottom/btnSkin", this.node)!, () => {
 
-            uiManager.instance.showDialog(Const.Dialogs.ZhuanshiView)
+            UiLayerService.instance.showDialog(Const.Dialogs.ZhuanshiView)
         })
 
 
 
 
         this.bindButton(this.buildListNode, () => {
-            uiManager.instance.showDialog(Const.Dialogs.build_list)
+            UiLayerService.instance.showDialog(Const.Dialogs.BuildListPanelController)
         })
         this.bindButtonNoAudio(this.menuBtnForMergeBoard, this.openMergeBoard);
 
         this.bindButton(find("root/LayoutRight/btnTujian", this.node)!, () => {
-            uiManager.instance.showDialog(Const.Dialogs.Tujian)
+            UiLayerService.instance.showDialog(Const.Dialogs.Tujian)
         })
 
         this.bindButton(find("root/LayoutRight/btndebug", this.node)!, () => {
-            uiManager.instance.showDialog(Const.Dialogs.DebugDialog)
+            UiLayerService.instance.showDialog(Const.Dialogs.DebugDialog)
         })
 
         find("root/LayoutRight/btndebug", this.node)!.active = Const.isOpenCheat
 
-        // this.bindButton(find("root/LayoutRight/btnSet", this.node)!, () => {
-        //     uiManager.instance.pushShowDialog(Const.Dialogs.SetDialog)
-        // })
+
+
+
 
         this.bindButton(find("root/LayoutRight/btnEmail", this.node)!, () => {
-            uiManager.instance.pushShowDialog(Const.Dialogs.EmailDialog)
+            UiLayerService.instance.pushShowDialog(Const.Dialogs.EmailDialog)
         })
 
         this.bindButton(find("root/LayoutLeft/btnFree", this.node)!, () => {
-            uiManager.instance.showDialog(Const.Dialogs.ActivityDialog)
-            //  uiManager.instance.showDialog(Const.Dialogs.GodWealthLayer);
+            UiLayerService.instance.showDialog(Const.Dialogs.ActivityDialog)
+
         })
 
         this.bindButton(find("root/LayoutLeft/btnfirstRecharge", this.node)!, () => {
-            uiManager.instance.showDialog(Const.Dialogs.firstRecharge)
+            UiLayerService.instance.showDialog(Const.Dialogs.FirstRechargeDialogController)
         })
 
         this.bindButton(find("root/LayoutLeft/btnMonthCard", this.node)!, () => {
-            uiManager.instance.showDialog(Const.Dialogs.MonthCard)
+            UiLayerService.instance.showDialog(Const.Dialogs.MonthCard)
         })
 
         this.bindButton(find("root/LayoutRight/btnRoleInfo", this.node)!, () => {
-            uiManager.instance.showDialog(Const.Dialogs.FeijiuDialog)
+            UiLayerService.instance.showDialog(Const.Dialogs.FeijiuDialog)
         })
 
         this.bindButton(find("root/LayoutLeft/btnSale", this.node)!, () => {
-            uiManager.instance.showDialog(Const.Dialogs.RewardActivityDialog)
+            UiLayerService.instance.showDialog(Const.Dialogs.RewardActivityDialog)
         })
 
         this.bindButton(find("root/btnsRight/btnTreasure", this.node)!, () => {
             if (TreasureModel.receiveNum >= 6) {
-                uiManager.instance.showDialog(Const.Dialogs.TreasureFinishDialog)
+                UiLayerService.instance.showDialog(Const.Dialogs.TreasureFinishDialog)
             } else {
-                uiManager.instance.showDialog(Const.Dialogs.TreasureDialog)
+                UiLayerService.instance.showDialog(Const.Dialogs.TreasureDialog)
             }
-            //uiManager.instance.showDialog(Const.Dialogs.TreasureDialog)
+
         })
 
 
         this.bindButton(find("root/top/btnSign", this.node)!, () => {
 
-            // let params: any = { propList: "20011,30055,20022,20013,30057,20013", shareName: "胖啾啾啊", shareUserId: "444456302229491712" }
-            // if (params && params.shareUserId) {
-            //     let propList = params.propList
-            //     params.propList = propList.split(",")
-            //     console.error("params2 = ", params)
-            //     uiManager.instance.showDialog(Const.Dialogs.GodWealthOther, { params: params });
-            // }
-            uiManager.instance.showDialog(Const.Dialogs.SignDialog)
-            //   uiManager.instance.showDialog(Const.Dialogs.GodWealthLayer);
-            //   uiManager.instance.showDialog(Const.Dialogs.GodWealthOther, { params: { shareUserId: "443344673366511616", shareName: "胖胖�?, propList: [40028, 50017, 50012, 40027, 50013, 20022] } });
+
+
+
+
+
+
+
+            UiLayerService.instance.showDialog(Const.Dialogs.SignDialog)
+
+
         })
 
         find("root/top/btnSign", this.node)!.active = SignUtil.getInstance().getCurSignDay() > 0
 
         this.bindButton(find("root/btnsRight/btnSeasonPass", this.node)!, () => {
-            // uiManager.instance.showDialog(Const.Dialogs.SeasonRoadmapLayer);
-            uiManager.instance.showDialog(Const.Dialogs.SeasonPassLayer);
+
+            UiLayerService.instance.showDialog(Const.Dialogs.SeasonPassLayer);
         });
 
         this.addPrefab(Const.Prefabs.Main_top, find("root", this.node)!, null!, { flag: main_top.ShowLevel | main_top.ShowCoin | main_top.ShowPower | main_top.ShowDiamond });
-        //  uiManager.instance.showDialog(Const.Prefabs.Main_top,{ flag: main_top.ShowLevel | main_top.ShowCoin | main_top.ShowPower | main_top.ShowDiamond });
-        uiManager.instance.showDialog(Const.Dialogs.fly_tip)
+
+        UiLayerService.instance.showDialog(Const.Dialogs.FloatingTipPanelController)
 
         UtilPub.breathScale(this.starNode, 1.1)
         aiRobot.initRobot();
@@ -181,15 +181,15 @@ export class main extends BaseView {
         this.initBtns()
         this.updateTreasure()
 
-        userData._showPropTujianRed = userData.checkTujianRedPoint()
-        userData._showSceneTujianRed = userData.checkTujianSceneRedPoint()
+        playerDataStore._showPropTujianRed = playerDataStore.checkTujianRedPoint()
+        playerDataStore._showSceneTujianRed = playerDataStore.checkTujianSceneRedPoint()
 
         redPointManager.setRedpoint(find("root/LayoutRight/btnEmail", this.node)!, RPointEvent.RPM_Email, false)
         redPointManager.setRedpoint(find("root/LayoutRight/btnTujian", this.node)!, RPointEvent.RPM_Tujian, false)
         GamePlatform.track("enter main scene")
 
         this.scheduleOnce(() => {
-            mergeBoardModel.btnMergeBoardPos = UtilPub.convertToWorldSpace(find("root/bottom/mergeBoard", this.node)!);
+            mergeBoardStateStore.btnMergeBoardPos = UtilPub.convertToWorldSpace(find("root/bottom/mergeBoard", this.node)!);
         });
 
     }
@@ -213,11 +213,11 @@ export class main extends BaseView {
     }
 
     initBtns() {
-        // if (w) {
+
         find("root/LayoutLeft/btnMonthCard", this.node)!.active = false
         find("root/LayoutLeft/btnfirstRecharge", this.node)!.active = false
         find("root/LayoutLeft/btnSale", this.node)!.active = false
-        //   }
+
     }
 
     unlockSystemRet() {
@@ -226,10 +226,10 @@ export class main extends BaseView {
 
     refreshUnlockLayer() {
         let btnSeasonPass = find("root/btnsRight/btnSeasonPass", this.node)!;
-        // btnSeasonPass.active = false;
-        // return;
 
-        if (playerModel.seasonOpen) {
+
+
+        if (seasonProgressStore.seasonOpen) {
             btnSeasonPass.active = true;
         } else {
             btnSeasonPass.active = false;
@@ -237,7 +237,7 @@ export class main extends BaseView {
     }
 
     refreshHandLayer() {
-        let handIndex = mergeBoardModel.getHandIndex();
+        let handIndex = mergeBoardStateStore.getHandIndex();
         if (handIndex >= handIndexs.firstCompose && handIndex <= handIndexs.goBuildScene) {
             handIndex = handIndexs.enterMergeBoard;
         } else if (handIndex == handIndexs.boardCardPanel) {
@@ -247,7 +247,7 @@ export class main extends BaseView {
             let obj: any = {};
             obj.id = handIndex;
             obj.node = this.menuBtnForMergeBoard;
-            uiManager.instance.showDialog(Const.Dialogs.HandLayer, obj);
+            UiLayerService.instance.showDialog(Const.Dialogs.HandLayer, obj);
         }
     }
 
@@ -272,14 +272,14 @@ export class main extends BaseView {
             } else {
                 find("root/LayoutLeft/btnfirstRecharge", this.node)!.active = true
                 if (parseInt(data.val + "") == 1) {
-                    // --- 添加红点
+
                 }
             }
         }
     }
 
     chgGreenStar() {
-        this.buildListStarLabel.string = userData.greenStar + ""
+        this.buildListStarLabel.string = playerDataStore.greenStar + ""
     }
 
     SceneNodeScale() {
@@ -295,15 +295,15 @@ export class main extends BaseView {
     }
 
     openMergeBoard() {
-        if (mergeBoardModel.getHandIndex() == handIndexs.enterMergeBoard
-            || mergeBoardModel.getHandIndex() == handIndexs.returnMergeBoardLayer
+        if (mergeBoardStateStore.getHandIndex() == handIndexs.enterMergeBoard
+            || mergeBoardStateStore.getHandIndex() == handIndexs.returnMergeBoardLayer
         ) {
-            mergeBoardModel.addHandIndex();
-            mergeBoardModel.closeHandLayer();
+            mergeBoardStateStore.addHandIndex();
+            mergeBoardStateStore.closeHandLayer();
         }
-        UtilPub.log("------------handIndex Main0", mergeBoardModel.getHandIndex())
-        audioManager.instance.playSound(Const.Audio.sceneChange);
-        uiManager.instance.showDialog(Const.Dialogs.MergeBoardLayer);
+        UtilPub.log("------------handIndex Main0", mergeBoardStateStore.getHandIndex())
+        AudioPlaybackService.instance.playSound(Const.Audio.sceneChange);
+        UiLayerService.instance.showDialog(Const.Dialogs.MergeBoardLayer);
     }
 
 

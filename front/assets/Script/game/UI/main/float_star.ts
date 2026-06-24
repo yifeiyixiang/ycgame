@@ -1,14 +1,14 @@
 import { find, Label, v3, _decorator } from 'cc';
 import { Const } from '../../../config/Const';
 import { GBuildType } from '../../../config/global';
-import { comm } from '../../../easyFramework/mgr/comm';
-import { uiManager } from '../../../easyFramework/mgr/uiManager';
+import { BaseUiComponent } from '../../../easyFramework/mgr/comm';
+import { UiLayerService } from '../../../easyFramework/mgr/uiManager';
 import { UtilPub } from '../../../easyFramework/utils/UtilPub';
-import { mergeBoardModel } from '../../comm/mergeBoardModel';
+import { mergeBoardStateStore } from '../../comm/mergeBoardModel';
 const { ccclass, property } = _decorator;
 
 @ccclass('float_star')
-export class float_star extends comm {
+export class FloatingStarController extends BaseUiComponent {
     get root() { return find("root", this.node)! }
     get StarLabel() { return find("root/starLabel", this.node)!.getComponent(Label)! }
 
@@ -33,9 +33,9 @@ export class float_star extends comm {
     }
 
     onClickBtnPrompt() {
-        //id 和 scene_item表id  type为GSceneItemType.room 或者 other，
-        mergeBoardModel.closeHandLayer();
-        uiManager.instance.showDialog(Const.Dialogs.build_prompt, { id: this.id, type: this.type })
+
+        mergeBoardStateStore.closeHandLayer();
+        UiLayerService.instance.showDialog(Const.Dialogs.BuildPromptDialogController, { id: this.id, type: this.type })
     }
 
 }

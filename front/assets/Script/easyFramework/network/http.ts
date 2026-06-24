@@ -1,26 +1,26 @@
 
-export default class Ht1tp {
-	/**
-	 * 单例
-	 */
-	private static _instance: Ht1tp;
+export default class HttpTransport {
 
-	public static getInstance(): Ht1tp {
+
+
+	private static _instance: HttpTransport;
+
+	public static getInstance(): HttpTransport {
 		if (!this._instance) {
-			this._instance = new Ht1tp();
+			this._instance = new HttpTransport();
 		}
 		return this._instance;
 	}
 
-	/**
-	 * post请求
-	 * @param {string} url
-	 * @param {object} params
-	 * @param {function} callback
-	 */
+
+
+
+
+
+
 	ht1tpPost(url: string, params: any, callback: Function) {
-		// cc.myGame.gameUi.onShowLockScreen();
-		
+
+
 	}
 
 

@@ -1,38 +1,38 @@
 import { _decorator, Component, Node, tween, instantiate,Label, Sprite,SpriteFrame } from 'cc';
 import BaseView from '../../../easyFramework/mgr/BaseView';
-import tables from '../../../easyFramework/other/tables';
+import TableDataService from '../../../easyFramework/other/tables';
 import { Const } from '../../../config/Const';
-import { ShopCfg } from '../../../../typeScript/gameData';
-import { HttpClient } from '../../../../typeScript/net/HttpClient';
-import { userData } from '../../comm/UserData';
+import { ShopConfigRecord } from '../../../../typeScript/gameData';
+import { GameHttpClient } from '../../../../typeScript/net/HttpClient';
+import { playerDataStore } from '../../comm/UserData';
 const { ccclass, property } = _decorator;
 
 @ccclass('ActivityView')
 export class ActivityView extends BaseView {
 
     @property({ type: Sprite })
-    bg: Sprite = null;              //背景
+    bg: Sprite = null;
 
     @property({ type: Node })
-    rewardNode: Node = null;        //奖励
+    rewardNode: Node = null;
 
     @property({ type: Node })
-    btnStart: Node = null;          //开始按钮
+    btnStart: Node = null;
 
     @property({ type: Node })
-    tipNode: Node = null;           //提示
+    tipNode: Node = null;
 
     @property({ type: Node })
-    ad: Node = null;           
+    ad: Node = null;
 
     @property({ type: Sprite })
-    rewardIcon: Sprite = null;           //奖励图标
+    rewardIcon: Sprite = null;
 
     @property({ type: Label })
-    rewardNumLab: Label = null;           //奖励数量
+    rewardNumLab: Label = null;
 
     @property({ type: Label })
-    rewardTipLab: Label = null;           //奖励进度提示
+    rewardTipLab: Label = null;
 
     @property({ type: Node })
     btnClose: Node = null;
@@ -50,14 +50,14 @@ export class ActivityView extends BaseView {
     giftArr: SpriteFrame[] = [];
 
 
-    private type = 0; // 0 1 2 3
+    private type = 0;
 
     onLoad() {
         this.bindButton(this.btnStart, (this.startTurn));
 
         this.bindButton(this.btnClose, this.close);
 
-        this.type = userData.activity-1;
+        this.type = playerDataStore.activity-1;
     }
 
     onEnable(){
@@ -65,7 +65,7 @@ export class ActivityView extends BaseView {
     }
 
     refresh(){
-        //this.setSpriteFrame(this.rewardIcon, Const.resPath.icon + this.shopData.icon, () => { }, 60)
+
         this.bg.spriteFrame = this.bgArr[this.type];
         this.btnStart.getComponent(Sprite).spriteFrame = this.btnArr[this.type];
 
@@ -91,28 +91,28 @@ export class ActivityView extends BaseView {
             this.btnStart.setPosition(-124, -337);
             this.tipNode.setPosition(-103, -502);
         }
-        
-        let activityData = tables.ins().getTableValueByID(Const.Tables.new_activityPrpgress, userData.userInfodata.activity_progress);
+
+        let activityData = TableDataService.ins().getTableValueByID(Const.Tables.new_activityPrpgress, playerDataStore.userInfodata.activity_progress);
         if (activityData){
             this.rewardIcon.node.active = true;
             if (activityData.task_gift.length > 0){
                 let proid = activityData.task_gift[0][0];
                 let countu = activityData.task_gift[0][1];
-                let dataNew = tables.ins().getTableValueByID(Const.Tables.new_prop, proid)
+                let dataNew = TableDataService.ins().getTableValueByID(Const.Tables.new_prop, proid)
 
                 this.setSpriteFrame(this.rewardIcon.getComponent(Sprite)!, Const.resPath.icon + dataNew.icon, () => { }, 60)
                 this.rewardNumLab.string = "x" + countu + "";
             }
-            
-            if (userData.userInfodata.activity_count >= activityData.need_draw){
+
+            if (playerDataStore.userInfodata.activity_count >= activityData.need_draw){
                 this.btnReceive.active = true;
                 this.rewardTipLab.string = "";
             }
             else{
                 this.btnReceive.active = false;
-                this.rewardTipLab.string = "再拆" + (activityData.need_draw - userData.userInfodata.activity_count) + "个可领取";
+                this.rewardTipLab.string = "再拆" + (activityData.need_draw - playerDataStore.userInfodata.activity_count) + "个可领取";
             }
-            
+
         }else{
             this.rewardIcon.node.active = false;
             this.rewardNumLab.string = "";
@@ -120,10 +120,10 @@ export class ActivityView extends BaseView {
             this.btnReceive.active = false;
             this.rewardTipLab.string = "本期活动奖励已经全部领取";
         }
-        
+
     }
 
-    //抽奖
+
     startTurn() {
 
         this.btnStart.active = false;
@@ -141,14 +141,14 @@ export class ActivityView extends BaseView {
         this.scheduleOnce(()=>{
             this.btnStart.active = true;
             this.btnClose.active = true;
-            HttpClient.getInstance().sendactivity(()=>{
+            GameHttpClient.getInstance().sendactivity(()=>{
                 this.refresh();
             });
         }, len * 0.2);
     }
 
     receiveClick(){
-        HttpClient.getInstance().sendProgressaward(userData.userInfodata.activity_progress, (res:any)=>{
+        GameHttpClient.getInstance().sendProgressaward(playerDataStore.userInfodata.activity_progress, (res:any)=>{
             this.refresh();
         })
     }
@@ -166,7 +166,7 @@ export class ActivityView extends BaseView {
     }
 
     update(deltaTime: number) {
-        
+
     }
 }
 

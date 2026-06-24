@@ -4,9 +4,9 @@ import { GameStorage } from '../mgr/gameStorage';
 import { GNetUrl } from './conf';
 const { ccclass, property } = _decorator;
 
-/**
- * TODO 修改为从服务端获取时间点，设置当前时间，然后用update方法进行累加。
- */
+
+
+
 @ccclass('TimeCtrJSF')
 export default class TimeCtrJSF extends Component {
 
@@ -22,13 +22,13 @@ export default class TimeCtrJSF extends Component {
 
     urls: string[] = [
 
-     
+
     ];
 
-    public serverTime: number = 0; //毫秒的时间
+    public serverTime: number = 0;
     public diffServerTime: number = 0;
 
-    //是否是服务端时间
+
     public isRunServerTime: boolean = false;
     public loginTime: string = '';
 
@@ -38,16 +38,16 @@ export default class TimeCtrJSF extends Component {
 
     UpdateServerTime(time: number) {
         director.getScheduler().unschedule(this.updateTimer, this)
-        // time = new Date().getTime();// 修改服务器时间为本地进行测试 !!
+
         this.serverTime = time;
-        // console.log("date:",new Date(time))
+
         director.getScheduler().schedule(this.updateTimer, this, 1);
-        // let now = new Date(time);
-        // console.log("now:",now,now.getFullYear(),now.getMonth()+1,now.getDate(),"星期:"+now.getDay())
+
+
     }
 
     UpdateServerTimeByHeartbeat(time: number) {
-        // console.warn("---时间同步----", time)
+
         this.serverTime = time;
     }
 
@@ -56,13 +56,13 @@ export default class TimeCtrJSF extends Component {
     }
 
     public updateTimer() {
-        // this.serverTime += 1000;
+
         this.isRunServerTime = true;
-        // 检查是否隔天了..
-        // if (App.center.GetNowDateString() != this.loginTime && this.loginTime != '') {
-        //     App.Instance.InitCtr();
-        //     this.loginTime = App.center.GetNowDateString();
-        // }
+
+
+
+
+
     }
 
     get ServerTime() {
@@ -93,12 +93,12 @@ export default class TimeCtrJSF extends Component {
     }
 
 
-    /**
-     * 同一上午或者下午
-     * @param t1 
-     * @param t2 
-     * @returns 
-     */
+
+
+
+
+
+
     public static isSameHalfDay(t1: number, t2: number) {
         let time1 = new Date(t1)
         let time2 = new Date(t2)
@@ -138,7 +138,7 @@ export default class TimeCtrJSF extends Component {
         return false
     }
 
-    //public static 
+
 
     public static isMorningTime(t1: number) {
         let time1 = new Date(t1)

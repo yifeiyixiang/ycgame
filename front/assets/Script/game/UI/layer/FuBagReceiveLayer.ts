@@ -1,8 +1,8 @@
 import { Button, find, Label, Node, Sprite, tween, UITransform, v3, Vec3, _decorator } from 'cc';
 import { Const } from '../../../config/Const';
 import BaseView from '../../../easyFramework/mgr/BaseView';
-import tables from '../../../easyFramework/other/tables';
-import { mergeBoardModel } from '../../comm/mergeBoardModel';
+import TableDataService from '../../../easyFramework/other/tables';
+import { mergeBoardStateStore } from '../../comm/mergeBoardModel';
 const { ccclass, property } = _decorator;
 
 @ccclass('FuBagReceiveLayer')
@@ -41,14 +41,14 @@ export class FuBagReceiveLayer extends BaseView {
     onClickPropItem(btn: Button) {
         // @ts-ignore
         let propRow = btn.node.propRow;
-        mergeBoardModel.openPropInfoLayer(propRow.id);
+        mergeBoardStateStore.openPropInfoLayer(propRow.id);
     }
 
     onClickBtnSure() {
         for (let index = 0; index < this._rewardList.length; index++) {
             const element = this._rewardList[index];
             console.log("prop : " + element[0] + "  num: " + element[1])
-            mergeBoardModel.addPropNum(element[0], element[1], this.node.getComponent(UITransform)!.convertToWorldSpaceAR(Vec3.ZERO))
+            mergeBoardStateStore.addPropNum(element[0], element[1], this.node.getComponent(UITransform)!.convertToWorldSpaceAR(Vec3.ZERO))
         }
         this.close();
     }
@@ -57,12 +57,12 @@ export class FuBagReceiveLayer extends BaseView {
         let item = find("root/item" + this._curIndex, this.node)!
         item.active = true
 
-        let fuBagData = tables.ins().getTableValueByID(Const.Tables.fuBag, this.bagId).price
+        let fuBagData = TableDataService.ins().getTableValueByID(Const.Tables.fuBag, this.bagId).price
         let curReward = fuBagData[Math.floor(fuBagData.length * Math.random())]
         let propId = curReward[0]
         let num = curReward[1]
         this._rewardList.push(curReward)
-        let propData = tables.ins().getTableValueByID(Const.Tables.prop, propId)
+        let propData = TableDataService.ins().getTableValueByID(Const.Tables.prop, propId)
         this.setSpriteFrame(find("icon", item)!.getComponent(Sprite)!, Const.resPath.icon + propData.icon, undefined, 100)
         find("num", item)!.getComponent(Label)!.string = "x" + num
         tween(item).set({ scale: v3(0, 0, 0) }).to(0.2, { scale: v3(1.1, 1.1, 1.1) }).to(0.1, { scale: v3(1, 1, 1) }).call(() => {

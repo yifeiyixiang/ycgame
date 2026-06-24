@@ -4,7 +4,7 @@ import GD from '../../../config/GD';
 import BaseView from '../../../easyFramework/mgr/BaseView';
 import { UtilPub } from '../../../easyFramework/utils/UtilPub';
 import { AnimationCtrl } from '../../comm/AnimationCtrl';
-import { mergeBoardModel } from '../../comm/mergeBoardModel';
+import { mergeBoardStateStore } from '../../comm/mergeBoardModel';
 import { handData } from '../../data/handData';
 import { GamePlatform } from '../../platform/GamePlatform';
 const { ccclass, property } = _decorator;
@@ -59,13 +59,13 @@ export class HandLayer extends BaseView {
 
     canvasTouchEvent() {
         if (this.obj.weak) {
-            // mergeBoardModel.addHandIndex();
+
             this.close()
         }
     }
 
     show(obj: any) {
-        // UtilPub.log("HandLayer show obj:", obj, this.id);
+
 
 
         this.obj = obj
@@ -106,18 +106,18 @@ export class HandLayer extends BaseView {
         let data = handData[id];
         let bottom = data.dialogBottom;
 
-        // 引导区域
+
         Tween.stopAllByTarget(this.maskNode);
 
         let pos = UtilPub.convertToWorldSpace(node);
         pos = UtilPub.convertToNodeSpace(this.maskNode, pos);
         let ratio = 1;
         if (obj.isScene) {
-            // 场景像机视角适配
+
             let visibleSize = view.getVisibleSize();
             ratio = visibleSize.height * 0.5 / 1000;
 
-            // 偏移
+
             let referNode = obj.referNode;
             referNode = Const.CameraScene.node;
             let dx = node.worldPosition.x - referNode.worldPosition.x;
@@ -146,7 +146,7 @@ export class HandLayer extends BaseView {
         let areaTf = this.areaBgNode.getComponent(UITransform);
         tween(areaTf).to(0.3, { width: width + 10, height: height + 10 }).start();
 
-        // 引导文本
+
         this.dialogNode.active = false;
         if (data.content) {
             this.scheduleOnce(() => {
@@ -156,30 +156,30 @@ export class HandLayer extends BaseView {
                 }
                 this.infoNode.getComponent(RichText)!.string = "<color=#a47d63>" + data.content + "</color>";
                 if (data.dialogPos) {
-                    // 指定位置
+
                     this.dialogNode.position = data.dialogPos;
                 } else if (bottom) {
-                    // 放在指引区域下面
+
                     let dh = anchorY * height + this.dialogNode.getComponent(UITransform)!.height * 0.5 + 30;
                     this.dialogNode.position = v3(0, pos.y - dh);
                 } else {
-                    // 默认放在指引区域上面
+
                     let dh = (1 - anchorY) * height + this.dialogNode.getComponent(UITransform)!.height * 0.5 + 30;
                     this.dialogNode.position = v3(0, pos.y + dh);
                 }
-                // // 缩放特效
-                // Tween.stopAllByTarget(this.dialogNode);
-                // this.dialogNode.scale = v3(0.2, 0.2, 1);
-                // tween(this.dialogNode).to(0.2, { scale: v3(1.2, 1.2, 1) }).to(0.06, { scale: v3(1, 1, 1) }).start();
+
+
+
+
             }, 0.2);
         }
 
-        // 引导小手
+
         this.handNode.active = true;
         Tween.stopAllByTarget(this.handNode);
         this.handNode.getComponent(UIOpacity)!.opacity = 255;
         if (obj.startNode && obj.endNode) {
-            // 滑动
+
             let startNode = obj.startNode;
             let endNode = obj.endNode;
             Tween.stopAllByTarget(this.handNode);
@@ -201,7 +201,7 @@ export class HandLayer extends BaseView {
                 }
             }).union().repeatForever().start();
         } else {
-            // 点击
+
             let handPos = pos.clone();
             if (nodeHand) {
                 handPos = UtilPub.convertToWorldSpace(nodeHand);
@@ -210,9 +210,9 @@ export class HandLayer extends BaseView {
             this.handNode.position = handPos;
             this.handNode.getComponent(sp.Skeleton)!.paused = false;
             let clickName = "click";
-            // if (obj.click2) {
-            //     clickName = "click2";
-            // }
+
+
+
             this.handNode.getComponent(AnimationCtrl)!.playAnimation(clickName, true);
         }
 
@@ -240,16 +240,16 @@ export class HandLayer extends BaseView {
     }
 
     onClickBtnOver() {
-        let handIndex = mergeBoardModel.getHandIndex();
+        let handIndex = mergeBoardStateStore.getHandIndex();
         for (let i = handIndex; i < handData.length; i++) {
             GamePlatform.track("完成新手教程" + i);
         }
-        mergeBoardModel.setHandIndex(handData.length);
+        mergeBoardStateStore.setHandIndex(handData.length);
         this.close();
     }
 
     update(dt: number) {
-        // 保证在最顶层
+
         let chs = find("Canvas")!.children;
         if (chs.length > 0 && chs[chs.length - 1] != this.node) {
             let parent = this.node.parent;

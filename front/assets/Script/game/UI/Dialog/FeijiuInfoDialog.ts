@@ -2,8 +2,8 @@ import { _decorator, Node, Label, find, Sprite, SpriteFrame, tween, v3, UITransf
 import { Const } from '../../../config/Const';
 import { GSceneSkinState } from '../../../config/global';
 import BaseView from '../../../easyFramework/mgr/BaseView';
-import { uiManager } from '../../../easyFramework/mgr/uiManager';
-import tables from '../../../easyFramework/other/tables';
+import { UiLayerService } from '../../../easyFramework/mgr/uiManager';
+import TableDataService from '../../../easyFramework/other/tables';
 import { SceneData } from '../../comm/SceneData';
 const { ccclass, property } = _decorator;
 
@@ -26,7 +26,7 @@ export class FeijiuInfoDialog extends BaseView {
         let data = this._layerData.roleData
         this.setSpriteFrame(this.icon.getComponent(Sprite)!, Const.resPath.roleIcon + data.icon, undefined, 300)
 
-        let scene_skin = tables.ins().getTableValueByID(Const.Tables.scene_skin, data.skin)
+        let scene_skin = TableDataService.ins().getTableValueByID(Const.Tables.scene_skin, data.skin)
 
         let tmd = find("root/di1/tmd", this.node)!
         find("limitLabel", tmd)!.getComponent(Label)!.string = "购买【" + scene_skin.name + "】"

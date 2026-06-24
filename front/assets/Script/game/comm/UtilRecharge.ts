@@ -1,6 +1,6 @@
 import { _decorator } from "cc";
 import { Const } from "../../config/Const";
-import tables from "../../easyFramework/other/tables";
+import TableDataService from "../../easyFramework/other/tables";
 
 const { ccclass, property } = _decorator;
 
@@ -8,7 +8,7 @@ const { ccclass, property } = _decorator;
 export class UtilRecharge {
 
     public static doShopPay(shopid: number) {
-        let curRecharge = tables.ins().getTableValueByID(Const.Tables.recharge, shopid)
-        
+        let curRecharge = TableDataService.ins().getTableValueByID(Const.Tables.recharge, shopid)
+
     }
 }

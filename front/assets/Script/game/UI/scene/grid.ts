@@ -1,18 +1,18 @@
 import { _decorator, Component, Node, utils, find, Label } from 'cc';
 import { Const } from '../../../config/Const';
 import { GGridType } from '../../../config/global';
-import { comm } from '../../../easyFramework/mgr/comm';
+import { BaseUiComponent } from '../../../easyFramework/mgr/comm';
 import { UtilPub } from '../../../easyFramework/utils/UtilPub';
 import { UtilGame } from '../../comm/UtilGame';
 import { UtilScene } from '../../comm/UtilScene';
 const { ccclass, property } = _decorator;
 
 @ccclass('grid')
-export class grid extends comm {
+export class grid extends BaseUiComponent {
 
     x:number=0
     y:number=0
-    gridType:GGridType=GGridType.green 
+    gridType:GGridType=GGridType.green
 
     get green(){return find("green", this.node)!}
     get red(){return find("red", this.node)!}
@@ -27,12 +27,12 @@ export class grid extends comm {
             item.active = (item.name==this.gridType)
         })
         this.label.node.active = Const.isDebug
-        this.label.string = (this.x-Const.OriOffset.x)+","+(this.y-Const.OriOffset.y) 
+        this.label.string = (this.x-Const.OriOffset.x)+","+(this.y-Const.OriOffset.y)
     }
 
     start() {
         if(Const.isDebug){
-            // this.bindButton(this.node, this.clickGrid)
+
         }
     }
 

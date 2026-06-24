@@ -1,13 +1,13 @@
 import { find, Label, Node, Sprite, SpriteFrame, tween, v3, _decorator } from 'cc';
 import { Const } from '../../../config/Const';
 import { RoleSex } from '../../../config/global';
-import { audioManager } from '../../../easyFramework/mgr/audioManager';
+import { AudioPlaybackService } from '../../../easyFramework/mgr/audioManager';
 import BaseView from '../../../easyFramework/mgr/BaseView';
-import { resourceUtil } from '../../../easyFramework/mgr/resourceUtil';
-import { uiManager } from '../../../easyFramework/mgr/uiManager';
-import tables from '../../../easyFramework/other/tables';
+import { ResourceLoaderService } from '../../../easyFramework/mgr/resourceUtil';
+import { UiLayerService } from '../../../easyFramework/mgr/uiManager';
+import TableDataService from '../../../easyFramework/other/tables';
 import { aiRobot } from '../../comm/AIRobot';
-import { userData } from '../../comm/UserData';
+import { playerDataStore } from '../../comm/UserData';
 import GD from '../../../config/GD';
 import { GamePlatform } from '../../platform/GamePlatform';
 
@@ -37,16 +37,16 @@ export class UserinfoView extends BaseView {
         this.bindButton(find("root/btnClose", this.node)!, this.popClose)
         this.bindButton(find("root/btnduihuan", this.node)!, this.openDuihuanMa)
         this.bindButton(find("root/privacyLabel", this.node)!, ()=>{
-            uiManager.instance.showDialog(Const.Dialogs.PrivacyDialog)
+            UiLayerService.instance.showDialog(Const.Dialogs.PrivacyDialog)
         })
 
         this.bindButton(find("root/itembg/btnBianji", this.node)!, ()=>{
-            uiManager.instance.showDialog(Const.Dialogs.ModifyDailog)
+            UiLayerService.instance.showDialog(Const.Dialogs.ModifyDailog)
         })
 
-        // this.bindButton(this.avatarBg, ()=>{
-        //     uiManager.instance.showDialog(Const.Dialogs.AvatarListView)
-        // })
+
+
+
 
 
         this.bindButton(this.titleNode, this.onClickTitle);
@@ -62,18 +62,18 @@ export class UserinfoView extends BaseView {
 
     show(args: any) {
         super.show(args)
-        this.nameLabel.getComponent(Label)!.string = userData.roleName
-        this.IDLabel.getComponent(Label)!.string = "ID:" + userData.roleID
+        this.nameLabel.getComponent(Label)!.string = playerDataStore.roleName
+        this.IDLabel.getComponent(Label)!.string = "ID:" + playerDataStore.roleID
         GamePlatform.track("查看设置")
 
         this.verLabel.string = "版本号：" + Const.appBuildVersion + "_" + Const.hotupdateVersion
 
-        if (userData.roleAvatar != "") {
-            //动态加载图片的方法
-            resourceUtil.setRemoteImage(userData.roleAvatar, this.avatarNode.getComponent(Sprite)!, () => { })
+        if (playerDataStore.roleAvatar != "") {
+
+            ResourceLoaderService.setRemoteImage(playerDataStore.roleAvatar, this.avatarNode.getComponent(Sprite)!, () => { })
         }
 
-        let item = tables.ins().getTableValueByID(Const.Tables.avatarStyle, userData.avatarLookId)
+        let item = TableDataService.ins().getTableValueByID(Const.Tables.avatarStyle, playerDataStore.avatarLookId)
         if (item.type == RoleSex.men) {
             this.avatarBg.getComponent(Sprite)!.spriteFrame = this.avatarBg1
         } else {
@@ -87,19 +87,19 @@ export class UserinfoView extends BaseView {
     }
 
     refresh(){
-        this.nameLabel.getComponent(Label)!.string = userData.roleName
+        this.nameLabel.getComponent(Label)!.string = playerDataStore.roleName
 
-        if (userData.roleAvatar != "") {
-            //动态加载图片的方法
-            resourceUtil.setRemoteImage(userData.roleAvatar, this.avatarNode.getComponent(Sprite)!, () => { })
+        if (playerDataStore.roleAvatar != "") {
+
+            ResourceLoaderService.setRemoteImage(playerDataStore.roleAvatar, this.avatarNode.getComponent(Sprite)!, () => { })
         }
     }
 
     updateInfo() {
-        this.nameLabel.getComponent(Label)!.string = userData.roleName
-        this.IDLabel.getComponent(Label)!.string = "ID:" + userData.roleID
+        this.nameLabel.getComponent(Label)!.string = playerDataStore.roleName
+        this.IDLabel.getComponent(Label)!.string = "ID:" + playerDataStore.roleID
 
-        let item = tables.ins().getTableValueByID(Const.Tables.avatarStyle, userData.avatarLookId)
+        let item = TableDataService.ins().getTableValueByID(Const.Tables.avatarStyle, playerDataStore.avatarLookId)
         if (item.type == RoleSex.men) {
             this.avatarBg.getComponent(Sprite)!.spriteFrame = this.avatarBg1
         } else {
@@ -108,15 +108,15 @@ export class UserinfoView extends BaseView {
     }
 
     openDuihuanMa() {
-        audioManager.instance.playSound(Const.Audio.btn)
+        AudioPlaybackService.instance.playSound(Const.Audio.btn)
 
         GamePlatform.track("open settings redeem")
-        uiManager.instance.pushShowDialog(Const.Dialogs.CodeDialog)
+        UiLayerService.instance.pushShowDialog(Const.Dialogs.CodeDialog)
     }
 
     openRoleInfo() {
-        audioManager.instance.playSound(Const.Audio.btn)
-        uiManager.instance.pushShowDialog(Const.Dialogs.RoleInfoDialog)
+        AudioPlaybackService.instance.playSound(Const.Audio.btn)
+        UiLayerService.instance.pushShowDialog(Const.Dialogs.RoleInfoDialog)
     }
 
     onClickTitle() {
@@ -125,7 +125,7 @@ export class UserinfoView extends BaseView {
         this.scheduleOnce(this.resetClickCount, 3);
         if (this.clickCount >= 5) {
             this.close();
-            uiManager.instance.showDialog(Const.Dialogs.GMInputLayer);
+            UiLayerService.instance.showDialog(Const.Dialogs.GMInputLayer);
             this.clickCount = 0;
             this.unschedule(this.resetClickCount);
         }

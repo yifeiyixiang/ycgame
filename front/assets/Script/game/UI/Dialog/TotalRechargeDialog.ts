@@ -1,10 +1,10 @@
 import { _decorator, Node, Sprite, Label, find } from 'cc';
 import { Const } from '../../../config/Const';
 import BaseView from '../../../easyFramework/mgr/BaseView';
-import tables from '../../../easyFramework/other/tables';
+import TableDataService from '../../../easyFramework/other/tables';
 import { CdComponent, CDType } from '../../../easyFramework/utils/CdComponent';
-import { mergeBoardModel } from '../../comm/mergeBoardModel';
-import { userData } from '../../comm/UserData';
+import { mergeBoardStateStore } from '../../comm/mergeBoardModel';
+import { playerDataStore } from '../../comm/UserData';
 import { PropItem, PropItemFlag } from './PropItem';
 const { ccclass, property } = _decorator;
 
@@ -31,14 +31,14 @@ export class TotalRechargeDialog extends BaseView {
         super.show(args)
         this._activityData = this._layerData.activityData
         this.initShop(this._activityData.typeson)
-        //  TimeCtr.isSameWeek(TimeCtr.GetInstance().ServerTime,TimeCtr.GetInstance().ServerTime + 1440*60000)
+
     }
 
     initShop(type: number) {
-        //let activityData = tables.ins().getTableValueByID(Const.Tables.saleshop_totalRecharge, type)
-        let lockData = tables.ins().getTableValueByID(Const.Tables.lockActivity_item, this._activityData.lockType)
+
+        let lockData = TableDataService.ins().getTableValueByID(Const.Tables.lockActivity_item, this._activityData.lockType)
         find("root/timelabel", this.node)!.getComponent(CdComponent)!.setCD(CDType.CDCondition, lockData.dataKey, lockData.activityTime)
-        let shopdata = tables.ins().getTableValuesByType(Const.Tables.saleshop_RechargeReward, "type", this._activityData.typeson)
+        let shopdata = TableDataService.ins().getTableValuesByType(Const.Tables.saleshop_RechargeReward, "type", this._activityData.typeson)
         this.titlelabel.string = this._activityData.typename
         this.setScrollViewData(this.dataContent, shopdata, this.item, this.initItem, this)
     }
@@ -54,23 +54,23 @@ export class TotalRechargeDialog extends BaseView {
         find("infoLabel", itemUi)!.getComponent(Label)!.string = data.typename
         let btnFree = find("btnFree", itemUi)!
         let receivelabel = find("receivelabel", itemUi)!
-        let receiveNum = userData.getActivityReceiveTime(data.dataKey)
+        let receiveNum = playerDataStore.getActivityReceiveTime(data.dataKey)
         if (receiveNum < data.LimitTime) {
             btnFree.active = true
             receivelabel.active = false
             self.addButtonHander(btnFree, self.node, "TotalRechargeDialog", "onClickFreeSaleShop", data)
         } else {
             btnFree.active = false
-            receivelabel.active = true 
+            receivelabel.active = true
         }
     }
 
     onClickFreeSaleShop(event: any, data: any) {
         data.reward.forEach((element: any) => {
-            mergeBoardModel.addPropNum(element[0], element[1])
+            mergeBoardStateStore.addPropNum(element[0], element[1])
         });
-        userData.setActivityReceiveTime(data.dataKey)
-        // this.initShop(data.type)
+        playerDataStore.setActivityReceiveTime(data.dataKey)
+
         this.initItem(event.target.parent, data, 0, this)
     }
 }

@@ -14,13 +14,13 @@ import { UtilScene } from '../../comm/UtilScene';
 const { ccclass, property } = _decorator;
 
 @ccclass('prompt_sure')
-export class prompt_sure extends BaseView {
-    //顶部道具标题
+export class ConfirmPromptDialogController extends BaseView {
+
     get titleLabel() { return find("root/titleLabel", this.node)!.getComponent(Label)! }
     get contentLabel() { return find("root/contentLabel", this.node)!.getComponent(Label)! }
     get btnLabel() { return find("root/btnGreenbg/btnLabel", this.node)!.getComponent(Label)! }
     get btnGreenBg() { return find("root/btnGreenbg", this.node)! }
-    
+
     cb:Function = null!
     type:GPromptType =GPromptType.blockAccount
     isStartReconnect:boolean = false
@@ -30,20 +30,20 @@ export class prompt_sure extends BaseView {
         director.on(GEvent.ws_open, this.onWsOpen, this);
         this.bindButton(this.btnGreenBg, () => {
             if(this.type==GPromptType.reconnect){
-                this.isStartReconnect = true 
+                this.isStartReconnect = true
                 this.emit(GD.event.showTip, {msg: "尝试连接服务器！"})
                 this.tryConnect()
-              
+
             }else if(this.type==GPromptType.blockAccount ||
-                this.type==GPromptType.loginOccupy || 
-                this.type==GPromptType.loginExpired || 
+                this.type==GPromptType.loginOccupy ||
+                this.type==GPromptType.loginExpired ||
                 this.type==GPromptType.unkown){
-               
+
                 this.cb && this.cb()
                 game.end()
 
             }
-           
+
         })
     }
 
@@ -53,45 +53,45 @@ export class prompt_sure extends BaseView {
 
     show(args: any) {
         this.isStartReconnect = false
-        // super.show(args)
-        this.type = args.type 
+
+        this.type = args.type
         this.cb = args.cb
         this.contentLabel.string = args.content
 
-        // if(this.type==GPromptType.reconnect){
-        //     this.isStartReconnect = true 
-        // }
+
+
+
     }
 
     close(){
 
     }
 
-    //socket链接后发起登录
+
     onWsOpen(){
         console.warn("socket成功后----------自动重新登录")
         this.restartGame()
-        // if(WECHAT){
-        //     // ServerCtrJSF.GetInstance().wxLoginBegin()
-        // }else{
-        //     ServerCtrJSF.GetInstance().reqUniqueLoginByAccount(ServerCtrJSF.GetInstance().Account)
-        // }
+
+
+
+
+
     }
 
     tryConnect(){
-      
-        // if(WmSocketJSF.getInstance().isConnected() == true && ServerCtrJSF.GetInstance().isLogin){
-        //     this.node.active = false
-        //     UtilPub.log("关闭")
-        //     this.close()
-        //     this.cb && this.cb()
-        // }
+
+
+
+
+
+
+
     }
 
     update(dt:number){
-        //发起重连
+
         if(this.isStartReconnect==true){
-            this.calTime += dt 
+            this.calTime += dt
             if(this.calTime>2){
                 UtilPub.log("开始尝试重新链接")
                 this.calTime=0

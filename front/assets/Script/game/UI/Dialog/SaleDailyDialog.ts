@@ -2,12 +2,12 @@ import { _decorator, Node, Prefab, instantiate, Sprite, Label, UITransform, v3, 
 import { Const } from '../../../config/Const';
 import GD from '../../../config/GD';
 import BaseView from '../../../easyFramework/mgr/BaseView';
-import { comm } from '../../../easyFramework/mgr/comm';
+import { BaseUiComponent } from '../../../easyFramework/mgr/comm';
 import TimeCtrJSF from '../../../easyFramework/network/TimeCtrJSF';
-import tables from '../../../easyFramework/other/tables';
+import TableDataService from '../../../easyFramework/other/tables';
 import { CdComponent, CDType } from '../../../easyFramework/utils/CdComponent';
-import { mergeBoardModel } from '../../comm/mergeBoardModel';
-import { userData } from '../../comm/UserData';
+import { mergeBoardStateStore } from '../../comm/mergeBoardModel';
+import { playerDataStore } from '../../comm/UserData';
 import { PropItem, PropItemFlag } from './PropItem';
 const { ccclass, property } = _decorator;
 
@@ -38,7 +38,7 @@ export class SaleDailyDialog extends BaseView {
     show(args: any) {
         super.show(args)
         this.initShop(1)
-        //  TimeCtr.isSameWeek(TimeCtr.GetInstance().ServerTime,TimeCtr.GetInstance().ServerTime + 1440*60000)
+
     }
 
     initData(event: any, data: number) {
@@ -46,19 +46,19 @@ export class SaleDailyDialog extends BaseView {
     }
 
     initShop(type: number) {
-        let shopdata = tables.ins().getTableValueByID(Const.Tables.saleShop, type)
+        let shopdata = TableDataService.ins().getTableValueByID(Const.Tables.saleShop, type)
         this.titlelabel.string = shopdata.typename
 
         this.timelabel.getComponent(CdComponent)!.setCD(CDType.CDIneterVal, shopdata.dataKey, shopdata.cdTime)
 
-        let data = tables.ins().getTableValuesByType(Const.Tables.saleShopItem, "type", shopdata.typeson)
+        let data = TableDataService.ins().getTableValuesByType(Const.Tables.saleShopItem, "type", shopdata.typeson)
         if (data.length > 0) {
             this._isCanBuyAll = true
             this.setScrollViewData(this.dataContent, data, this.item, this.initItem, this)
         }
 
         if (shopdata.recharge > 0) {
-            let rechargeData = tables.ins().getTableValueByID(Const.Tables.recharge, shopdata.recharge)
+            let rechargeData = TableDataService.ins().getTableValueByID(Const.Tables.recharge, shopdata.recharge)
             let btnBuyAll = find("root/btnBuyAll", this.node)!
             find("Label", btnBuyAll)!.getComponent(Label)!.string = "￥" + rechargeData.cash
             if (this._isCanBuyAll) {
@@ -72,7 +72,7 @@ export class SaleDailyDialog extends BaseView {
     }
 
     onClickBtnBuyAll(event: any, shopdata: any) {
-        let data = tables.ins().getTableValuesByType(Const.Tables.saleShopItem, "type", shopdata.typeson)
+        let data = TableDataService.ins().getTableValuesByType(Const.Tables.saleShopItem, "type", shopdata.typeson)
         if (data.length > 0) {
             for (let index = 0; index < data.length; index++) {
                 this.onClickFreeSaleShop(null, data[index])
@@ -91,14 +91,14 @@ export class SaleDailyDialog extends BaseView {
         });
         let btnFree = find("btnyellow", itemUi)!
         let btnBuy = find("btnGreenbg", itemUi)!
-        let time = userData.getReceiveTime(data.dataKey, data.cdTime)
+        let time = playerDataStore.getReceiveTime(data.dataKey, data.cdTime)
         if (data.recharge > 0) {
             btnFree.active = false
             btnBuy.active = true
             let btnLabel = btnBuy.getChildByName("Label")!.getComponent(Label)!
             if (time < data.buyUpLimit) {
                 self.addButtonHander(btnBuy, self.node, "SaleDailyDialog", "onClickBuySaleShop", data)
-                let rechargeData = tables.ins().getTableValueByID(Const.Tables.recharge, data.recharge)
+                let rechargeData = TableDataService.ins().getTableValueByID(Const.Tables.recharge, data.recharge)
                 btnLabel.string = "￥" + rechargeData.cash
             } else {
                 btnLabel.string = "已领取"
@@ -123,11 +123,11 @@ export class SaleDailyDialog extends BaseView {
 
     onClickFreeSaleShop(event: any, data: any) {
         data.reward.forEach((element: any) => {
-            mergeBoardModel.addPropNum(element[0], element[1])
+            mergeBoardStateStore.addPropNum(element[0], element[1])
         });
-        userData.setReceiveTime(data.dataKey, data.cdTime)
+        playerDataStore.setReceiveTime(data.dataKey, data.cdTime)
         this.initShop(data.type)
-        //  this.initItem(event.target.parent, data, 0, this)
+
     }
 }
 

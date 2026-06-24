@@ -57,7 +57,7 @@ export class EmailManager {
     }
 
     onNewMailEvent(value: any) {
-       // console.log("onNewMailEvent:", value);
+
        EmailManager.getInstance().pushNewEmailIDs(parseInt(value.id + ""))
     }
 

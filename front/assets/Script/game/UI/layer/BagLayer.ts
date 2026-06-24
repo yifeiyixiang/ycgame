@@ -3,9 +3,9 @@ import { Const } from '../../../config/Const';
 import GD from '../../../config/GD';
 import { localText } from '../../../config/localText';
 import BaseView from '../../../easyFramework/mgr/BaseView';
-import tables from '../../../easyFramework/other/tables';
+import TableDataService from '../../../easyFramework/other/tables';
 import { UtilPub } from '../../../easyFramework/utils/UtilPub';
-import { mergeBoardModel, propIds } from '../../comm/mergeBoardModel';
+import { mergeBoardStateStore, propIds } from '../../comm/mergeBoardModel';
 const { ccclass, property } = _decorator;
 
 @ccclass('BagLayer')
@@ -40,7 +40,7 @@ export class BagLayer extends BaseView {
     }
 
     initUI() {
-        let bagRoomData = mergeBoardModel.roomArr[this.row][this.col];
+        let bagRoomData = mergeBoardStateStore.roomArr[this.row][this.col];
         let arr = JSON.parse(JSON.stringify(bagRoomData.roomArr));
 
         let hasNum = 0;
@@ -51,7 +51,7 @@ export class BagLayer extends BaseView {
         }
         this.setString(this.capcityNode, localText.capcity.format(hasNum, arr.length));
 
-        let nextRow = tables.ins().getTableValueByID(Const.Tables.bagGrid, arr.length + 1);
+        let nextRow = TableDataService.ins().getTableValueByID(Const.Tables.bagGrid, arr.length + 1);
         if (nextRow) {
             arr.push(null);
         }
@@ -69,7 +69,7 @@ export class BagLayer extends BaseView {
             if (info.id > 0) {
                 iconNode.active = true;
                 btnInfo.active = true;
-                let propRow = tables.ins().getTableValueByID(Const.Tables.prop, info.id);
+                let propRow = TableDataService.ins().getTableValueByID(Const.Tables.prop, info.id);
                 this.setSpriteFrame2(iconNode.getComponent(Sprite)!, Const.resPath.icon + propRow.icon);
                 // @ts-ignore
                 btnInfo.propRow = propRow;
@@ -84,28 +84,28 @@ export class BagLayer extends BaseView {
             btnAdd.active = true;
             iconNode.active = false;
             this.bindButton(btnAdd, this.onClickBtnAdd);
-            let bagRow = tables.ins().getTableValueByID(Const.Tables.bagGrid, index + 1);
+            let bagRow = TableDataService.ins().getTableValueByID(Const.Tables.bagGrid, index + 1);
             this.setString(find("num", btnAdd), bagRow.coin);
         }
         this.bindButton(itemUI, this.onClickGridItem);
     }
 
     onClickBtnAdd(btn: Button) {
-        let bagRoomData = mergeBoardModel.roomArr[this.row][this.col];
-        let bagRow = tables.ins().getTableValueByID(Const.Tables.bagGrid, bagRoomData.roomArr.length + 1);
+        let bagRoomData = mergeBoardStateStore.roomArr[this.row][this.col];
+        let bagRow = TableDataService.ins().getTableValueByID(Const.Tables.bagGrid, bagRoomData.roomArr.length + 1);
         if (!bagRow) {
             return;
         }
 
-        if (mergeBoardModel.getPropNumById(propIds.coin) < bagRow.coin) {
-            // 金币不足
+        if (mergeBoardStateStore.getPropNumById(propIds.coin) < bagRow.coin) {
+
             return;
         }
 
-        // 扣除金币
-        mergeBoardModel.subPropNum(propIds.coin, bagRow.coin);
-        // 增加格子
-        mergeBoardModel.bagRoomAddGrid(this.row, this.col);
+
+        mergeBoardStateStore.subPropNum(propIds.coin, bagRow.coin);
+
+        mergeBoardStateStore.bagRoomAddGrid(this.row, this.col);
 
         this.initUI();
     }
@@ -121,14 +121,14 @@ export class BagLayer extends BaseView {
             return;
         }
 
-        let ret: any = mergeBoardModel.getOutDataFromRoomBag(index, this.row, this.col);
+        let ret: any = mergeBoardStateStore.getOutDataFromRoomBag(index, this.row, this.col);
         if (!ret) {
-            // 取出失败
+
             UtilPub.log("棋盘上没有空房间了");
             return;
         }
 
-        // 取出成功，记录一下，等待页面关闭，一起显示飞出的动画
+
         this.getOutArr.push(ret);
 
         this.initUI();
@@ -138,7 +138,7 @@ export class BagLayer extends BaseView {
     onClickBtnInfo(btn: Button) {
         // @ts-ignore
         let propRow = btn.node.propRow
-        mergeBoardModel.openPropInfoLayer(propRow.id);
+        mergeBoardStateStore.openPropInfoLayer(propRow.id);
     }
 
     onClickBtnClose() {

@@ -1,23 +1,23 @@
 import { director, error, log, sys } from "cc";
-import { zc } from "./ZC";
-import { HttpReturn } from "./ZCHttpRequest";
-import { BagPropData, chatItemData, gameData, petItemData, rewardData } from "../gameData";
-import { EventManger } from "../EventManger";
-import { AndroidSdk } from "../AndroidSdk";
-import { userData } from "../../Script/game/comm/UserData";
+import { ZcApiGateway } from "./ZC";
+import { HttpResponsePacket } from "./ZCHttpRequest";
+import { BagPropRecord, ChatMessageRecord, GameRuntimeData, PetProfileRecord, RewardItemRecord } from "../gameData";
+import { GameEventManager } from "../EventManger";
+import { NativeSdkBridge } from "../AndroidSdk";
+import { playerDataStore } from "../../Script/game/comm/UserData";
 import { Notifications } from "../../Script/easyFramework/mgr/notifications";
 import GD from "../../Script/config/GD";
-import { uiManager } from "../../Script/easyFramework/mgr/uiManager";
+import { UiLayerService } from "../../Script/easyFramework/mgr/uiManager";
 import { Const } from "../../Script/config/Const";
 import { GoodsType } from "../../Script/config/global";
 
 import { PREVIEW } from 'cc/env';
-import { mergeBoardModel } from "../../Script/game/comm/mergeBoardModel";
+import { mergeBoardStateStore } from "../../Script/game/comm/mergeBoardModel";
 
-export class HttpClient {
-    private httpTryCount = 10;  
-    private httpTryNum = 0;     
-    private static instance:HttpClient = null!;
+export class GameHttpClient {
+    private httpTryCount = 10;
+    private httpTryNum = 0;
+    private static instance:GameHttpClient = null!;
     private isInit:boolean = true;
 
     private isShowTip:boolean = true;
@@ -28,9 +28,9 @@ export class HttpClient {
 
     private tiems:number;
 
-    public static getInstance():HttpClient {
+    public static getInstance():GameHttpClient {
         if(this.instance == null) {
-            this.instance = new HttpClient();
+            this.instance = new GameHttpClient();
         }
 
         return this.instance;
@@ -38,49 +38,49 @@ export class HttpClient {
 
     private constructor() {
         if ((window as any).user_token) {
-            //zc.http.addHeader("token",(window as any).user_token);
+
 
         }
-        zc.http.addHeader("Content-Type", "application/json; charset=utf-8");
+        ZcApiGateway.http.addHeader("Content-Type", "application/json; charset=utf-8");
 
-        //zc.http.addHeader("Authorization","eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiIxIiwiaWF0IjoiMTcyMDUwNjc1MyIsIm5iZiI6IjE3MjA1MDY3NTMiLCJleHAiOiIxNzIwNTEzOTUzIiwiaXNzIjoidm9sLmNvcmUub3duZXIiLCJhdWQiOiJ2b2wuY29yZSIsIm9wZW5JZCI6IjU1NSIsInd4TmlrZU5hbWUiOiLmnb7mnb4xIn0.UdRs6PekPYMMkgXnTz8K1dAQtRkZQ6bDaNGW3-VJTrI");
+
     }
 
-    /** 登录 */
+
     sendLogin(code:string = "1115", nickname:string = "测试", avatar:string = "", successFun:Function = ()=>{}, failFun:Function = ()=>{}){
         if(PREVIEW){
-            code = "1113"//"1112"
+            code = "1113"
         }
         let params = {
             "code":code,
-            "nickname":userData.roleName,
+            "nickname":playerDataStore.roleName,
             "avatar":avatar,
         }
 
         this.isInit = true;
         this.argc.loginCallBack = successFun;
         this.argc.loginCallBack2 = failFun;
-        zc.http.post("/api/login", this.onLogin.bind(this), params);
+        ZcApiGateway.http.post("/api/login", this.onLogin.bind(this), params);
     }
 
-    onLogin(res:HttpReturn){
+    onLogin(res:HttpResponsePacket){
         if (res.res && res.res.code == 200){
             if (res.res.data){
 
-                zc.http.addHeader("Authorization", res.res.data.token);
+                ZcApiGateway.http.addHeader("Authorization", res.res.data.token);
 
                 if (this.isInit){
                     this.getPetList();
                     this.sendAdpropcount();
-                    // this.getHallConfigs();
+
                     this.sednGetUserInfo();
-                    // this.getUserTaskInfo("main");
-                    // this.sendGetRankData();
-                    // this.dailyCheckIn();
+
+
+
                 }
 
                 this.isInit = false;
-            
+
                  if (this.argc.loginCallBack){
                     this.argc.loginCallBack(res)
                     this.argc.loginCallBack = null;
@@ -96,25 +96,25 @@ export class HttpClient {
         }
     }
 
-    /**获取用户基本信息 */
+
     sednGetUserInfo(){
         let params = {
         }
-        zc.http.post("/api/userinfo", this.onsednGetUserInfo.bind(this), params);
+        ZcApiGateway.http.post("/api/userinfo", this.onsednGetUserInfo.bind(this), params);
     }
 
-    onsednGetUserInfo(res:HttpReturn){
+    onsednGetUserInfo(res:HttpResponsePacket){
         if (res.res && res.res.code == 200){
             if (res.res.data){
                 let resData = res.res.data
-                userData.userInfodata = resData.userdata;
-                userData.coinprop = resData.coinprop;
+                playerDataStore.userInfodata = resData.userdata;
+                playerDataStore.coinprop = resData.coinprop;
 
-                userData.activity = resData.activity;
+                playerDataStore.activity = resData.activity;
 
-                userData.roleName = userData.userInfodata.nickname;
+                playerDataStore.roleName = playerDataStore.userInfodata.nickname;
 
-                userData.roleID = userData.userInfodata.userid;
+                playerDataStore.roleID = playerDataStore.userInfodata.userid;
 
                 if (resData.status == 0){
                     console.log("重置数据");
@@ -128,20 +128,20 @@ export class HttpClient {
         }
     }
 
-    /**获取背包信息 2-宠物道具 3-宠物服饰 4-家园装饰*/
+
     sednBagInfo(store_type:number = 2, successFun:Function = ()=>{}){
         let params = {
             store_type:store_type
         }
         this.argc.sednBagInfo = successFun;
-        zc.http.post("/api/bag", this.onsednBagInfo.bind(this), params);
+        ZcApiGateway.http.post("/api/bag", this.onsednBagInfo.bind(this), params);
     }
 
-    onsednBagInfo(res:HttpReturn){
+    onsednBagInfo(res:HttpResponsePacket){
         if (res.res && res.res.code == 200){
             if (res.res.data){
                 let resData = res.res.data
-                userData.bagProps = resData.userprop;
+                playerDataStore.bagProps = resData.userprop;
 
                 this.refreshView();
                 if (this.argc.sednBagInfo){
@@ -154,20 +154,20 @@ export class HttpClient {
         }
     }
 
-    /**出售物品 1-宠物  3-宠物服饰 4-家园装饰*/
+
     sendSellBagItem(store_type:number = 2, id:number){
         let params = {
             store_type:store_type,
             sole_id:id,
         }
-        zc.http.post("/api/sellprop", this.onsednSellBagItem.bind(this), params);
+        ZcApiGateway.http.post("/api/sellprop", this.onsednSellBagItem.bind(this), params);
     }
 
-    onsednSellBagItem(res:HttpReturn){
+    onsednSellBagItem(res:HttpResponsePacket){
         if (res.res && res.res.code == 200){
             if (res.res.data){
                 let resData = res.res.data
-                userData.bagProps = resData.userprop;
+                playerDataStore.bagProps = resData.userprop;
 
                 this.refreshView();
             }
@@ -176,26 +176,26 @@ export class HttpClient {
         }
     }
 
-    /**获取宠物列表 */
+
     getPetList(successFun:Function = ()=>{}){
         let params = {
         }
         this.argc.getPetListCallBack = successFun;
-        zc.http.post("/api/pet", this.ongetPetList.bind(this), params);
+        ZcApiGateway.http.post("/api/pet", this.ongetPetList.bind(this), params);
     }
 
-    ongetPetList(res:HttpReturn){
+    ongetPetList(res:HttpResponsePacket){
         if (res.res && res.res.code == 200){
             if (res.res.data){
                 let resData = res.res.data.userpet
 
-                userData.pet_count = resData.pet_count;
-                userData.pet_score = resData.pet_score;
-                userData.pets = resData.pets;
+                playerDataStore.pet_count = resData.pet_count;
+                playerDataStore.pet_score = resData.pet_score;
+                playerDataStore.pets = resData.pets;
 
                 this.refreshView();
 
-                EventManger.eventTarget.emit(EventManger.EEventName.REFRESH_PET_DATA);
+                GameEventManager.eventTarget.emit(GameEventManager.EEventName.REFRESH_PET_DATA);
 
                 if (this.argc.getPetListCallBack){
                     this.argc.getPetListCallBack(res)
@@ -206,8 +206,8 @@ export class HttpClient {
             this.showFail("" , res.res? res.res.msg: res.err)
         }
     }
-    
-    /**宠物操作  type 1-放置家园 2-休息 3-放生 4-喂食洗澡 5-穿戴服饰 6-取消穿戴 7-互动 8-改名*/
+
+
     sendPetAction(types:number, petId:number = 0, propId:number = 0, clothing_id:number = 0, name:string = "", successFun:Function = ()=>{}){
         let params = {
             "types":types,
@@ -218,18 +218,18 @@ export class HttpClient {
         }
 
         this.argc.sendPetActionCallBack = successFun;
-        zc.http.post("/api/petaction", this.onsendPetAction.bind(this), params);
+        ZcApiGateway.http.post("/api/petaction", this.onsendPetAction.bind(this), params);
     }
 
-    onsendPetAction(res:HttpReturn){
+    onsendPetAction(res:HttpResponsePacket){
         if (res.res && res.res.code == 200){
             if (res.res.data){
                 let resData = res.res.data.userpet
 
-                for (let index = 0; index < userData.pets.length; index++) {
-                    const element:petItemData = userData.pets[index];
+                for (let index = 0; index < playerDataStore.pets.length; index++) {
+                    const element:PetProfileRecord = playerDataStore.pets[index];
                     if (element.id == resData.id){
-                        userData.pets[index] = resData;
+                        playerDataStore.pets[index] = resData;
                         break;
                     }
                 }
@@ -241,7 +241,7 @@ export class HttpClient {
 
                 this.refreshView();
 
-                EventManger.eventTarget.emit(EventManger.EEventName.REFRESH_PET_DATA);
+                GameEventManager.eventTarget.emit(GameEventManager.EEventName.REFRESH_PET_DATA);
 
             }
         }else{
@@ -250,7 +250,7 @@ export class HttpClient {
     }
 
 
-    /**购买道具 */
+
     sendBuyProp(propId:number, type:number, successFun:Function = ()=>{}){
         let params = {
             prop_id:propId,
@@ -258,20 +258,20 @@ export class HttpClient {
         }
 
         this.argc.sendBuyPropCallBack = successFun;
-        zc.http.post("/api/buyprop", this.onsendBuyProp.bind(this), params);
+        ZcApiGateway.http.post("/api/buyprop", this.onsendBuyProp.bind(this), params);
     }
 
-    onsendBuyProp(res:HttpReturn){
+    onsendBuyProp(res:HttpResponsePacket){
         if (res.res && res.res.code == 200){
             if (res.res.data){
                 let resData = res.res.data
 
-                userData.userInfodata = resData.userdata;
-                userData.coinprop = resData.coinprop;
-                userData.adProps = resData.ad_prop;
+                playerDataStore.userInfodata = resData.userdata;
+                playerDataStore.coinprop = resData.coinprop;
+                playerDataStore.adProps = resData.ad_prop;
                 this.refreshView();
 
-                // this.showFail("","购买成功");
+
                 this.showReward(resData)
 
                 if (this.argc.sendBuyPropCallBack){
@@ -284,23 +284,23 @@ export class HttpClient {
         }
     }
 
-    /**观看广告，增加金币，体力 1金币，2体力 */
+
     sendADWatch(type:number, successFun:Function = ()=>{}){
         let params = {
             types:type,
         }
 
         this.argc.sendADWatchCallBack = successFun;
-        zc.http.post("/api/adwatch", this.onsendADWatch.bind(this), params);
+        ZcApiGateway.http.post("/api/adwatch", this.onsendADWatch.bind(this), params);
     }
 
-    onsendADWatch(res:HttpReturn){
+    onsendADWatch(res:HttpResponsePacket){
         if (res.res && res.res.code == 200){
             if (res.res.data){
                 let resData = res.res.data
 
-                userData.userInfodata = resData.userdata;
-                userData.coinprop = resData.coinprop;
+                playerDataStore.userInfodata = resData.userdata;
+                playerDataStore.coinprop = resData.coinprop;
                 this.refreshView();
 
                 this.showReward(resData)
@@ -315,21 +315,21 @@ export class HttpClient {
         }
     }
 
-     /**签到 */
+
     sendSign(){
         let params = {
         }
-        zc.http.post("/api/sign", this.onsendSign.bind(this), params);
+        ZcApiGateway.http.post("/api/sign", this.onsendSign.bind(this), params);
     }
 
-    onsendSign(res:HttpReturn){
+    onsendSign(res:HttpResponsePacket){
         if (res.res && res.res.code == 200){
             if (res.res.data){
                 let resData = res.res.data
 
-                userData.coinprop = resData.coinprop;
-                userData.userInfodata.user_sign.sign_in_days = resData.sign_in_days;
-                userData.userInfodata.user_sign.sign_status = resData.sign_status;
+                playerDataStore.coinprop = resData.coinprop;
+                playerDataStore.userInfodata.user_sign.sign_in_days = resData.sign_in_days;
+                playerDataStore.userInfodata.user_sign.sign_status = resData.sign_status;
 
                 this.showReward(resData)
 
@@ -340,22 +340,22 @@ export class HttpClient {
         }
     }
 
-     /**转盘结果 */
+
     sendWheel(successFun:Function = ()=>{}){
         let params = {
 
         }
 
         this.argc.sendWheelCallBack = successFun;
-        zc.http.post("/api/wheel", this.onsendWheel.bind(this), params);
+        ZcApiGateway.http.post("/api/wheel", this.onsendWheel.bind(this), params);
     }
 
-    onsendWheel(res:HttpReturn){
+    onsendWheel(res:HttpResponsePacket){
         if (res.res && res.res.code == 200){
             if (res.res.data){
                 let resData = res.res.data
 
-                userData.coinprop = resData.coinprop;
+                playerDataStore.coinprop = resData.coinprop;
                 this.refreshView();
                 if (this.argc.sendWheelCallBack){
                     this.argc.sendWheelCallBack(res)
@@ -367,7 +367,7 @@ export class HttpClient {
         }
     }
 
-    /**修改信息  1-昵称 2-音乐音量 3-音效音量*/
+
     sendChangeInfo(type:number, value:string, successFun:Function = ()=>{}){
         let params = {
             types:type,
@@ -375,16 +375,16 @@ export class HttpClient {
         }
 
         this.argc.sendChangeInfoCallBack = successFun;
-        zc.http.post("/api/changeu", this.onsendChangeInfoCallBack.bind(this), params);
+        ZcApiGateway.http.post("/api/changeu", this.onsendChangeInfoCallBack.bind(this), params);
     }
 
-    onsendChangeInfoCallBack(res:HttpReturn){
+    onsendChangeInfoCallBack(res:HttpResponsePacket){
         if (res.res && res.res.code == 200){
             if (res.res.data){
                 let resData = res.res.data
 
-                userData.userInfodata = resData.userdata;
-                
+                playerDataStore.userInfodata = resData.userdata;
+
                 if (this.argc.sendChangeInfoCallBack){
                     this.argc.sendChangeInfoCallBack(res)
                     this.argc.sendChangeInfoCallBack = null;
@@ -396,20 +396,20 @@ export class HttpClient {
         }
     }
 
-    /**获取任务列表 */
+
     sendGetTaskList(successFun:Function = ()=>{}){
         let params = {
         }
         this.argc.sendGetTaskList = successFun;
-        zc.http.post("/api/task", this.onsendGetTaskList.bind(this), params);
+        ZcApiGateway.http.post("/api/task", this.onsendGetTaskList.bind(this), params);
     }
 
-    onsendGetTaskList(res:HttpReturn){
+    onsendGetTaskList(res:HttpResponsePacket){
         if (res.res && res.res.code == 200){
             if (res.res.data){
                 let resData = res.res.data
 
-                userData.taskDataList = resData.usertask;
+                playerDataStore.taskDataList = resData.usertask;
 
                 this.refreshView();
 
@@ -423,26 +423,26 @@ export class HttpClient {
         }
     }
 
-    /**获取任务列表 */
+
     sendRecivieTaskReward(type:number, successFun:Function = ()=>{}){
         let params = {
             task_type:type
         }
         this.argc.sendRecivieTaskReward = successFun;
-        zc.http.post("/api/taskdone", this.onsendRecivieTaskReward.bind(this), params);
+        ZcApiGateway.http.post("/api/taskdone", this.onsendRecivieTaskReward.bind(this), params);
     }
 
-    onsendRecivieTaskReward(res:HttpReturn){
+    onsendRecivieTaskReward(res:HttpResponsePacket){
         if (res.res && res.res.code == 200){
             if (res.res.data){
                 let resData = res.res.data
 
-                //userData.taskDataList = resData.usertask;
-                userData.coinprop = resData.coinprop;
+
+                playerDataStore.coinprop = resData.coinprop;
                 this.showReward(resData)
 
-                // this.refreshView();
-                HttpClient.getInstance().sendGetTaskList();
+
+                GameHttpClient.getInstance().sendGetTaskList();
 
                 if (this.argc.sendRecivieTaskReward){
                     this.argc.sendRecivieTaskReward(res)
@@ -454,7 +454,7 @@ export class HttpClient {
         }
     }
 
-    /**放置装饰物品  types 1-放置 2-回收,*/
+
     sendGoodPos(types:number,id:number, position_x:number = 0, position_y:number = 0, successFun:Function = ()=>{}){
         let params = {
             types:types,
@@ -463,26 +463,26 @@ export class HttpClient {
             position_y:position_y,
         }
         this.argc.sendGoodPos = successFun;
-        zc.http.post("/api/decorationplace", this.onsendGoodPos.bind(this), params);
+        ZcApiGateway.http.post("/api/decorationplace", this.onsendGoodPos.bind(this), params);
     }
 
-    onsendGoodPos(res:HttpReturn){
+    onsendGoodPos(res:HttpResponsePacket){
         if (res.res && res.res.code == 200){
             if (res.res.data){
 
                 let resData = res.res.data.userprop_one
 
-                for (let index = 0; index < userData.bagProps.length; index++) {
-                    const element:BagPropData = userData.bagProps[index];
+                for (let index = 0; index < playerDataStore.bagProps.length; index++) {
+                    const element:BagPropRecord = playerDataStore.bagProps[index];
                     if (element.id == resData.id){
-                        userData.bagProps[index] = resData;
+                        playerDataStore.bagProps[index] = resData;
                         break;
                     }
                 }
 
                 this.refreshView();
 
-                EventManger.eventTarget.emit(EventManger.EEventName.ADD_ZHUNASHI)
+                GameEventManager.eventTarget.emit(GameEventManager.EEventName.ADD_ZHUNASHI)
 
                 if (this.argc.sendGoodPos){
                     this.argc.sendGoodPos(res)
@@ -494,19 +494,19 @@ export class HttpClient {
         }
     }
 
-     /**同步相关数据 金币，砖石，体力，家园等级 */
+
     updateGold(coin:number = -1, diamond:number = -1, power:number = -1, home_level:number = -1, successFun:Function = ()=>{}){
         let params = {
-            "coin":userData.coin,
-            "diamond":userData.diamonds,
-            "power":userData.power,
-            "home_level":userData.roleLv,
+            "coin":playerDataStore.coin,
+            "diamond":playerDataStore.diamonds,
+            "power":playerDataStore.power,
+            "home_level":playerDataStore.roleLv,
         }
         this.argc.updateGold = successFun;
-        zc.http.post("/api/update", this.onupdateGold.bind(this), params);
+        ZcApiGateway.http.post("/api/update", this.onupdateGold.bind(this), params);
     }
 
-    onupdateGold(res:HttpReturn){
+    onupdateGold(res:HttpResponsePacket){
         if (res.res && res.res.code == 200){
             if (res.res.data){
                 console.log("同步数据成功");
@@ -529,48 +529,48 @@ export class HttpClient {
 
 
 
-    /**获取道具广告计数*/
+
     sendAdpropcount(){
         let params = {
         }
 
-        zc.http.post("/api/adpropcount", this.onsendAdpropcount.bind(this), params);
+        ZcApiGateway.http.post("/api/adpropcount", this.onsendAdpropcount.bind(this), params);
     }
 
-    onsendAdpropcount(res:HttpReturn){
+    onsendAdpropcount(res:HttpResponsePacket){
         if (res.res && res.res.code == 200){
             if (res.res.data){
                 let resData = res.res.data
 
-                userData.adProps = resData.ad_prop;
+                playerDataStore.adProps = resData.ad_prop;
             }
         }else{
             this.showFail("" , res.res? res.res.msg: res.err)
         }
     }
 
-    /**获取好友列表 */
+
     getFriendList(successFun:Function = ()=>{}){
         let params = {
         }
         this.argc.getFriendList = successFun;
-        zc.http.post("/api/friend", this.ongetFriendList.bind(this), params);
+        ZcApiGateway.http.post("/api/friend", this.ongetFriendList.bind(this), params);
     }
 
-    ongetFriendList(res:HttpReturn){
+    ongetFriendList(res:HttpResponsePacket){
         if (res.res && res.res.code == 200){
             if (res.res.data){
                 let resData = res.res.data.friend;
 
-                userData.friendList = [];
+                playerDataStore.friendList = [];
                 for (let index = 0; index < resData.length; index++) {
                     const element = resData[index];
                     if (element && element.friend_info){
-                        userData.friendList.push(element.friend_info);
+                        playerDataStore.friendList.push(element.friend_info);
                     }
                 }
 
-                EventManger.eventTarget.emit(EventManger.EEventName.REFRESH_FRIEND_DATA);
+                GameEventManager.eventTarget.emit(GameEventManager.EEventName.REFRESH_FRIEND_DATA);
 
                 if (this.argc.getFriendList){
                     this.argc.getFriendList(res)
@@ -582,16 +582,16 @@ export class HttpClient {
         }
     }
 
-     /**搜索对应好友 */
+
     getFriendSearch(userid:string,successFun:Function = ()=>{}){
         let params = {
             "userid":userid,
         }
         this.argc.getFriendSearch = successFun;
-        zc.http.post("/api/friendsearch", this.ongetFriendSearch.bind(this), params);
+        ZcApiGateway.http.post("/api/friendsearch", this.ongetFriendSearch.bind(this), params);
     }
 
-    ongetFriendSearch(res:HttpReturn){
+    ongetFriendSearch(res:HttpResponsePacket){
         if (res.res && res.res.code == 200){
             if (res.res.data){
                 let resData = res.res.data.user;
@@ -610,21 +610,21 @@ export class HttpClient {
         }
     }
 
-    /**好友推荐 */
+
     getFriendRecommend(successFun:Function = ()=>{}){
         let params = {
 
         }
         this.argc.getFriendRecommend = successFun;
-        zc.http.post("/api/friendrecommend", this.ongetFriendRecommend.bind(this), params);
+        ZcApiGateway.http.post("/api/friendrecommend", this.ongetFriendRecommend.bind(this), params);
     }
 
-    ongetFriendRecommend(res:HttpReturn){
+    ongetFriendRecommend(res:HttpResponsePacket){
         if (res.res && res.res.code == 200){
             if (res.res.data){
 
-                userData.curFriendList = res.res.data.friend_recommend;
-                EventManger.eventTarget.emit(EventManger.EEventName.REFRESH_FRIEND_DATA);
+                playerDataStore.curFriendList = res.res.data.friend_recommend;
+                GameEventManager.eventTarget.emit(GameEventManager.EEventName.REFRESH_FRIEND_DATA);
                 if (this.argc.ongetFriendRecommend){
                     this.argc.ongetFriendRecommend(res)
                     this.argc.ongetFriendRecommend = null;
@@ -635,27 +635,27 @@ export class HttpClient {
         }
     }
 
-    /**好友申请列表 */
+
     getFriendApply(successFun:Function = ()=>{}){
         let params = {
         }
         this.argc.getFriendApply = successFun;
-        zc.http.post("/api/friendapply", this.ongetFriendApply.bind(this), params);
+        ZcApiGateway.http.post("/api/friendapply", this.ongetFriendApply.bind(this), params);
     }
 
-    ongetFriendApply(res:HttpReturn){
+    ongetFriendApply(res:HttpResponsePacket){
         if (res.res && res.res.code == 200){
             if (res.res.data){
 
                 let resData = res.res.data.friend_apply;
-                userData.curFriendList = [];
+                playerDataStore.curFriendList = [];
                 for (let index = 0; index < resData.length; index++) {
                     const element = resData[index];
                     if (element && element.friend_info){
-                        userData.curFriendList.push(element.friend_info);
+                        playerDataStore.curFriendList.push(element.friend_info);
                     }
                 }
-                EventManger.eventTarget.emit(EventManger.EEventName.REFRESH_FRIEND_DATA);
+                GameEventManager.eventTarget.emit(GameEventManager.EEventName.REFRESH_FRIEND_DATA);
                 if (this.argc.getFriendApply){
                     this.argc.getFriendApply(res)
                     this.argc.getFriendApply = null;
@@ -666,21 +666,21 @@ export class HttpClient {
         }
     }
 
-     /**添加好友 */
+
     getFriendAdd(userid:string,successFun:Function = ()=>{}){
         let params = {
             "userid":userid,
         }
         this.argc.getFriendAdd = successFun;
-        zc.http.post("/api/friendadd", this.ongetFriendAdd.bind(this), params);
+        ZcApiGateway.http.post("/api/friendadd", this.ongetFriendAdd.bind(this), params);
     }
 
-    ongetFriendAdd(res:HttpReturn){
+    ongetFriendAdd(res:HttpResponsePacket){
         if (res.res && res.res.code == 200){
             if (res.res){
 
                 this.showFail("添加好友，申请发送成功")
-                // this.getFriendList();
+
 
                 if (this.argc.getFriendAdd){
                     this.argc.getFriendAdd(res)
@@ -692,17 +692,17 @@ export class HttpClient {
         }
     }
 
-    /**操作 1 同意 2 拒绝*/
+
     getFriendApplyaction(userid:string,type:number,successFun:Function = ()=>{}){
         let params = {
             "apply_id":userid,
             "type":type,
         }
         this.argc.getFriendApplyaction = successFun;
-        zc.http.post("/api/friendapplyaction", this.ongetFriendApplyaction.bind(this), params);
+        ZcApiGateway.http.post("/api/friendapplyaction", this.ongetFriendApplyaction.bind(this), params);
     }
 
-    ongetFriendApplyaction(res:HttpReturn){
+    ongetFriendApplyaction(res:HttpResponsePacket){
         if (res.res && res.res.code == 200){
             if (res.res.data){
 
@@ -718,21 +718,21 @@ export class HttpClient {
         }
     }
 
-    /**盲盒结果 */
+
     sendactivity(successFun:Function = ()=>{}){
         let params = {
         }
         this.argc.sendWheelCallBack = successFun;
-        zc.http.post("/api/activity", this.onsendactivity.bind(this), params);
+        ZcApiGateway.http.post("/api/activity", this.onsendactivity.bind(this), params);
     }
 
-    onsendactivity(res:HttpReturn){
+    onsendactivity(res:HttpResponsePacket){
         if (res.res && res.res.code == 200){
             if (res.res.data){
                 let resData = res.res.data
 
-                userData.userInfodata.activity_count = resData.activity_count;
-                userData.userInfodata.activity_progress = resData.activity_progress;
+                playerDataStore.userInfodata.activity_count = resData.activity_count;
+                playerDataStore.userInfodata.activity_progress = resData.activity_progress;
 
                 this.showRewardProp(resData.draw_gift);
 
@@ -746,25 +746,25 @@ export class HttpClient {
         }
     }
 
-    /**盲盒进度领取 */
+
     sendProgressaward(prossId:number, successFun:Function = ()=>{}){
         let params = {
             activity_progress_id: prossId,
         }
         this.argc.sendWheelCallBack = successFun;
-        zc.http.post("/api/activityprogressaward", this.onsendProgressaward.bind(this), params);
+        ZcApiGateway.http.post("/api/activityprogressaward", this.onsendProgressaward.bind(this), params);
     }
 
-    onsendProgressaward(res:HttpReturn){
+    onsendProgressaward(res:HttpResponsePacket){
         if (res.res && res.res.code == 200){
             if (res.res.data){
                 let resData = res.res.data
 
-                userData.userInfodata.activity_progress = resData.activity_progress;
+                playerDataStore.userInfodata.activity_progress = resData.activity_progress;
 
                 this.showRewardProp(resData.activity_progress_award);
 
-                userData.coinprop = resData.userprop;
+                playerDataStore.coinprop = resData.userprop;
 
                 this.refreshView();
                 if (this.argc.sendWheelCallBack){
@@ -782,10 +782,10 @@ export class HttpClient {
 
 
     refreshView(isGetTask:boolean = true){
-        EventManger.eventTarget.emit(EventManger.EEventName.REFRESH_GAME);
-        // if (isGetTask){
-        //     this.getUserTaskInfo("main");
-        // }
+        GameEventManager.eventTarget.emit(GameEventManager.EEventName.REFRESH_GAME);
+
+
+
 
         Notifications.emit(GD.event.updateMoney);
         Notifications.emit(GD.event.updateGame);
@@ -799,25 +799,24 @@ export class HttpClient {
     }
 
     showRewardProp(rewards:any[]){
-        let rewardData = [];
+        let RewardItemRecord = [];
             for (let index = 0; index < rewards.length; index++) {
                 const element = rewards[index];
                 if (element && element.length >= 2){
-                    rewardData.push([element[0], element[1], GoodsType.propNew])
+                    RewardItemRecord.push([element[0], element[1], GoodsType.propNew])
                 }
             }
-            if (rewardData.length > 0){
-                uiManager.instance.pushShowDialog(Const.Dialogs.RewardDialog, { reward: rewardData })
+            if (RewardItemRecord.length > 0){
+                UiLayerService.instance.pushShowDialog(Const.Dialogs.RewardDialog, { reward: RewardItemRecord })
             }
     }
 
     showFail(str:string,  msg:string = "") {
-        // if (str == "111"){
-            EventManger.eventTarget.emit(EventManger.EEventName.SHOW_TIP, (str + msg))
 
-            // this.emit(GD.event.showTip, { msg: str })
-            
-        // }
+            GameEventManager.eventTarget.emit(GameEventManager.EEventName.SHOW_TIP, (str + msg))
+
+
+
     }
 
 }

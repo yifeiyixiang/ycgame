@@ -2,17 +2,17 @@
 
 import { Node, Prefab, UITransform, v3 } from "cc";
 import { Const } from "../../config/Const";
-import { comm } from "../../easyFramework/mgr/comm";
-import { poolManager } from "../../easyFramework/mgr/poolManager";
+import { BaseUiComponent } from "../../easyFramework/mgr/comm";
+import { NodePoolService } from "../../easyFramework/mgr/poolManager";
 import { UtilPub } from "../../easyFramework/utils/UtilPub";
 import { EmailManager } from "./EmailManager";
 
 import { RedPointComm } from "./RedPointComm";
-import { userData } from "./UserData";
+import { playerDataStore } from "./UserData";
 import { UtilScene } from "./UtilScene";
 
 export enum RPointEvent {
-    /**客户端红点起始*/
+
     RPM_Null = "RPM_Null",
     RPM_Email = "RPM_Email",
     RPM_Tujian = "RPM_Tujian",
@@ -20,7 +20,7 @@ export enum RPointEvent {
     RPM_TujianScene = "RPM_TujianScene",
 
 
-    // 合成界面，可建造红点提示
+
     boardBuildHint = "boardBuildHint",
 
 }
@@ -43,12 +43,12 @@ class RedPointManager {
         let redPointNode = parent.getChildByName("RedPoint")
         if (redPointNode == null) {
             UtilPub.getPrefab(Const.Prefabs.RedPoint, (p: Prefab) => {
-                let node = poolManager.instance.getNode(p, parent!)!
+                let node = NodePoolService.instance.getNode(p, parent!)!
                 node.name = "RedPoint"
                 let uiTransform = node.getComponent(UITransform) || node.addComponent(UITransform)
                 node.position = v3(uiTransform.width * (1 - uiTransform.anchorX) - 30 + offsetX, uiTransform.height * (1 - uiTransform.anchorY) - 20 + offsetY, 1);
                 node.scale = v3(scale, scale, scale)
-                let script = node.getComponent(node.name) as comm
+                let script = node.getComponent(node.name) as BaseUiComponent
                 if (script && event) {
                     script!._layerData.event = event
                 }
@@ -67,11 +67,11 @@ class RedPointManager {
                 return
             }
             UtilPub.getPrefab(Const.Prefabs.RedPoint, (p: Prefab) => {
-                let node = poolManager.instance.getNode(p, parent!)!
+                let node = NodePoolService.instance.getNode(p, parent!)!
                 node.name = "RedPoint"
                 let uiTransform = node.getComponent(UITransform) || node.addComponent(UITransform)
                 node.position = v3(uiTransform.width * (1 - uiTransform.anchorX) - 30, uiTransform.height * (1 - uiTransform.anchorY) - 20, 1);
-                let script = node.getComponent(node.name) as comm
+                let script = node.getComponent(node.name) as BaseUiComponent
                 if (script && event) {
                     script!._layerData.event = event
                 }
@@ -89,14 +89,14 @@ class RedPointManager {
                 value = EmailManager.getInstance().isShowNewEmailRedPoint()
                 break;
             case RPointEvent.RPM_Tujian:
-                value = userData._showPropTujianRed || userData._showSceneTujianRed
+                value = playerDataStore._showPropTujianRed || playerDataStore._showSceneTujianRed
                 break;
 
             case RPointEvent.RPM_TujianProp:
-                value = userData._showPropTujianRed
+                value = playerDataStore._showPropTujianRed
                 break;
             case RPointEvent.RPM_TujianScene:
-                value = userData._showSceneTujianRed
+                value = playerDataStore._showSceneTujianRed
                 break;
             case RPointEvent.boardBuildHint:
                 value = UtilScene.isSceneItemCouldBeBuild();

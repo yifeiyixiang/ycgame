@@ -10,7 +10,7 @@ export class MovePath extends Component {
     ctrlPos: Vec3 = v3(0, 0, 0);
     endCb: any = null;
 
-    // 每秒走多少百分比
+
     speed: number = 0;
     moveStart: boolean = false;
     percent: number = 0;
@@ -33,7 +33,7 @@ export class MovePath extends Component {
         let dx = Math.abs(this.endPos.x - this.startPos.x);
         let dy = Math.abs(this.endPos.y - this.startPos.y);
         if (Math.abs(dy) >= Math.abs(dx)) {
-            // this.ctrlPos.x += (dx + 50 + Math.random() * 100) * (dir == 0 ? (Math.random() > 0.5 ? 1 : -1) : dir);
+
             this.ctrlPos.x += (dy * 0.5) * (dir == 0 ? (Math.random() > 0.5 ? 1 : -1) : dir);
         } else {
             this.ctrlPos.y += (dx * 0.5) * (dir == 0 ? (Math.random() > 0.5 ? 1 : -1) : dir);

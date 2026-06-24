@@ -2,18 +2,18 @@ import { _decorator, Component, Node, Prefab, Vec2, v2, UITransform, tween } fro
 import { Const } from '../../../config/Const';
 import GD from '../../../config/GD';
 import { GGuestState, GSceneRoomState, GSpineAni, GStreetQueueFlag } from '../../../config/global';
-import { comm } from '../../../easyFramework/mgr/comm';
-import { poolManager } from '../../../easyFramework/mgr/poolManager';
-import tables from '../../../easyFramework/other/tables';
+import { BaseUiComponent } from '../../../easyFramework/mgr/comm';
+import { NodePoolService } from '../../../easyFramework/mgr/poolManager';
+import TableDataService from '../../../easyFramework/other/tables';
 import { UtilPub } from '../../../easyFramework/utils/UtilPub';
 import { SceneData } from '../../comm/SceneData';
 import { UtilScene } from '../../comm/UtilScene';
 import { guest } from './guest';
-import { userData } from '../../comm/UserData';
+import { playerDataStore } from '../../comm/UserData';
 const { ccclass, property } = _decorator;
 
 @ccclass('guest_mgr')
-export class guest_mgr extends comm {
+export class guest_mgr extends BaseUiComponent {
     private static _instance: guest_mgr;
     static get ins() {
         if (this._instance) {
@@ -24,22 +24,22 @@ export class guest_mgr extends comm {
         return this._instance;
     }
 
-    
-    queueGuests:Node[]=[] //客人队列
 
-    //等待起点
+    queueGuests:Node[]=[]
+
+
     waitStartPos:Vec2 = v2(16,22)
     waitGrids:Map<string, number>= new Map<string, number>()
     waitGridsArr:Vec2[] = []
 
     streetLimit:number= 15
-    roomLimit:number=15 
+    roomLimit:number=15
     interval:number=3
     spineFile:string=""
     queueCalTime:number=0
     orderGuestCalTime:number=0
     bugLeaveCalTime:number=0
-    isOutQueuing:boolean = false //是否正在出队�?
+    isOutQueuing:boolean = false
 
     onLoad() {
         this.on(GD.event.intoTheWaitQueue, this.intoTheWaitQueue)
@@ -49,7 +49,7 @@ export class guest_mgr extends comm {
     }
 
     getRoomMaxGuests(){
-        let roomRows = tables.ins().getTableValuesByType(Const.Tables.scene_room, "type", "1")
+        let roomRows = TableDataService.ins().getTableValuesByType(Const.Tables.scene_room, "type", "1")
         this.roomLimit=0
         roomRows.forEach((item:any)=>{
             if(SceneData.ins.getRoomLockInfoById(item.id)==GSceneRoomState.unlock){
@@ -63,7 +63,7 @@ export class guest_mgr extends comm {
         let arr:Node[] = []
         Const.Guests.forEach(item=>{
             if(node.uuid == item.uuid){
-                poolManager.instance.putNode(item)
+                NodePoolService.instance.putNode(item)
             }else{
                 arr.push(item)
             }
@@ -71,10 +71,10 @@ export class guest_mgr extends comm {
         Const.Guests = arr
     }
 
-    //生成排队的数�?
+
     genWaitGrids(){
         for(let i=0;i<this.streetLimit; i++){
-            //0 表示没有占用�?表示占用
+
             this.waitGrids.set(this.waitStartPos.x+","+(this.waitStartPos.y-i), GStreetQueueFlag.noOccupy)
             this.waitGridsArr.push(v2(this.waitStartPos.x, this.waitStartPos.y-i))
         }
@@ -86,19 +86,19 @@ export class guest_mgr extends comm {
                 return true
             }
         }
-        return false 
+        return false
     }
 
     intoTheWaitQueue(){
-        //检查所有的人，然后设置在房间等待的人，设置他们的目标点，并且执行运�?
-        //�?个没在队列中的人进入队列，强制拉入�?
+
+
         let pickOne:Node = null!
         let pickScore = Number.MAX_SAFE_INTEGER
-        // UtilPub.log("#####----指派客人去排�? 客人数量", this.streetGuests)
+
         for(let i=0;i<Const.Guests.length; i++){
             let script = Const.Guests[i].getComponent(guest)!
             let isInTheQueue:boolean = this.isInTheQueue(Const.Guests[i])
-            // UtilPub.log("#####----队列角色", isInTheQueue, script.state)
+
             if(script.state==GGuestState.queueForRoomDoor && !isInTheQueue){
                 let dx = Math.abs(script.curGridPoint.x - this.waitStartPos.x)
                 let dy = Math.abs(script.curGridPoint.y - this.waitStartPos.y)
@@ -110,8 +110,8 @@ export class guest_mgr extends comm {
             }
         }
         if(pickOne!=null){
-            //往前走
-            // UtilPub.log("#####---指派进入队伍", pickOne)
+
+
             let script = pickOne.getComponent(guest)!
             let next = this.queueGuests.length
             script.targetPoint =  this.waitGridsArr[next]
@@ -121,52 +121,52 @@ export class guest_mgr extends comm {
     }
 
     outTheWaitQueue(){
-        //先寻路，如果有路径，那么才走
 
-        //从队列中走出�?个，所有对象往前移�?�?
+
+
         if(this.queueGuests.length>0 && this.isOutQueuing==false){
             let gusetFirst = this.queueGuests[0].getComponent(guest)!
-            // UtilPub.log("-----------11111队列第一个客人情况！�?, gusetFirst.state)
+
             if(gusetFirst.state==GGuestState.roomDoorStay){
                 let isBlock = gusetFirst.testRoomWayIsBlock()
-                // UtilPub.log("-----------22222队列第一个客人情况！�?, gusetFirst.state, isBlock)
+
                 if(isBlock==false){
                     this.isOutQueuing = true
-                    //选择第一个出�?
+
                     let pickOne:Node = this.queueGuests.shift()!
                     let script = pickOne.getComponent(guest)!
                     let oldPos = pickOne.worldPosition.clone()
 
-                    //第一个客人要就位才可以取
+
                     pickOne.parent = Const.ItemParent
                     pickOne.worldPosition = oldPos
                     script.curGridPoint = v2(UtilScene.roomDoorPos.x, UtilScene.roomDoorPos.y)
                     let pos = UtilScene.getBottomGridPos(script.curGridPoint.x, script.curGridPoint.y)
-                    // script.node.worldPosition = script.node.parent!.getComponent(UITransform)!.convertToWorldSpaceAR(pos)
+
                     script.targetPos = script.node.parent!.getComponent(UITransform)!.convertToWorldSpaceAR(pos)
-                    // UtilPub.log("--333333-------队列第一个客人情况！�?, oldPos)
+
                     script.setAniState(script.node.scale.x, GSpineAni.walk1)
                     this.aniTween = tween(script.node).to(script.getWalkTime(), {worldPosition: script.targetPos}).call(()=>{
-                        // UtilPub.log("--444444---------队列第一个客人情况！�?, pickOne.worldPosition)
+
                         pickOne.getComponent(guest)!.state = GGuestState.roomWalk
                         this.isOutQueuing = false
-                        //到位后其他人再移�?
-                        //遍历所有等待的人，前进1�?
+
+
                         for(let i=0;i<this.queueGuests.length; i++){
                             let item = this.queueGuests[i]
                             let script1 = item.getComponent(guest)!
                             let next = i
                             script1.targetPoint =  this.waitGridsArr[next]
                             if(script1!.state!=GGuestState.roomDoorStay){
-                                //还未到达排队终点的肥啾重新设定路�?
-                                // script1!.state=GGuestState.queueForRoomDoor
-                                // continue
+
+
+
                                 script1.isMovingEnd=true
                             }
                             script1.state=GGuestState.queueForRoomDoor
                             script1.checkQueueApproachPath()
                         }
-                        
+
 
                     }).start()
                 }
@@ -175,7 +175,7 @@ export class guest_mgr extends comm {
     }
 
     updQueue(){
-        //每秒更新队列里的客人，调整位�?
+
     }
 
     getStreetGuestCnt(){
@@ -201,31 +201,31 @@ export class guest_mgr extends comm {
     }
 
     init(){
-        //解锁的客人池子中获得1个客人的信息
+
         this.spineFile = ""
         UtilScene.setGuestMaxNum()
-        //初始化障碍物
+
         UtilScene.initAStarObstacles()
-        //初始化随机n个出现在街道上，之后都是从地铁进来的。房间没有满员，就进去，满员就排队�?
-        //从地铁口到房间门�?
-        //房间对应解锁，就有新客人，默认都�?
+
+
+
         let unlockGuestsData = UtilScene.getUnlockGuestData()
         if(unlockGuestsData.length>0){
             UtilPub.getPrefab(Const.Prefabs.guest,(p:Prefab)=>{
-                //街道出现n�?
+
                 let n = UtilPub.ranInt(2, Math.floor(this.streetLimit/2))
-                // let n = 1
+
                 for(let i=0;i<n;i++){
-                    //房间对应解锁
+
                     UtilPub.log("street spawn count", i)
-                    let item = poolManager.instance.getNode(p, Const.StreetFixedNode,false) //默认放在街道上，如果进入房间自动切换父节�?
+                    let item = NodePoolService.instance.getNode(p, Const.StreetFixedNode,false)
                     item.getComponent(guest)!.init(GGuestState.streetWalk)
                 }
                 let roomCnt= Math.round(this.roomLimit * UtilPub.ranInt(15,35)/100)
                 for(let i=0;i<roomCnt;i++){
-                    //房间对应解锁
+
                     UtilPub.log("room spawn count", i)
-                    let item = poolManager.instance.getNode(p, Const.ItemParent,false) //默认放在街道上，如果进入房间自动切换父节�?
+                    let item = NodePoolService.instance.getNode(p, Const.ItemParent,false)
                     item.getComponent(guest)!.init(GGuestState.roomWalk)
                 }
             })
@@ -238,19 +238,19 @@ export class guest_mgr extends comm {
     }
 
     guestBugLeave(){
-        //把这个离开的客人搞到地铁口那里出来
+
         let newArr:Node[] = []
         Const.Guests.forEach(item=>{
             let script = item.getComponent(guest)!
             if(script.failCnt>=script.maxFailCnt){
                 script.state = GGuestState.subway
-                poolManager.instance.putNode(script.node)
+                NodePoolService.instance.putNode(script.node)
                 UtilPub.log("----------清理bug客人", script)
             }
             newArr.push(script.node)
         })
         Const.Guests = newArr
-        
+
     }
 
     checkGuests(){
@@ -266,40 +266,39 @@ export class guest_mgr extends comm {
             this.interval = UtilPub.ranInt(2,5)
             this.calTime = 0
 
-            //如果街道未满员，那么就从地铁口出�?
+
             if(this.getStreetGuestCnt() < this.streetLimit && this.getRoomGuestCnt()<this.roomLimit){
-                // let delta= this.streetLimit - this.getStreetGuestCnt()
-                //一次性给出n�?
+
                 let unlockGuestsData = UtilScene.getUnlockGuestData()
                 if(unlockGuestsData.length>0){
-                    // UtilPub.log("----------街道未满员，那么就从地铁口出�?)
+
                     UtilPub.getPrefab(Const.Prefabs.guest,(p:Prefab)=>{
-                        let item = poolManager.instance.getNode(p, Const.StreetFixedNode,false) //默认放在街道上，如果进入房间自动切换父节�?
+                        let item = NodePoolService.instance.getNode(p, Const.StreetFixedNode,false)
                         item.getComponent(guest)!.init(GGuestState.subway)
                     })
                 }
             }
 
-            //增加1个财�?
-            if(userData.roleLv >= tables.ins().config["theGodOfWealthShowLv"] && Const.isGodWealthShow==false ){
-                //如果玩家等级大于固定�?
+
+            if(playerDataStore.roleLv >= TableDataService.ins().config["theGodOfWealthShowLv"] && Const.isGodWealthShow==false ){
+
                 Const.isGodWealthShow=true
                 UtilPub.log("----------增加财神-----")
                 UtilPub.getPrefab(Const.Prefabs.guest,(p:Prefab)=>{
-                    let item = poolManager.instance.getNode(p, Const.StreetFixedNode,false) //默认放在街道上，如果进入房间自动切换父节�?
+                    let item = NodePoolService.instance.getNode(p, Const.StreetFixedNode,false)
                     item.getComponent(guest)!.initGodWealth(GGuestState.streetWalk)
                 })
             }
 
         }
 
-        //派遣去排�?
+
         this.queueCalTime += deltaTime
         if(this.queueCalTime>1){
             this.queueCalTime=0
             this.intoTheWaitQueue()
 
-            //如果房间未满�?
+
             if(this.getRoomGuestCnt()< this.roomLimit){
                 this.outTheWaitQueue()
             }
@@ -309,7 +308,7 @@ export class guest_mgr extends comm {
         if(this.orderGuestCalTime>0.6){
             this.orderGuestCalTime=0
             this.orderGuests()
-           
+
         }
 
         this.bugLeaveCalTime += deltaTime
@@ -318,9 +317,9 @@ export class guest_mgr extends comm {
             this.guestBugLeave()
             this.getRoomMaxGuests()
 
-            // this.checkGuests()
+
         }
-        
+
     }
 }
 

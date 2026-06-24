@@ -10,7 +10,7 @@ stringEx.format = function () {
     }
     return str;
 }
-// 拓展String.parseColor方法
+
 stringEx.parseColor = function () {
     let color = new Color(this);
 

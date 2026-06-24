@@ -3,10 +3,10 @@ import { Const } from '../../../config/Const';
 import GD from '../../../config/GD';
 import { localText } from '../../../config/localText';
 import BaseView from '../../../easyFramework/mgr/BaseView';
-import tables from '../../../easyFramework/other/tables';
+import TableDataService from '../../../easyFramework/other/tables';
 import { UtilPub } from '../../../easyFramework/utils/UtilPub';
-import { mergeBoardModel } from '../../comm/mergeBoardModel';
-import { playerModel } from '../../comm/playerModel';
+import { mergeBoardStateStore } from '../../comm/mergeBoardModel';
+import { seasonProgressStore } from '../../comm/playerModel';
 import { main_top } from '../main/main_top';
 const { ccclass, property } = _decorator;
 
@@ -66,13 +66,13 @@ export class SeasonPassLayer extends BaseView {
     }
 
     refreshTopLayer() {
-        let nextRow = tables.ins().getTableValueByID(Const.Tables.seasonPass, playerModel.seasonId + 1);
+        let nextRow = TableDataService.ins().getTableValueByID(Const.Tables.seasonPass, seasonProgressStore.seasonId + 1);
         if (nextRow) {
-            this.setString(this.scoreNode, playerModel.seasonScore + "/" + nextRow.num);
-            this.setProgressBar(this.nextProgress, playerModel.seasonScore / nextRow.num);
+            this.setString(this.scoreNode, seasonProgressStore.seasonScore + "/" + nextRow.num);
+            this.setProgressBar(this.nextProgress, seasonProgressStore.seasonScore / nextRow.num);
             this.setString(this.lvNode, nextRow.lv);
         } else {
-            this.setString(this.lvNode, playerModel.seasonId - 1);
+            this.setString(this.lvNode, seasonProgressStore.seasonId - 1);
             this.setString(this.scoreNode, localText.lvMax);
             this.setProgressBar(this.nextProgress, 1);
         }
@@ -80,7 +80,7 @@ export class SeasonPassLayer extends BaseView {
 
     refreshListLayer() {
         this.itemLayer.removeAllChildren();
-        let tb = tables.ins().getTable(Const.Tables.seasonPass);
+        let tb = TableDataService.ins().getTable(Const.Tables.seasonPass);
         for (let i = tb.length - 1; i >= 0; i--) {
             let row = tb[i];
             let itemUI = instantiate(this.awardItem);
@@ -105,18 +105,18 @@ export class SeasonPassLayer extends BaseView {
         this.progressNode.position = v3(0, -y);
 
         this.scheduleOnce(() => {
-            // 自动滚动到进度条位置
-            let dy = (chs.length - playerModel.seasonId - 3) * itemHeight;
+
+            let dy = (chs.length - seasonProgressStore.seasonId - 3) * itemHeight;
             this.listNode.getComponent(ScrollView)!.scrollToOffset(v2(0, dy));
         });
     }
 
     refreshProgressBar() {
-        let tb = tables.ins().getTable(Const.Tables.seasonPass);
-        let nextRow = tables.ins().getTableValueByID(Const.Tables.seasonPass, playerModel.seasonId + 1);
+        let tb = TableDataService.ins().getTable(Const.Tables.seasonPass);
+        let nextRow = TableDataService.ins().getTableValueByID(Const.Tables.seasonPass, seasonProgressStore.seasonId + 1);
         if (nextRow) {
             let oneP = 1 / (tb.length - 1);
-            let p = oneP * (playerModel.seasonId - 1) + playerModel.seasonScore / nextRow.num * oneP;
+            let p = oneP * (seasonProgressStore.seasonId - 1) + seasonProgressStore.seasonScore / nextRow.num * oneP;
             this.setProgressBar(this.progressNode, p);
         } else {
             this.setProgressBar(this.progressNode, 1);
@@ -124,7 +124,7 @@ export class SeasonPassLayer extends BaseView {
     }
 
     refreshAwardItem(itemUI: Node, row: any) {
-        let info = playerModel.getSeasonPassInfoById(row.id);
+        let info = seasonProgressStore.getSeasonPassInfoById(row.id);
 
         let lvNode = find("rank/lv", itemUI)!;
         let rankBg1Node = find("rank/bg1", itemUI)!;
@@ -147,20 +147,20 @@ export class SeasonPassLayer extends BaseView {
         this.setString(lvNode, row.lv);
 
         let award1 = row.award1;
-        let propRow = tables.ins().getTableValueByID(Const.Tables.prop, award1[0]);
+        let propRow = TableDataService.ins().getTableValueByID(Const.Tables.prop, award1[0]);
         let award1Node = find("award1", itemUI)!;
         // @ts-ignore
         award1Node.row = row;
         this.bindButton(award1Node, this.onClickAward1);
         let btnInfo1 = find("btnInfo", award1Node)!;
         btnInfo1.active = false;
-        if (mergeBoardModel.propIsPutInCardList(propRow.id)) {
+        if (mergeBoardStateStore.propIsPutInCardList(propRow.id)) {
             btnInfo1.active = true;
             // @ts-ignore
             btnInfo1.propRow = propRow;
             let propRowid = propRow.id
             this.bindButton(btnInfo1, () => {
-                mergeBoardModel.openPropInfoLayer(propRowid);
+                mergeBoardStateStore.openPropInfoLayer(propRowid);
             });
         }
 
@@ -171,22 +171,22 @@ export class SeasonPassLayer extends BaseView {
         get1Node.active = false;
         gou1Node.active = false;
         if (info) {
-            // 已完成
+
             award1Node.getComponent(UIOpacity)!.opacity = 255;
             if (info.a1) {
-                // 已领取
+
                 gou1Node.active = true;
             } else {
-                // 还未领取
+
                 get1Node.active = true;
             }
         } else {
-            // 未完成
+
             award1Node.getComponent(UIOpacity)!.opacity = 170;
         }
 
         let award2 = row.award2;
-        propRow = tables.ins().getTableValueByID(Const.Tables.prop, award2[0]);
+        propRow = TableDataService.ins().getTableValueByID(Const.Tables.prop, award2[0]);
         let award2Node = find("award2", itemUI)!;
         // @ts-ignore
         award2Node.row = row;
@@ -194,14 +194,14 @@ export class SeasonPassLayer extends BaseView {
 
         let btnInfo2 = find("btnInfo", award2Node)!;
         btnInfo2.active = false;
-        if (mergeBoardModel.propIsPutInCardList(propRow.id)) {
+        if (mergeBoardStateStore.propIsPutInCardList(propRow.id)) {
             btnInfo2.active = true;
             // @ts-ignore
             btnInfo2.propRow = propRow;
             let propRowid = propRow.id
 
             this.bindButton(btnInfo2, () => {
-                mergeBoardModel.openPropInfoLayer(propRowid);
+                mergeBoardStateStore.openPropInfoLayer(propRowid);
             });
         }
 
@@ -214,16 +214,16 @@ export class SeasonPassLayer extends BaseView {
         gou2Node.active = false;
         lock2Node.active = false;
         if (info) {
-            // 已完成
+
             award2Node.getComponent(UIOpacity)!.opacity = 255;
             if (!info.a1) {
                 lock2Node.active = true;
             }
             if (info.a2) {
-                // 已领取
+
                 gou2Node.active = true;
             } else if (info.a1) {
-                // 还未领取
+
                 get2Node.active = true;
             }
         } else {
@@ -239,24 +239,24 @@ export class SeasonPassLayer extends BaseView {
     onClickAward1(btn: Button) {
         // @ts-ignore
         let row = btn.node.row;
-        let info = playerModel.getSeasonPassInfoById(row.id);
+        let info = seasonProgressStore.getSeasonPassInfoById(row.id);
         if (!info || info.a1) {
             return;
         }
-        playerModel.seasonGetAward1(row.id, UtilPub.convertToWorldSpace(btn.node));
+        seasonProgressStore.seasonGetAward1(row.id, UtilPub.convertToWorldSpace(btn.node));
         this.refreshAwardItem(btn.node.parent!, row);
     }
 
     onClickAward2(btn: Button) {
         // @ts-ignore
         let row = btn.node.row;
-        let info = playerModel.getSeasonPassInfoById(row.id);
+        let info = seasonProgressStore.getSeasonPassInfoById(row.id);
         if (!info || !info.a1 || info.a2) {
             return;
         }
-        mergeBoardModel.openAd("战令超级会员奖励", (isAward: any) => {
+        mergeBoardStateStore.openAd("战令超级会员奖励", (isAward: any) => {
             if (isAward) {
-                playerModel.seasonGetAward2(row.id, UtilPub.convertToWorldSpace(btn.node));
+                seasonProgressStore.seasonGetAward2(row.id, UtilPub.convertToWorldSpace(btn.node));
                 this.refreshAwardItem(btn.node.parent!, row);
             }
         });
@@ -265,10 +265,10 @@ export class SeasonPassLayer extends BaseView {
     onClickBtnClose() {
         this.close();
 
-        // test
-        // playerModel.saveDayTime = new Date(new Date().getTime() - 31 * 24 * 60 * 60 * 1000);
-        // playerModel.addSeasonScore(100);
-        // this.refreshProgressBar();
+
+
+
+
     }
 
 }

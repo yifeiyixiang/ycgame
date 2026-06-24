@@ -28,22 +28,22 @@ export class ScrollViewUtil extends Component {
     itemUITransform: UITransform = null!;
     itemUIWidth: number = 0;
     itemUIHeight: number = 0;
-    // 缓存还未被使用的itemUI
+
     itemUIFreeArr: any = [];
-    // 首个itemUI的坐标
+
     startPosX: number = 0;
     startPosY: number = 0;
 
-    // 一屏最多可以显示几行或者几列itemUI
+
     viewNum: number = 0;
-    // 一行或者一列要显示几个
+
     changeNum: number = 1;
-    // 最大行数或列数
+
     maxLines: number = 1;
 
-    // 记录每帧需要刷新的数据
+
     frameUpdateArr: any = [];
-    // 每帧最多能处理的时间间隔
+
     frameTime: number = Math.floor(1000 / (game.getFrameRate() + 10));
 
     itemArr: any = [];
@@ -52,10 +52,10 @@ export class ScrollViewUtil extends Component {
     itemTween: boolean = false;
     setDataFlag: boolean = false;
 
-    // 只会刷新行数或者列数索引区间内的节点
-    // 开始索引
+
+
     startIndex: number = 0;
-    // 结束索引
+
     stopIndex: number = 0;
 
     private renderChildBatch: RenderChildBatch = null!;
@@ -66,13 +66,13 @@ export class ScrollViewUtil extends Component {
 
         this.itemUI = this.contentNode.children[0];
         if (!this.itemUI) {
-            // pu.e("=============ScrollViewUtil itemUI is null:" + this.node.name);
+
         }
         this.itemUITransform = this.itemUI.getComponent(UITransform)!;
         this.itemUIWidth = this.itemUITransform.width;
         this.itemUIHeight = this.itemUITransform.height;
 
-        // 获取排列间距参数
+
         this.vertical = this.scrollView.vertical;
         let contentLayout = this.contentNode.getComponent(Layout);
         this.gapX = contentLayout!.spacingX;
@@ -117,14 +117,14 @@ export class ScrollViewUtil extends Component {
             this.changeNum = 1;
         }
 
-        // 首个itemUI的坐标
+
         this.startPosX = this.itemUIWidth * this.itemUITransform.anchorX - this.contentTransform.width * this.contentTransform.anchorX + this.paddingLeft;
         this.startPosY = contentHeight * (1 - this.contentTransform.anchorY) - this.itemUIHeight * (1 - this.itemUITransform.anchorY) - this.paddingTop;
 
-        // scrollView监听事件
+
         this.node.on('scrolling', this.onScrolling, this);
 
-        // 记录每帧需要刷新的数据
+
         this.frameUpdateArr = [];
 
         this.addRenderChildBatch();
@@ -134,17 +134,17 @@ export class ScrollViewUtil extends Component {
         if (this.renderChildBatch) {
             return;
         }
-        //    this.renderChildBatch = this.contentNode.addComponent(RenderChildBatch);
+
     }
 
-    // 滑动中回调
+
     onScrolling() {
         if (this.itemArr.length <= 0) {
             return;
         }
 
         let start = 0;
-        // 垂直滚动
+
         if (this.vertical) {
             let posY = this.contentNode.getPosition().y;
             if (posY > this.contentTransform.height - this.viewHeight) {
@@ -153,10 +153,10 @@ export class ScrollViewUtil extends Component {
             if (posY < 0) {
                 posY = 0;
             }
-            // 开始行
+
             start = Math.floor((posY + this.gapY - this.paddingTop) / (this.itemUIHeight + this.gapY));
         } else {
-            // 水平滚动
+
             let posX = this.contentNode.getPosition().x;
             if (posX < this.viewWidth - this.contentTransform.width) {
                 posX = this.viewWidth - this.contentTransform.width;
@@ -165,7 +165,7 @@ export class ScrollViewUtil extends Component {
                 posX = 0;
             }
             posX = Math.abs(posX);
-            // 开始列
+
             start = Math.floor((posX + this.gapX - this.paddingLeft) / (this.itemUIWidth + this.gapX));
         }
 
@@ -176,13 +176,13 @@ export class ScrollViewUtil extends Component {
             start = this.maxLines - 1;
         }
 
-        // 结束行
+
         let stop = start + this.viewNum;
         if (stop > this.maxLines - 1) {
             stop = this.maxLines - 1;
         }
 
-        // 跟上屏显示范围不一样，才会进行刷新
+
 
         if (start != this.startIndex || stop != this.stopIndex) {
             this.startIndex = start;
@@ -191,10 +191,10 @@ export class ScrollViewUtil extends Component {
         }
     }
 
-    // 渲染屏幕范围内的itemArr
+
     renderItemArr() {
         let item = null;
-        // 先回收屏幕范围外的item
+
         let hideIndex = this.startIndex * this.changeNum;
         for (let i = 0; i < hideIndex; i++) {
             item = this.itemArr[i];
@@ -207,7 +207,7 @@ export class ScrollViewUtil extends Component {
             this.recycleItem(item);
         }
         let isupdate = false
-        // 再显示屏幕范围内的
+
         for (let i = this.startIndex; i <= this.stopIndex; i++) {
             let startIndex = i * this.changeNum;
             let stopIndex = startIndex + this.changeNum;
@@ -217,10 +217,10 @@ export class ScrollViewUtil extends Component {
                 }
                 item = this.itemArr[k];
                 if (item.node) {
-                    // 已经刷新过了，就不再刷新，节省CPU开销
+
                     continue;
                 }
-                // 更换到每帧去刷新
+
                 item.needUpdate = true;
                 isupdate = true
                 this.frameUpdateArr.push(item);
@@ -231,7 +231,7 @@ export class ScrollViewUtil extends Component {
             this.updateItemZindex()
     }
 
-    // 生成node
+
     createNode() {
         let node = null;
         if (this.itemUIFreeArr.length > 0) {
@@ -290,7 +290,7 @@ export class ScrollViewUtil extends Component {
                 break;
             } else {
                 if (new Date().getTime() - startTime >= this.frameTime) {
-                    // 本帧跑满了，下一帧继续
+
                     this.scheduleOnce(this.startFrameUpdate.bind(this));
                     break;
                 }
@@ -298,7 +298,7 @@ export class ScrollViewUtil extends Component {
         }
     }
 
-    // 回收item.node
+
     recycleItem(item: any) {
         if (item.node && isValid(item.node)) {
             if (this.itemUIFreeArr.indexOf(item.node) == -1) {
@@ -311,14 +311,14 @@ export class ScrollViewUtil extends Component {
         }
     }
 
-    // 清除所有items
+
     clearAllItems() {
         for (let item of this.itemArr) {
             this.recycleItem(item);
         }
     }
 
-    // 初始化item
+
     initItem(data: any, index: number) {
         let item = {
             node: null,
@@ -374,7 +374,7 @@ export class ScrollViewUtil extends Component {
         this.refreshItemArr(0, resetPos);
     }
 
-    // 布局itemArr，计算出每个item摆放的坐标信息
+
     layoutItemArr(start: number) {
         if (this.itemArr.length <= 0) {
             return;
@@ -394,7 +394,7 @@ export class ScrollViewUtil extends Component {
         }
     }
 
-    // 调整content节点大小
+
     resizeContentNode() {
         if (!this.contentNode || !this.itemUI) {
             return;
@@ -414,7 +414,7 @@ export class ScrollViewUtil extends Component {
         }
     }
 
-    // 调整content节点大小
+
     resizeContentNodeAuto() {
         if (!this.contentNode || !this.itemUI) {
             return;
@@ -437,7 +437,7 @@ export class ScrollViewUtil extends Component {
         }
     }
 
-    // 计算每个item的坐标位置和contentNode大小
+
     refreshItemArr(start: number, resetPos: boolean = true) {
         if (!this.scrollView) {
             return;
@@ -483,7 +483,7 @@ export class ScrollViewUtil extends Component {
         this.onScrolling();
     }
 
-    // 刷新整个列表
+
     refreshList() {
         if (!this.refreshItemFunc) {
             return;
@@ -496,7 +496,7 @@ export class ScrollViewUtil extends Component {
         });
     }
 
-    // 移除某个索引item，会重新排列索引
+
     removeByIndex(index: number, resetPos: boolean = false) {
         if (index < 0 || index >= this.itemArr.length) {
             console.log("无效的index", index);
@@ -510,7 +510,7 @@ export class ScrollViewUtil extends Component {
         this.itemArr.splice(index, 1);
         this.recycleItem(item);
 
-        // 重新排列索引
+
         for (let i = index; i < this.itemArr.length; i++) {
             let item = this.itemArr[i];
             this.refreshItemIndex(item, i);
@@ -522,7 +522,7 @@ export class ScrollViewUtil extends Component {
         this.refreshItemArr(index, resetPos);
     }
 
-    // 刷新指定索引的itemUI
+
     refreshIndex(index: number, data?: any) {
         if (index == undefined || index < 0 || index >= this.itemArr.length) {
             console.log("无效的index", index);
@@ -543,7 +543,7 @@ export class ScrollViewUtil extends Component {
         }
     }
 
-    // 插入数据
+
     insertData(index: number, arr: any, resetPos: boolean = false) {
         if (!arr || arr.length == 0) {
             console.log("没有要添加的数据");
@@ -577,12 +577,12 @@ export class ScrollViewUtil extends Component {
 
     }
 
-    // 追加数据
+
     pushData(arr: any, resetPos: boolean = false) {
         this.insertData(this.itemArr.length, arr, resetPos);
     }
 
-    // 是否滑动到尽头了
+
     isScrollEnd() {
         let maxOffset = this.scrollView.getMaxScrollOffset();
         let offset = this.scrollView.getScrollOffset();
@@ -593,7 +593,7 @@ export class ScrollViewUtil extends Component {
         return false;
     }
 
-    // 滑动到尽头
+
     scrollToEnd(time?: number) {
         this.scrollView.stopAutoScroll();
         if (time == undefined || time < 0) {
@@ -606,7 +606,7 @@ export class ScrollViewUtil extends Component {
         }
     }
 
-    // 滑动到指定索引位置，该位置将定位到最底下(垂直滚动)或者最右边(水平滚动)
+
     scrollToIndex(index: number, time?: number) {
         if (time == undefined || time < 0) {
             time = 0;
