@@ -97,11 +97,11 @@ export class GameRuntimeData extends Component {
     }
 
     public static getArrivalTime(time:number){
-        let arrival = time - Math.floor(Date.now()/1000);
-        if (arrival < 0){
-            arrival = 0;
+        let remainingSeconds = time - Math.floor(Date.now()/1000);
+        if (remainingSeconds < 0){
+            remainingSeconds = 0;
         }
-        return arrival;
+        return remainingSeconds;
     }
 
     public static getZeroTime():number{
@@ -115,11 +115,11 @@ export class GameRuntimeData extends Component {
 
 
 
-        let hour = utcEndOfDay.getTime()
-        let hour2 = utcNow.getTime()
-        let diff = utcEndOfDay.getTime() - utcNow.getTime();
+        let endOfDayTimestamp = utcEndOfDay.getTime()
+        let currentUtcTimestamp = utcNow.getTime()
+        let millisecondGap = endOfDayTimestamp - currentUtcTimestamp;
 
-        let seconds = Math.ceil(diff / 1000);
+        let seconds = Math.ceil(millisecondGap / 1000);
 
         return seconds;
     }
@@ -129,20 +129,20 @@ export class GameRuntimeData extends Component {
         let minutes = Math.floor(( diffSeconds % 3600) / 60);
         let secs =  diffSeconds % 60;
 
-        let h1 = (hours < 10) ? '0' + hours.toString() : hours.toString();
-        let m1 = (minutes < 10) ? '0' + minutes.toString() : minutes.toString();
-        let s1 = (secs < 10) ? '0' + secs.toFixed(0) : secs.toFixed(0);
+        let hourText = (hours < 10) ? '0' + hours.toString() : hours.toString();
+        let minuteText = (minutes < 10) ? '0' + minutes.toString() : minutes.toString();
+        let secondText = (secs < 10) ? '0' + secs.toFixed(0) : secs.toFixed(0);
 
         if (hours == 0){
-            return  `${m1}:${s1}`;
+            return  `${minuteText}:${secondText}`;
         }
         if (hours == 0 && minutes == 0){
-            return  `${s1}`;
+            return  `${secondText}`;
         }
         if (type == 2){
-            return  `${h1}/${m1}/${s1}`;
+            return  `${hourText}/${minuteText}/${secondText}`;
         }
-        return  `${h1}:${m1}:${s1}`;
+        return  `${hourText}:${minuteText}:${secondText}`;
     }
 
     public static getShowTime(type:number = 1):string{
@@ -152,13 +152,13 @@ export class GameRuntimeData extends Component {
         let day = date.getDate()
         let year = date.getFullYear()
 
-        let h1 = (month < 10) ? '0' + month.toString() : month.toString();
-        let m1 = (day < 10) ? '0' + day.toString() : day.toString();
-        let s1 = (year < 10) ? '0' + year.toString() : year.toString();
+        let monthText = (month < 10) ? '0' + month.toString() : month.toString();
+        let dayText = (day < 10) ? '0' + day.toString() : day.toString();
+        let yearText = (year < 10) ? '0' + year.toString() : year.toString();
         if (type == 2){
-            return  `${h1}/${m1}/${s1}`;
+            return  `${monthText}/${dayText}/${yearText}`;
         }
-        return `${h1}:${m1}:${s1}`;
+        return `${monthText}:${dayText}:${yearText}`;
     }
 
     private static headList:{} = {};
@@ -167,9 +167,8 @@ export class GameRuntimeData extends Component {
 
     public static getExpSum(): number{
         let level = GameRuntimeData.saveData.userLevel;
-        let num = ((level+1)**1.2)*100
-        let num2 = Math.pow((level+1), 1.2)*100
-        return num;
+        let requiredExp = Math.pow((level+1), 1.2)*100
+        return requiredExp;
     }
 
     public static isNull(str:string):boolean{
@@ -230,10 +229,10 @@ export class GameRuntimeData extends Component {
 
 
     public static getToggleCheckIndex(togNode:Node){
-        for (let index = 0; index < togNode.children.length; index++) {
-            const element = togNode.children[index].getComponent(Toggle);
-            if (element && element.isChecked){
-                return index;
+        for (let toggleIndex = 0; toggleIndex < togNode.children.length; toggleIndex++) {
+            const toggleComponent = togNode.children[toggleIndex].getComponent(Toggle);
+            if (toggleComponent && toggleComponent.isChecked){
+                return toggleIndex;
             }
         }
     }
@@ -241,26 +240,26 @@ export class GameRuntimeData extends Component {
 
 
     public static getCoinNumByType(type:ItemEnumType){
-        let num:number = 0
+        let coinAmount:number = 0
         if (type == ItemEnumType.petCoin){
-            num = GameRuntimeData.severData.userInfo.petCoin;
+            coinAmount = GameRuntimeData.severData.userInfo.petCoin;
         }
         else if (type == ItemEnumType.biscuit){
-            num = GameRuntimeData.severData.userInfo.biscuit;
+            coinAmount = GameRuntimeData.severData.userInfo.biscuit;
         }
         else if (type == ItemEnumType.HPC){
-            num = GameRuntimeData.severData.userInfo.hpc;
+            coinAmount = GameRuntimeData.severData.userInfo.hpc;
         }
         else if (type == ItemEnumType.AICoin){
-            num = GameRuntimeData.severData.userInfo.aiCoin;
+            coinAmount = GameRuntimeData.severData.userInfo.aiCoin;
         }
-        return num;
+        return coinAmount;
     }
 
 
     public static getIsEnoughCoinByType(type:ItemEnumType, cost:number, isShopTip:boolean = true){
-        let num:number = GameRuntimeData.getCoinNumByType(type);
-        if (num >= cost){
+        let ownedCoinAmount:number = GameRuntimeData.getCoinNumByType(type);
+        if (ownedCoinAmount >= cost){
             return true;
         }
         if (isShopTip){
@@ -272,10 +271,10 @@ export class GameRuntimeData extends Component {
 
 
     public static getPetDataById(_id:number):PetProfileRecord{
-        for (let index = 0; index < playerDataStore.pets.length; index++) {
-            const element:PetProfileRecord = playerDataStore.pets[index];
-            if (element && element.id == _id){
-                return element;
+        for (let petIndex = 0; petIndex < playerDataStore.pets.length; petIndex++) {
+            const petRecord:PetProfileRecord = playerDataStore.pets[petIndex];
+            if (petRecord && petRecord.id == _id){
+                return petRecord;
             }
         }
         return null!;
@@ -283,10 +282,10 @@ export class GameRuntimeData extends Component {
 
 
     public static getBagDataById(_id:number):BagPropRecord{
-        for (let index = 0; index < playerDataStore.bagProps.length; index++) {
-            const element:BagPropRecord = playerDataStore.bagProps[index];
-            if (element && element.id == _id){
-                return element;
+        for (let bagIndex = 0; bagIndex < playerDataStore.bagProps.length; bagIndex++) {
+            const bagRecord:BagPropRecord = playerDataStore.bagProps[bagIndex];
+            if (bagRecord && bagRecord.id == _id){
+                return bagRecord;
             }
         }
         return null!;

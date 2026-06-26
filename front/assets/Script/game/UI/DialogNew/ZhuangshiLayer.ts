@@ -53,27 +53,27 @@ export class ZhuangshiLayer extends BaseView {
 
     refresh(){
 
-        for (let index = 0; index < this.listContent.children.length; index++) {
-            const element = this.listContent.children[index];
-            if (element){
-                element.active = false;
+        for (let cellIndex = 0; cellIndex < this.listContent.children.length; cellIndex++) {
+            const decorationCellNode = this.listContent.children[cellIndex];
+            if (decorationCellNode){
+                decorationCellNode.active = false;
             }
         }
 
-        let ind:number = 0;
-        for (let index = 0; index < playerDataStore.bagProps.length; index++) {
-            const bagData:BagPropRecord = playerDataStore.bagProps[index];
-            let shopCfg:ShopConfigRecord = TableDataService.ins().getTableValueByID(Const.Tables.new_prop, bagData.prop_id);
-            if (shopCfg.typeson == this.selectType && !bagData.is_active){
-                let ele = this.listContent.children[ind];
-                if (!ele){
-                    ele = instantiate(this.listContent.children[0])
-                    ele.parent = this.listContent;
+        let visibleCellIndex:number = 0;
+        for (let bagIndex = 0; bagIndex < playerDataStore.bagProps.length; bagIndex++) {
+            const decorationRecord:BagPropRecord = playerDataStore.bagProps[bagIndex];
+            let decorationConfig:ShopConfigRecord = TableDataService.ins().getTableValueByID(Const.Tables.new_prop, decorationRecord.prop_id);
+            if (decorationConfig.typeson == this.selectType && !decorationRecord.is_active){
+                let decorationCellNode = this.listContent.children[visibleCellIndex];
+                if (!decorationCellNode){
+                    decorationCellNode = instantiate(this.listContent.children[0])
+                    decorationCellNode.parent = this.listContent;
                 }
-                ele.active = true;
-                ele.getComponent(DiamondItemCellController).refreshData(bagData);
+                decorationCellNode.active = true;
+                decorationCellNode.getComponent(DiamondItemCellController).refreshData(decorationRecord);
 
-                ind++;
+                visibleCellIndex++;
             }
         }
     }
@@ -81,9 +81,9 @@ export class ZhuangshiLayer extends BaseView {
     onClickHandler(eve:Event, str:string){
         AudioPlaybackService.instance.playSound(Const.Audio.btn)
         if (str && str.includes("tog")){
-            let type = Number(str.slice(-1)) ;
-            if (this.selectType != type){
-                this.selectType = type;
+            let selectedDecorationType = Number(str.slice(-1)) ;
+            if (this.selectType != selectedDecorationType){
+                this.selectType = selectedDecorationType;
 
 
 

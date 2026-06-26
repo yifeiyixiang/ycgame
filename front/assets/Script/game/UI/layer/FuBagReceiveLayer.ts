@@ -40,32 +40,32 @@ export class FuBagReceiveLayer extends BaseView {
 
     onClickPropItem(btn: Button) {
         // @ts-ignore
-        let propRow = btn.node.propRow;
-        mergeBoardStateStore.openPropInfoLayer(propRow.id);
+        let propConfig = btn.node.propRow;
+        mergeBoardStateStore.openPropInfoLayer(propConfig.id);
     }
 
     onClickBtnSure() {
-        for (let index = 0; index < this._rewardList.length; index++) {
-            const element = this._rewardList[index];
-            console.log("prop : " + element[0] + "  num: " + element[1])
-            mergeBoardStateStore.addPropNum(element[0], element[1], this.node.getComponent(UITransform)!.convertToWorldSpaceAR(Vec3.ZERO))
+        for (let rewardIndex = 0; rewardIndex < this._rewardList.length; rewardIndex++) {
+            const rewardEntry = this._rewardList[rewardIndex];
+            console.log("prop : " + rewardEntry[0] + "  num: " + rewardEntry[1])
+            mergeBoardStateStore.addPropNum(rewardEntry[0], rewardEntry[1], this.node.getComponent(UITransform)!.convertToWorldSpaceAR(Vec3.ZERO))
         }
         this.close();
     }
 
     onClickFuBag() {
-        let item = find("root/item" + this._curIndex, this.node)!
-        item.active = true
+        let rewardItemNode = find("root/item" + this._curIndex, this.node)!
+        rewardItemNode.active = true
 
-        let fuBagData = TableDataService.ins().getTableValueByID(Const.Tables.fuBag, this.bagId).price
-        let curReward = fuBagData[Math.floor(fuBagData.length * Math.random())]
-        let propId = curReward[0]
-        let num = curReward[1]
-        this._rewardList.push(curReward)
-        let propData = TableDataService.ins().getTableValueByID(Const.Tables.prop, propId)
-        this.setSpriteFrame(find("icon", item)!.getComponent(Sprite)!, Const.resPath.icon + propData.icon, undefined, 100)
-        find("num", item)!.getComponent(Label)!.string = "x" + num
-        tween(item).set({ scale: v3(0, 0, 0) }).to(0.2, { scale: v3(1.1, 1.1, 1.1) }).to(0.1, { scale: v3(1, 1, 1) }).call(() => {
+        let fuBagRewardList = TableDataService.ins().getTableValueByID(Const.Tables.fuBag, this.bagId).price
+        let selectedReward = fuBagRewardList[Math.floor(fuBagRewardList.length * Math.random())]
+        let propId = selectedReward[0]
+        let rewardCount = selectedReward[1]
+        this._rewardList.push(selectedReward)
+        let propConfig = TableDataService.ins().getTableValueByID(Const.Tables.prop, propId)
+        this.setSpriteFrame(find("icon", rewardItemNode)!.getComponent(Sprite)!, Const.resPath.icon + propConfig.icon, undefined, 100)
+        find("num", rewardItemNode)!.getComponent(Label)!.string = "x" + rewardCount
+        tween(rewardItemNode).set({ scale: v3(0, 0, 0) }).to(0.2, { scale: v3(1.1, 1.1, 1.1) }).to(0.1, { scale: v3(1, 1, 1) }).call(() => {
 
         }).start()
         this._curIndex++

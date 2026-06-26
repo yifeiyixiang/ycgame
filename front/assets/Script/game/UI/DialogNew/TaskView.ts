@@ -52,68 +52,68 @@ export class TaskView extends BaseView {
     }
 
     refresh(){
-         for (let index = 0; index < this.listContent.children.length; index++) {
-            const element = this.listContent.children[index];
-            if (element){
-                element.active = false;
+         for (let cellIndex = 0; cellIndex < this.listContent.children.length; cellIndex++) {
+            const taskCellNode = this.listContent.children[cellIndex];
+            if (taskCellNode){
+                taskCellNode.active = false;
             }
         }
 
-        for (let index = 0; index < playerDataStore.taskDataList.length; index++) {
-            let taskData:TaskProgressRecord = playerDataStore.taskDataList[index];
+        for (let taskIndex = 0; taskIndex < playerDataStore.taskDataList.length; taskIndex++) {
+            let taskRecord:TaskProgressRecord = playerDataStore.taskDataList[taskIndex];
 
-            let ele = this.listContent.children[index];
-            if (!ele){
-                ele = instantiate(this.listContent.children[0])
-                ele.parent = this.listContent;
+            let taskCellNode = this.listContent.children[taskIndex];
+            if (!taskCellNode){
+                taskCellNode = instantiate(this.listContent.children[0])
+                taskCellNode.parent = this.listContent;
             }
-            ele.active = true;
-            ele.getComponent(TaskItemCellController).refreshData(taskData);
+            taskCellNode.active = true;
+            taskCellNode.getComponent(TaskItemCellController).refreshData(taskRecord);
         }
     }
 
     initUI() {
-        let arr2 = mergeBoardStateStore.createTask2();
+        let groupedTasksByUnlockId = mergeBoardStateStore.createTask2();
 
         this.listContent.removeAllChildren()
-        for (const key in arr2) {
-            if (Object.prototype.hasOwnProperty.call(arr2, key)) {
-                const element = arr2[key];
-                let tempBg = instantiate(this.tempBg)
-                tempBg.position = Vec3.ZERO
-                tempBg.parent = this.listContent
-                tempBg.active = true
-                let taskData = TableDataService.ins().getTableValueByID(Const.Tables.taskUnlock, parseInt(key))
-                this.setString(find("title", tempBg)!, taskData.name);
-                let progress = mergeBoardStateStore.getTaskProgress(parseInt(key))
-                this.setString(find("ProgressBar/roomBar/Label", tempBg)!, Math.floor(progress * 100) + "%");
-                find("ProgressBar/roomBar", tempBg)!.getComponent(ProgressBar)!.progress = progress
-                for (let index = 0; index < element.length; index++) {
-                    let item = element[index];
-                    let tempItem = instantiate(this.tempItem)
-                    tempItem.position = Vec3.ZERO
-                    tempItem.parent = find("Layout", tempBg)!
-                    this.refreshTaskItem(tempItem, item)
+        for (const unlockId in groupedTasksByUnlockId) {
+            if (Object.prototype.hasOwnProperty.call(groupedTasksByUnlockId, unlockId)) {
+                const taskGroup = groupedTasksByUnlockId[unlockId];
+                let taskGroupNode = instantiate(this.tempBg)
+                taskGroupNode.position = Vec3.ZERO
+                taskGroupNode.parent = this.listContent
+                taskGroupNode.active = true
+                let taskUnlockConfig = TableDataService.ins().getTableValueByID(Const.Tables.taskUnlock, parseInt(unlockId))
+                this.setString(find("title", taskGroupNode)!, taskUnlockConfig.name);
+                let taskProgress = mergeBoardStateStore.getTaskProgress(parseInt(unlockId))
+                this.setString(find("ProgressBar/roomBar/Label", taskGroupNode)!, Math.floor(taskProgress * 100) + "%");
+                find("ProgressBar/roomBar", taskGroupNode)!.getComponent(ProgressBar)!.progress = taskProgress
+                for (let taskItemIndex = 0; taskItemIndex < taskGroup.length; taskItemIndex++) {
+                    let taskEntry = taskGroup[taskItemIndex];
+                    let taskItemNode = instantiate(this.tempItem)
+                    taskItemNode.position = Vec3.ZERO
+                    taskItemNode.parent = find("Layout", taskGroupNode)!
+                    this.refreshTaskItem(taskItemNode, taskEntry)
                 }
-                let giftBtn = find("ProgressBar/gift", tempBg)!
-                let btnReceive = find("btnReceive", tempBg)!
+                let giftPreviewButton = find("ProgressBar/gift", taskGroupNode)!
+                let receiveButton = find("btnReceive", taskGroupNode)!
 
-                this.bindButton(giftBtn, () => {
+                this.bindButton(giftPreviewButton, () => {
 
-                    let pos = UtilPub.convertToWorldSpace(giftBtn)
-                    UiLayerService.instance.showDialog(Const.Dialogs.RewardPopupItemController, { RewardItemRecord: taskData.taskReward, pos: pos })
+                    let previewWorldPos = UtilPub.convertToWorldSpace(giftPreviewButton)
+                    UiLayerService.instance.showDialog(Const.Dialogs.RewardPopupItemController, { RewardItemRecord: taskUnlockConfig.taskReward, pos: previewWorldPos })
                 })
-                if (element.length > 0) {
-                    btnReceive.active = false
+                if (taskGroup.length > 0) {
+                    receiveButton.active = false
                 } else {
-                    btnReceive.active = true
+                    receiveButton.active = true
 
-                    this.bindButton(btnReceive, () => {
-                        for (let i = 0; i < taskData.taskReward.length; i++) {
-                            const element = taskData.taskReward[i];
-                            mergeBoardStateStore.addPropNum(element[0], element[1])
+                    this.bindButton(receiveButton, () => {
+                        for (let rewardIndex = 0; rewardIndex < taskUnlockConfig.taskReward.length; rewardIndex++) {
+                            const rewardEntry = taskUnlockConfig.taskReward[rewardIndex];
+                            mergeBoardStateStore.addPropNum(rewardEntry[0], rewardEntry[1])
                         }
-                        mergeBoardStateStore.setTaskGetReward(parseInt(key))
+                        mergeBoardStateStore.setTaskGetReward(parseInt(unlockId))
                         this.initUI()
                     })
                 }
@@ -124,40 +124,40 @@ export class TaskView extends BaseView {
     }
 
     refreshTaskItem(itemUI: Node, task: any) {
-        let chs = find("propLayer", itemUI)!.children;
-        let done = true
-        chs.forEach((propItem: Node, i: number) => {
-            let prop = task.propArr[i];
-            if (prop) {
-                propItem.active = true;
-                let propRow = TableDataService.ins().getTableValueByID(Const.Tables.prop, prop.id);
-                if (!propRow) {
-                    propItem.active = false;
+        let propSlots = find("propLayer", itemUI)!.children;
+        let isTaskReady = true
+        propSlots.forEach((propSlot: Node, slotIndex: number) => {
+            let neededProp = task.propArr[slotIndex];
+            if (neededProp) {
+                propSlot.active = true;
+                let propConfig = TableDataService.ins().getTableValueByID(Const.Tables.prop, neededProp.id);
+                if (!propConfig) {
+                    propSlot.active = false;
                     return;
                 }
-                this.setSpriteFrame2(find("icon", propItem)!.getComponent(Sprite)!, Const.resPath.icon + propRow.icon);
-                let hasInfo = mergeBoardStateStore.getRoomDataHasInfoById(prop.id);
-                let showNum = hasInfo.num;
-                if (showNum >= prop.num) {
-                    showNum = prop.num;
+                this.setSpriteFrame2(find("icon", propSlot)!.getComponent(Sprite)!, Const.resPath.icon + propConfig.icon);
+                let ownedPropInfo = mergeBoardStateStore.getRoomDataHasInfoById(neededProp.id);
+                let ownedPropCount = ownedPropInfo.num;
+                if (ownedPropCount >= neededProp.num) {
+                    ownedPropCount = neededProp.num;
                 }
-                this.setString(find("num", propItem), showNum + "/" + prop.num);
-                let bgNode = find("bg", propItem)!;
-                let gouNode = find("gou", propItem)!;
-                if (hasInfo.num >= prop.num) {
-                    gouNode.active = true;
-                    bgNode.active = true;
+                this.setString(find("num", propSlot), ownedPropCount + "/" + neededProp.num);
+                let completionBgNode = find("bg", propSlot)!;
+                let completedMarkNode = find("gou", propSlot)!;
+                if (ownedPropInfo.num >= neededProp.num) {
+                    completedMarkNode.active = true;
+                    completionBgNode.active = true;
                 } else {
-                    gouNode.active = false;
-                    bgNode.active = false;
-                    done = false
+                    completedMarkNode.active = false;
+                    completionBgNode.active = false;
+                    isTaskReady = false
                 }
                 // @ts-ignore
-                propItem.propRow = propRow;
-                this.bindButton(propItem, this.onClickTaskPropItem);
+                propSlot.propRow = propConfig;
+                this.bindButton(propSlot, this.onClickTaskPropItem);
 
             } else {
-                propItem.active = false;
+                propSlot.active = false;
             }
         });
 
@@ -181,7 +181,7 @@ export class TaskView extends BaseView {
 
 
 
-        if (done) {
+        if (isTaskReady) {
             btnFinish.active = true
             btnRefresh.active = false
         } else {

@@ -43,8 +43,8 @@ export class ShopItemCellController extends BaseView {
 
     }
 
-    refreshData(data:any){
-        this.shopData = data
+    refreshData(shopConfig:any){
+        this.shopData = shopConfig
         if (!this.shopData){
 
             return;

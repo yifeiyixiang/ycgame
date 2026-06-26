@@ -48,25 +48,25 @@ export class FriendListView extends BaseView {
     }
 
     refresh(){
-         for (let index = 0; index < this.listContent.children.length; index++) {
-            const element = this.listContent.children[index];
-            if (element){
-                element.active = false;
+         for (let cellIndex = 0; cellIndex < this.listContent.children.length; cellIndex++) {
+            const friendCellNode = this.listContent.children[cellIndex];
+            if (friendCellNode){
+                friendCellNode.active = false;
             }
         }
 
         this.numLab.string = "好友数量：" + playerDataStore.friendList.length + "/"+50;
 
-        for (let index = 0; index < playerDataStore.friendList.length; index++) {
-            let friend:FriendProfileRecord = playerDataStore.friendList[index];
+        for (let friendIndex = 0; friendIndex < playerDataStore.friendList.length; friendIndex++) {
+            let friendRecord:FriendProfileRecord = playerDataStore.friendList[friendIndex];
 
-            let ele = this.listContent.children[index];
-            if (!ele){
-                ele = instantiate(this.listContent.children[0])
-                ele.parent = this.listContent;
+            let friendCellNode = this.listContent.children[friendIndex];
+            if (!friendCellNode){
+                friendCellNode = instantiate(this.listContent.children[0])
+                friendCellNode.parent = this.listContent;
             }
-            ele.active = true;
-            ele.getComponent(FriendItemCellController).refreshData(friend);
+            friendCellNode.active = true;
+            friendCellNode.getComponent(FriendItemCellController).refreshData(friendRecord);
         }
     }
 

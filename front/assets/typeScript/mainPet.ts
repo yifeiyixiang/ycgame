@@ -122,38 +122,38 @@ export class PetHomePanelController extends BaseView {
         let pets:PetProfileRecord[] = playerDataStore.pets;
 
 
-         for (let ind = 0; ind < this.petPfbParent.children.length; ind++) {
-            let pfb = this.petPfbParent.children[ind];
-            let pfbData:PetProfileRecord = GameRuntimeData.getPetDataById(pfb.getComponent(pet).petId);
-            if(!pfbData){
-                pfb.removeFromParent()
-                pfb.destroy();
-                pfb = null;
+         for (let petNodeIndex = 0; petNodeIndex < this.petPfbParent.children.length; petNodeIndex++) {
+            let petNode = this.petPfbParent.children[petNodeIndex];
+            let petRecord:PetProfileRecord = GameRuntimeData.getPetDataById(petNode.getComponent(pet).petId);
+            if(!petRecord){
+                petNode.removeFromParent()
+                petNode.destroy();
+                petNode = null;
             }else{
-                pfb.active = pfbData.is_active;
+                petNode.active = petRecord.is_active;
             }
         }
 
-        for (let index = 0; index < pets.length; index++) {
-            let isIns:boolean = true;
-            let petData:PetProfileRecord = pets[index];
+        for (let petIndex = 0; petIndex < pets.length; petIndex++) {
+            let shouldCreatePetNode:boolean = true;
+            let petRecord:PetProfileRecord = pets[petIndex];
 
-            for (let ind = 0; ind < this.petPfbParent.children.length; ind++) {
-                let pfb = this.petPfbParent.children[ind];
-                let pfbData:PetProfileRecord = pfb.getComponent(pet).petData
-                if (pfb && pfbData && pfbData.id == petData.id){
-                    isIns = false;
+            for (let petNodeIndex = 0; petNodeIndex < this.petPfbParent.children.length; petNodeIndex++) {
+                let petNode = this.petPfbParent.children[petNodeIndex];
+                let mountedPetRecord:PetProfileRecord = petNode.getComponent(pet).petData
+                if (petNode && mountedPetRecord && mountedPetRecord.id == petRecord.id){
+                    shouldCreatePetNode = false;
                     break;
                 }
             }
-            if (!petData.is_active){
+            if (!petRecord.is_active){
                 continue;
             }
-            if (isIns){
-                let pfb = instantiate(this.petPfb);
-                pfb.getComponent(pet).init(petData);
+            if (shouldCreatePetNode){
+                let petNode = instantiate(this.petPfb);
+                petNode.getComponent(pet).init(petRecord);
 
-                this.petPfbParent.addChild(pfb);
+                this.petPfbParent.addChild(petNode);
 
             }
         }
@@ -165,62 +165,62 @@ export class PetHomePanelController extends BaseView {
         let goods:BagPropRecord[] = playerDataStore.bagProps;
 
 
-         for (let ind = 0; ind < this.goodPfbParent.children.length; ind++) {
-            let pfb = this.goodPfbParent.children[ind];
-            let pfbData:BagPropRecord = GameRuntimeData.getBagDataById(pfb.getComponent(GoodsItemDragController).id);
-            if(!pfbData){
-                pfb.removeFromParent()
-                pfb.destroy();
-                pfb = null;
+         for (let decorationNodeIndex = 0; decorationNodeIndex < this.goodPfbParent.children.length; decorationNodeIndex++) {
+            let decorationNode = this.goodPfbParent.children[decorationNodeIndex];
+            let decorationRecord:BagPropRecord = GameRuntimeData.getBagDataById(decorationNode.getComponent(GoodsItemDragController).id);
+            if(!decorationRecord){
+                decorationNode.removeFromParent()
+                decorationNode.destroy();
+                decorationNode = null;
             }else{
-                pfb.active = pfbData.is_active;
+                decorationNode.active = decorationRecord.is_active;
             }
         }
 
-        for (let index = 0; index < goods.length; index++) {
-            let isIns:boolean = true;
-            let goodData:BagPropRecord = goods[index];
+        for (let decorationIndex = 0; decorationIndex < goods.length; decorationIndex++) {
+            let shouldCreateDecorationNode:boolean = true;
+            let decorationRecord:BagPropRecord = goods[decorationIndex];
 
-            for (let ind = 0; ind < this.goodPfbParent.children.length; ind++) {
-                let pfb = this.goodPfbParent.children[ind];
-                let id:number = pfb.getComponent(GoodsItemDragController).id
-                if (pfb && id == goodData.id){
-                    isIns = false;
+            for (let decorationNodeIndex = 0; decorationNodeIndex < this.goodPfbParent.children.length; decorationNodeIndex++) {
+                let decorationNode = this.goodPfbParent.children[decorationNodeIndex];
+                let decorationId:number = decorationNode.getComponent(GoodsItemDragController).id
+                if (decorationNode && decorationId == decorationRecord.id){
+                    shouldCreateDecorationNode = false;
                     break;
                 }
             }
-            if (!goodData.is_active){
+            if (!decorationRecord.is_active){
                 continue;
             }
-            if (isIns){
-                let pfb = instantiate(this.goodPfb);
-                pfb.getComponent(GoodsItemDragController).init(goodData);
+            if (shouldCreateDecorationNode){
+                let decorationNode = instantiate(this.goodPfb);
+                decorationNode.getComponent(GoodsItemDragController).init(decorationRecord);
 
-                this.goodPfbParent.addChild(pfb);
+                this.goodPfbParent.addChild(decorationNode);
             }
         }
         GameEventManager.eventTarget.emit(GameEventManager.EEventName.REFRESH_GOOD_STATU)
     }
 
-    addZhuanshi(bagData:BagPropRecord){
-        let isIns:boolean = false;
-         for (let ind = 0; ind < this.goodPfbParent.children.length; ind++) {
-            let pfb = this.goodPfbParent.children[ind];
-            let pfbData:BagPropRecord = pfb.getComponent(GoodsItemDragController).bagData
-            if (pfb && pfbData && pfbData.id == bagData.id){
-                isIns = true;
+    addZhuanshi(decorationRecord:BagPropRecord){
+        let alreadyMounted:boolean = false;
+         for (let decorationNodeIndex = 0; decorationNodeIndex < this.goodPfbParent.children.length; decorationNodeIndex++) {
+            let decorationNode = this.goodPfbParent.children[decorationNodeIndex];
+            let mountedDecorationRecord:BagPropRecord = decorationNode.getComponent(GoodsItemDragController).decorationRecord
+            if (decorationNode && mountedDecorationRecord && mountedDecorationRecord.id == decorationRecord.id){
+                alreadyMounted = true;
                 break;
             }
         }
-        if (isIns){
+        if (alreadyMounted){
 
             return;
         }
-        if (bagData){
-            let pfb = instantiate(this.goodPfb);
-            pfb.getComponent(GoodsItemDragController).init(bagData);
+        if (decorationRecord){
+            let decorationNode = instantiate(this.goodPfb);
+            decorationNode.getComponent(GoodsItemDragController).init(decorationRecord);
 
-            this.goodPfbParent.addChild(pfb);
+            this.goodPfbParent.addChild(decorationNode);
         }
     }
 

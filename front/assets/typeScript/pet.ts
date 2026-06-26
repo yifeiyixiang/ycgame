@@ -235,17 +235,17 @@ export class pet extends Component {
             return;
         }
 
-        let index = Math.floor(Math.random() * this.actions.length);
+        let actionIndex = Math.floor(Math.random() * this.actions.length);
 
-        if (index == 0){
-            index = 5;
+        if (actionIndex == 0){
+            actionIndex = 5;
         }
 
         if (!this.isScene){
-            index = 1;
+            actionIndex = 1;
         }
 
-        this.actionInd = index;
+        this.actionInd = actionIndex;
 
         this.nodeSke.clearAnimations();
         this.skeMao.clearAnimations();
@@ -258,21 +258,21 @@ export class pet extends Component {
             this.walkTween.stop();
         }
 
-        if (index == 5){
-            this.nodeSke.setAnimation(index,this.actions[index], true);
+        if (actionIndex == 5){
+            this.nodeSke.setAnimation(actionIndex,this.actions[actionIndex], true);
             this.randomWalk();
         }else{
 
-            this.nodeSke.setAnimation(index,this.actions[index], true);
+            this.nodeSke.setAnimation(actionIndex,this.actions[actionIndex], true);
 
             this.unschedule(this.updateAnima)
-            this.scheduleOnce(this.updateAnima, this.actimes[index]);
+            this.scheduleOnce(this.updateAnima, this.actimes[actionIndex]);
         }
 
-        this.skeMao.setAnimation(index,this.actions[index], true);
-        this.skeYifu.setAnimation(index,this.actions[index], true);
-        this.skeLingdai.setAnimation(index,this.actions[index], true);
-        this.skeXiu.setAnimation(index,this.actions[index], true);
+        this.skeMao.setAnimation(actionIndex,this.actions[actionIndex], true);
+        this.skeYifu.setAnimation(actionIndex,this.actions[actionIndex], true);
+        this.skeLingdai.setAnimation(actionIndex,this.actions[actionIndex], true);
+        this.skeXiu.setAnimation(actionIndex,this.actions[actionIndex], true);
 
 
 

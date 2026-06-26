@@ -23,25 +23,25 @@ export class TurntableView extends BaseView {
 
         this.bindButton(this.btnClose, this.close);
 
-        let cfgs = TableDataService.ins().getTable(Const.Tables.new_turn);
+        let turntableConfigs = TableDataService.ins().getTable(Const.Tables.new_turn);
 
-        for (let index = 0; index < cfgs.length; index++) {
-            const cfg = cfgs[index];
-            let ele = this.turnBg.children[index];
-            if (!ele){
-                ele = instantiate(this.turnBg.children[0])
-                ele.parent = this.turnBg;
+        for (let rewardIndex = 0; rewardIndex < turntableConfigs.length; rewardIndex++) {
+            const rewardConfig = turntableConfigs[rewardIndex];
+            let rewardCell = this.turnBg.children[rewardIndex];
+            if (!rewardCell){
+                rewardCell = instantiate(this.turnBg.children[0])
+                rewardCell.parent = this.turnBg;
             }
-            let propData:ShopConfigRecord = TableDataService.ins().getTableValueByID(Const.Tables.new_prop, cfg.circle_reward_id);
-            if (cfg.circle_rewards_num > 1){
-                ele.getChildByName("nameLab").getComponent(Label).string = cfg.circle_rewards_num + "";
+            let rewardPropConfig:ShopConfigRecord = TableDataService.ins().getTableValueByID(Const.Tables.new_prop, rewardConfig.circle_reward_id);
+            if (rewardConfig.circle_rewards_num > 1){
+                rewardCell.getChildByName("nameLab").getComponent(Label).string = rewardConfig.circle_rewards_num + "";
             }else{
-                ele.getChildByName("nameLab").getComponent(Label).string = propData.name;
+                rewardCell.getChildByName("nameLab").getComponent(Label).string = rewardPropConfig.name;
             }
 
-            this.setSpriteFrame(ele.getChildByName("icon").getComponent(Sprite), Const.resPath.icon + propData.icon, () => { }, 40)
+            this.setSpriteFrame(rewardCell.getChildByName("icon").getComponent(Sprite), Const.resPath.icon + rewardPropConfig.icon, () => { }, 40)
 
-            ele.angle = -index * 45;
+            rewardCell.angle = -rewardIndex * 45;
         }
     }
 
@@ -53,25 +53,25 @@ export class TurntableView extends BaseView {
     startTurn() {
         GameHttpClient.getInstance().sendWheel((res:any)=>{
 
-            let resData = res.res.data
+            let wheelResponse = res.res.data
 
-            let resultInd = resData.wheelid;
+            let resultIndex = wheelResponse.wheelid;
 
             this.btnStart.active = false;
             this.btnClose.active = false;
             this.turnBg.angle = 0;
 
-            let ang = (360/8 * (resultInd-1))
+            let targetAngle = (360/8 * (resultIndex-1))
 
 
             tween(this.turnBg)
-                .to(5, { angle: (360*5 + ang )}, { easing: 'sineInOut' })
+                .to(5, { angle: (360*5 + targetAngle )}, { easing: 'sineInOut' })
                 .delay(0.5)
                 .call(() => {
                     this.btnStart.active = true;
                     this.btnClose.active = true;
 
-                    GameHttpClient.getInstance().showReward(resData);
+                    GameHttpClient.getInstance().showReward(wheelResponse);
                 })
                 .start();
         })

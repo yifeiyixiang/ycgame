@@ -48,29 +48,29 @@ export class ShopNewView extends BaseView {
     }
 
     refresh(){
-        let cfgs = TableDataService.ins().getTable(Const.Tables.new_prop);
+        let shopPropConfigs = TableDataService.ins().getTable(Const.Tables.new_prop);
 
-        for (let index = 0; index < this.listContent.children.length; index++) {
-            const element = this.listContent.children[index];
-            if (element){
-                element.active = false;
+        for (let cellIndex = 0; cellIndex < this.listContent.children.length; cellIndex++) {
+            const shopCellNode = this.listContent.children[cellIndex];
+            if (shopCellNode){
+                shopCellNode.active = false;
             }
         }
 
-        let ind:number = 0;
-        for (let index = 0; index < cfgs.length; index++) {
-            const cfg:ShopConfigRecord = cfgs[index];
-            if (cfg.store_type == this.selectType){
+        let visibleCellIndex:number = 0;
+        for (let configIndex = 0; configIndex < shopPropConfigs.length; configIndex++) {
+            const shopConfig:ShopConfigRecord = shopPropConfigs[configIndex];
+            if (shopConfig.store_type == this.selectType){
 
-                let ele = this.listContent.children[ind];
-                if (!ele){
-                    ele = instantiate(this.listContent.children[0])
-                    ele.parent = this.listContent;
+                let shopCellNode = this.listContent.children[visibleCellIndex];
+                if (!shopCellNode){
+                    shopCellNode = instantiate(this.listContent.children[0])
+                    shopCellNode.parent = this.listContent;
                 }
-                ele.active = true;
-                ele.getComponent(ShopItemCellController).refreshData(cfg);
+                shopCellNode.active = true;
+                shopCellNode.getComponent(ShopItemCellController).refreshData(shopConfig);
 
-                ind++
+                visibleCellIndex++
             }
         }
     }
@@ -78,9 +78,9 @@ export class ShopNewView extends BaseView {
     onClickHandler(eve:Event, str:string){
         AudioPlaybackService.instance.playSound(Const.Audio.btn)
         if (str && str.includes("tog")){
-            let type = Number(str.slice(-1)) ;
-            if (this.selectType != type){
-                this.selectType = type;
+            let selectedStoreType = Number(str.slice(-1)) ;
+            if (this.selectType != selectedStoreType){
+                this.selectType = selectedStoreType;
                 this.refresh();
             }
         }

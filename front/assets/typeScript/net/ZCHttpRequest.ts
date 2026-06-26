@@ -3,10 +3,10 @@ import { ZcEndpointConfig } from './ZCConfig';
 import { NativeSdkBridge } from '../AndroidSdk';
 const { ccclass, property } = _decorator;
 
-type HttpCallback = (ret: HttpResponsePacket) => void;
+type HttpCallback = (responsePacket: HttpResponsePacket) => void;
 
-var urls:any = {};
-var reqparams:any = {};
+var activeRequestMap:any = {};
+var requestParamCache:any = {};
 
 
 export enum HttpEvent {
@@ -58,32 +58,32 @@ export class HttpRequestTransport {
         return this.header.has(name);
     }
 
-    get(name:string, onComplete:HttpCallback, params:any = null) {
-        this.sendRequest(name, params, false, onComplete)
+    get(name:string, onComplete:HttpCallback, requestParams:any = null) {
+        this.sendRequest(name, requestParams, false, onComplete)
     }
 
-    getAsync(name:string, params:any = null): Promise<HttpResponsePacket> {
+    getAsync(name:string, requestParams:any = null): Promise<HttpResponsePacket> {
         return new Promise((resolve, reject) => {
-            this.sendRequest(name, params, false, (ret:HttpResponsePacket) => {
-                resolve(ret);
+            this.sendRequest(name, requestParams, false, (responsePacket:HttpResponsePacket) => {
+                resolve(responsePacket);
             });
         });
     }
 
-    getByArraybuffer(name:string, onComplete:HttpCallback, params:any = null) {
-        this.sendRequest(name, params, false, onComplete, 'arraybuffer', false);
+    getByArraybuffer(name:string, onComplete:HttpCallback, requestParams:any = null) {
+        this.sendRequest(name, requestParams, false, onComplete, 'arraybuffer', false);
     }
 
-    getAsyncByArraybuffer(name:string, params:any = null): Promise<HttpResponsePacket> {
+    getAsyncByArraybuffer(name:string, requestParams:any = null): Promise<HttpResponsePacket> {
         return new Promise((resolve, reject) => {
-            this.sendRequest(name, params, false, (ret:HttpResponsePacket) => {
-                resolve(ret);
+            this.sendRequest(name, requestParams, false, (responsePacket:HttpResponsePacket) => {
+                resolve(responsePacket);
             }, 'arraybuffer', false);
         });
     }
 
-    post(name:string, onComplete:HttpCallback, params:any = null) {
-        this.sendRequest(name, params, true, onComplete);
+    post(name:string, onComplete:HttpCallback, requestParams:any = null) {
+        this.sendRequest(name, requestParams, true, onComplete);
     }
 
 
@@ -94,10 +94,10 @@ export class HttpRequestTransport {
 
 
 
-    postAsync(name:string, params:any = null): Promise<HttpResponsePacket> {
+    postAsync(name:string, requestParams:any = null): Promise<HttpResponsePacket> {
         return new Promise((resolve, reject) => {
-            this.sendRequest(name, params, true, (ret: HttpResponsePacket) => {
-                resolve(ret);
+            this.sendRequest(name, requestParams, true, (responsePacket: HttpResponsePacket) => {
+                resolve(responsePacket);
             });
         });
     }
@@ -107,9 +107,9 @@ export class HttpRequestTransport {
 
 
     abort(name:string) {
-        var xhr = urls[this.defaultUrl + name];
-        if (xhr) {
-            xhr.abort();
+        var activeRequest = activeRequestMap[this.defaultUrl + name];
+        if (activeRequest) {
+            activeRequest.abort();
         }
     }
 
@@ -124,7 +124,7 @@ export class HttpRequestTransport {
 
 
 
-    private sendRequest(name:string, params:any, isPost:boolean, onComplete:HttpCallback, responseType?:string, isOpenTimeout:boolean = true):void {
+    private sendRequest(name:string, requestParams:any, isPost:boolean, onComplete:HttpCallback, responseType?:string, isOpenTimeout:boolean = true):void {
         if (NativeSdkBridge.isLocal){
             return;
         }
@@ -136,44 +136,44 @@ export class HttpRequestTransport {
         var url:string;
 
 
-        var newUrl:string;
+        var requestUrl:string;
 
-        var paramsStr:string = "";
+        var queryString:string = "";
 
         if (name.toLocaleLowerCase().indexOf("http") == 0) {
             url = name;
         } else {
             url = this.defaultUrl + name;
         }
-        if (params) {
-            paramsStr = this.getParamString(params);
+        if (requestParams) {
+            queryString = this.getParamString(requestParams);
             if (url.indexOf("?") > -1) {
-                newUrl = url + "&" + paramsStr;
+                requestUrl = url + "&" + queryString;
             } else {
-                newUrl = url + "?" + paramsStr;
+                requestUrl = url + "?" + queryString;
             }
         } else {
-            newUrl = url;
+            requestUrl = url;
         }
-        console.log("RequestUrl:" + newUrl);
-        if (urls[newUrl] != null && reqparams[newUrl] == paramsStr) {
+        console.log("RequestUrl:" + requestUrl);
+        if (activeRequestMap[requestUrl] != null && requestParamCache[requestUrl] == queryString) {
             warn(`地址[${url}]已正在请求中，不能重复请求`);
             return ;
         }
 
-        var xhr = new XMLHttpRequest();
+        var request = new XMLHttpRequest();
 
-        urls[newUrl] = xhr;
-        reqparams[newUrl] = paramsStr;
+        activeRequestMap[requestUrl] = request;
+        requestParamCache[requestUrl] = queryString;
 
         if (isPost) {
-            xhr.open("POST", url);
+            request.open("POST", url);
         } else {
-            xhr.open("GET", newUrl);
+            request.open("GET", requestUrl);
         }
 
         for (const [key, value] of this.header) {
-            xhr.setRequestHeader(key, value);
+            request.setRequestHeader(key, value);
         }
 
 
@@ -183,75 +183,75 @@ export class HttpRequestTransport {
 
 
 
-        var data:any = {};
-        data.url = url;
-        data.params = params;
+        var requestContext:any = {};
+        requestContext.url = url;
+        requestContext.params = requestParams;
 
-        var ret: HttpResponsePacket = new HttpResponsePacket();
+        var responsePacket: HttpResponsePacket = new HttpResponsePacket();
         if (isOpenTimeout) {
-            xhr.timeout = this.timeout;
-            xhr.ontimeout = () => {
-                this.deleteCache(newUrl);
+            request.timeout = this.timeout;
+            request.ontimeout = () => {
+                this.deleteCache(requestUrl);
 
-                ret.isSucc = false;
-                ret.err = HttpEvent.TIMEOUT;
-                onComplete(data);
+                responsePacket.isSucc = false;
+                responsePacket.err = HttpEvent.TIMEOUT;
+                onComplete(requestContext);
             }
         }
 
-        xhr.onloadend = () => {
-            if (xhr.status == 500) {
-                this.deleteCache(newUrl);
+        request.onloadend = () => {
+            if (request.status == 500) {
+                this.deleteCache(requestUrl);
 
-                ret.isSucc = false;
-                ret.err = HttpEvent.NO_NETWORK;
-                onComplete(ret);
+                responsePacket.isSucc = false;
+                responsePacket.err = HttpEvent.NO_NETWORK;
+                onComplete(responsePacket);
             }
         }
 
-        xhr.onerror = () => {
-            this.deleteCache(newUrl);
-            console.log("断网------------------" + xhr);
-            ret.isSucc = false;
-            if (xhr.readyState == 0 || xhr.readyState == 1 || xhr.status == 0) {
-                ret.err = HttpEvent.NO_NETWORK;
+        request.onerror = () => {
+            this.deleteCache(requestUrl);
+            console.log("断网------------------" + request);
+            responsePacket.isSucc = false;
+            if (request.readyState == 0 || request.readyState == 1 || request.status == 0) {
+                responsePacket.err = HttpEvent.NO_NETWORK;
             } else {
-                ret.err = HttpEvent.UNKNOWN_ERROR;
+                responsePacket.err = HttpEvent.UNKNOWN_ERROR;
             }
-            onComplete(ret);
+            onComplete(responsePacket);
         }
 
-        xhr.onreadystatechange = () => {
-            if (xhr.readyState != 4) return ;
+        request.onreadystatechange = () => {
+            if (request.readyState != 4) return ;
 
-            this.deleteCache(newUrl);
+            this.deleteCache(requestUrl);
 
-            if (xhr.status == 200 && onComplete) {
-                ret.isSucc = true;
+            if (request.status == 200 && onComplete) {
+                responsePacket.isSucc = true;
                 if (responseType == 'arraybuffer') {
-                    xhr.responseType = responseType;
-                    ret.res = xhr.response;
+                    request.responseType = responseType;
+                    responsePacket.res = request.response;
                 } else {
-                    ret.res = JSON.parse(xhr.response);
+                    responsePacket.res = JSON.parse(request.response);
                 }
-                onComplete(ret);
-                console.log(name + ":   ", ret.res)
+                onComplete(responsePacket);
+                console.log(name + ":   ", responsePacket.res)
             }
         }
 
-        if (params == null || params == "") {
-            xhr.send();
+        if (requestParams == null || requestParams == "") {
+            request.send();
         } else {
             if (isPost) {
                 if (NativeSdkBridge.isAndroid){
-                    xhr.send(this.getParamBodyAndroid(params));
+                    request.send(this.getParamBodyAndroid(requestParams));
                 }else{
 
 
-                    xhr.send(JSON.stringify(params));
+                    request.send(JSON.stringify(requestParams));
                 }
             } else {
-                xhr.send(paramsStr);
+                request.send(queryString);
             }
         }
     }
@@ -264,50 +264,50 @@ export class HttpRequestTransport {
 
 
 
-    private getParamString(params:any): string {
-        var result = "";
-        for (var name in params) {
-            let data = params[name];
-            if (data instanceof Object) {
-                for (var key in data) {
-                    result += `${key}=${data[key]}&`;
+    private getParamString(requestParams:any): string {
+        var queryString = "";
+        for (var paramName in requestParams) {
+            let paramValue = requestParams[paramName];
+            if (paramValue instanceof Object) {
+                for (var nestedKey in paramValue) {
+                    queryString += `${nestedKey}=${paramValue[nestedKey]}&`;
                 }
             } else {
-                result += `${name}=${data}&`;
+                queryString += `${paramName}=${paramValue}&`;
             }
         }
 
-        return result.substring(0, result.length - 1);
+        return queryString.substring(0, queryString.length - 1);
     }
 
-    private getParamBodyAndroid(params: any): string {
-        let data = '';
-        for (let name in params) {
-            if (data !== '') {
-                data += '&';
+    private getParamBodyAndroid(requestParams: any): string {
+        let formBody = '';
+        for (let paramName in requestParams) {
+            if (formBody !== '') {
+                formBody += '&';
             }
-            let value = params[name];
-            data += encodeURIComponent(name) + '=' + encodeURIComponent(value);
+            let paramValue = requestParams[paramName];
+            formBody += encodeURIComponent(paramName) + '=' + encodeURIComponent(paramValue);
         }
-        return data;
+        return formBody;
     }
 
-    private getParamBody(params:any):FormData {
-        if (!params){
+    private getParamBody(requestParams:any):FormData {
+        if (!requestParams){
             return;
         }
-        var data = new FormData();
-        for (var name in params) {
-            let value = params[name];
-            data.append(name, String(value));
+        var formData = new FormData();
+        for (var paramName in requestParams) {
+            let paramValue = requestParams[paramName];
+            formData.append(paramName, String(paramValue));
         }
 
-        return data;
+        return formData;
     }
 
     private deleteCache(url:string) {
-        delete urls[url];
-        delete reqparams[url];
+        delete activeRequestMap[url];
+        delete requestParamCache[url];
     }
 }
 

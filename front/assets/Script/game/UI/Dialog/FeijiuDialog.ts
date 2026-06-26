@@ -30,37 +30,37 @@ export class FeijiuDialog extends BaseView {
 
     openTujianArr() {
 
-        let propData = TableDataService.ins().getTable(Const.Tables.scene_guest)
-        let dataArr: any = []
+        let guestTable = TableDataService.ins().getTable(Const.Tables.scene_guest)
+        let groupedGuestList: any = []
 
-        propData.forEach((element: any) => {
-            if(element.type >0){
-                if (!dataArr[element.type - 1]) {
-                    dataArr[element.type - 1] = []
+        guestTable.forEach((guestConfig: any) => {
+            if(guestConfig.type >0){
+                if (!groupedGuestList[guestConfig.type - 1]) {
+                    groupedGuestList[guestConfig.type - 1] = []
                 }
-                dataArr[element.type - 1].push(element)
+                groupedGuestList[guestConfig.type - 1].push(guestConfig)
             }
         });
         let content = find("view/content", this.roleInfoScroll)
         content!.removeAllChildren()
-        this.setScrollViewData(content!, dataArr, find("root/Layout", this.node)!, this.initItemInfo, this)
+        this.setScrollViewData(content!, groupedGuestList, find("root/Layout", this.node)!, this.initItemInfo, this)
 
         find("root/xk/totalLabel", this.node)!.getComponent(Label)!.string = "肥啾(" + this._unlockNum + "/" + this._totalNum + ")"
     }
 
-    initItemInfo(itemUI: Node, itemData: any, index: number, self: FeijiuDialog) {
-        if (itemData.length > 0) {
-            itemUI.getChildByName("titl2")!.getChildByName("title")!.getComponent(Label)!.string = itemData[0].typename + ""
-            let layer = itemUI.getChildByName("Layout")
-            layer!.removeAllChildren()
-            layer!.getComponent(UITransform)!.height = 120 * Math.ceil(itemData.length / 4)
-            for (let index = 0; index < itemData.length; index++) {
-                const element = itemData[index];
-                if (SceneData.ins.getSceneSkinById(element.skin) == GSceneSkinState.gotted) {
+    initItemInfo(groupCellNode: Node, guestGroup: any, groupIndex: number, self: FeijiuDialog) {
+        if (guestGroup.length > 0) {
+            groupCellNode.getChildByName("titl2")!.getChildByName("title")!.getComponent(Label)!.string = guestGroup[0].typename + ""
+            let guestLayout = groupCellNode.getChildByName("Layout")
+            guestLayout!.removeAllChildren()
+            guestLayout!.getComponent(UITransform)!.height = 120 * Math.ceil(guestGroup.length / 4)
+            for (let guestIndex = 0; guestIndex < guestGroup.length; guestIndex++) {
+                const guestConfig = guestGroup[guestIndex];
+                if (SceneData.ins.getSceneSkinById(guestConfig.skin) == GSceneSkinState.gotted) {
                     self._unlockNum++
                 }
                 self._totalNum++
-                self.addPrefab(Const.Prefabs.FeijiuItem, layer!, () => { }, { roleData: element })
+                self.addPrefab(Const.Prefabs.FeijiuItem, guestLayout!, () => { }, { roleData: guestConfig })
             }
         }
     }

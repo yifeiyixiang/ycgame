@@ -48,18 +48,18 @@ export class AvatarStyleLayer extends BaseView {
     }
 
     initInfo() {
-        let item = TableDataService.ins().getTableValueByID(Const.Tables.avatarStyle, playerDataStore.avatarLookId)
-        ResourceLoaderService.loadResWithBundle(Const.resPath.roleSpine + item.spine, sp.SkeletonData, (err, skedata) => {
-            this.roleSpine.skeletonData = skedata;
-            this.roleSpine.setSkin(item.spineSkin)
-            this.roleSpine.setAnimation(0, item.spineAni, true);
+        let currentAvatarConfig = TableDataService.ins().getTableValueByID(Const.Tables.avatarStyle, playerDataStore.avatarLookId)
+        ResourceLoaderService.loadResWithBundle(Const.resPath.roleSpine + currentAvatarConfig.spine, sp.SkeletonData, (err, skeletonData) => {
+            this.roleSpine.skeletonData = skeletonData;
+            this.roleSpine.setSkin(currentAvatarConfig.spineSkin)
+            this.roleSpine.setAnimation(0, currentAvatarConfig.spineAni, true);
         })
     }
 
     show(args: any) {
         super.show(args)
-        let item = TableDataService.ins().getTableValueByID(Const.Tables.avatarStyle, playerDataStore.avatarLookId)
-        if (item.type == RoleSex.men) {
+        let currentAvatarConfig = TableDataService.ins().getTableValueByID(Const.Tables.avatarStyle, playerDataStore.avatarLookId)
+        if (currentAvatarConfig.type == RoleSex.men) {
             this.selectMen()
         } else {
             this.selectWomen()
@@ -69,61 +69,61 @@ export class AvatarStyleLayer extends BaseView {
         find("root/dressbg1/Label", this.node)!.getComponent(Label)!.string = playerDataStore.dressValue + ""
     }
 
-    openSkinDetail(event: any, data: any) {
-        UiLayerService.instance.showDialog(Const.Dialogs.SceneSkinDetailController, { dressUpData: data })
+    openSkinDetail(event: any, avatarConfig: any) {
+        UiLayerService.instance.showDialog(Const.Dialogs.SceneSkinDetailController, { dressUpData: avatarConfig })
 
     }
 
-    initItem(itemUI: Node, item: any, index: number, self: AvatarStyleLayer) {
-        self.setSpriteFrame(itemUI.getChildByName("icon")!.getComponent(Sprite)!, Const.resPath.roleIcon + item.icon, undefined, 200)
-        self.addButtonHander(itemUI!, self.node, "AvatarStyleLayer", "onChangeWear", item)
-        self.clearButtonHander(itemUI.getChildByName("gantan")!)
-        self.addButtonHander(itemUI.getChildByName("gantan")!, self.node, "AvatarStyleLayer", "openSkinDetail", item)
+    initItem(skinCellNode: Node, avatarConfig: any, avatarIndex: number, self: AvatarStyleLayer) {
+        self.setSpriteFrame(skinCellNode.getChildByName("icon")!.getComponent(Sprite)!, Const.resPath.roleIcon + avatarConfig.icon, undefined, 200)
+        self.addButtonHander(skinCellNode!, self.node, "AvatarStyleLayer", "onChangeWear", avatarConfig)
+        self.clearButtonHander(skinCellNode.getChildByName("gantan")!)
+        self.addButtonHander(skinCellNode.getChildByName("gantan")!, self.node, "AvatarStyleLayer", "openSkinDetail", avatarConfig)
 
-        if (playerDataStore.isAvatarLookOwned(item.id) || item.price == 0) {
-            itemUI.getChildByName("btnBuy")!.active = false
-            itemUI.getChildByName("hua1")!.active = false
-            if (playerDataStore.avatarLookId == item.id) {
-                itemUI.getChildByName("btnWear")!.active = false
-                itemUI.getChildByName("wearlab")!.active = true
+        if (playerDataStore.isAvatarLookOwned(avatarConfig.id) || avatarConfig.price == 0) {
+            skinCellNode.getChildByName("btnBuy")!.active = false
+            skinCellNode.getChildByName("hua1")!.active = false
+            if (playerDataStore.avatarLookId == avatarConfig.id) {
+                skinCellNode.getChildByName("btnWear")!.active = false
+                skinCellNode.getChildByName("wearlab")!.active = true
             } else {
-                itemUI.getChildByName("btnWear")!.active = true
-                itemUI.getChildByName("wearlab")!.active = false
-                self.addButtonHander(itemUI.getChildByName("btnWear")!, self.node, "AvatarStyleLayer", "onClickWear", item)
+                skinCellNode.getChildByName("btnWear")!.active = true
+                skinCellNode.getChildByName("wearlab")!.active = false
+                self.addButtonHander(skinCellNode.getChildByName("btnWear")!, self.node, "AvatarStyleLayer", "onClickWear", avatarConfig)
             }
         } else {
-            itemUI.getChildByName("btnWear")!.active = false
-            itemUI.getChildByName("wearlab")!.active = false
-            itemUI.getChildByName("btnBuy")!.active = true
+            skinCellNode.getChildByName("btnWear")!.active = false
+            skinCellNode.getChildByName("wearlab")!.active = false
+            skinCellNode.getChildByName("btnBuy")!.active = true
 
-            let itemId = item.price[0][0]
-            let itemData = TableDataService.ins().getTableValueByID(Const.Tables.prop, itemId)
-            self.setSpriteFrame(find("btnBuy/Node/icon", itemUI)!.getComponent(Sprite)!, Const.resPath.icon + itemData.icon, undefined, 40)
-            find("btnBuy/Node/Label", itemUI)!.getComponent(Label)!.string = "x" + item.price[0][1]
+            let costPropId = avatarConfig.price[0][0]
+            let costPropConfig = TableDataService.ins().getTableValueByID(Const.Tables.prop, costPropId)
+            self.setSpriteFrame(find("btnBuy/Node/icon", skinCellNode)!.getComponent(Sprite)!, Const.resPath.icon + costPropConfig.icon, undefined, 40)
+            find("btnBuy/Node/Label", skinCellNode)!.getComponent(Label)!.string = "x" + avatarConfig.price[0][1]
 
-            if (item.changeZhi > 0) {
-                itemUI.getChildByName("hua1")!.active = true
-                find("hua1/Label", itemUI)!.getComponent(Label)!.string = "+" + item.changeZhi
+            if (avatarConfig.changeZhi > 0) {
+                skinCellNode.getChildByName("hua1")!.active = true
+                find("hua1/Label", skinCellNode)!.getComponent(Label)!.string = "+" + avatarConfig.changeZhi
             } else {
-                itemUI.getChildByName("hua1")!.active = false
+                skinCellNode.getChildByName("hua1")!.active = false
             }
-            self.addButtonHander(itemUI.getChildByName("btnBuy")!, self.node, "AvatarStyleLayer", "onClickBuy", item)
+            self.addButtonHander(skinCellNode.getChildByName("btnBuy")!, self.node, "AvatarStyleLayer", "onClickBuy", avatarConfig)
         }
     }
 
-    onChangeWear(event: any, item: any) {
+    onChangeWear(event: any, avatarConfig: any) {
         AudioPlaybackService.instance.playSound(Const.Audio.btn)
 
-        ResourceLoaderService.loadResWithBundle(Const.resPath.roleSpine + item.spine, sp.SkeletonData, (err, skedata) => {
-            this.roleSpine.skeletonData = skedata;
-            this.roleSpine.setSkin(item.spineSkin)
-            this.roleSpine.setAnimation(0, item.spineAni, true);
+        ResourceLoaderService.loadResWithBundle(Const.resPath.roleSpine + avatarConfig.spine, sp.SkeletonData, (err, skeletonData) => {
+            this.roleSpine.skeletonData = skeletonData;
+            this.roleSpine.setSkin(avatarConfig.spineSkin)
+            this.roleSpine.setAnimation(0, avatarConfig.spineAni, true);
         })
     }
 
-    onClickWear(event: any, data: any) {
+    onClickWear(event: any, avatarConfig: any) {
         AudioPlaybackService.instance.playSound(Const.Audio.btn)
-        playerDataStore.avatarLookId = data.id
+        playerDataStore.avatarLookId = avatarConfig.id
         this.updateDressUp()
 
     }
@@ -134,12 +134,12 @@ export class AvatarStyleLayer extends BaseView {
         this.initInfo()
     }
 
-    onClickBuy(event: any, data: any) {
+    onClickBuy(event: any, avatarConfig: any) {
         AudioPlaybackService.instance.playSound(Const.Audio.btn)
-        if (data.price == 0 || playerDataStore.checkAndUseProp(data.price[0])) {
-            playerDataStore.unlockAvatarLook(data.id)
-            GamePlatform.track("buy role skin " + data.name)
-            playerDataStore.dressValue += data.changeZhi
+        if (avatarConfig.price == 0 || playerDataStore.checkAndUseProp(avatarConfig.price[0])) {
+            playerDataStore.unlockAvatarLook(avatarConfig.id)
+            GamePlatform.track("buy role skin " + avatarConfig.name)
+            playerDataStore.dressValue += avatarConfig.changeZhi
             find("root/dressbg1/Label", this.node)!.getComponent(Label)!.string = playerDataStore.dressValue + ""
             this.scrollViewNode.getComponent(ScrollViewUtil)!.refreshList()
         } else {

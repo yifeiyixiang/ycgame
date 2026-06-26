@@ -73,8 +73,8 @@ export class UserinfoView extends BaseView {
             ResourceLoaderService.setRemoteImage(playerDataStore.roleAvatar, this.avatarNode.getComponent(Sprite)!, () => { })
         }
 
-        let item = TableDataService.ins().getTableValueByID(Const.Tables.avatarStyle, playerDataStore.avatarLookId)
-        if (item.type == RoleSex.men) {
+        let avatarStyleConfig = TableDataService.ins().getTableValueByID(Const.Tables.avatarStyle, playerDataStore.avatarLookId)
+        if (avatarStyleConfig.type == RoleSex.men) {
             this.avatarBg.getComponent(Sprite)!.spriteFrame = this.avatarBg1
         } else {
             this.avatarBg.getComponent(Sprite)!.spriteFrame = this.avatarBg2
@@ -99,8 +99,8 @@ export class UserinfoView extends BaseView {
         this.nameLabel.getComponent(Label)!.string = playerDataStore.roleName
         this.IDLabel.getComponent(Label)!.string = "ID:" + playerDataStore.roleID
 
-        let item = TableDataService.ins().getTableValueByID(Const.Tables.avatarStyle, playerDataStore.avatarLookId)
-        if (item.type == RoleSex.men) {
+        let avatarStyleConfig = TableDataService.ins().getTableValueByID(Const.Tables.avatarStyle, playerDataStore.avatarLookId)
+        if (avatarStyleConfig.type == RoleSex.men) {
             this.avatarBg.getComponent(Sprite)!.spriteFrame = this.avatarBg1
         } else {
             this.avatarBg.getComponent(Sprite)!.spriteFrame = this.avatarBg2

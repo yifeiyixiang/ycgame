@@ -80,41 +80,41 @@ export class PetListView extends BaseView {
     }
 
      refresh(){
-        for (let index = 0; index < this.listContent.children.length; index++) {
-            const element = this.listContent.children[index];
-            if (element){
-                element.active = false;
+        for (let cellIndex = 0; cellIndex < this.listContent.children.length; cellIndex++) {
+            const petCellNode = this.listContent.children[cellIndex];
+            if (petCellNode){
+                petCellNode.active = false;
             }
         }
 
-        for (let index = 0; index < playerDataStore.pets.length; index++) {
-            const petData:PetProfileRecord = playerDataStore.pets[index];
-            let shopCfg:ShopConfigRecord = TableDataService.ins().getTableValueByID(Const.Tables.new_prop, petData.prop_id);
+        for (let petIndex = 0; petIndex < playerDataStore.pets.length; petIndex++) {
+            const petRecord:PetProfileRecord = playerDataStore.pets[petIndex];
+            let petShopConfig:ShopConfigRecord = TableDataService.ins().getTableValueByID(Const.Tables.new_prop, petRecord.prop_id);
 
-            let ele = this.listContent.children[index];
-            if (!ele){
-                ele = instantiate(this.listContent.children[0])
-                ele.parent = this.listContent;
+            let petCellNode = this.listContent.children[petIndex];
+            if (!petCellNode){
+                petCellNode = instantiate(this.listContent.children[0])
+                petCellNode.parent = this.listContent;
             }
-            ele.active = true;
+            petCellNode.active = true;
 
-            if (shopCfg.icon){
-            this.setSpriteFrame(ele.getChildByName("icon").getComponent(Sprite), Const.resPath.icon + shopCfg.icon, () => { }, 60)
-                ele.getChildByName("icon").active = true;
+            if (petShopConfig.icon){
+            this.setSpriteFrame(petCellNode.getChildByName("icon").getComponent(Sprite), Const.resPath.icon + petShopConfig.icon, () => { }, 60)
+                petCellNode.getChildByName("icon").active = true;
             }else{
-                ele.getChildByName("icon").active = false;
+                petCellNode.getChildByName("icon").active = false;
             }
 
-            if (this.selectInd == index){
-                this.selectCfg = shopCfg;
-                this.selectData = petData;
+            if (this.selectInd == petIndex){
+                this.selectCfg = petShopConfig;
+                this.selectData = petRecord;
             }
 
-            ele.getChildByName("select").active = this.selectInd == index;
+            petCellNode.getChildByName("select").active = this.selectInd == petIndex;
 
-            ele.off("click");
-            ele.on("click", ()=>{
-                this.selectInd = index;
+            petCellNode.off("click");
+            petCellNode.on("click", ()=>{
+                this.selectInd = petIndex;
                 this.refresh();
             }, this);
         }

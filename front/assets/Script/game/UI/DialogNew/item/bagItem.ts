@@ -44,9 +44,9 @@ export class BagItemCellController extends BaseView {
     @property({ type: Node })
     btnUse: Node = null!;
 
-    bagData!:BagPropRecord;
+    bagRecord!:BagPropRecord;
 
-    shopCfg!:ShopConfigRecord;
+    itemConfig!:ShopConfigRecord;
 
     onLoad() {
         this.bindButton(this.btnSell, this.onBtnSell);
@@ -58,22 +58,22 @@ export class BagItemCellController extends BaseView {
         this.bindButton(this.btnUse, this.onbtnUse);
     }
 
-    refreshData(data:any){
-        this.bagData = data
-        if (!this.bagData){
+    refreshData(bagRecord:any){
+        this.bagRecord = bagRecord
+        if (!this.bagRecord){
 
             return;
         }
 
-        this.shopCfg = TableDataService.ins().getTableValueByID(Const.Tables.new_prop, this.bagData.prop_id);
-        if (!this.shopCfg){
+        this.itemConfig = TableDataService.ins().getTableValueByID(Const.Tables.new_prop, this.bagRecord.prop_id);
+        if (!this.itemConfig){
             this.node.active = false;
             return;
         }
-        this.nameLab.string = this.shopCfg.name;
+        this.nameLab.string = this.itemConfig.name;
 
-        if (this.shopCfg.icon){
-            this.setSpriteFrame(this.icon, Const.resPath.icon + this.shopCfg.icon, () => { }, 60)
+        if (this.itemConfig.icon){
+            this.setSpriteFrame(this.icon, Const.resPath.icon + this.itemConfig.icon, () => { }, 60)
             this.icon.node.active = true;
         }else{
             this.icon.node.active = false;
@@ -85,18 +85,18 @@ export class BagItemCellController extends BaseView {
         this.btnUse.active = false;
         this.statuLab.string = "";
 
-        this.countLab.string = this.bagData.prop_count + ""
+        this.countLab.string = this.bagRecord.prop_count + ""
 
-        if (this.shopCfg.store_type == 2){
+        if (this.itemConfig.store_type == 2){
             this.btnSell.active = true;
 
 
 
-            this.desLab.string = this.shopCfg.mask;
+            this.desLab.string = this.itemConfig.mask;
         }
-        else if (this.shopCfg.store_type == 3){
+        else if (this.itemConfig.store_type == 3){
 
-            if (this.bagData.is_active){
+            if (this.bagRecord.is_active){
                 this.statuLab.string = "已穿戴";
                 this.btnUndress.active = true;
             }else{
@@ -104,17 +104,17 @@ export class BagItemCellController extends BaseView {
 
 
             }
-            this.desLab.string = "评分：" +  this.shopCfg.score;
+            this.desLab.string = "评分：" +  this.itemConfig.score;
         }
-        else if (this.shopCfg.store_type == 4){
-             if (this.bagData.is_active){
+        else if (this.itemConfig.store_type == 4){
+             if (this.bagRecord.is_active){
                 this.statuLab.string = "已装饰";
                 this.btnUndress.active = true;
             }else{
                 this.btnSell.active = true;
 
             }
-            this.desLab.string = this.shopCfg.sonname;
+            this.desLab.string = this.itemConfig.sonname;
         }
 
     }
@@ -126,10 +126,10 @@ export class BagItemCellController extends BaseView {
     }
 
     onBtnSell(){
-        if (this.shopCfg.store_type == 2){
-            GameHttpClient.getInstance().sendSellBagItem(this.shopCfg.store_type, this.bagData.prop_id)
+        if (this.itemConfig.store_type == 2){
+            GameHttpClient.getInstance().sendSellBagItem(this.itemConfig.store_type, this.bagRecord.prop_id)
         }else{
-            GameHttpClient.getInstance().sendSellBagItem(this.shopCfg.store_type, this.bagData.id)
+            GameHttpClient.getInstance().sendSellBagItem(this.itemConfig.store_type, this.bagRecord.id)
         }
 
     }
@@ -137,8 +137,8 @@ export class BagItemCellController extends BaseView {
 
     }
     onbtnUndress(){
-        if (this.shopCfg.store_type == 3){
-            GameHttpClient.getInstance().sendPetAction(6, 0, this.bagData.id, this.bagData.prop_id,"",()=>{
+        if (this.itemConfig.store_type == 3){
+            GameHttpClient.getInstance().sendPetAction(6, 0, this.bagRecord.id, this.bagRecord.prop_id,"",()=>{
                 GameEventManager.eventTarget.emit(GameEventManager.EEventName.SHOW_TIP, "卸下成功");
             });
         }

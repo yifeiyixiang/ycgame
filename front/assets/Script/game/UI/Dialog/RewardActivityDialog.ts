@@ -17,7 +17,7 @@ export class RewardActivityDialog extends BaseView {
     @property({ type: Node, tooltip: "滚动列表" }) giftScroll: Node = null!;
     @property({ type: Node }) item: Node = null!;
 
-    _MonthCardVal: any = null
+    _monthCardState: any = null
     _clickItem = null
 
     start() {
@@ -26,41 +26,41 @@ export class RewardActivityDialog extends BaseView {
 
     show(args: any) {
         super.show(args)
-        let activityArr = TableDataService.ins().getTable(Const.Tables.saleshop_totalRecharge)
-        for (let i = 0; i < activityArr.length; i++) {
-            let activity = activityArr[i]
-            let lockData = TableDataService.ins().getTableValueByID(Const.Tables.lockActivity_item, activity.lockType)
+        let activityList = TableDataService.ins().getTable(Const.Tables.saleshop_totalRecharge)
+        for (let activityIndex = 0; activityIndex < activityList.length; activityIndex++) {
+            let activityConfig = activityList[activityIndex]
+            let lockConfig = TableDataService.ins().getTableValueByID(Const.Tables.lockActivity_item, activityConfig.lockType)
 
         }
 
-        this.scrollViewSetData(this.giftScroll, activityArr, this.initItem, this)
+        this.scrollViewSetData(this.giftScroll, activityList, this.initItem, this)
 
     }
 
-    initItem(itemUI: Node, item: any, index: number, self: BaseUiComponent) {
-        itemUI.getChildByName("infoLabel")!.getComponent(Label)!.string = item.typename
-        if (RewardActivityDialog.checkActivityLock(item)) {
-            self.addButtonHander(itemUI, self.node, "RewardActivityDialog", "openActivity", item)
-            itemUI.getChildByName("lockLabel")!.getComponent(Label)!.string = ""
-            let lockData = TableDataService.ins().getTableValueByID(Const.Tables.lockActivity_item, item.lockType)
-            itemUI.getChildByName("timeLabel")!.getComponent(CdComponent)!.setCD(CDType.CDCondition, lockData.dataKey, lockData.activityTime)
+    initItem(activityCellNode: Node, activityConfig: any, activityIndex: number, self: BaseUiComponent) {
+        activityCellNode.getChildByName("infoLabel")!.getComponent(Label)!.string = activityConfig.typename
+        if (RewardActivityDialog.checkActivityLock(activityConfig)) {
+            self.addButtonHander(activityCellNode, self.node, "RewardActivityDialog", "openActivity", activityConfig)
+            activityCellNode.getChildByName("lockLabel")!.getComponent(Label)!.string = ""
+            let lockConfig = TableDataService.ins().getTableValueByID(Const.Tables.lockActivity_item, activityConfig.lockType)
+            activityCellNode.getChildByName("timeLabel")!.getComponent(CdComponent)!.setCD(CDType.CDCondition, lockConfig.dataKey, lockConfig.activityTime)
         } else {
-            let lockData = TableDataService.ins().getTableValueByID(Const.Tables.lockActivity_item, item.lockType)
-            itemUI.getChildByName("lockLabel")!.getComponent(Label)!.string = "达到等级" + lockData.openLevel + "解锁"
-            itemUI.getChildByName("timeLabel")!.getComponent(Label)!.string = ""
-            self.clearButtonHander(itemUI)
+            let lockConfig = TableDataService.ins().getTableValueByID(Const.Tables.lockActivity_item, activityConfig.lockType)
+            activityCellNode.getChildByName("lockLabel")!.getComponent(Label)!.string = "达到等级" + lockConfig.openLevel + "解锁"
+            activityCellNode.getChildByName("timeLabel")!.getComponent(Label)!.string = ""
+            self.clearButtonHander(activityCellNode)
         }
     }
 
-    openActivity(event: any, data: any) {
-        UiLayerService.instance.showDialog(data.openDialog, { activityData: data })
+    openActivity(event: any, activityConfig: any) {
+        UiLayerService.instance.showDialog(activityConfig.openDialog, { activityData: activityConfig })
     }
 
     public static checkActivityLock(activity: any) {
-        let lockData = TableDataService.ins().getTableValueByID(Const.Tables.lockActivity_item, activity.lockType)
-        if (lockData.cdType == ActivityLockType.type_Level) {
-            if (playerDataStore.roleLv >= lockData.openLevel) {
-                if (playerDataStore.checkLimitTime(lockData.dataKey, lockData.activityTime * 60 * 1000) > 0) {
+        let lockConfig = TableDataService.ins().getTableValueByID(Const.Tables.lockActivity_item, activity.lockType)
+        if (lockConfig.cdType == ActivityLockType.type_Level) {
+            if (playerDataStore.roleLv >= lockConfig.openLevel) {
+                if (playerDataStore.checkLimitTime(lockConfig.dataKey, lockConfig.activityTime * 60 * 1000) > 0) {
                     return true
                 }
             }

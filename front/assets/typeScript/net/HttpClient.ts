@@ -51,7 +51,7 @@ export class GameHttpClient {
         if(PREVIEW){
             code = "1113"
         }
-        let params = {
+        let loginPayload = {
             "code":code,
             "nickname":playerDataStore.roleName,
             "avatar":avatar,
@@ -60,7 +60,7 @@ export class GameHttpClient {
         this.isInit = true;
         this.argc.loginCallBack = successFun;
         this.argc.loginCallBack2 = failFun;
-        ZcApiGateway.http.post("/api/login", this.onLogin.bind(this), params);
+        ZcApiGateway.http.post("/api/login", this.onLogin.bind(this), loginPayload);
     }
 
     onLogin(res:HttpResponsePacket){
@@ -98,25 +98,25 @@ export class GameHttpClient {
 
 
     sednGetUserInfo(){
-        let params = {
+        let userInfoPayload = {
         }
-        ZcApiGateway.http.post("/api/userinfo", this.onsednGetUserInfo.bind(this), params);
+        ZcApiGateway.http.post("/api/userinfo", this.onsednGetUserInfo.bind(this), userInfoPayload);
     }
 
     onsednGetUserInfo(res:HttpResponsePacket){
         if (res.res && res.res.code == 200){
             if (res.res.data){
-                let resData = res.res.data
-                playerDataStore.userInfodata = resData.userdata;
-                playerDataStore.coinprop = resData.coinprop;
+                let userInfoResponse = res.res.data
+                playerDataStore.userInfodata = userInfoResponse.userdata;
+                playerDataStore.coinprop = userInfoResponse.coinprop;
 
-                playerDataStore.activity = resData.activity;
+                playerDataStore.activity = userInfoResponse.activity;
 
                 playerDataStore.roleName = playerDataStore.userInfodata.nickname;
 
                 playerDataStore.roleID = playerDataStore.userInfodata.userid;
 
-                if (resData.status == 0){
+                if (userInfoResponse.status == 0){
                     console.log("重置数据");
                     sys.localStorage.clear();
                 }
@@ -130,18 +130,18 @@ export class GameHttpClient {
 
 
     sednBagInfo(store_type:number = 2, successFun:Function = ()=>{}){
-        let params = {
+        let bagRequestPayload = {
             store_type:store_type
         }
         this.argc.sednBagInfo = successFun;
-        ZcApiGateway.http.post("/api/bag", this.onsednBagInfo.bind(this), params);
+        ZcApiGateway.http.post("/api/bag", this.onsednBagInfo.bind(this), bagRequestPayload);
     }
 
     onsednBagInfo(res:HttpResponsePacket){
         if (res.res && res.res.code == 200){
             if (res.res.data){
-                let resData = res.res.data
-                playerDataStore.bagProps = resData.userprop;
+                let bagResponse = res.res.data
+                playerDataStore.bagProps = bagResponse.userprop;
 
                 this.refreshView();
                 if (this.argc.sednBagInfo){
@@ -156,18 +156,18 @@ export class GameHttpClient {
 
 
     sendSellBagItem(store_type:number = 2, id:number){
-        let params = {
+        let sellPropPayload = {
             store_type:store_type,
             sole_id:id,
         }
-        ZcApiGateway.http.post("/api/sellprop", this.onsednSellBagItem.bind(this), params);
+        ZcApiGateway.http.post("/api/sellprop", this.onsednSellBagItem.bind(this), sellPropPayload);
     }
 
     onsednSellBagItem(res:HttpResponsePacket){
         if (res.res && res.res.code == 200){
             if (res.res.data){
-                let resData = res.res.data
-                playerDataStore.bagProps = resData.userprop;
+                let sellPropResponse = res.res.data
+                playerDataStore.bagProps = sellPropResponse.userprop;
 
                 this.refreshView();
             }
@@ -178,20 +178,20 @@ export class GameHttpClient {
 
 
     getPetList(successFun:Function = ()=>{}){
-        let params = {
+        let petListPayload = {
         }
         this.argc.getPetListCallBack = successFun;
-        ZcApiGateway.http.post("/api/pet", this.ongetPetList.bind(this), params);
+        ZcApiGateway.http.post("/api/pet", this.ongetPetList.bind(this), petListPayload);
     }
 
     ongetPetList(res:HttpResponsePacket){
         if (res.res && res.res.code == 200){
             if (res.res.data){
-                let resData = res.res.data.userpet
+                let petListResponse = res.res.data.userpet
 
-                playerDataStore.pet_count = resData.pet_count;
-                playerDataStore.pet_score = resData.pet_score;
-                playerDataStore.pets = resData.pets;
+                playerDataStore.pet_count = petListResponse.pet_count;
+                playerDataStore.pet_score = petListResponse.pet_score;
+                playerDataStore.pets = petListResponse.pets;
 
                 this.refreshView();
 
@@ -209,7 +209,7 @@ export class GameHttpClient {
 
 
     sendPetAction(types:number, petId:number = 0, propId:number = 0, clothing_id:number = 0, name:string = "", successFun:Function = ()=>{}){
-        let params = {
+        let petActionPayload = {
             "types":types,
             "sole_id":petId,
             "prop_id":propId,
@@ -218,18 +218,18 @@ export class GameHttpClient {
         }
 
         this.argc.sendPetActionCallBack = successFun;
-        ZcApiGateway.http.post("/api/petaction", this.onsendPetAction.bind(this), params);
+        ZcApiGateway.http.post("/api/petaction", this.onsendPetAction.bind(this), petActionPayload);
     }
 
     onsendPetAction(res:HttpResponsePacket){
         if (res.res && res.res.code == 200){
             if (res.res.data){
-                let resData = res.res.data.userpet
+                let updatedPetRecord = res.res.data.userpet
 
-                for (let index = 0; index < playerDataStore.pets.length; index++) {
-                    const element:PetProfileRecord = playerDataStore.pets[index];
-                    if (element.id == resData.id){
-                        playerDataStore.pets[index] = resData;
+                for (let petIndex = 0; petIndex < playerDataStore.pets.length; petIndex++) {
+                    const petRecord:PetProfileRecord = playerDataStore.pets[petIndex];
+                    if (petRecord.id == updatedPetRecord.id){
+                        playerDataStore.pets[petIndex] = updatedPetRecord;
                         break;
                     }
                 }
@@ -252,27 +252,27 @@ export class GameHttpClient {
 
 
     sendBuyProp(propId:number, type:number, successFun:Function = ()=>{}){
-        let params = {
+        let buyPropPayload = {
             prop_id:propId,
             types:type,
         }
 
         this.argc.sendBuyPropCallBack = successFun;
-        ZcApiGateway.http.post("/api/buyprop", this.onsendBuyProp.bind(this), params);
+        ZcApiGateway.http.post("/api/buyprop", this.onsendBuyProp.bind(this), buyPropPayload);
     }
 
     onsendBuyProp(res:HttpResponsePacket){
         if (res.res && res.res.code == 200){
             if (res.res.data){
-                let resData = res.res.data
+                let buyPropResponse = res.res.data
 
-                playerDataStore.userInfodata = resData.userdata;
-                playerDataStore.coinprop = resData.coinprop;
-                playerDataStore.adProps = resData.ad_prop;
+                playerDataStore.userInfodata = buyPropResponse.userdata;
+                playerDataStore.coinprop = buyPropResponse.coinprop;
+                playerDataStore.adProps = buyPropResponse.ad_prop;
                 this.refreshView();
 
 
-                this.showReward(resData)
+                this.showReward(buyPropResponse)
 
                 if (this.argc.sendBuyPropCallBack){
                     this.argc.sendBuyPropCallBack(res)
@@ -286,24 +286,24 @@ export class GameHttpClient {
 
 
     sendADWatch(type:number, successFun:Function = ()=>{}){
-        let params = {
+        let adWatchPayload = {
             types:type,
         }
 
         this.argc.sendADWatchCallBack = successFun;
-        ZcApiGateway.http.post("/api/adwatch", this.onsendADWatch.bind(this), params);
+        ZcApiGateway.http.post("/api/adwatch", this.onsendADWatch.bind(this), adWatchPayload);
     }
 
     onsendADWatch(res:HttpResponsePacket){
         if (res.res && res.res.code == 200){
             if (res.res.data){
-                let resData = res.res.data
+                let adWatchResponse = res.res.data
 
-                playerDataStore.userInfodata = resData.userdata;
-                playerDataStore.coinprop = resData.coinprop;
+                playerDataStore.userInfodata = adWatchResponse.userdata;
+                playerDataStore.coinprop = adWatchResponse.coinprop;
                 this.refreshView();
 
-                this.showReward(resData)
+                this.showReward(adWatchResponse)
 
                 if (this.argc.sendADWatchCallBack){
                     this.argc.sendADWatchCallBack(res)
@@ -317,21 +317,21 @@ export class GameHttpClient {
 
 
     sendSign(){
-        let params = {
+        let signPayload = {
         }
-        ZcApiGateway.http.post("/api/sign", this.onsendSign.bind(this), params);
+        ZcApiGateway.http.post("/api/sign", this.onsendSign.bind(this), signPayload);
     }
 
     onsendSign(res:HttpResponsePacket){
         if (res.res && res.res.code == 200){
             if (res.res.data){
-                let resData = res.res.data
+                let signResponse = res.res.data
 
-                playerDataStore.coinprop = resData.coinprop;
-                playerDataStore.userInfodata.user_sign.sign_in_days = resData.sign_in_days;
-                playerDataStore.userInfodata.user_sign.sign_status = resData.sign_status;
+                playerDataStore.coinprop = signResponse.coinprop;
+                playerDataStore.userInfodata.user_sign.sign_in_days = signResponse.sign_in_days;
+                playerDataStore.userInfodata.user_sign.sign_status = signResponse.sign_status;
 
-                this.showReward(resData)
+                this.showReward(signResponse)
 
                 this.refreshView();
             }
@@ -342,20 +342,20 @@ export class GameHttpClient {
 
 
     sendWheel(successFun:Function = ()=>{}){
-        let params = {
+        let wheelPayload = {
 
         }
 
         this.argc.sendWheelCallBack = successFun;
-        ZcApiGateway.http.post("/api/wheel", this.onsendWheel.bind(this), params);
+        ZcApiGateway.http.post("/api/wheel", this.onsendWheel.bind(this), wheelPayload);
     }
 
     onsendWheel(res:HttpResponsePacket){
         if (res.res && res.res.code == 200){
             if (res.res.data){
-                let resData = res.res.data
+                let wheelResponse = res.res.data
 
-                playerDataStore.coinprop = resData.coinprop;
+                playerDataStore.coinprop = wheelResponse.coinprop;
                 this.refreshView();
                 if (this.argc.sendWheelCallBack){
                     this.argc.sendWheelCallBack(res)
@@ -369,21 +369,21 @@ export class GameHttpClient {
 
 
     sendChangeInfo(type:number, value:string, successFun:Function = ()=>{}){
-        let params = {
+        let profileChangePayload = {
             types:type,
             value:value,
         }
 
         this.argc.sendChangeInfoCallBack = successFun;
-        ZcApiGateway.http.post("/api/changeu", this.onsendChangeInfoCallBack.bind(this), params);
+        ZcApiGateway.http.post("/api/changeu", this.onsendChangeInfoCallBack.bind(this), profileChangePayload);
     }
 
     onsendChangeInfoCallBack(res:HttpResponsePacket){
         if (res.res && res.res.code == 200){
             if (res.res.data){
-                let resData = res.res.data
+                let profileChangeResponse = res.res.data
 
-                playerDataStore.userInfodata = resData.userdata;
+                playerDataStore.userInfodata = profileChangeResponse.userdata;
 
                 if (this.argc.sendChangeInfoCallBack){
                     this.argc.sendChangeInfoCallBack(res)
@@ -398,18 +398,18 @@ export class GameHttpClient {
 
 
     sendGetTaskList(successFun:Function = ()=>{}){
-        let params = {
+        let taskListPayload = {
         }
         this.argc.sendGetTaskList = successFun;
-        ZcApiGateway.http.post("/api/task", this.onsendGetTaskList.bind(this), params);
+        ZcApiGateway.http.post("/api/task", this.onsendGetTaskList.bind(this), taskListPayload);
     }
 
     onsendGetTaskList(res:HttpResponsePacket){
         if (res.res && res.res.code == 200){
             if (res.res.data){
-                let resData = res.res.data
+                let taskListResponse = res.res.data
 
-                playerDataStore.taskDataList = resData.usertask;
+                playerDataStore.taskDataList = taskListResponse.usertask;
 
                 this.refreshView();
 
@@ -425,21 +425,21 @@ export class GameHttpClient {
 
 
     sendRecivieTaskReward(type:number, successFun:Function = ()=>{}){
-        let params = {
+        let taskRewardPayload = {
             task_type:type
         }
         this.argc.sendRecivieTaskReward = successFun;
-        ZcApiGateway.http.post("/api/taskdone", this.onsendRecivieTaskReward.bind(this), params);
+        ZcApiGateway.http.post("/api/taskdone", this.onsendRecivieTaskReward.bind(this), taskRewardPayload);
     }
 
     onsendRecivieTaskReward(res:HttpResponsePacket){
         if (res.res && res.res.code == 200){
             if (res.res.data){
-                let resData = res.res.data
+                let taskRewardResponse = res.res.data
 
 
-                playerDataStore.coinprop = resData.coinprop;
-                this.showReward(resData)
+                playerDataStore.coinprop = taskRewardResponse.coinprop;
+                this.showReward(taskRewardResponse)
 
 
                 GameHttpClient.getInstance().sendGetTaskList();
@@ -456,26 +456,26 @@ export class GameHttpClient {
 
 
     sendGoodPos(types:number,id:number, position_x:number = 0, position_y:number = 0, successFun:Function = ()=>{}){
-        let params = {
+        let decorationPlacePayload = {
             types:types,
             sole_id:id,
             position_x:position_x,
             position_y:position_y,
         }
         this.argc.sendGoodPos = successFun;
-        ZcApiGateway.http.post("/api/decorationplace", this.onsendGoodPos.bind(this), params);
+        ZcApiGateway.http.post("/api/decorationplace", this.onsendGoodPos.bind(this), decorationPlacePayload);
     }
 
     onsendGoodPos(res:HttpResponsePacket){
         if (res.res && res.res.code == 200){
             if (res.res.data){
 
-                let resData = res.res.data.userprop_one
+                let updatedDecorationRecord = res.res.data.userprop_one
 
-                for (let index = 0; index < playerDataStore.bagProps.length; index++) {
-                    const element:BagPropRecord = playerDataStore.bagProps[index];
-                    if (element.id == resData.id){
-                        playerDataStore.bagProps[index] = resData;
+                for (let bagIndex = 0; bagIndex < playerDataStore.bagProps.length; bagIndex++) {
+                    const bagRecord:BagPropRecord = playerDataStore.bagProps[bagIndex];
+                    if (bagRecord.id == updatedDecorationRecord.id){
+                        playerDataStore.bagProps[bagIndex] = updatedDecorationRecord;
                         break;
                     }
                 }
@@ -496,14 +496,14 @@ export class GameHttpClient {
 
 
     updateGold(coin:number = -1, diamond:number = -1, power:number = -1, home_level:number = -1, successFun:Function = ()=>{}){
-        let params = {
+        let syncCurrencyPayload = {
             "coin":playerDataStore.coin,
             "diamond":playerDataStore.diamonds,
             "power":playerDataStore.power,
             "home_level":playerDataStore.roleLv,
         }
         this.argc.updateGold = successFun;
-        ZcApiGateway.http.post("/api/update", this.onupdateGold.bind(this), params);
+        ZcApiGateway.http.post("/api/update", this.onupdateGold.bind(this), syncCurrencyPayload);
     }
 
     onupdateGold(res:HttpResponsePacket){
@@ -531,18 +531,18 @@ export class GameHttpClient {
 
 
     sendAdpropcount(){
-        let params = {
+        let adCounterPayload = {
         }
 
-        ZcApiGateway.http.post("/api/adpropcount", this.onsendAdpropcount.bind(this), params);
+        ZcApiGateway.http.post("/api/adpropcount", this.onsendAdpropcount.bind(this), adCounterPayload);
     }
 
     onsendAdpropcount(res:HttpResponsePacket){
         if (res.res && res.res.code == 200){
             if (res.res.data){
-                let resData = res.res.data
+                let adCounterResponse = res.res.data
 
-                playerDataStore.adProps = resData.ad_prop;
+                playerDataStore.adProps = adCounterResponse.ad_prop;
             }
         }else{
             this.showFail("" , res.res? res.res.msg: res.err)
@@ -551,22 +551,22 @@ export class GameHttpClient {
 
 
     getFriendList(successFun:Function = ()=>{}){
-        let params = {
+        let friendListPayload = {
         }
         this.argc.getFriendList = successFun;
-        ZcApiGateway.http.post("/api/friend", this.ongetFriendList.bind(this), params);
+        ZcApiGateway.http.post("/api/friend", this.ongetFriendList.bind(this), friendListPayload);
     }
 
     ongetFriendList(res:HttpResponsePacket){
         if (res.res && res.res.code == 200){
             if (res.res.data){
-                let resData = res.res.data.friend;
+                let friendRows = res.res.data.friend;
 
                 playerDataStore.friendList = [];
-                for (let index = 0; index < resData.length; index++) {
-                    const element = resData[index];
-                    if (element && element.friend_info){
-                        playerDataStore.friendList.push(element.friend_info);
+                for (let friendIndex = 0; friendIndex < friendRows.length; friendIndex++) {
+                    const friendRow = friendRows[friendIndex];
+                    if (friendRow && friendRow.friend_info){
+                        playerDataStore.friendList.push(friendRow.friend_info);
                     }
                 }
 
@@ -584,19 +584,19 @@ export class GameHttpClient {
 
 
     getFriendSearch(userid:string,successFun:Function = ()=>{}){
-        let params = {
+        let friendSearchPayload = {
             "userid":userid,
         }
         this.argc.getFriendSearch = successFun;
-        ZcApiGateway.http.post("/api/friendsearch", this.ongetFriendSearch.bind(this), params);
+        ZcApiGateway.http.post("/api/friendsearch", this.ongetFriendSearch.bind(this), friendSearchPayload);
     }
 
     ongetFriendSearch(res:HttpResponsePacket){
         if (res.res && res.res.code == 200){
             if (res.res.data){
-                let resData = res.res.data.user;
+                let searchedFriend = res.res.data.user;
 
-                if (!resData){
+                if (!searchedFriend){
                     this.showFail("未找到该用户")
                 }
 
@@ -612,11 +612,11 @@ export class GameHttpClient {
 
 
     getFriendRecommend(successFun:Function = ()=>{}){
-        let params = {
+        let friendRecommendPayload = {
 
         }
         this.argc.getFriendRecommend = successFun;
-        ZcApiGateway.http.post("/api/friendrecommend", this.ongetFriendRecommend.bind(this), params);
+        ZcApiGateway.http.post("/api/friendrecommend", this.ongetFriendRecommend.bind(this), friendRecommendPayload);
     }
 
     ongetFriendRecommend(res:HttpResponsePacket){
@@ -637,22 +637,22 @@ export class GameHttpClient {
 
 
     getFriendApply(successFun:Function = ()=>{}){
-        let params = {
+        let friendApplyPayload = {
         }
         this.argc.getFriendApply = successFun;
-        ZcApiGateway.http.post("/api/friendapply", this.ongetFriendApply.bind(this), params);
+        ZcApiGateway.http.post("/api/friendapply", this.ongetFriendApply.bind(this), friendApplyPayload);
     }
 
     ongetFriendApply(res:HttpResponsePacket){
         if (res.res && res.res.code == 200){
             if (res.res.data){
 
-                let resData = res.res.data.friend_apply;
+                let friendApplyRows = res.res.data.friend_apply;
                 playerDataStore.curFriendList = [];
-                for (let index = 0; index < resData.length; index++) {
-                    const element = resData[index];
-                    if (element && element.friend_info){
-                        playerDataStore.curFriendList.push(element.friend_info);
+                for (let applyIndex = 0; applyIndex < friendApplyRows.length; applyIndex++) {
+                    const applyRow = friendApplyRows[applyIndex];
+                    if (applyRow && applyRow.friend_info){
+                        playerDataStore.curFriendList.push(applyRow.friend_info);
                     }
                 }
                 GameEventManager.eventTarget.emit(GameEventManager.EEventName.REFRESH_FRIEND_DATA);
@@ -668,11 +668,11 @@ export class GameHttpClient {
 
 
     getFriendAdd(userid:string,successFun:Function = ()=>{}){
-        let params = {
+        let friendAddPayload = {
             "userid":userid,
         }
         this.argc.getFriendAdd = successFun;
-        ZcApiGateway.http.post("/api/friendadd", this.ongetFriendAdd.bind(this), params);
+        ZcApiGateway.http.post("/api/friendadd", this.ongetFriendAdd.bind(this), friendAddPayload);
     }
 
     ongetFriendAdd(res:HttpResponsePacket){
@@ -694,12 +694,12 @@ export class GameHttpClient {
 
 
     getFriendApplyaction(userid:string,type:number,successFun:Function = ()=>{}){
-        let params = {
+        let friendApplyActionPayload = {
             "apply_id":userid,
             "type":type,
         }
         this.argc.getFriendApplyaction = successFun;
-        ZcApiGateway.http.post("/api/friendapplyaction", this.ongetFriendApplyaction.bind(this), params);
+        ZcApiGateway.http.post("/api/friendapplyaction", this.ongetFriendApplyaction.bind(this), friendApplyActionPayload);
     }
 
     ongetFriendApplyaction(res:HttpResponsePacket){
@@ -720,21 +720,21 @@ export class GameHttpClient {
 
 
     sendactivity(successFun:Function = ()=>{}){
-        let params = {
+        let activityDrawPayload = {
         }
         this.argc.sendWheelCallBack = successFun;
-        ZcApiGateway.http.post("/api/activity", this.onsendactivity.bind(this), params);
+        ZcApiGateway.http.post("/api/activity", this.onsendactivity.bind(this), activityDrawPayload);
     }
 
     onsendactivity(res:HttpResponsePacket){
         if (res.res && res.res.code == 200){
             if (res.res.data){
-                let resData = res.res.data
+                let activityDrawResponse = res.res.data
 
-                playerDataStore.userInfodata.activity_count = resData.activity_count;
-                playerDataStore.userInfodata.activity_progress = resData.activity_progress;
+                playerDataStore.userInfodata.activity_count = activityDrawResponse.activity_count;
+                playerDataStore.userInfodata.activity_progress = activityDrawResponse.activity_progress;
 
-                this.showRewardProp(resData.draw_gift);
+                this.showRewardProp(activityDrawResponse.draw_gift);
 
                 if (this.argc.sendWheelCallBack){
                     this.argc.sendWheelCallBack(res)
@@ -748,23 +748,23 @@ export class GameHttpClient {
 
 
     sendProgressaward(prossId:number, successFun:Function = ()=>{}){
-        let params = {
+        let activityProgressPayload = {
             activity_progress_id: prossId,
         }
         this.argc.sendWheelCallBack = successFun;
-        ZcApiGateway.http.post("/api/activityprogressaward", this.onsendProgressaward.bind(this), params);
+        ZcApiGateway.http.post("/api/activityprogressaward", this.onsendProgressaward.bind(this), activityProgressPayload);
     }
 
     onsendProgressaward(res:HttpResponsePacket){
         if (res.res && res.res.code == 200){
             if (res.res.data){
-                let resData = res.res.data
+                let activityProgressResponse = res.res.data
 
-                playerDataStore.userInfodata.activity_progress = resData.activity_progress;
+                playerDataStore.userInfodata.activity_progress = activityProgressResponse.activity_progress;
 
-                this.showRewardProp(resData.activity_progress_award);
+                this.showRewardProp(activityProgressResponse.activity_progress_award);
 
-                playerDataStore.coinprop = resData.userprop;
+                playerDataStore.coinprop = activityProgressResponse.userprop;
 
                 this.refreshView();
                 if (this.argc.sendWheelCallBack){
@@ -793,21 +793,21 @@ export class GameHttpClient {
 
     showReward(res:any){
         if (res && res.rewards){
-            let rewards = res.rewards;
-            this.showRewardProp(rewards);
+            let rewardRows = res.rewards;
+            this.showRewardProp(rewardRows);
         }
     }
 
     showRewardProp(rewards:any[]){
-        let RewardItemRecord = [];
-            for (let index = 0; index < rewards.length; index++) {
-                const element = rewards[index];
-                if (element && element.length >= 2){
-                    RewardItemRecord.push([element[0], element[1], GoodsType.propNew])
+        let rewardItemRecords = [];
+            for (let rewardIndex = 0; rewardIndex < rewards.length; rewardIndex++) {
+                const rewardRow = rewards[rewardIndex];
+                if (rewardRow && rewardRow.length >= 2){
+                    rewardItemRecords.push([rewardRow[0], rewardRow[1], GoodsType.propNew])
                 }
             }
-            if (RewardItemRecord.length > 0){
-                UiLayerService.instance.pushShowDialog(Const.Dialogs.RewardDialog, { reward: RewardItemRecord })
+            if (rewardItemRecords.length > 0){
+                UiLayerService.instance.pushShowDialog(Const.Dialogs.RewardDialog, { reward: rewardItemRecords })
             }
     }
 

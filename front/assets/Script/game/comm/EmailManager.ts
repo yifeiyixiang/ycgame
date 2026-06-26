@@ -33,8 +33,8 @@ export class EmailManager {
     }
 
     public checkTimeOutEmail() {
-        for (let index = 0; index < this.EmailList.length; index++) {
-            const email: Email = this.EmailList[index];
+        for (let emailIndex = 0; emailIndex < this.EmailList.length; emailIndex++) {
+            const email: Email = this.EmailList[emailIndex];
             if (TimeCtrJSF.GetInstance().ServerTime - email.time > 50 * 24 * 60 * 60000) {
                 this.removeEmail(email.id)
             }
@@ -42,15 +42,15 @@ export class EmailManager {
     }
 
     public checkNumOutEmail() {
-        let arr = GameStorage.getObjectArrayByKey(Const.DataKeys.emailList).values
-        if (arr.length > 50) {
-            let fun = (a: Email, b: Email) => {
+        let emailRows = GameStorage.getObjectArrayByKey(Const.DataKeys.emailList).values
+        if (emailRows.length > 50) {
+            let sortByReceiveTime = (a: Email, b: Email) => {
                 return b.time - a.time
             }
-            arr.sort(fun)
-            for (let index = 50; index < arr.length; index++) {
-                if (arr[index]) {
-                    this.removeEmail(arr[index].id)
+            emailRows.sort(sortByReceiveTime)
+            for (let emailIndex = 50; emailIndex < emailRows.length; emailIndex++) {
+                if (emailRows[emailIndex]) {
+                    this.removeEmail(emailRows[emailIndex].id)
                 }
             }
         }
@@ -72,9 +72,9 @@ export class EmailManager {
         if (this._newEmailIDs.length <= 0) {
             return true
         }
-        for (let index = 0; index < this._newEmailIDs.length; index++) {
-            const element = this._newEmailIDs[index];
-            this.reqServerEmailById(element)
+        for (let emailIdIndex = 0; emailIdIndex < this._newEmailIDs.length; emailIdIndex++) {
+            const emailId = this._newEmailIDs[emailIdIndex];
+            this.reqServerEmailById(emailId)
         }
         this._newEmailIDs = []
         return false
@@ -85,8 +85,8 @@ export class EmailManager {
             return true
         }
         let emailList = this.EmailList
-        for (let index = 0; index < emailList.length; index++) {
-            const email = emailList[index];
+        for (let emailIndex = 0; emailIndex < emailList.length; emailIndex++) {
+            const email = emailList[emailIndex];
             if (email.readState == EmailState.unRead || (email.reward && email.reward.length > 0 && email.receicedState == EmailRewardState.unReceive)) {
                 return true
             }

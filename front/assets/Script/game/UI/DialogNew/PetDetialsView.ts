@@ -142,56 +142,56 @@ export class PetDetialsView extends BaseView {
             this.noSkinNode.active = playerDataStore.bagProps.length == 0;
         }
 
-        for (let index = 0; index < this.curContent.children.length; index++) {
-            const element = this.curContent.children[index];
-            if (element){
-                element.active = false;
+        for (let cellIndex = 0; cellIndex < this.curContent.children.length; cellIndex++) {
+            const petItemCell = this.curContent.children[cellIndex];
+            if (petItemCell){
+                petItemCell.active = false;
             }
         }
 
-        for (let index = 0; index < playerDataStore.bagProps.length; index++) {
-            const bagData:BagPropRecord = playerDataStore.bagProps[index];
-            let shopCfg:ShopConfigRecord = TableDataService.ins().getTableValueByID(Const.Tables.new_prop, bagData.prop_id);
+        for (let bagIndex = 0; bagIndex < playerDataStore.bagProps.length; bagIndex++) {
+            const bagRecord:BagPropRecord = playerDataStore.bagProps[bagIndex];
+            let itemConfig:ShopConfigRecord = TableDataService.ins().getTableValueByID(Const.Tables.new_prop, bagRecord.prop_id);
 
-            let ele = this.curContent.children[index];
-            if (!ele){
-                ele = instantiate(this.curContent.children[0])
-                ele.parent = this.curContent;
+            let petItemCell = this.curContent.children[bagIndex];
+            if (!petItemCell){
+                petItemCell = instantiate(this.curContent.children[0])
+                petItemCell.parent = this.curContent;
             }
-            ele.active = true;
+            petItemCell.active = true;
 
-            ele.getChildByName("desLab").getComponent(Label).string = shopCfg.store_type == 2?shopCfg.mask:("评分 +" + shopCfg.score);
-            ele.getChildByName("nameLab").getComponent(Label).string = shopCfg.name
-            ele.getChildByName("countLab").getComponent(Label).string = bagData.prop_count + ""
+            petItemCell.getChildByName("desLab").getComponent(Label).string = itemConfig.store_type == 2?itemConfig.mask:("评分 +" + itemConfig.score);
+            petItemCell.getChildByName("nameLab").getComponent(Label).string = itemConfig.name
+            petItemCell.getChildByName("countLab").getComponent(Label).string = bagRecord.prop_count + ""
 
-            if (shopCfg.icon){
-                this.setSpriteFrame(ele.getChildByName("icon").getComponent(Sprite), Const.resPath.icon + shopCfg.icon, () => { }, 60)
-                ele.getChildByName("icon").active = true;
+            if (itemConfig.icon){
+                this.setSpriteFrame(petItemCell.getChildByName("icon").getComponent(Sprite), Const.resPath.icon + itemConfig.icon, () => { }, 60)
+                petItemCell.getChildByName("icon").active = true;
             }else{
-                ele.getChildByName("icon").active = false;
+                petItemCell.getChildByName("icon").active = false;
             }
 
-            ele.getChildByName("btnUse").off("click")
-            ele.getChildByName("btnDress").off("click")
-            if (shopCfg.type == 3){
-                ele.getChildByName("btnUse").active = true;
-                ele.getChildByName("btnDress").active = false;
-                ele.getChildByName("dressd").active = false;
+            petItemCell.getChildByName("btnUse").off("click")
+            petItemCell.getChildByName("btnDress").off("click")
+            if (itemConfig.type == 3){
+                petItemCell.getChildByName("btnUse").active = true;
+                petItemCell.getChildByName("btnDress").active = false;
+                petItemCell.getChildByName("dressd").active = false;
 
-                ele.getChildByName("btnUse").on("click", ()=>{
+                petItemCell.getChildByName("btnUse").on("click", ()=>{
 
-                    GameHttpClient.getInstance().sendPetAction(4, this.curData.id, shopCfg.id, 0, "", ()=>{
+                    GameHttpClient.getInstance().sendPetAction(4, this.curData.id, itemConfig.id, 0, "", ()=>{
                         GameHttpClient.getInstance().sednBagInfo(2);
                     })
                 }, this);
             }else{
-                ele.getChildByName("btnUse").active = false;
-                ele.getChildByName("btnDress").active = !bagData.is_active;
-                ele.getChildByName("dressd").active = bagData.is_active;
+                petItemCell.getChildByName("btnUse").active = false;
+                petItemCell.getChildByName("btnDress").active = !bagRecord.is_active;
+                petItemCell.getChildByName("dressd").active = bagRecord.is_active;
 
-                ele.getChildByName("btnDress").on("click", ()=>{
+                petItemCell.getChildByName("btnDress").on("click", ()=>{
 
-                    GameHttpClient.getInstance().sendPetAction(5, this.curData.id, shopCfg.id, bagData.id);
+                    GameHttpClient.getInstance().sendPetAction(5, this.curData.id, itemConfig.id, bagRecord.id);
                 }, this);
             }
         }

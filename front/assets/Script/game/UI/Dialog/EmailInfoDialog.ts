@@ -37,15 +37,15 @@ export class EmailInfoDialog extends BaseView {
     initItem(itemUI: Node, email: Email) {
         find("title", itemUI)!.getComponent(Label)!.string = "主题：" + email.title
         find("info", itemUI)!.getComponent(Label)!.string = email.content
-        let date = new Date(email.time)
-        find("time", itemUI)!.getComponent(Label)!.string = date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate()
-        let layer = find("Layout", itemUI)!
-        layer.removeAllChildren()
-        for (let index = 0; index < email.reward.length; index++) {
-            const element = email.reward[index];
-            this.addPrefab(Const.Prefabs.PropItem, layer, (item: any) => {
-                item.getComponent(PropItem).setData(element.propId, PropItemFlag.TouchInfo, element.cnt)
-                item.getComponent(PropItem).setSize(150).setItemBg(1)
+        let sendDate = new Date(email.time)
+        find("time", itemUI)!.getComponent(Label)!.string = sendDate.getFullYear() + "-" + (sendDate.getMonth() + 1) + "-" + sendDate.getDate()
+        let rewardLayout = find("Layout", itemUI)!
+        rewardLayout.removeAllChildren()
+        for (let rewardIndex = 0; rewardIndex < email.reward.length; rewardIndex++) {
+            const rewardRecord = email.reward[rewardIndex];
+            this.addPrefab(Const.Prefabs.PropItem, rewardLayout, (rewardNode: any) => {
+                rewardNode.getComponent(PropItem).setData(rewardRecord.propId, PropItemFlag.TouchInfo, rewardRecord.cnt)
+                rewardNode.getComponent(PropItem).setSize(150).setItemBg(1)
             })
         }
     }

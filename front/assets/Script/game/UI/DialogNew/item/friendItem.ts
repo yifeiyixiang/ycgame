@@ -37,8 +37,8 @@ export class FriendItemCellController extends BaseView {
 
     }
 
-    refreshData(data:any){
-        this.friendData = data
+    refreshData(friendRecord:any){
+        this.friendData = friendRecord
         if (!this.friendData){
 
             return;
@@ -66,20 +66,20 @@ export class FriendItemCellController extends BaseView {
 
     onClickHandler(eve:any, str:string){
         AudioPlaybackService.instance.playSound(Const.Audio.btn)
-        let btnName = eve.target._name;
-        if (btnName == "btnAdd"){
+        let actionName = eve.target._name;
+        if (actionName == "btnAdd"){
 
             GameHttpClient.getInstance().getFriendAdd(this.friendData.userid);
         }
-        else if (btnName == "btnReset"){
+        else if (actionName == "btnReset"){
 
             GameHttpClient.getInstance().getFriendRecommend();
         }
-        else if (btnName == "btnAgree"){
+        else if (actionName == "btnAgree"){
 
             GameHttpClient.getInstance().getFriendApplyaction(this.friendData.id, 1);
         }
-        else if (btnName == "btnRefuse"){
+        else if (actionName == "btnRefuse"){
 
             GameHttpClient.getInstance().getFriendApplyaction(this.friendData.id, 2);
         }

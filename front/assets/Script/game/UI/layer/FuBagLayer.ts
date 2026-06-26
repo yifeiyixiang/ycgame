@@ -35,20 +35,20 @@ export class FuBagLayer extends BaseView {
     }
 
     initUI() {
-        let row = TableDataService.ins().getTableValueByID(Const.Tables.fuBag, this.bagId);
-        this.scrollViewSetData(this.propList, row.price, this.refreshPropItem.bind(this));
+        let bagConfig = TableDataService.ins().getTableValueByID(Const.Tables.fuBag, this.bagId);
+        this.scrollViewSetData(this.propList, bagConfig.price, this.refreshPropItem.bind(this));
     }
 
     refreshPropItem(itemUI: Node, prop: any) {
-        let id = prop[0];
-        let num = prop[1];
-        let row = TableDataService.ins().getTableValueByID(Const.Tables.prop, id);
+        let propId = prop[0];
+        let propCount = prop[1];
+        let propConfig = TableDataService.ins().getTableValueByID(Const.Tables.prop, propId);
 
-        this.setSpriteFrame2(find("icon", itemUI)!.getComponent(Sprite)!, Const.resPath.icon + row.icon);
-        this.setString(find("num", itemUI), num);
+        this.setSpriteFrame2(find("icon", itemUI)!.getComponent(Sprite)!, Const.resPath.icon + propConfig.icon);
+        this.setString(find("num", itemUI), propCount);
 
         let infoNode = find("info", itemUI)!;
-        if (mergeBoardStateStore.propCanCreateNewProp(id)) {
+        if (mergeBoardStateStore.propCanCreateNewProp(propId)) {
             infoNode.active = true;
             this.bindButton(itemUI, this.onClickPropItem);
         } else {

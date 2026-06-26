@@ -44,32 +44,32 @@ export class BagNewLayer extends BaseView {
 
     refresh(){
 
-        for (let index = 0; index < this.listContent.children.length; index++) {
-            const element = this.listContent.children[index];
-            if (element){
-                element.active = false;
+        for (let cellIndex = 0; cellIndex < this.listContent.children.length; cellIndex++) {
+            const bagCellNode = this.listContent.children[cellIndex];
+            if (bagCellNode){
+                bagCellNode.active = false;
             }
         }
 
-        for (let index = 0; index < playerDataStore.bagProps.length; index++) {
-            const bagData:BagPropRecord = playerDataStore.bagProps[index];
+        for (let bagIndex = 0; bagIndex < playerDataStore.bagProps.length; bagIndex++) {
+            const bagRecord:BagPropRecord = playerDataStore.bagProps[bagIndex];
 
-            let ele = this.listContent.children[index];
-            if (!ele){
-                ele = instantiate(this.listContent.children[0])
-                ele.parent = this.listContent;
+            let bagCellNode = this.listContent.children[bagIndex];
+            if (!bagCellNode){
+                bagCellNode = instantiate(this.listContent.children[0])
+                bagCellNode.parent = this.listContent;
             }
-            ele.active = true;
-            ele.getComponent(BagItemCellController).refreshData(bagData);
+            bagCellNode.active = true;
+            bagCellNode.getComponent(BagItemCellController).refreshData(bagRecord);
         }
     }
 
     onClickHandler(eve:Event, str:string){
         AudioPlaybackService.instance.playSound(Const.Audio.btn)
         if (str && str.includes("tog")){
-            let type = Number(str.slice(-1)) ;
-            if (this.selectType != type){
-                this.selectType = type;
+            let selectedStoreType = Number(str.slice(-1)) ;
+            if (this.selectType != selectedStoreType){
+                this.selectType = selectedStoreType;
 
                 GameHttpClient.getInstance().sednBagInfo(this.selectType);
             }

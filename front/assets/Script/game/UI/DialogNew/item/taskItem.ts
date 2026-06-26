@@ -42,8 +42,8 @@ export class TaskItemCellController extends BaseView {
 
     }
 
-    refreshData(data:any){
-        this.taskData = data
+    refreshData(taskRecord:any){
+        this.taskData = taskRecord
         if (!this.taskData){
 
             return;
@@ -52,7 +52,7 @@ export class TaskItemCellController extends BaseView {
         this.proLab.string = this.taskData.done_count + "/" + this.taskData.task_count;
         this.progressBar.progress = this.taskData.done_count/this.taskData.task_count;
 
-        let cfg:TaskConfigRecord = TableDataService.ins().getTableValueByID(Const.Tables.new_task, this.taskData.task_id);
+        let taskConfig:TaskConfigRecord = TableDataService.ins().getTableValueByID(Const.Tables.new_task, this.taskData.task_id);
         if(this.taskData.task_type == 1){
             this.desLab.string = "当日签到";
         }
@@ -63,7 +63,7 @@ export class TaskItemCellController extends BaseView {
             this.desLab.string = "宠物互动&1次".replace("&1", this.taskData.task_count.toString());
         }
 
-        this.rewardLab.string = "奖励" + cfg.task_gift[0][1];
+        this.rewardLab.string = "奖励" + taskConfig.task_gift[0][1];
 
         if (this.taskData.is_done){
             this.btnLab.string = "已领取"

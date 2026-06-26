@@ -103,7 +103,7 @@ export class MergeBoardLayer extends BaseView {
     @property({ type: Node })
     taskLayer: Node = null!;
     @property({ type: Node })
-    TaskItemCellController: Node = null!;
+    taskItem: Node = null!;
     @property({ type: Node })
     btnTaskList: Node = null!;
 
@@ -161,8 +161,8 @@ export class MergeBoardLayer extends BaseView {
         this.roomWidth = this.roomItem.getComponent(UITransform)!.width;
         this.roomStatus.active = false;
 
-        this.TaskItemCellController.active = false;
-        this.TaskItemCellController.parent = this.node;
+        this.taskItem.active = false;
+        this.taskItem.parent = this.node;
 
         this.moveItem.active = false;
         this.moveItem.parent = this.node;
@@ -583,7 +583,7 @@ export class MergeBoardLayer extends BaseView {
         this.taskLayer.removeAllChildren();
 
         for (let i = 0; i < mergeBoardStateStore.taskArr.length; i++) {
-            let TaskItemCellController = instantiate(this.TaskItemCellController);
+            let TaskItemCellController = instantiate(this.taskItem);
             TaskItemCellController.active = true;
             TaskItemCellController.parent = this.taskLayer;
         }
@@ -636,7 +636,7 @@ export class MergeBoardLayer extends BaseView {
     refreshTaskItem(itemUI: Node, task: any) {
 
         if (itemUI == null) {
-            itemUI = instantiate(this.TaskItemCellController);
+            itemUI = instantiate(this.taskItem);
             itemUI.active = true;
             itemUI.parent = this.taskLayer;
         }

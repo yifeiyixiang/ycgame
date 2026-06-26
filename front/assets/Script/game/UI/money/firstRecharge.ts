@@ -27,12 +27,12 @@ export class FirstRechargeDialogController extends BaseView {
     show(args: any) {
         super.show(args)
 
-        let fisrtData = TableDataService.ins().getTableValueByKey(Const.Tables.shopTable, "type", 2)
+        let firstRechargeConfig = TableDataService.ins().getTableValueByKey(Const.Tables.shopTable, "type", 2)
         this.giftScroll.removeAllChildren()
-        fisrtData.price3.forEach((element: any, index: number) => {
-            this.addPrefab(Const.Prefabs.PropItem, this.giftScroll, (item: any) => {
-                item.getComponent(PropItem).setData(element[0], PropItemFlag.TouchInfo | PropItemFlag.ShowNum, element[1])
-                item.getComponent(PropItem).setSize(140)
+        firstRechargeConfig.price3.forEach((rewardEntry: any, rewardIndex: number) => {
+            this.addPrefab(Const.Prefabs.PropItem, this.giftScroll, (rewardNode: any) => {
+                rewardNode.getComponent(PropItem).setData(rewardEntry[0], PropItemFlag.TouchInfo | PropItemFlag.ShowNum, rewardEntry[1])
+                rewardNode.getComponent(PropItem).setSize(140)
             })
         });
 
@@ -60,15 +60,15 @@ export class FirstRechargeDialogController extends BaseView {
         director.off(GNetCmd.GetUserDataByKey.toString(), this.onMessageEvent, this);
     }
 
-    onMessageEvent(value: any) {
-        console.log("onMessageEvent:", value);
-        let data = ServerCtrJSF.GetInstance().getUserDataByKey(value, Const.MoneyKeys.FirstCharge)
-        if (data) {
-            if (data.val instanceof Number) {
-                this._isFirstRecharge = data.val
+    onMessageEvent(userDataPayload: any) {
+        console.log("onMessageEvent:", userDataPayload);
+        let firstRechargeRecord = ServerCtrJSF.GetInstance().getUserDataByKey(userDataPayload, Const.MoneyKeys.FirstCharge)
+        if (firstRechargeRecord) {
+            if (firstRechargeRecord.val instanceof Number) {
+                this._isFirstRecharge = firstRechargeRecord.val
             } else {
-                if (data.val != "") {
-                    this._isFirstRecharge = parseInt(data.val + "")
+                if (firstRechargeRecord.val != "") {
+                    this._isFirstRecharge = parseInt(firstRechargeRecord.val + "")
                 }
             }
 
@@ -76,19 +76,19 @@ export class FirstRechargeDialogController extends BaseView {
         }
     }
 
-    onClickGet(event: any, item: any) {
+    onClickGet(event: any, rewardPayload: any) {
         if (this._isFirstRecharge == 1) {
-            let fisrtData = TableDataService.ins().getTableValueByKey(Const.Tables.shopTable, "type", 2)
-            this.onVideoBack(fisrtData.price3)
+            let firstRechargeConfig = TableDataService.ins().getTableValueByKey(Const.Tables.shopTable, "type", 2)
+            this.onVideoBack(firstRechargeConfig.price3)
         } else if (this._isFirstRecharge == 0) {
             GameStorage.setInt(Const.MoneyKeys.FirstCharge, 1)
             ServerCtrJSF.GetInstance().reqGetUserDataByKey(GameStorage.Key(Const.MoneyKeys.FirstCharge))
         }
     }
 
-    onVideoBack(item: any) {
+    onVideoBack(rewardList: any) {
         GameStorage.setInt(Const.MoneyKeys.FirstCharge, 2)
-        playerDataStore.getProp(item,null,null)
+        playerDataStore.getProp(rewardList,null,null)
         this._isFirstRecharge = 2
         this.initRechargeState()
 

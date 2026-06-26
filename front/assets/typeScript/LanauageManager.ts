@@ -55,49 +55,49 @@ export class LanguageContentManager {
         if (!config){
             return null;
         }
-        for (let index = 0; index < config.length; index++) {
-            let element = config[index];
-            if (element && element.id == id){
-                if (element.reward && typeof element.reward === "string"){
-                    element.reward = JSON.parse(element.reward);
+        for (let configIndex = 0; configIndex < config.length; configIndex++) {
+            let configRecord = config[configIndex];
+            if (configRecord && configRecord.id == id){
+                if (configRecord.reward && typeof configRecord.reward === "string"){
+                    configRecord.reward = JSON.parse(configRecord.reward);
                 }
-                if (element.reward_num && typeof element.reward_num === "string"){
-                    element.reward_num = JSON.parse(element.reward_num);
+                if (configRecord.reward_num && typeof configRecord.reward_num === "string"){
+                    configRecord.reward_num = JSON.parse(configRecord.reward_num);
                 }
-                if (element.val_type && typeof element.val_type === "string"){
-                    element.val_type = JSON.parse(element.val_type);
+                if (configRecord.val_type && typeof configRecord.val_type === "string"){
+                    configRecord.val_type = JSON.parse(configRecord.val_type);
                 }
-                if (element.val_num && typeof element.val_num === "string"){
-                    element.val_num = JSON.parse(element.val_num);
+                if (configRecord.val_num && typeof configRecord.val_num === "string"){
+                    configRecord.val_num = JSON.parse(configRecord.val_num);
                 }
-                return element;
+                return configRecord;
             }
         }
         return null
     }
 
 
-        public static setRewardConfig(element:any){
-            if (!element){
+        public static setRewardConfig(configRecord:any){
+            if (!configRecord){
                 return null;
             }
-            if (element.reward && typeof element.reward === "string"){
-                element.reward = JSON.parse(element.reward);
+            if (configRecord.reward && typeof configRecord.reward === "string"){
+                configRecord.reward = JSON.parse(configRecord.reward);
             }
-            if (element.reward_num && typeof element.reward_num === "string"){
-                element.reward_num = JSON.parse(element.reward_num);
+            if (configRecord.reward_num && typeof configRecord.reward_num === "string"){
+                configRecord.reward_num = JSON.parse(configRecord.reward_num);
             }
-            return element;
+            return configRecord;
         }
 
     public static getPetConfigsByType(petType:PetSpeciesType){
         if (LanguageContentManager.petCatConfig.length == 0){
-            for (let index = 0; index < this.petConfigs.length; index++) {
-                const element:PetConfigRecord = this.petConfigs[index];
-                if (element.types == PetSpeciesType.cat){
-                    LanguageContentManager.petCatConfig.push(element);
+            for (let petConfigIndex = 0; petConfigIndex < this.petConfigs.length; petConfigIndex++) {
+                const petConfig:PetConfigRecord = this.petConfigs[petConfigIndex];
+                if (petConfig.types == PetSpeciesType.cat){
+                    LanguageContentManager.petCatConfig.push(petConfig);
                 }else{
-                    LanguageContentManager.petDogConfig.push(element);
+                    LanguageContentManager.petDogConfig.push(petConfig);
                 }
             }
         }
@@ -132,20 +132,20 @@ export class LanguageContentManager {
     }
 
     public static getItemNumById(id:number):number{
-        for (let index = 0; index < GameRuntimeData.saveData.backList.length; index++) {
-            let element = GameRuntimeData.saveData.backList[index];
-            if (element.id == id){
-                return element.num;
+        for (let bagIndex = 0; bagIndex < GameRuntimeData.saveData.backList.length; bagIndex++) {
+            let backpackRecord = GameRuntimeData.saveData.backList[bagIndex];
+            if (backpackRecord.id == id){
+                return backpackRecord.num;
             }
         }
         return 0;
     }
 
     public static getTaskDataById(id:number):any{
-        for (let index = 0; index < LanguageContentManager.taskConfig.length; index++) {
-            let element = LanguageContentManager.taskConfig[index];
-            if (element.id == id){
-                return element;
+        for (let taskConfigIndex = 0; taskConfigIndex < LanguageContentManager.taskConfig.length; taskConfigIndex++) {
+            let taskConfigRecord = LanguageContentManager.taskConfig[taskConfigIndex];
+            if (taskConfigRecord.id == id){
+                return taskConfigRecord;
             }
         }
         return null;
@@ -180,54 +180,54 @@ export class LanguageContentManager {
     }
 
     public static getCoinNumString(coinNum:number = 0, type:number = 1){
-        let num = coinNum;
-        if (num == 0){
-            num = GameRuntimeData.saveData.coin;
+        let displayCoinAmount = coinNum;
+        if (displayCoinAmount == 0){
+            displayCoinAmount = GameRuntimeData.saveData.coin;
         }
         let unitIndex = 0;
 
         const units = ['', 'w', 'm', 'b', 't', 'q'];
         let num1 = 1000;
-        if (num > 9999.99){
+        if (displayCoinAmount > 9999.99){
             unitIndex = 1
             num1 = 10000;
         }else{
-            return LanguageContentManager.roundToTwoDecimals(num, type == 2?1000:100).toString()
+            return LanguageContentManager.roundToTwoDecimals(displayCoinAmount, type == 2?1000:100).toString()
         }
-        num = Number(LanguageContentManager.roundToTwoDecimals(num/num1).toString());
-        let  goldNum = num.toFixed(2)
-        return goldNum + units[unitIndex];
+        displayCoinAmount = Number(LanguageContentManager.roundToTwoDecimals(displayCoinAmount/num1).toString());
+        let  formattedCoinAmount = displayCoinAmount.toFixed(2)
+        return formattedCoinAmount + units[unitIndex];
     }
 
     public static getCoinNumByType(type:number){
-        let num:number = 0
+        let coinAmount:number = 0
         if (type == WalletCoinType.coin1){
-            num = GameRuntimeData.saveData.coin2;
+            coinAmount = GameRuntimeData.saveData.coin2;
         }
         else if (type == WalletCoinType.coin2){
-            num = GameRuntimeData.saveData.coin;
+            coinAmount = GameRuntimeData.saveData.coin;
         }
         else if (type == WalletCoinType.coin3){
-            num = GameRuntimeData.saveData.coin3;
+            coinAmount = GameRuntimeData.saveData.coin3;
         }
-        return num;
+        return coinAmount;
     }
 
 
     private static getTaskInfoState(id:number, isLine:boolean =false):TaskProgressRecord{
         if (isLine){
-            for (let index = 0; index < GameRuntimeData.severData.taskMainStatetList.length; index++) {
-                const element = GameRuntimeData.severData.taskMainStatetList[index];
-                if (element.id == id){
-                    return element;
+            for (let taskStateIndex = 0; taskStateIndex < GameRuntimeData.severData.taskMainStatetList.length; taskStateIndex++) {
+                const mainTaskState = GameRuntimeData.severData.taskMainStatetList[taskStateIndex];
+                if (mainTaskState.id == id){
+                    return mainTaskState;
                 }
             }
 
         }else{
-            for (let index = 0; index < GameRuntimeData.severData.taskStatetList.length; index++) {
-                const element = GameRuntimeData.severData.taskStatetList[index];
-                if (element.id == id){
-                    return element;
+            for (let taskStateIndex = 0; taskStateIndex < GameRuntimeData.severData.taskStatetList.length; taskStateIndex++) {
+                const branchTaskState = GameRuntimeData.severData.taskStatetList[taskStateIndex];
+                if (branchTaskState.id == id){
+                    return branchTaskState;
                 }
             }
         }
@@ -237,14 +237,14 @@ export class LanguageContentManager {
 
 
     public static getTaskState(id:number, isLine:boolean =false):number{
-        let data:TaskProgressRecord = LanguageContentManager.getTaskInfoState(id, isLine);
-        if (!data){
+        let taskState:TaskProgressRecord = LanguageContentManager.getTaskInfoState(id, isLine);
+        if (!taskState){
             return 1;
         }
-        if (data.reward){
+        if (taskState.reward){
             return 3;
         }
-        if (data.done_num >= data.task_num){
+        if (taskState.done_num >= taskState.task_num){
             return 2;
         }
         return 1;
@@ -291,13 +291,13 @@ export class LanguageContentManager {
 
     public static getShowCharacterCon(petData:PetProfileRecord):string{
         let str:string = ""
-        for (let index = 0; index < petData.characteristics.length; index++) {
-            const element = petData.characteristics[index];
-            if (element){
+        for (let traitIndex = 0; traitIndex < petData.characteristics.length; traitIndex++) {
+            const petTrait = petData.characteristics[traitIndex];
+            if (petTrait){
                 if (str == ""){
-                    str = element.context;
+                    str = petTrait.context;
                 }else{
-                    str = str + "," + element.context;
+                    str = str + "," + petTrait.context;
                 }
             }
         }
@@ -309,34 +309,34 @@ export class LanguageContentManager {
 
 
     public static getPetValueSumCon(valType:ItemValType):[number, number]{
-        let curNum:number = 0;
-        let curSum:number = 0;
-        for (let index = 0; index < GameRuntimeData.severData.petList.length; index++) {
-            const element:PetProfileRecord = GameRuntimeData.severData.petList[index];
-            if (element){
+        let currentValue:number = 0;
+        let totalValue:number = 0;
+        for (let petIndex = 0; petIndex < GameRuntimeData.severData.petList.length; petIndex++) {
+            const petRecord:PetProfileRecord = GameRuntimeData.severData.petList[petIndex];
+            if (petRecord){
                if (valType == ItemValType.FoodBowl){
-                    curNum += element.satiety;
-                    curSum += element.satietyFull;
+                    currentValue += petRecord.satiety;
+                    totalValue += petRecord.satietyFull;
                }
                else if (valType == ItemValType.WaterBowl){
-                    curNum += element.thirsty;
-                    curSum += element.thirstyFull;
+                    currentValue += petRecord.thirsty;
+                    totalValue += petRecord.thirstyFull;
                }
             }
         }
 
-        return [curNum, curSum];
+        return [currentValue, totalValue];
     }
 
 
     public static getItemValByType(item:ItemConfigRecord, valType:number){
 
-        let array = JSON.parse(item.val_type.toString());
-        for (let index = 0; index < array.length; index++) {
-            const element = array[index];
-            if (element == valType){
-                let numArr = JSON.parse(item.val_num.toString());
-                return numArr[index];
+        let valueTypes = JSON.parse(item.val_type.toString());
+        for (let valueIndex = 0; valueIndex < valueTypes.length; valueIndex++) {
+            const itemValueType = valueTypes[valueIndex];
+            if (itemValueType == valType){
+                let valueAmounts = JSON.parse(item.val_num.toString());
+                return valueAmounts[valueIndex];
             }
 
         }
@@ -345,24 +345,24 @@ export class LanguageContentManager {
 
 
     public static getItemCfgsByType(types:number){
-        let cfgs:ItemConfigRecord[] = [];
-        for (let index = 0; index < this.itemConfigs.length; index++) {
-            const element:ItemConfigRecord = LanguageContentManager.setRewardConfig(this.itemConfigs[index]);
-            if (element.types == types){
-                cfgs.push(element);
+        let itemConfigs:ItemConfigRecord[] = [];
+        for (let itemConfigIndex = 0; itemConfigIndex < this.itemConfigs.length; itemConfigIndex++) {
+            const itemConfig:ItemConfigRecord = LanguageContentManager.setRewardConfig(this.itemConfigs[itemConfigIndex]);
+            if (itemConfig.types == types){
+                itemConfigs.push(itemConfig);
             }
         }
-        return cfgs;
+        return itemConfigs;
     }
 
 
 
 
     public static getAdCountById(propId:number):number{
-        for (let index = 0; index < playerDataStore.adProps.length; index++) {
-            let element = playerDataStore.adProps[index];
-            if (element && element.prop_id == propId){
-                return element.ad_count;
+        for (let adPropIndex = 0; adPropIndex < playerDataStore.adProps.length; adPropIndex++) {
+            let adPropRecord = playerDataStore.adProps[adPropIndex];
+            if (adPropRecord && adPropRecord.prop_id == propId){
+                return adPropRecord.ad_count;
             }
         }
         return 0

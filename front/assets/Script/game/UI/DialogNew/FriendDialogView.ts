@@ -90,46 +90,46 @@ export class FriendDialogView extends BaseView {
         if (this.viewType == 2){
             return;
         }
-        for (let index = 0; index < this.listContent.children.length; index++) {
-            const element = this.listContent.children[index];
-            if (element){
-                element.active = false;
+        for (let cellIndex = 0; cellIndex < this.listContent.children.length; cellIndex++) {
+            const friendCellNode = this.listContent.children[cellIndex];
+            if (friendCellNode){
+                friendCellNode.active = false;
             }
         }
         this.friendDataList = playerDataStore.curFriendList;
-        for (let index = 0; index < this.friendDataList.length; index++) {
-            let friend:FriendProfileRecord = this.friendDataList[index];
+        for (let friendIndex = 0; friendIndex < this.friendDataList.length; friendIndex++) {
+            let friendRecord:FriendProfileRecord = this.friendDataList[friendIndex];
 
-            let ele = this.listContent.children[index];
-            if (!ele){
-                ele = instantiate(this.listContent.children[0])
-                ele.parent = this.listContent;
+            let friendCellNode = this.listContent.children[friendIndex];
+            if (!friendCellNode){
+                friendCellNode = instantiate(this.listContent.children[0])
+                friendCellNode.parent = this.listContent;
             }
-            ele.active = true;
-            ele.getComponent(FriendItemCellController).refreshData(friend);
+            friendCellNode.active = true;
+            friendCellNode.getComponent(FriendItemCellController).refreshData(friendRecord);
         }
     }
 
     onClickHandler(eve:any, str:string){
         AudioPlaybackService.instance.playSound(Const.Audio.btn)
-        let btnName = eve.target._name;
-        if (btnName == "btnSearch"){
+        let actionName = eve.target._name;
+        if (actionName == "btnSearch"){
 
             if (!this.searchEdit.string){
                 this.toast("请输入用户ID进行搜索");
                 return;
             }
             GameHttpClient.getInstance().getFriendSearch(this.searchEdit.string, (res:any)=>{
-                let friend:FriendProfileRecord = res.res.data.user
-                if (friend){
+                let foundFriend:FriendProfileRecord = res.res.data.user
+                if (foundFriend){
                     this.searchItem.active = true;
-                    this.searchItem.getComponent(FriendItemCellController).refreshData(friend);
+                    this.searchItem.getComponent(FriendItemCellController).refreshData(foundFriend);
                 }else{
                     this.searchItem.active = false;
                 }
             })
         }
-        else if (btnName == "btnReset"){
+        else if (actionName == "btnReset"){
 
             GameHttpClient.getInstance().getFriendRecommend();
         }

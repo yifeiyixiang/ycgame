@@ -41,9 +41,9 @@ export class DiamondItemCellController extends BaseView {
     @property({ type: Node })
     btnUse: Node = null!;
 
-    bagData!:BagPropRecord;
+    decorationRecord!:BagPropRecord;
 
-    shopCfg!:ShopConfigRecord;
+    decorationConfig!:ShopConfigRecord;
 
     onLoad() {
 
@@ -55,18 +55,18 @@ export class DiamondItemCellController extends BaseView {
 
     }
 
-    refreshData(data:any){
-        this.bagData = data
-        if (!this.bagData){
+    refreshData(decorationRecord:any){
+        this.decorationRecord = decorationRecord
+        if (!this.decorationRecord){
 
             return;
         }
 
-        this.shopCfg = TableDataService.ins().getTableValueByID(Const.Tables.new_prop, this.bagData.prop_id);
-        this.nameLab.string = this.shopCfg.name;
+        this.decorationConfig = TableDataService.ins().getTableValueByID(Const.Tables.new_prop, this.decorationRecord.prop_id);
+        this.nameLab.string = this.decorationConfig.name;
 
-        if (this.shopCfg.icon){
-            this.setSpriteFrame(this.icon, Const.resPath.icon + this.shopCfg.icon, () => { }, 60)
+        if (this.decorationConfig.icon){
+            this.setSpriteFrame(this.icon, Const.resPath.icon + this.decorationConfig.icon, () => { }, 60)
             this.icon.node.active = true;
         }else{
             this.icon.node.active = false;
@@ -77,25 +77,25 @@ export class DiamondItemCellController extends BaseView {
         this.btnUndress.active = false;
         this.btnUse.active = false;
         this.statuLab.string = "";
-        if (this.shopCfg.store_type == 2){
+        if (this.decorationConfig.store_type == 2){
             this.btnSell.active = true;
             this.btnUse.active = true;
 
-            this.desLab.string = this.shopCfg.mask;
+            this.desLab.string = this.decorationConfig.mask;
         }
-        else if (this.shopCfg.store_type == 3){
+        else if (this.decorationConfig.store_type == 3){
 
-            if (this.bagData.is_active){
+            if (this.decorationRecord.is_active){
                 this.statuLab.string = "已穿戴";
                 this.btnUndress.active = true;
             }else{
                 this.btnSell.active = true;
                 this.btnDress.active = true;
             }
-            this.desLab.string = "评分：" +  this.shopCfg.score;
+            this.desLab.string = "评分：" +  this.decorationConfig.score;
         }
-        else if (this.shopCfg.store_type == 4){
-             if (this.bagData.is_active){
+        else if (this.decorationConfig.store_type == 4){
+             if (this.decorationRecord.is_active){
                 this.statuLab.string = "已装饰";
                 this.btnUndress.active = true;
             }else{
@@ -112,17 +112,17 @@ export class DiamondItemCellController extends BaseView {
         AudioPlaybackService.instance.playSound(Const.Audio.btn)
 
 
-        let iscanOperation:boolean = false;
-        if (playerDataStore.sceneStau == 1 && this.shopCfg.typeson == 1){
-            iscanOperation = true;
-        }else if (playerDataStore.sceneStau == 2 && this.shopCfg.typeson == 2){
-            iscanOperation = true;
+        let canOperateDecoration:boolean = false;
+        if (playerDataStore.sceneStau == 1 && this.decorationConfig.typeson == 1){
+            canOperateDecoration = true;
+        }else if (playerDataStore.sceneStau == 2 && this.decorationConfig.typeson == 2){
+            canOperateDecoration = true;
         }else{
-            iscanOperation = false;
+            canOperateDecoration = false;
             this.toast("当前场景不可操作该装饰品");
         }
-        if (iscanOperation){
-            GameHttpClient.getInstance().sendGoodPos(1, this.bagData.id, 0, 0);
+        if (canOperateDecoration){
+            GameHttpClient.getInstance().sendGoodPos(1, this.decorationRecord.id, 0, 0);
         }
     }
 

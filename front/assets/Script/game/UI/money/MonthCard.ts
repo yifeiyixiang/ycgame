@@ -22,8 +22,8 @@ export class MonthCard extends BaseView {
     @property({ type: Node, tooltip: "周卡奖励列表" }) weeksNode: Node = null!;
     @property({ type: Node, tooltip: "月卡奖励列表" }) rewardItem: Node = null!;
 
-    _MonthCardVal = false
-    _weekCardVal = false
+    _hasMonthCard = false
+    _hasWeekCard = false
 
 
     start() {
@@ -38,24 +38,24 @@ export class MonthCard extends BaseView {
         return TableDataService.ins().getTableValuesByType2ByOne(Const.Tables.shopTable, "type", shopType.MonthCard + "", "dc", "1")
     }
 
-    public static checkMonthCard(value: any) {
-        let data = ServerCtrJSF.GetInstance().getUserDataByKey(value, Const.MoneyKeys.MonthCharge)
-        if (data && data.val["buyTime"]) {
-            let buyTime = parseInt(data.val["buyTime"] + "")
-            let curTime = Math.floor(TimeCtrJSF.GetInstance().ServerTime)
-            if (curTime - buyTime < MonthCard.MonthCardData.totalLimit * 24 * 60 * 60 * 1000) {
+    public static checkMonthCard(userDataPayload: any) {
+        let monthCardRecord = ServerCtrJSF.GetInstance().getUserDataByKey(userDataPayload, Const.MoneyKeys.MonthCharge)
+        if (monthCardRecord && monthCardRecord.val["buyTime"]) {
+            let purchasedAt = parseInt(monthCardRecord.val["buyTime"] + "")
+            let serverNow = Math.floor(TimeCtrJSF.GetInstance().ServerTime)
+            if (serverNow - purchasedAt < MonthCard.MonthCardData.totalLimit * 24 * 60 * 60 * 1000) {
                 return true
             }
         }
         return false
     }
 
-    public static checkWeekCard(value: any) {
-        let data = ServerCtrJSF.GetInstance().getUserDataByKey(value, Const.MoneyKeys.WeekCharge)
-        if (data && data.val["buyTime"]) {
-            let buyTime = parseInt(data.val["buyTime"] + "")
-            let curTime = Math.floor(TimeCtrJSF.GetInstance().ServerTime)
-            if (curTime - buyTime < MonthCard.WeekCardData.totalLimit * 24 * 60 * 60 * 1000) {
+    public static checkWeekCard(userDataPayload: any) {
+        let weekCardRecord = ServerCtrJSF.GetInstance().getUserDataByKey(userDataPayload, Const.MoneyKeys.WeekCharge)
+        if (weekCardRecord && weekCardRecord.val["buyTime"]) {
+            let purchasedAt = parseInt(weekCardRecord.val["buyTime"] + "")
+            let serverNow = Math.floor(TimeCtrJSF.GetInstance().ServerTime)
+            if (serverNow - purchasedAt < MonthCard.WeekCardData.totalLimit * 24 * 60 * 60 * 1000) {
                 return true
             }
         }
@@ -83,23 +83,23 @@ export class MonthCard extends BaseView {
         director.off(GNetCmd.GetUserDataByKey.toString(), this.onMessageEvent, this);
     }
 
-    onMessageEvent(value: any) {
-        console.log("onMessageEvent:", value);
-        let data = ServerCtrJSF.GetInstance().getUserDataByKey(value, Const.MoneyKeys.MonthCharge)
-        if (data) {
-            this._MonthCardVal = MonthCard.checkMonthCard(value)
+    onMessageEvent(userDataPayload: any) {
+        console.log("onMessageEvent:", userDataPayload);
+        let monthCardRecord = ServerCtrJSF.GetInstance().getUserDataByKey(userDataPayload, Const.MoneyKeys.MonthCharge)
+        if (monthCardRecord) {
+            this._hasMonthCard = MonthCard.checkMonthCard(userDataPayload)
             this.initMonthCardBtn()
         }
-        data = ServerCtrJSF.GetInstance().getUserDataByKey(value, Const.MoneyKeys.WeekCharge)
-        if (data) {
-            this._weekCardVal = MonthCard.checkWeekCard(value)
+        let weekCardRecord = ServerCtrJSF.GetInstance().getUserDataByKey(userDataPayload, Const.MoneyKeys.WeekCharge)
+        if (weekCardRecord) {
+            this._hasWeekCard = MonthCard.checkWeekCard(userDataPayload)
             this.initWeekCardBtn()
         }
 
     }
 
     initMonthCardBtn() {
-        if (this._MonthCardVal) {
+        if (this._hasMonthCard) {
             find("btnBuy", this.monthNode)!.active = false
             find("btnReceive", this.monthNode)!.active = true
         } else {
@@ -109,7 +109,7 @@ export class MonthCard extends BaseView {
     }
 
     initWeekCardBtn() {
-        if (this._weekCardVal) {
+        if (this._hasWeekCard) {
             find("btnBuy", this.weeksNode)!.active = false
             find("btnReceive", this.weeksNode)!.active = true
         } else {
@@ -118,7 +118,7 @@ export class MonthCard extends BaseView {
         }
     }
 
-    initDialog(dialog: Node, monthCardData: any) {
+    initDialog(dialog: Node, cardShopConfig: any) {
         let monthRewardList = dialog.getChildByName("rewardList")!
         let nowRewardList = dialog.getChildByName("Layout")!
         let totalList = dialog.getChildByName("totalList")!
@@ -127,34 +127,34 @@ export class MonthCard extends BaseView {
         nowRewardList.removeAllChildren()
         totalList.removeAllChildren()
 
-        if (monthCardData) {
-            let rechargeData = TableDataService.ins().getTableValueByID(Const.Tables.recharge, monthCardData.recharge)
-            find("btnBuy/Label", dialog)!.getComponent(Label)!.string = "$" + rechargeData.cash
-            let privilegeList = monthCardData.price3
-            for (let index = 0; index < privilegeList.length; index++) {
-                let element = privilegeList[index];
-                let privilegeData = TableDataService.ins().getTableValueByKey(Const.Tables.privilege, "key", element[0])
+        if (cardShopConfig) {
+            let rechargeConfig = TableDataService.ins().getTableValueByID(Const.Tables.recharge, cardShopConfig.recharge)
+            find("btnBuy/Label", dialog)!.getComponent(Label)!.string = "$" + rechargeConfig.cash
+            let privilegeList = cardShopConfig.price3
+            for (let privilegeIndex = 0; privilegeIndex < privilegeList.length; privilegeIndex++) {
+                let privilegeEntry = privilegeList[privilegeIndex];
+                let privilegeData = TableDataService.ins().getTableValueByKey(Const.Tables.privilege, "key", privilegeEntry[0])
                 if (privilegeData.type == 1) {
-                    let item = instantiate(this.rewardItem)
-                    item.position = v3(0, 0, 0)
-                    monthRewardList.addChild(item)
-                    this.setSpriteFrame(find("icon", item)!.getComponent(Sprite)!, Const.resPath.icon + privilegeData.icon, () => { }, 80)
-                    find("Label", item)!.getComponent(Label)!.string = privilegeData.ps
+                    let privilegeNode = instantiate(this.rewardItem)
+                    privilegeNode.position = v3(0, 0, 0)
+                    monthRewardList.addChild(privilegeNode)
+                    this.setSpriteFrame(find("icon", privilegeNode)!.getComponent(Sprite)!, Const.resPath.icon + privilegeData.icon, () => { }, 80)
+                    find("Label", privilegeNode)!.getComponent(Label)!.string = privilegeData.ps
                 } else if (privilegeData.type == 2) {
-                    let RewardItemRecord = privilegeData.value
-                    RewardItemRecord.forEach((element: any) => {
-                        let item = instantiate(this.rewardItem)
-                        item.position = v3(0, 0, 0)
-                        nowRewardList.addChild(item)
-                        let propdata = TableDataService.ins().getTableValueByID(Const.Tables.prop, element[0])
-                        this.setSpriteFrame(find("icon", item)!.getComponent(Sprite)!, Const.resPath.icon + propdata.icon, () => { }, 80)
-                        find("Label", item)!.getComponent(Label)!.string = "" + element[1]
+                    let rewardItemList = privilegeData.value
+                    rewardItemList.forEach((rewardEntry: any) => {
+                        let dailyRewardNode = instantiate(this.rewardItem)
+                        dailyRewardNode.position = v3(0, 0, 0)
+                        nowRewardList.addChild(dailyRewardNode)
+                        let rewardPropConfig = TableDataService.ins().getTableValueByID(Const.Tables.prop, rewardEntry[0])
+                        this.setSpriteFrame(find("icon", dailyRewardNode)!.getComponent(Sprite)!, Const.resPath.icon + rewardPropConfig.icon, () => { }, 80)
+                        find("Label", dailyRewardNode)!.getComponent(Label)!.string = "" + rewardEntry[1]
 
-                        let item2 = instantiate(this.rewardItem)
-                        item2.position = v3(0, 0, 0)
-                        totalList.addChild(item2)
-                        this.setSpriteFrame(find("icon", item2)!.getComponent(Sprite)!, Const.resPath.icon + privilegeData.icon, () => { }, 80)
-                        find("Label", item2)!.getComponent(Label)!.string = "" + element[1] * monthCardData.totalLimit
+                        let totalRewardNode = instantiate(this.rewardItem)
+                        totalRewardNode.position = v3(0, 0, 0)
+                        totalList.addChild(totalRewardNode)
+                        this.setSpriteFrame(find("icon", totalRewardNode)!.getComponent(Sprite)!, Const.resPath.icon + privilegeData.icon, () => { }, 80)
+                        find("Label", totalRewardNode)!.getComponent(Label)!.string = "" + rewardEntry[1] * cardShopConfig.totalLimit
                     });
                     this.initReceiveBtn(dialog, privilegeData)
                 }
@@ -163,34 +163,34 @@ export class MonthCard extends BaseView {
     }
 
 
-    initReceiveBtn(itemUI: Node, item: any) {
+    initReceiveBtn(cardPanel: Node, privilegeConfig: any) {
 
-        let receiveTime = playerDataStore.getReceiveTime(item.dataKey, item.cdTime)
+        let receiveTime = playerDataStore.getReceiveTime(privilegeConfig.dataKey, privilegeConfig.cdTime)
 
-        if (receiveTime < item.receiveTime) {
-            this.addButtonHander(itemUI.getChildByName("btnReceive")!, this.node, "MonthCard", "onClickGet", item)
-            find("timelabel", itemUI)!.getComponent(Label)!.string = ""
+        if (receiveTime < privilegeConfig.receiveTime) {
+            this.addButtonHander(cardPanel.getChildByName("btnReceive")!, this.node, "MonthCard", "onClickGet", privilegeConfig)
+            find("timelabel", cardPanel)!.getComponent(Label)!.string = ""
         } else {
-            find("timelabel", itemUI)!.getComponent(CdComponent)!.setCD(CDType.CDIneterVal, item.dataKey, item.cdTime)
-            itemUI.getChildByName("btnReceive")!.getComponent(Button)?.destroy()
+            find("timelabel", cardPanel)!.getComponent(CdComponent)!.setCD(CDType.CDIneterVal, privilegeConfig.dataKey, privilegeConfig.cdTime)
+            cardPanel.getChildByName("btnReceive")!.getComponent(Button)?.destroy()
         }
     }
 
-    onClickGet(event: any, item: any) {
+    onClickGet(event: any, privilegeConfig: any) {
         console.log("event = ", event)
 
-        this.onVideoBack(item.value)
+        this.onVideoBack(privilegeConfig.value)
         this.emit(GD.event.updateMoney)
-        playerDataStore.setReceiveTime(item.dataKey, item.cdTime)
-        this.initReceiveBtn(event.target.parent, item)
+        playerDataStore.setReceiveTime(privilegeConfig.dataKey, privilegeConfig.cdTime)
+        this.initReceiveBtn(event.target.parent, privilegeConfig)
     }
 
-    onVideoBack(item: any) {
-        playerDataStore.getProp(item,null,null)
+    onVideoBack(rewardPayload: any) {
+        playerDataStore.getProp(rewardPayload,null,null)
     }
 
     onClickBuyMonth() {
-        if (this._MonthCardVal) {
+        if (this._hasMonthCard) {
 
 
 
@@ -209,8 +209,8 @@ export class MonthCard extends BaseView {
 
 
         } else {
-            let fisrtData = TableDataService.ins().getTableValueByKey(Const.Tables.shopTable, "type", 2)
-            playerDataStore.getProp(fisrtData.first,null,null)
+            let firstShopConfig = TableDataService.ins().getTableValueByKey(Const.Tables.shopTable, "type", 2)
+            playerDataStore.getProp(firstShopConfig.first,null,null)
             this.emit(GD.event.updateMoney)
             GameStorage.setObject(Const.MoneyKeys.MonthCharge, { month: 1, dayReceive: 0, buyTime: Math.floor(TimeCtrJSF.GetInstance().ServerTime) })
             ServerCtrJSF.GetInstance().reqGetUserDataObjByKey(GameStorage.Key(Const.MoneyKeys.MonthCharge))
@@ -218,7 +218,7 @@ export class MonthCard extends BaseView {
     }
 
     onClickBuyWeeks() {
-        if (this._weekCardVal) {
+        if (this._hasWeekCard) {
 
         } else {
             GameStorage.setObject(Const.MoneyKeys.WeekCharge, { week: 1, weekdayReceive: 0, buyTime: Math.floor(TimeCtrJSF.GetInstance().ServerTime) })

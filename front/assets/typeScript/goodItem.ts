@@ -19,9 +19,9 @@ export class GoodsItemDragController extends BaseView {
     @property(Node)
     closeBtn: Node = null;
 
-    public bagData!:BagPropRecord;
+    public decorationRecord!:BagPropRecord;
 
-    public shopCfg!:ShopConfigRecord;
+    public decorationConfig!:ShopConfigRecord;
 
 
     id:number = 0;
@@ -50,19 +50,19 @@ export class GoodsItemDragController extends BaseView {
         GameEventManager.eventTarget.off(GameEventManager.EEventName.REFRESH_GOOD_STATU, this.refreshStatu, this);
     }
 
-     init(bagData:BagPropRecord){
+     init(decorationRecord:BagPropRecord){
 
-        this.bagData = bagData;
+        this.decorationRecord = decorationRecord;
 
-        this.id = this.bagData.id
+        this.id = this.decorationRecord.id
 
-        this.shopCfg = TableDataService.ins().getTableValueByID(Const.Tables.new_prop, this.bagData.prop_id);
+        this.decorationConfig = TableDataService.ins().getTableValueByID(Const.Tables.new_prop, this.decorationRecord.prop_id);
 
 
-        this.node.setPosition(this.bagData.position_x, this.bagData.position_y, 0)
+        this.node.setPosition(this.decorationRecord.position_x, this.decorationRecord.position_y, 0)
 
-        if (this.shopCfg.decoration_res){
-            this.setSpriteFrame(this.icon, Const.resPath.icon + this.shopCfg.decoration_res, () => { })
+        if (this.decorationConfig.decoration_res){
+            this.setSpriteFrame(this.icon, Const.resPath.icon + this.decorationConfig.decoration_res, () => { })
             this.icon.node.active = true;
         }else{
             this.icon.node.active = false;
@@ -73,20 +73,20 @@ export class GoodsItemDragController extends BaseView {
 
     refreshStatu(){
 
-        let data = GameRuntimeData.getBagDataById(this.id)
-        if (data){
-            this.bagData = data;
+        let latestDecorationRecord = GameRuntimeData.getBagDataById(this.id)
+        if (latestDecorationRecord){
+            this.decorationRecord = latestDecorationRecord;
         }
-        if (!this.bagData){
+        if (!this.decorationRecord){
             this.node.active = false;
             return;
         }
-        if (!this.bagData.is_active){
+        if (!this.decorationRecord.is_active){
             this.node.active = false;
         }
-        else if (playerDataStore.sceneStau == 1 && this.shopCfg.typeson == 1){
+        else if (playerDataStore.sceneStau == 1 && this.decorationConfig.typeson == 1){
             this.node.active = true;
-        }else if (playerDataStore.sceneStau == 2 && this.shopCfg.typeson == 2){
+        }else if (playerDataStore.sceneStau == 2 && this.decorationConfig.typeson == 2){
             this.node.active = true;
         }else{
             this.node.active = false;
@@ -142,13 +142,13 @@ export class GoodsItemDragController extends BaseView {
             return;
         }
 
-        GameHttpClient.getInstance().sendGoodPos(1, this.bagData.id, this.node.position.x, this.node.position.y);
+        GameHttpClient.getInstance().sendGoodPos(1, this.decorationRecord.id, this.node.position.x, this.node.position.y);
 
         GameEventManager.eventTarget.emit(GameEventManager.EEventName.ID_Drangging,  this.isDragging)
     }
 
     onCloseClick(){
-        GameHttpClient.getInstance().sendGoodPos(2, this.bagData.id, 0, 0);
+        GameHttpClient.getInstance().sendGoodPos(2, this.decorationRecord.id, 0, 0);
     }
 }
 

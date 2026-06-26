@@ -34,58 +34,58 @@ export class ItemCodexLayer extends BaseView {
         this.propItem.active = false;
     }
 
-    show(propId: any) {
-        super.show(propId);
+    show(selectedPropId: any) {
+        super.show(selectedPropId);
 
-        UtilPub.log("show propId:" + propId);
-        this.initUI(propId);
+        UtilPub.log("show propId:" + selectedPropId);
+        this.initUI(selectedPropId);
     }
 
-    initUI(propId: number) {
-        let propRow = TableDataService.ins().getTableValueByID(Const.Tables.prop, propId);
-        this.propId = propId;
-        this.setString(this.nameNode, propRow.sonname);
+    initUI(selectedPropId: number) {
+        let selectedPropConfig = TableDataService.ins().getTableValueByID(Const.Tables.prop, selectedPropId);
+        this.propId = selectedPropId;
+        this.setString(this.nameNode, selectedPropConfig.sonname);
 
         this.propLayer.removeAllChildren();
-        let arr = this.getPropRowArr();
-        for (let i = 0; i < arr.length; i++) {
-            let itemUI = instantiate(this.propItem);
-            itemUI.active = true;
-            itemUI.parent = this.propLayer;
-            let pRow = arr[i];
-            let createIcon = find("create", itemUI)!;
+        let sameTypePropList = this.getPropRowArr();
+        for (let propIndex = 0; propIndex < sameTypePropList.length; propIndex++) {
+            let propCellNode = instantiate(this.propItem);
+            propCellNode.active = true;
+            propCellNode.parent = this.propLayer;
+            let propConfig = sameTypePropList[propIndex];
+            let createIcon = find("create", propCellNode)!;
             createIcon.active = false;
-            let wenhaoNode = find("wenhao", itemUI)!;
+            let wenhaoNode = find("wenhao", propCellNode)!;
             wenhaoNode.active = false;
-            if (pRow.anc || pRow.fair) {
+            if (propConfig.anc || propConfig.fair) {
                 createIcon.active = true;
             }
 
-            let iconNode = find("icon", itemUI)!;
+            let iconNode = find("icon", propCellNode)!;
             iconNode.active = true;
-            this.setSpriteFrame2(iconNode.getComponent(Sprite)!, Const.resPath.icon + pRow.icon);
-            this.setString(find("lv", itemUI), pRow.luna);
+            this.setSpriteFrame2(iconNode.getComponent(Sprite)!, Const.resPath.icon + propConfig.icon);
+            this.setString(find("lv", propCellNode), propConfig.luna);
             let bgName = "grid_normal";
-            if (pRow.id == propId) {
+            if (propConfig.id == selectedPropId) {
                 bgName = "grid_chose";
             } else {
-                if (playerDataStore.isGetPropTujian(pRow.id) == TujianState.unGet) {
+                if (playerDataStore.isGetPropTujian(propConfig.id) == TujianState.unGet) {
                     wenhaoNode.active = true;
                     iconNode.active = false;
                     createIcon.active = false;
                 }
             }
 
-            this.setSpriteFrame2(find("bg", itemUI)!.getComponent(Sprite)!, Const.resPath.mergeIcon + "item_codex/" + bgName);
-            this.bindButton(itemUI, this.onClickPropItem);
+            this.setSpriteFrame2(find("bg", propCellNode)!.getComponent(Sprite)!, Const.resPath.mergeIcon + "item_codex/" + bgName);
+            this.bindButton(propCellNode, this.onClickPropItem);
             // @ts-ignore
-            itemUI.propRow = pRow;
+            propCellNode.propRow = propConfig;
         }
 
-        arr = this.getPropFromArr();
-        if (arr.length > 0) {
+        let sourcePropList = this.getPropFromArr();
+        if (sourcePropList.length > 0) {
             this.bottomLayer.active = true;
-            this.scrollViewSetData(this.fromList, arr, this.refreshFromItemUI.bind(this));
+            this.scrollViewSetData(this.fromList, sourcePropList, this.refreshFromItemUI.bind(this));
         } else {
             this.bottomLayer.active = false;
         }
@@ -93,87 +93,87 @@ export class ItemCodexLayer extends BaseView {
         this.bindButton(this.btnClose, this.onClickBtnClose);
     }
 
-    refreshFromItemUI(itemUI: Node, pRow: any) {
+    refreshFromItemUI(sourceCellNode: Node, propConfig: any) {
         // @ts-ignore
-        itemUI.propRow = pRow;
-        this.setSpriteFrame2(find("icon", itemUI)!.getComponent(Sprite)!, Const.resPath.icon + pRow.icon);
-        this.bindButton(itemUI, this.onClickBtnFromItem);
+        sourceCellNode.propRow = propConfig;
+        this.setSpriteFrame2(find("icon", sourceCellNode)!.getComponent(Sprite)!, Const.resPath.icon + propConfig.icon);
+        this.bindButton(sourceCellNode, this.onClickBtnFromItem);
     }
 
     getPropRowArr() {
-        let arr: any = [];
-        let propRow = TableDataService.ins().getTableValueByID(Const.Tables.prop, this.propId);
-        let tb = TableDataService.ins().getTable(Const.Tables.prop);
-        for (let i in tb) {
-            let row = tb[i];
-            if (propRow.type == row.type && propRow.typeson == row.typeson) {
-                arr.push(row);
+        let sameTypePropList: any = [];
+        let selectedPropConfig = TableDataService.ins().getTableValueByID(Const.Tables.prop, this.propId);
+        let propTable = TableDataService.ins().getTable(Const.Tables.prop);
+        for (let tableKey in propTable) {
+            let propConfig = propTable[tableKey];
+            if (selectedPropConfig.type == propConfig.type && selectedPropConfig.typeson == propConfig.typeson) {
+                sameTypePropList.push(propConfig);
             }
         }
-        return arr;
+        return sameTypePropList;
     }
 
     getPropFromArr() {
-        let arr: any = [];
-        let tb = TableDataService.ins().getTable(Const.Tables.prop);
-        let propRow = TableDataService.ins().getTableValueByID(Const.Tables.prop, this.propId);
-        let tempId = this.propId - propRow.luna + 1;
+        let sourcePropList: any = [];
+        let propTable = TableDataService.ins().getTable(Const.Tables.prop);
+        let selectedPropConfig = TableDataService.ins().getTableValueByID(Const.Tables.prop, this.propId);
+        let basePropId = this.propId - selectedPropConfig.luna + 1;
 
         let firstPropId = -1;
-        let firstPropRow = TableDataService.ins().getTableValueByID(Const.Tables.prop, tempId);
-        if (tempId != this.propId && firstPropRow && firstPropRow.type == propRow.type && firstPropRow.typeson == propRow.typeson) {
-            firstPropId = tempId;
+        let firstPropConfig = TableDataService.ins().getTableValueByID(Const.Tables.prop, basePropId);
+        if (basePropId != this.propId && firstPropConfig && firstPropConfig.type == selectedPropConfig.type && firstPropConfig.typeson == selectedPropConfig.typeson) {
+            firstPropId = basePropId;
         }
 
-        let typeFlagObj: any = {};
-        for (let i in tb) {
-            let row = tb[i];
-            let type = row.type * 10000 + row.typeson;
-            if (row.fair == this.propId || row.fair == firstPropId) {
-                if (!typeFlagObj[type]) {
-                    typeFlagObj[type] = 1;
-                    arr.push(row);
+        let sourceTypeMap: any = {};
+        for (let tableKey in propTable) {
+            let propConfig = propTable[tableKey];
+            let sourceTypeKey = propConfig.type * 10000 + propConfig.typeson;
+            if (propConfig.fair == this.propId || propConfig.fair == firstPropId) {
+                if (!sourceTypeMap[sourceTypeKey]) {
+                    sourceTypeMap[sourceTypeKey] = 1;
+                    sourcePropList.push(propConfig);
                 }
                 continue;
             }
-            if (row.atom) {
-                let idArr = (row.atom + "").split(",");
-                if (idArr.indexOf(this.propId + "") != -1 || idArr.indexOf(firstPropId + "") != -1) {
-                    if (!typeFlagObj[type]) {
-                        typeFlagObj[type] = 1;
-                        arr.push(row);
+            if (propConfig.atom) {
+                let atomPropIds = (propConfig.atom + "").split(",");
+                if (atomPropIds.indexOf(this.propId + "") != -1 || atomPropIds.indexOf(firstPropId + "") != -1) {
+                    if (!sourceTypeMap[sourceTypeKey]) {
+                        sourceTypeMap[sourceTypeKey] = 1;
+                        sourcePropList.push(propConfig);
                     }
                     continue;
                 }
             }
-            if (row.blessId == this.propId) {
-                if (!typeFlagObj[type]) {
-                    typeFlagObj[type] = 1;
-                    arr.push(row);
+            if (propConfig.blessId == this.propId) {
+                if (!sourceTypeMap[sourceTypeKey]) {
+                    sourceTypeMap[sourceTypeKey] = 1;
+                    sourcePropList.push(propConfig);
                 }
             }
         }
 
-        return arr;
+        return sourcePropList;
     }
 
     onClickPropItem(btn: Button) {
         // @ts-ignore
-        let propRow = btn.node.propRow;
+        let propConfig = btn.node.propRow;
 
 
 
 
-        UiLayerService.instance.showDialog(Const.Dialogs.PropMinInfo, { propdata: propRow });
+        UiLayerService.instance.showDialog(Const.Dialogs.PropMinInfo, { propdata: propConfig });
     }
 
     onClickBtnFromItem(btn: Button) {
         // @ts-ignore
-        let propRow = btn.node.propRow;
-        if (propRow.tan) {
-            UiLayerService.instance.showDialog(Const.Dialogs.PropItemInfo, { propdata: propRow });
+        let propConfig = btn.node.propRow;
+        if (propConfig.tan) {
+            UiLayerService.instance.showDialog(Const.Dialogs.PropItemInfo, { propdata: propConfig });
         } else {
-            this.show(propRow.id);
+            this.show(propConfig.id);
         }
     }
 

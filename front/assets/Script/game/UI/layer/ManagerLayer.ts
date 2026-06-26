@@ -40,47 +40,47 @@ export class ManagerLayer extends BaseView {
     }
 
     initUI() {
-        let tb = TableDataService.ins().getTable(Const.Tables.manager);
-        this.scrollViewSetData(this.taskList, tb, this.refreshTaskItem.bind(this));
-        let index = -1;
-        for (let i = 0; i < mergeBoardStateStore.managerArr.length; i++) {
-            let manager = mergeBoardStateStore.managerArr[i];
-            if (!manager.get) {
-                index = i;
+        let managerTableRows = TableDataService.ins().getTable(Const.Tables.manager);
+        this.scrollViewSetData(this.taskList, managerTableRows, this.refreshTaskItem.bind(this));
+        let firstUnclaimedIndex = -1;
+        for (let managerIndex = 0; managerIndex < mergeBoardStateStore.managerArr.length; managerIndex++) {
+            let managerState = mergeBoardStateStore.managerArr[managerIndex];
+            if (!managerState.get) {
+                firstUnclaimedIndex = managerIndex;
                 break;
             }
         }
-        this.scrollViewScrollToIndex(this.taskList, index + 4, 0.6);
+        this.scrollViewScrollToIndex(this.taskList, firstUnclaimedIndex + 4, 0.6);
     }
 
-    refreshTaskItem(itemUI: Node, row: any) {
+    refreshTaskItem(managerCellNode: Node, managerConfig: any) {
         // @ts-ignore
-        itemUI.index = row.id - 1;
-        this.bindButton(itemUI, this.onClickTaskItem);
-        this.setString(find("id", itemUI), row.id);
-        this.setString(find("info", itemUI), managerInfoTypeArr[row.taskType - 1].format(row.p1));
-        let propId = row.price[0];
-        let propNum = row.price[1];
-        let propRow = TableDataService.ins().getTableValueByID(Const.Tables.prop, propId);
-        this.setSpriteFrame2(find("prop/icon", itemUI)?.getComponent(Sprite)!, Const.resPath.icon + propRow.icon);
+        managerCellNode.index = managerConfig.id - 1;
+        this.bindButton(managerCellNode, this.onClickTaskItem);
+        this.setString(find("id", managerCellNode), managerConfig.id);
+        this.setString(find("info", managerCellNode), managerInfoTypeArr[managerConfig.taskType - 1].format(managerConfig.p1));
+        let costPropId = managerConfig.price[0];
+        let costPropCount = managerConfig.price[1];
+        let costPropConfig = TableDataService.ins().getTableValueByID(Const.Tables.prop, costPropId);
+        this.setSpriteFrame2(find("prop/icon", managerCellNode)?.getComponent(Sprite)!, Const.resPath.icon + costPropConfig.icon);
 
-        this.setString(find("prop/num", itemUI), "x" + propNum);
+        this.setString(find("prop/num", managerCellNode), "x" + costPropCount);
 
-        let lockNode = find("lock", itemUI)!;
-        let doneNode = find("done", itemUI)!;
-        let getNode = find("get", itemUI)!;
+        let lockNode = find("lock", managerCellNode)!;
+        let doneNode = find("done", managerCellNode)!;
+        let getNode = find("get", managerCellNode)!;
         doneNode.active = false;
         getNode.active = false;
 
-        let manager = mergeBoardStateStore.managerArr[row.id - 1];
+        let managerState = mergeBoardStateStore.managerArr[managerConfig.id - 1];
 
-        if (manager) {
+        if (managerState) {
             lockNode.active = false;
-            let val = mergeBoardStateStore.getManagerVal(manager);
-            this.setProgressBar(find("progress", itemUI)!, val / row.p1);
-            this.setString(find("progress/num", itemUI), val + "/" + row.p1);
-            if (val >= row.p1) {
-                if (manager.get) {
+            let progressValue = mergeBoardStateStore.getManagerVal(managerState);
+            this.setProgressBar(find("progress", managerCellNode)!, progressValue / managerConfig.p1);
+            this.setString(find("progress/num", managerCellNode), progressValue + "/" + managerConfig.p1);
+            if (progressValue >= managerConfig.p1) {
+                if (managerState.get) {
                     doneNode.active = true;
                 } else {
                     getNode.active = true;
@@ -94,15 +94,15 @@ export class ManagerLayer extends BaseView {
 
     onClickTaskItem(btn: Button) {
         // @ts-ignore
-        let index = btn.node.index;
-        let manager = mergeBoardStateStore.managerArr[index];
-        if (!manager) {
+        let managerIndex = btn.node.index;
+        let managerState = mergeBoardStateStore.managerArr[managerIndex];
+        if (!managerState) {
             return;
         }
-        let row = TableDataService.ins().getTableValueByID(Const.Tables.manager, manager.id);
-        if (mergeBoardStateStore.getManagerVal(manager) >= row.p1 && !manager.get) {
-            mergeBoardStateStore.managerGetAward(index,UtilPub.convertToWorldSpace(find("prop/icon",btn.node!)!));
-            this.scrollViewRefreshItemUIByIndex(this.taskList, index);
+        let managerConfig = TableDataService.ins().getTableValueByID(Const.Tables.manager, managerState.id);
+        if (mergeBoardStateStore.getManagerVal(managerState) >= managerConfig.p1 && !managerState.get) {
+            mergeBoardStateStore.managerGetAward(managerIndex,UtilPub.convertToWorldSpace(find("prop/icon",btn.node!)!));
+            this.scrollViewRefreshItemUIByIndex(this.taskList, managerIndex);
         }
     }
 

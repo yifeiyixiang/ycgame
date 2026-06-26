@@ -33,42 +33,42 @@ export class EmailDialog extends BaseView {
     }
 
     updateInfo() {
-        let arr = EmailManager.getInstance().EmailList
-        let fun = (a: Email, b: Email) => {
-            return b.time - a.time
+        let emailList = EmailManager.getInstance().EmailList
+        let compareNewestEmail = (leftEmail: Email, rightEmail: Email) => {
+            return rightEmail.time - leftEmail.time
         }
-        arr.sort(fun)
-        this.scrollViewSetData(this.emailScroll, arr, this.initItem, this)
-        this.emailIcon.active = arr.length <= 0
+        emailList.sort(compareNewestEmail)
+        this.scrollViewSetData(this.emailScroll, emailList, this.initItem, this)
+        this.emailIcon.active = emailList.length <= 0
     }
 
-    initItem(itemUI: Node, email: Email, index: number, self: EmailDialog) {
-        find("title", itemUI)!.getComponent(Label)!.string = email.title
-        find("info", itemUI)!.getComponent(Label)!.string = email.content
-        let date = new Date(email.time)
-        find("time", itemUI)!.getComponent(Label)!.string = date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate()
-        self.addButtonHander(itemUI, self.node, "EmailDialog", "onTouchEmail", email)
-        find("redpoint", itemUI)!.active = (email.reward && email.reward.length > 0 && email.receicedState == EmailRewardState.unReceive)
-        find("icon", itemUI)!.getComponent(Sprite)!.spriteFrame = email.readState == EmailState.unRead ? self.iconClose : self.iconOpen
+    initItem(emailCellNode: Node, emailRecord: Email, emailIndex: number, self: EmailDialog) {
+        find("title", emailCellNode)!.getComponent(Label)!.string = emailRecord.title
+        find("info", emailCellNode)!.getComponent(Label)!.string = emailRecord.content
+        let sendDate = new Date(emailRecord.time)
+        find("time", emailCellNode)!.getComponent(Label)!.string = sendDate.getFullYear() + "-" + (sendDate.getMonth() + 1) + "-" + sendDate.getDate()
+        self.addButtonHander(emailCellNode, self.node, "EmailDialog", "onTouchEmail", emailRecord)
+        find("redpoint", emailCellNode)!.active = (emailRecord.reward && emailRecord.reward.length > 0 && emailRecord.receicedState == EmailRewardState.unReceive)
+        find("icon", emailCellNode)!.getComponent(Sprite)!.spriteFrame = emailRecord.readState == EmailState.unRead ? self.iconClose : self.iconOpen
 
-        if (email.reward.length > 0) {
-            find("info", itemUI)!.active = false
-            find("Layout", itemUI)!.active = true
-            let layer = find("Layout", itemUI)!
-            layer.removeAllChildren()
-            for (let index = 0; index < email.reward.length; index++) {
-                self.addPrefab(Const.Prefabs.PropItem, layer, (item: Node) => {
-                    item.getComponent(PropItem)!.setData(email.reward[index].propId, PropItemFlag.ShowMinInfo, email.reward[index].cnt)!.setSize(80).setItemBg(1)
+        if (emailRecord.reward.length > 0) {
+            find("info", emailCellNode)!.active = false
+            find("Layout", emailCellNode)!.active = true
+            let rewardLayout = find("Layout", emailCellNode)!
+            rewardLayout.removeAllChildren()
+            for (let rewardIndex = 0; rewardIndex < emailRecord.reward.length; rewardIndex++) {
+                self.addPrefab(Const.Prefabs.PropItem, rewardLayout, (rewardNode: Node) => {
+                    rewardNode.getComponent(PropItem)!.setData(emailRecord.reward[rewardIndex].propId, PropItemFlag.ShowMinInfo, emailRecord.reward[rewardIndex].cnt)!.setSize(80).setItemBg(1)
                 })
             }
         } else {
-            find("info", itemUI)!.active = true
-            find("Layout", itemUI)!.active = false
+            find("info", emailCellNode)!.active = true
+            find("Layout", emailCellNode)!.active = false
         }
     }
 
-    onTouchEmail(event: any, data: Email) {
-        UiLayerService.instance.pushShowDialog(Const.Dialogs.EmailInfoDialog, { email: data })
+    onTouchEmail(event: any, emailRecord: Email) {
+        UiLayerService.instance.pushShowDialog(Const.Dialogs.EmailInfoDialog, { email: emailRecord })
     }
 
     onClickRemove() {
@@ -77,19 +77,20 @@ export class EmailDialog extends BaseView {
     }
 
     onClickReceive() {
-        let arr = []
-        for (let index = 0; index < EmailManager.getInstance().EmailList.length; index++) {
-            let email: Email = EmailManager.getInstance().EmailList[index];
+        let receivableRewards = []
+        let emailList = EmailManager.getInstance().EmailList
+        for (let emailIndex = 0; emailIndex < emailList.length; emailIndex++) {
+            let email: Email = emailList[emailIndex];
             if (email.reward.length > 0 && email.receicedState == EmailRewardState.unReceive) {
-                arr.push(...email.reward)
+                receivableRewards.push(...email.reward)
                 email.receicedState = EmailRewardState.received
                 email.readState = EmailState.readFinish
                 EmailManager.getInstance().saveEmail(email)
             }
         }
 
-        if (arr.length > 0) {
-            UiLayerService.instance.pushShowDialog(Const.Dialogs.RewardDialog, { reward: arr })
+        if (receivableRewards.length > 0) {
+            UiLayerService.instance.pushShowDialog(Const.Dialogs.RewardDialog, { reward: receivableRewards })
         } else {
             this.toast("没有可领取的奖励")
         }

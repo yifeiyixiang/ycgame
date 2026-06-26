@@ -35,38 +35,38 @@ export class NewItemLayer extends BaseView {
         this.propItem.active = false;
     }
 
-    show(propId: any) {
-        super.show(propId);
+    show(propConfigId: any) {
+        super.show(propConfigId);
 
-        let propRow = TableDataService.ins().getTableValueByID(Const.Tables.prop, propId);
-        this.setString(this.nameNode, propRow.name);
-        this.setString(this.lvNode, propRow.luna + localText.lv);
-        this.setSpriteFrame2(this.iconNode.getComponent(Sprite)!, Const.resPath.icon + propRow.icon);
-        this.setString(this.infoNode, propRow.mask);
+        let propConfig = TableDataService.ins().getTableValueByID(Const.Tables.prop, propConfigId);
+        this.setString(this.nameNode, propConfig.name);
+        this.setString(this.lvNode, propConfig.luna + localText.lv);
+        this.setSpriteFrame2(this.iconNode.getComponent(Sprite)!, Const.resPath.icon + propConfig.icon);
+        this.setString(this.infoNode, propConfig.mask);
 
         this.bindButton(this.btnClose, this.onClickBtnClose);
 
         let handIndex = mergeBoardStateStore.getHandIndex();
         if (handIndex == handIndexs.boardItemReveal) {
             mergeBoardStateStore.addHandIndex();
-            let obj: any = {};
-            obj.id = handIndex;
-            obj.node = this.btnClose;
-            obj.delayTime = 0.5;
-            UiLayerService.instance.showDialog(Const.Dialogs.HandLayer, obj);
+            let handGuidePayload: any = {};
+            handGuidePayload.id = handIndex;
+            handGuidePayload.node = this.btnClose;
+            handGuidePayload.delayTime = 0.5;
+            UiLayerService.instance.showDialog(Const.Dialogs.HandLayer, handGuidePayload);
         }
 
         this.produceLayer.removeAllChildren();
-        if (propRow.atom) {
-            let arr = (propRow.atom + "").split(",");
-            for (let i = 0; i < arr.length; i++) {
-                let id = parseInt(arr[i]);
-                let itemUI = instantiate(this.propItem);
-                itemUI.parent = this.produceLayer;
-                itemUI.active = true;
-                let pRow = TableDataService.ins().getTableValueByID(Const.Tables.prop, id);
-                this.setString(find("name", itemUI), pRow.name);
-                this.setSpriteFrame2(find("icon", itemUI)!.getComponent(Sprite)!, Const.resPath.icon + pRow.icon);
+        if (propConfig.atom) {
+            let atomPropIds = (propConfig.atom + "").split(",");
+            for (let atomIndex = 0; atomIndex < atomPropIds.length; atomIndex++) {
+                let atomPropId = parseInt(atomPropIds[atomIndex]);
+                let atomNode = instantiate(this.propItem);
+                atomNode.parent = this.produceLayer;
+                atomNode.active = true;
+                let atomPropConfig = TableDataService.ins().getTableValueByID(Const.Tables.prop, atomPropId);
+                this.setString(find("name", atomNode), atomPropConfig.name);
+                this.setSpriteFrame2(find("icon", atomNode)!.getComponent(Sprite)!, Const.resPath.icon + atomPropConfig.icon);
             }
         }
     }

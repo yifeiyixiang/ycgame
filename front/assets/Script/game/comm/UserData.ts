@@ -63,16 +63,16 @@ class PlayerDataStore {
     }
 
     public set coinprop(coinprop:WalletPropCountRecord[]) {
-        for (let index = 0; index < coinprop.length; index++) {
-            const propData = coinprop[index];
-            if (propData.prop_id == 101){
-                this.coin = propData.prop_count;
+        for (let coinPropIndex = 0; coinPropIndex < coinprop.length; coinPropIndex++) {
+            const coinPropRecord = coinprop[coinPropIndex];
+            if (coinPropRecord.prop_id == 101){
+                this.coin = coinPropRecord.prop_count;
             }
-            else if (propData.prop_id == 103){
-                this.power = propData.prop_count;
+            else if (coinPropRecord.prop_id == 103){
+                this.power = coinPropRecord.prop_count;
             }
-            else if (propData.prop_id == 102){
-                this.diamonds = propData.prop_count;
+            else if (coinPropRecord.prop_id == 102){
+                this.diamonds = coinPropRecord.prop_count;
             }
         }
     }
@@ -182,11 +182,11 @@ class PlayerDataStore {
             }
         }
         if (lookId == 0) {
-            let styleRows = TableDataService.ins().getTableValuesByType(Const.Tables.avatarStyle, "type", "2")
-            for (let index = 0; index < styleRows.length; index++) {
-                const element = styleRows[index];
-                if (element.price == 0) {
-                    lookId = element.id
+            let avatarStyleRows = TableDataService.ins().getTableValuesByType(Const.Tables.avatarStyle, "type", "2")
+            for (let styleIndex = 0; styleIndex < avatarStyleRows.length; styleIndex++) {
+                const avatarStyleRow = avatarStyleRows[styleIndex];
+                if (avatarStyleRow.price == 0) {
+                    lookId = avatarStyleRow.id
                     this.avatarLookId = lookId
                     this.unlockAvatarLook(lookId)
                     return lookId
@@ -326,53 +326,53 @@ class PlayerDataStore {
 
 
     public getProp(args: any, starPos: Vec3 | null, endPos: Vec3 | null) {
-        let fun = (propdata: any, num: number) => {
-            switch (propdata.type) {
+        let applyRewardProp = (rewardProp: any, rewardAmount: number) => {
+            switch (rewardProp.type) {
                 case GoodsType.Coin:
-                    this.coin += num
+                    this.coin += rewardAmount
                     break;
                 case GoodsType.Diamonds:
-                    this.diamonds += num
+                    this.diamonds += rewardAmount
                     break;
                 case GoodsType.Exp:
-                    this.roleExp += num
+                    this.roleExp += rewardAmount
                     break;
                 case GoodsType.Power:
-                    this.power += num
+                    this.power += rewardAmount
                     break;
                 case GoodsType.GreenStar:
-                    this.greenStar += num
+                    this.greenStar += rewardAmount
                     break;
                 case GoodsType.StyleVoucher:
-                    this.styleVoucher += num
+                    this.styleVoucher += rewardAmount
                     break;
                 default:
                     break;
             }
             if (starPos && endPos) {
-                this.showResFly(propdata.id, num, starPos, endPos)
+                this.showResFly(rewardProp.id, rewardAmount, starPos, endPos)
             }
         }
 
-        let propdata = null
-        let num = 0
+        let rewardProp = null
+        let rewardAmount = 0
         if (typeof (args) == "string") {
             let reward = args.split(",")
-            propdata = TableDataService.ins().getTableValueByID(Const.Tables.prop, parseInt(reward[0]))
-            num = parseInt(reward[1])
-            fun(propdata, num)
+            rewardProp = TableDataService.ins().getTableValueByID(Const.Tables.prop, parseInt(reward[0]))
+            rewardAmount = parseInt(reward[1])
+            applyRewardProp(rewardProp, rewardAmount)
         } else if (args instanceof Array && args.length > 0) {
             if (args[0] instanceof Array) {
-                for (let index = 0; index < args.length; index++) {
-                    const element = args[index];
-                    propdata = TableDataService.ins().getTableValueByID(Const.Tables.prop, element[0])
-                    num = parseInt(element[1])
-                    fun(propdata, num)
+                for (let rewardIndex = 0; rewardIndex < args.length; rewardIndex++) {
+                    const rewardEntry = args[rewardIndex];
+                    rewardProp = TableDataService.ins().getTableValueByID(Const.Tables.prop, rewardEntry[0])
+                    rewardAmount = parseInt(rewardEntry[1])
+                    applyRewardProp(rewardProp, rewardAmount)
                 }
             } else if (args instanceof Array) {
-                propdata = TableDataService.ins().getTableValueByID(Const.Tables.prop, args[0])
-                num = parseInt(args[1])
-                fun(propdata, num)
+                rewardProp = TableDataService.ins().getTableValueByID(Const.Tables.prop, args[0])
+                rewardAmount = parseInt(args[1])
+                applyRewardProp(rewardProp, rewardAmount)
             }
         }
     }
@@ -500,25 +500,25 @@ class PlayerDataStore {
 
     public checkTujianRedPoint(type = 0) {
         if (type > 0) {
-            let propData = TableDataService.ins().getTableValuesByType(Const.Tables.prop, "type", type)
-            if (!propData) {
+            let propRows = TableDataService.ins().getTableValuesByType(Const.Tables.prop, "type", type)
+            if (!propRows) {
                 return false
             }
-            for (let index = 0; index < propData.length; index++) {
-                const element = propData[index];
-                if (this.isGetPropTujian(element.id) == TujianState.geted) {
+            for (let propIndex = 0; propIndex < propRows.length; propIndex++) {
+                const propRow = propRows[propIndex];
+                if (this.isGetPropTujian(propRow.id) == TujianState.geted) {
                     return true
                 }
             }
         } else {
-            let propData = TableDataService.ins().getTable(Const.Tables.prop)
-            if (!propData) {
+            let propRows = TableDataService.ins().getTable(Const.Tables.prop)
+            if (!propRows) {
                 return false
             }
-            for (let index = 0; index < propData.length; index++) {
-                const element = propData[index];
+            for (let propIndex = 0; propIndex < propRows.length; propIndex++) {
+                const propRow = propRows[propIndex];
 
-                if (element.type >= 1 && element.type <= 6 && this.isGetPropTujian(element.id) == TujianState.geted) {
+                if (propRow.type >= 1 && propRow.type <= 6 && this.isGetPropTujian(propRow.id) == TujianState.geted) {
                     return true
                 }
             }
@@ -529,13 +529,13 @@ class PlayerDataStore {
 
     public checkTujianSceneRedPoint(id = 0) {
         if (id > 0) {
-            let itemData = TableDataService.ins().getTableValuesByType(Const.Tables.scene_item, "room", id)
-            for (let index = 0; index < itemData.length; index++) {
-                const element = itemData[index];
-                let skinData = TableDataService.ins().getTableValuesByType(Const.Tables.scene_skin, "scene", element.id)
-                skinData.forEach(skin => {
-                    let index = skin.id % element.id
-                    if (index > 0) {
+            let sceneItemRows = TableDataService.ins().getTableValuesByType(Const.Tables.scene_item, "room", id)
+            for (let sceneItemIndex = 0; sceneItemIndex < sceneItemRows.length; sceneItemIndex++) {
+                const sceneItemRow = sceneItemRows[sceneItemIndex];
+                let sceneSkinRows = TableDataService.ins().getTableValuesByType(Const.Tables.scene_skin, "scene", sceneItemRow.id)
+                sceneSkinRows.forEach(skin => {
+                    let skinOffset = skin.id % sceneItemRow.id
+                    if (skinOffset > 0) {
                         if (playerDataStore.isGetPropTujian(skin.id, Const.DataKeys.tujianScene) == TujianState.geted) {
                             return true
                         }
@@ -544,17 +544,17 @@ class PlayerDataStore {
             }
             return false
         } else {
-            let roomData = TableDataService.ins().getTable(Const.Tables.scene_room)
-            for (let i = 0; i < roomData.length; i++) {
-                if (roomData[i].complete > 0) {
-                    let itemData = TableDataService.ins().getTableValuesByType(Const.Tables.scene_item, "room", roomData[i].id)
-                    for (let index = 0; index < itemData.length; index++) {
-                        const element = itemData[index];
-                        let skinData = TableDataService.ins().getTableValuesByType(Const.Tables.scene_skin, "scene", element.id)
-                        for (let j = 0; j < skinData.length; j++) {
-                            const skin = skinData[j];
-                            let index = skin.id % element.id
-                            if (index > 0) {
+            let roomRows = TableDataService.ins().getTable(Const.Tables.scene_room)
+            for (let roomIndex = 0; roomIndex < roomRows.length; roomIndex++) {
+                if (roomRows[roomIndex].complete > 0) {
+                    let sceneItemRows = TableDataService.ins().getTableValuesByType(Const.Tables.scene_item, "room", roomRows[roomIndex].id)
+                    for (let sceneItemIndex = 0; sceneItemIndex < sceneItemRows.length; sceneItemIndex++) {
+                        const sceneItemRow = sceneItemRows[sceneItemIndex];
+                        let sceneSkinRows = TableDataService.ins().getTableValuesByType(Const.Tables.scene_skin, "scene", sceneItemRow.id)
+                        for (let skinIndex = 0; skinIndex < sceneSkinRows.length; skinIndex++) {
+                            const skin = sceneSkinRows[skinIndex];
+                            let skinOffset = skin.id % sceneItemRow.id
+                            if (skinOffset > 0) {
                                 if (playerDataStore.isGetPropTujian(skin.id, Const.DataKeys.tujianScene) == TujianState.geted) {
                                     return true
                                 }
@@ -624,8 +624,8 @@ class PlayerDataStore {
     }
 
     public checkActivityOpen() {
-        let data = TableDataService.ins().getTable(Const.Tables.lockActivity_item)
-        data.forEach((activity: any) => {
+        let activityRows = TableDataService.ins().getTable(Const.Tables.lockActivity_item)
+        activityRows.forEach((activity: any) => {
             if (activity.cdType == ActivityLockType.type_Level) {
                 if (this.roleLv >= activity.openLevel) {
                     let lastTime = GameStorage.getInt(activity.dataKey + "_time", 0)
@@ -646,26 +646,26 @@ class PlayerDataStore {
 
     public checkCDTime(key: string, time: number, startTime: number = 0) {
         let lastTime = GameStorage.getInt(key + "_time", 0) || startTime
-        let curTime = Math.floor(TimeCtrJSF.GetInstance().ServerTime)
+        let currentTime = Math.floor(TimeCtrJSF.GetInstance().ServerTime)
         if (lastTime <= 0) {
-            GameStorage.setInt(key + "_time", curTime)
-            lastTime = curTime
+            GameStorage.setInt(key + "_time", currentTime)
+            lastTime = currentTime
         }
-        let interval = Math.floor((curTime - lastTime) / 1000)
-        let addTime = 0
-        if (interval > time) {
-            addTime = Math.floor(interval / time)
+        let elapsedSeconds = Math.floor((currentTime - lastTime) / 1000)
+        let gainedCount = 0
+        if (elapsedSeconds > time) {
+            gainedCount = Math.floor(elapsedSeconds / time)
             lastTime += time * 1000
-            GameStorage.setInt(key + "_time", curTime)
-            interval = interval % time
+            GameStorage.setInt(key + "_time", currentTime)
+            elapsedSeconds = elapsedSeconds % time
         }
 
-        let needTime = time - interval
-        if (needTime <= 0) {
-            needTime = 0
+        let remainingSeconds = time - elapsedSeconds
+        if (remainingSeconds <= 0) {
+            remainingSeconds = 0
             GameStorage.setInt(key + "_time", 0)
         }
-        return [addTime, needTime]
+        return [gainedCount, remainingSeconds]
     }
 
     public clearCDTime(key: string) {
@@ -673,9 +673,9 @@ class PlayerDataStore {
     }
 
     public checkEndTime(key: string, endTime: number) {
-        let curTime = Math.floor(TimeCtrJSF.GetInstance().ServerTime)
-        let needTime = endTime - curTime
-        return needTime / 1000
+        let currentTime = Math.floor(TimeCtrJSF.GetInstance().ServerTime)
+        let remainingSeconds = endTime - currentTime
+        return remainingSeconds / 1000
     }
 
     public checkLimitTime(key: string, limitTime: number) {
@@ -684,8 +684,8 @@ class PlayerDataStore {
             return 0
         }
         let endTime = startTime + limitTime
-        let curTime = Math.floor(TimeCtrJSF.GetInstance().ServerTime)
-        return endTime - curTime
+        let currentTime = Math.floor(TimeCtrJSF.GetInstance().ServerTime)
+        return endTime - currentTime
     }
 
 
@@ -696,15 +696,15 @@ class PlayerDataStore {
 
     public getReceiveTime(key: string, interval: number) {
         let lastTime = GameStorage.getInt(key + "_time", 0)
-        let curTime = Math.floor(TimeCtrJSF.GetInstance().ServerTime)
+        let currentTime = Math.floor(TimeCtrJSF.GetInstance().ServerTime)
         if (lastTime <= 0) {
-            GameStorage.setInt(key + "_time", curTime)
+            GameStorage.setInt(key + "_time", currentTime)
             return GameStorage.getInt(key, 0)
         }
-        if (TimeCtrJSF.isSameInterval(curTime, lastTime, interval)) {
+        if (TimeCtrJSF.isSameInterval(currentTime, lastTime, interval)) {
             return GameStorage.getInt(key, 0)
         } else {
-            GameStorage.setInt(key + "_time", curTime)
+            GameStorage.setInt(key + "_time", currentTime)
             GameStorage.setInt(key, 0)
             return 0
         }
@@ -731,41 +731,41 @@ class PlayerDataStore {
     public getIntervalCD(key: string, interval: number): number {
 
         if (interval <= 24 * 60) {
-            let curTime = Math.floor(TimeCtrJSF.GetInstance().ServerTime)
-            let time1 = new Date(curTime)
-            let curmin1 = time1.getHours() * 60 + time1.getMinutes()
-            let num = curmin1 % interval
-            return (interval - num) * 60 - time1.getSeconds()
+            let currentTime = Math.floor(TimeCtrJSF.GetInstance().ServerTime)
+            let currentDate = new Date(currentTime)
+            let currentMinuteOfDay = currentDate.getHours() * 60 + currentDate.getMinutes()
+            let elapsedIntervalMinutes = currentMinuteOfDay % interval
+            return (interval - elapsedIntervalMinutes) * 60 - currentDate.getSeconds()
         } else if (interval <= 24 * 60 * 7) {
-            let curTime = Math.floor(TimeCtrJSF.GetInstance().ServerTime)
-            let time1 = new Date(curTime)
-            return (7 - time1.getDay()) * 24 * 60 * 60 + this.getIntervalCD(key, 24 * 60);
+            let currentTime = Math.floor(TimeCtrJSF.GetInstance().ServerTime)
+            let currentDate = new Date(currentTime)
+            return (7 - currentDate.getDay()) * 24 * 60 * 60 + this.getIntervalCD(key, 24 * 60);
         } else {
-            let curTime = Math.floor(TimeCtrJSF.GetInstance().ServerTime)
-            let year = new Date(curTime).getFullYear()
-            let month = new Date(curTime).getMonth()
-            let endData = new Date(year, month + 1, 0).getTime()
-            return (endData - curTime) / 1000
+            let currentTime = Math.floor(TimeCtrJSF.GetInstance().ServerTime)
+            let year = new Date(currentTime).getFullYear()
+            let month = new Date(currentTime).getMonth()
+            let monthEndTime = new Date(year, month + 1, 0).getTime()
+            return (monthEndTime - currentTime) / 1000
         }
     }
 
-    public getLimitTimeData(key: string, interval: number, data: any, force: boolean = false, fun: Function | undefined = undefined) {
+    public getLimitTimeData(key: string, interval: number, fallbackData: any, force: boolean = false, refreshCallback: Function | undefined = undefined) {
         let lastTime = GameStorage.getInt(key + "_time", 0)
-        let curTime = Math.floor(TimeCtrJSF.GetInstance().ServerTime)
+        let currentTime = Math.floor(TimeCtrJSF.GetInstance().ServerTime)
         if (lastTime <= 0 || force) {
-            GameStorage.setInt(key + "_time", curTime)
-            GameStorage.setObject(key + "object", data)
-            fun && fun(true)
-            return data
+            GameStorage.setInt(key + "_time", currentTime)
+            GameStorage.setObject(key + "object", fallbackData)
+            refreshCallback && refreshCallback(true)
+            return fallbackData
         }
-        if (TimeCtrJSF.isSameInterval(curTime, lastTime, interval)) {
-            fun && fun(false)
-            return GameStorage.getObject(key + "object", data)
+        if (TimeCtrJSF.isSameInterval(currentTime, lastTime, interval)) {
+            refreshCallback && refreshCallback(false)
+            return GameStorage.getObject(key + "object", fallbackData)
         } else {
-            GameStorage.setInt(key + "_time", curTime)
-            GameStorage.setObject(key + "object", data)
-            fun && fun(true)
-            return data
+            GameStorage.setInt(key + "_time", currentTime)
+            GameStorage.setObject(key + "object", fallbackData)
+            refreshCallback && refreshCallback(true)
+            return fallbackData
         }
     }
 
@@ -775,44 +775,44 @@ class PlayerDataStore {
 
 
 
-    public getIntervalData(key: string, interval: number, data: string) {
+    public getIntervalData(key: string, interval: number, fallbackText: string) {
         let lastTime = GameStorage.getInt(key + "_time", 0)
-        let curTime = Math.floor(TimeCtrJSF.GetInstance().ServerTime)
+        let currentTime = Math.floor(TimeCtrJSF.GetInstance().ServerTime)
         if (lastTime <= 0) {
-            GameStorage.setInt(key + "_time", curTime)
+            GameStorage.setInt(key + "_time", currentTime)
             return GameStorage.getString(key, "")
         }
-        if (TimeCtrJSF.isSameInterval(curTime, lastTime, interval)) {
+        if (TimeCtrJSF.isSameInterval(currentTime, lastTime, interval)) {
             return GameStorage.getString(key, "")
         } else {
-            GameStorage.setInt(key + "_time", curTime)
+            GameStorage.setInt(key + "_time", currentTime)
             GameStorage.setString(key, "")
             return ""
         }
     }
 
-    public setIntervarData(key: string, interval: number, data: string) {
-        let curTime = Math.floor(TimeCtrJSF.GetInstance().ServerTime)
-        GameStorage.setInt(key + "_time", curTime)
-        GameStorage.setString(key, data)
+    public setIntervarData(key: string, interval: number, storedText: string) {
+        let currentTime = Math.floor(TimeCtrJSF.GetInstance().ServerTime)
+        GameStorage.setInt(key + "_time", currentTime)
+        GameStorage.setString(key, storedText)
     }
 
     public showGodWealthOther() {
         if (mergeBoardStateStore.isHandDone()) {
-            let params = GamePlatform.getLaunchQuery()
-            console.error("params = ", params)
+            let launchQuery = GamePlatform.getLaunchQuery()
+            console.error("params = ", launchQuery)
 
-            if (params && params.shareUserId) {
-                let propList = params.propList
-                params.propList = propList.split(",")
-                console.error("params2 = ", params)
+            if (launchQuery && launchQuery.shareUserId) {
+                let sharedPropList = launchQuery.propList
+                launchQuery.propList = sharedPropList.split(",")
+                console.error("params2 = ", launchQuery)
 
-                if (params.shareUserId == playerDataStore.roleID + "") {
+                if (launchQuery.shareUserId == playerDataStore.roleID + "") {
                     UiLayerService.instance.showDialog(Const.Dialogs.GodWealthLayer);
                 } else {
-                    UiLayerService.instance.showDialog(Const.Dialogs.GodWealthOther, { params: params });
+                    UiLayerService.instance.showDialog(Const.Dialogs.GodWealthOther, { params: launchQuery });
                 }
-                params = null
+                launchQuery = null
             }
         }
     }

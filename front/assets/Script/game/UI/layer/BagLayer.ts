@@ -41,38 +41,38 @@ export class BagLayer extends BaseView {
 
     initUI() {
         let bagRoomData = mergeBoardStateStore.roomArr[this.row][this.col];
-        let arr = JSON.parse(JSON.stringify(bagRoomData.roomArr));
+        let roomGridList = JSON.parse(JSON.stringify(bagRoomData.roomArr));
 
-        let hasNum = 0;
-        for (let room of arr) {
-            if (room.id > 0) {
-                hasNum++;
+        let occupiedCount = 0;
+        for (let roomGrid of roomGridList) {
+            if (roomGrid.id > 0) {
+                occupiedCount++;
             }
         }
-        this.setString(this.capcityNode, localText.capcity.format(hasNum, arr.length));
+        this.setString(this.capcityNode, localText.capcity.format(occupiedCount, roomGridList.length));
 
-        let nextRow = TableDataService.ins().getTableValueByID(Const.Tables.bagGrid, arr.length + 1);
-        if (nextRow) {
-            arr.push(null);
+        let nextGridConfig = TableDataService.ins().getTableValueByID(Const.Tables.bagGrid, roomGridList.length + 1);
+        if (nextGridConfig) {
+            roomGridList.push(null);
         }
-        this.scrollViewSetData(this.roomList, arr, this.refreshGridItem.bind(this));
+        this.scrollViewSetData(this.roomList, roomGridList, this.refreshGridItem.bind(this));
     }
 
-    refreshGridItem(itemUI: Node, info: any, index: number) {
-        let btnAdd = find("btnAdd", itemUI)!;
-        let iconNode = find("icon", itemUI)!;
-        let addNode = find("add", itemUI)!;
-        let btnInfo = find("btnInfo", itemUI)!;
-        if (info) {
+    refreshGridItem(gridCellNode: Node, gridInfo: any, gridIndex: number) {
+        let btnAdd = find("btnAdd", gridCellNode)!;
+        let iconNode = find("icon", gridCellNode)!;
+        let addNode = find("add", gridCellNode)!;
+        let btnInfo = find("btnInfo", gridCellNode)!;
+        if (gridInfo) {
             addNode.active = false;
             btnAdd.active = false;
-            if (info.id > 0) {
+            if (gridInfo.id > 0) {
                 iconNode.active = true;
                 btnInfo.active = true;
-                let propRow = TableDataService.ins().getTableValueByID(Const.Tables.prop, info.id);
-                this.setSpriteFrame2(iconNode.getComponent(Sprite)!, Const.resPath.icon + propRow.icon);
+                let propConfig = TableDataService.ins().getTableValueByID(Const.Tables.prop, gridInfo.id);
+                this.setSpriteFrame2(iconNode.getComponent(Sprite)!, Const.resPath.icon + propConfig.icon);
                 // @ts-ignore
-                btnInfo.propRow = propRow;
+                btnInfo.propRow = propConfig;
                 this.bindButton(btnInfo, this.onClickBtnInfo);
             } else {
                 iconNode.active = false;
@@ -84,26 +84,26 @@ export class BagLayer extends BaseView {
             btnAdd.active = true;
             iconNode.active = false;
             this.bindButton(btnAdd, this.onClickBtnAdd);
-            let bagRow = TableDataService.ins().getTableValueByID(Const.Tables.bagGrid, index + 1);
-            this.setString(find("num", btnAdd), bagRow.coin);
+            let bagGridConfig = TableDataService.ins().getTableValueByID(Const.Tables.bagGrid, gridIndex + 1);
+            this.setString(find("num", btnAdd), bagGridConfig.coin);
         }
-        this.bindButton(itemUI, this.onClickGridItem);
+        this.bindButton(gridCellNode, this.onClickGridItem);
     }
 
     onClickBtnAdd(btn: Button) {
         let bagRoomData = mergeBoardStateStore.roomArr[this.row][this.col];
-        let bagRow = TableDataService.ins().getTableValueByID(Const.Tables.bagGrid, bagRoomData.roomArr.length + 1);
-        if (!bagRow) {
+        let bagGridConfig = TableDataService.ins().getTableValueByID(Const.Tables.bagGrid, bagRoomData.roomArr.length + 1);
+        if (!bagGridConfig) {
             return;
         }
 
-        if (mergeBoardStateStore.getPropNumById(propIds.coin) < bagRow.coin) {
+        if (mergeBoardStateStore.getPropNumById(propIds.coin) < bagGridConfig.coin) {
 
             return;
         }
 
 
-        mergeBoardStateStore.subPropNum(propIds.coin, bagRow.coin);
+        mergeBoardStateStore.subPropNum(propIds.coin, bagGridConfig.coin);
 
         mergeBoardStateStore.bagRoomAddGrid(this.row, this.col);
 
@@ -114,22 +114,22 @@ export class BagLayer extends BaseView {
         // @ts-ignore
         let roomData = btn.node.item;
         // @ts-ignore
-        let index = btn.node.index;
+        let gridIndex = btn.node.index;
 
-        UtilPub.log(roomData, index);
+        UtilPub.log(roomData, gridIndex);
         if (!roomData || !roomData.id) {
             return;
         }
 
-        let ret: any = mergeBoardStateStore.getOutDataFromRoomBag(index, this.row, this.col);
-        if (!ret) {
+        let withdrawnRoomData: any = mergeBoardStateStore.getOutDataFromRoomBag(gridIndex, this.row, this.col);
+        if (!withdrawnRoomData) {
 
             UtilPub.log("棋盘上没有空房间了");
             return;
         }
 
 
-        this.getOutArr.push(ret);
+        this.getOutArr.push(withdrawnRoomData);
 
         this.initUI();
 
@@ -137,18 +137,18 @@ export class BagLayer extends BaseView {
 
     onClickBtnInfo(btn: Button) {
         // @ts-ignore
-        let propRow = btn.node.propRow
-        mergeBoardStateStore.openPropInfoLayer(propRow.id);
+        let propConfig = btn.node.propRow
+        mergeBoardStateStore.openPropInfoLayer(propConfig.id);
     }
 
     onClickBtnClose() {
         this.close();
 
-        let obj: any = {};
-        obj.row = this.row;
-        obj.col = this.col;
-        obj.getOutArr = this.getOutArr;
-        this.emit(GD.event.boardBagWithdraw, obj);
+        let withdrawPayload: any = {};
+        withdrawPayload.row = this.row;
+        withdrawPayload.col = this.col;
+        withdrawPayload.getOutArr = this.getOutArr;
+        this.emit(GD.event.boardBagWithdraw, withdrawPayload);
     }
 
 

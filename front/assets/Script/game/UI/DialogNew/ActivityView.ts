@@ -92,25 +92,25 @@ export class ActivityView extends BaseView {
             this.tipNode.setPosition(-103, -502);
         }
 
-        let activityData = TableDataService.ins().getTableValueByID(Const.Tables.new_activityPrpgress, playerDataStore.userInfodata.activity_progress);
-        if (activityData){
+        let activityProgressConfig = TableDataService.ins().getTableValueByID(Const.Tables.new_activityPrpgress, playerDataStore.userInfodata.activity_progress);
+        if (activityProgressConfig){
             this.rewardIcon.node.active = true;
-            if (activityData.task_gift.length > 0){
-                let proid = activityData.task_gift[0][0];
-                let countu = activityData.task_gift[0][1];
-                let dataNew = TableDataService.ins().getTableValueByID(Const.Tables.new_prop, proid)
+            if (activityProgressConfig.task_gift.length > 0){
+                let rewardPropId = activityProgressConfig.task_gift[0][0];
+                let rewardCount = activityProgressConfig.task_gift[0][1];
+                let rewardPropConfig = TableDataService.ins().getTableValueByID(Const.Tables.new_prop, rewardPropId)
 
-                this.setSpriteFrame(this.rewardIcon.getComponent(Sprite)!, Const.resPath.icon + dataNew.icon, () => { }, 60)
-                this.rewardNumLab.string = "x" + countu + "";
+                this.setSpriteFrame(this.rewardIcon.getComponent(Sprite)!, Const.resPath.icon + rewardPropConfig.icon, () => { }, 60)
+                this.rewardNumLab.string = "x" + rewardCount + "";
             }
 
-            if (playerDataStore.userInfodata.activity_count >= activityData.need_draw){
+            if (playerDataStore.userInfodata.activity_count >= activityProgressConfig.need_draw){
                 this.btnReceive.active = true;
                 this.rewardTipLab.string = "";
             }
             else{
                 this.btnReceive.active = false;
-                this.rewardTipLab.string = "再拆" + (activityData.need_draw - playerDataStore.userInfodata.activity_count) + "个可领取";
+                this.rewardTipLab.string = "再拆" + (activityProgressConfig.need_draw - playerDataStore.userInfodata.activity_count) + "个可领取";
             }
 
         }else{
@@ -129,13 +129,13 @@ export class ActivityView extends BaseView {
         this.btnStart.active = false;
         this.btnClose.active = false;
 
-        let len = 6*5 + Math.ceil(Math.random() * 5);
+        let highlightSteps = 6*5 + Math.ceil(Math.random() * 5);
 
-        for (let i = 0; i < len; i++){
-            let ind = i % this.rewardNode.children.length;
+        for (let stepIndex = 0; stepIndex < highlightSteps; stepIndex++){
+            let selectedRewardIndex = stepIndex % this.rewardNode.children.length;
             this.scheduleOnce(()=>{
-                this.setSelectInde(ind);
-            }, i * 0.2);
+                this.setSelectInde(selectedRewardIndex);
+            }, stepIndex * 0.2);
         }
 
         this.scheduleOnce(()=>{
@@ -144,7 +144,7 @@ export class ActivityView extends BaseView {
             GameHttpClient.getInstance().sendactivity(()=>{
                 this.refresh();
             });
-        }, len * 0.2);
+        }, highlightSteps * 0.2);
     }
 
     receiveClick(){
@@ -154,13 +154,13 @@ export class ActivityView extends BaseView {
     }
 
     setSelectInde(index:number = -1){
-        for (let i = 0; i < this.rewardNode.children.length; i++){
-            let ele = this.rewardNode.children[i];
-            if(index == i){
-                ele.getComponent(Sprite).spriteFrame = this.giftArr[1];
+        for (let rewardIndex = 0; rewardIndex < this.rewardNode.children.length; rewardIndex++){
+            let rewardCell = this.rewardNode.children[rewardIndex];
+            if(index == rewardIndex){
+                rewardCell.getComponent(Sprite).spriteFrame = this.giftArr[1];
             }
             else{
-                ele.getComponent(Sprite).spriteFrame = this.giftArr[0];
+                rewardCell.getComponent(Sprite).spriteFrame = this.giftArr[0];
             }
         }
     }
