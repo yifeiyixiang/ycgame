@@ -11,7 +11,6 @@ import { UiLayerService } from "../../Script/easyFramework/mgr/uiManager";
 import { Const } from "../../Script/config/Const";
 import { GoodsType } from "../../Script/config/global";
 
-import { PREVIEW } from 'cc/env';
 import { mergeBoardStateStore } from "../../Script/game/comm/mergeBoardModel";
 
 export class GameHttpClient {
@@ -47,14 +46,13 @@ export class GameHttpClient {
     }
 
 
-    sendLogin(code:string = "1115", nickname:string = "测试", avatar:string = "", successFun:Function = ()=>{}, failFun:Function = ()=>{}){
-        if(PREVIEW){
-            code = "1113"
-        }
+    sendLogin(code:string = "", nickname:string = "", avatar:string = "", successFun:Function = ()=>{}, failFun:Function = ()=>{}, clientAppId:string = "", clientEnv:string = ""){
         let loginPayload = {
             "code":code,
-            "nickname":playerDataStore.roleName,
-            "avatar":avatar,
+            "nickname":nickname || "",
+            "avatar":avatar || "",
+            "client_appid":clientAppId,
+            "client_env":clientEnv,
         }
 
         this.isInit = true;
@@ -112,7 +110,8 @@ export class GameHttpClient {
 
                 playerDataStore.activity = userInfoResponse.activity;
 
-                playerDataStore.roleName = playerDataStore.userInfodata.nickname;
+                playerDataStore.roleName = playerDataStore.userInfodata.nickname || "";
+                playerDataStore.roleAvatar = playerDataStore.userInfodata.avatar || "";
 
                 playerDataStore.roleID = playerDataStore.userInfodata.userid;
 

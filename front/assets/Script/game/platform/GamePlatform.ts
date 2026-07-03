@@ -150,6 +150,41 @@ export class GamePlatform {
         return options && options.query ? options.query : null;
     }
 
+    public static getWechatAppId(): string {
+        const wxApi = this.getWxApi();
+        if (!wxApi || !wxApi.getAccountInfoSync) {
+            return "";
+        }
+
+        try {
+            const accountInfo = wxApi.getAccountInfoSync();
+            return (accountInfo && accountInfo.miniProgram && accountInfo.miniProgram.appId) || "";
+        } catch (err) {
+            console.warn("get wechat appid failed:", err);
+            return "";
+        }
+    }
+
+    public static requestWechatLoginCode(): Promise<string> {
+        const wxApi = this.getWxApi();
+        if (!wxApi || !wxApi.login) {
+            return Promise.reject(new Error("WeChat login unavailable"));
+        }
+
+        return new Promise((resolve, reject) => {
+            wxApi.login({
+                success: (res: any) => {
+                    if (res && res.code) {
+                        resolve(res.code);
+                    } else {
+                        reject(new Error((res && res.errMsg) || "WeChat login response missing code"));
+                    }
+                },
+                fail: reject,
+            });
+        });
+    }
+
     public static requestWechatUserInfo(): Promise<any> {
         const wxApi = this.getWxApi();
         if (!wxApi) {
@@ -172,69 +207,90 @@ export class GamePlatform {
                 resolve(info);
             };
 
-            const requestByButton = () => {
-                if (!wxApi.createUserInfoButton || !wxApi.getSystemInfoSync) {
-                    reject(new Error("WeChat user info button unavailable"));
-                    return;
-                }
+            const requestLegacyUserInfo = () => {
+                const requestByButton = () => {
+                    if (!wxApi.createUserInfoButton || !wxApi.getSystemInfoSync) {
+                        reject(new Error("WeChat user info button unavailable"));
+                        return;
+                    }
 
-                const sysInfo = wxApi.getSystemInfoSync();
-                const button = wxApi.createUserInfoButton({
-                    type: "text",
-                    text: "",
-                    style: {
-                        left: 0,
-                        top: 0,
-                        width: sysInfo.screenWidth,
-                        height: sysInfo.screenHeight,
-                        lineHeight: 60,
-                        backgroundColor: "#00000000",
-                        color: "#ffffff00",
-                        textAlign: "center",
-                        fontSize: 24,
-                        borderRadius: 4,
+                    const sysInfo = wxApi.getSystemInfoSync();
+                    const button = wxApi.createUserInfoButton({
+                        type: "text",
+                        text: "",
+                        style: {
+                            left: 0,
+                            top: 0,
+                            width: sysInfo.screenWidth,
+                            height: sysInfo.screenHeight,
+                            lineHeight: 60,
+                            backgroundColor: "#00000000",
+                            color: "#ffffff00",
+                            textAlign: "center",
+                            fontSize: 24,
+                            borderRadius: 4,
+                        },
+                    });
+
+                    button.onTap((res: any) => {
+                        if (button.hide) {
+                            button.hide();
+                        }
+                        if (button.destroy) {
+                            button.destroy();
+                        }
+
+                        if (res && res.errMsg === "getUserInfo:ok") {
+                            normalize(res);
+                        } else {
+                            reject(res);
+                        }
+                    });
+                    button.show();
+                };
+
+                const requestDirectly = () => {
+                    if (wxApi.getUserInfo) {
+                        wxApi.getUserInfo({
+                            success: normalize,
+                            fail: requestByButton,
+                        });
+                        return;
+                    }
+
+                    requestByButton();
+                };
+
+                wxApi.getSetting({
+                    success: (res: any) => {
+                        if (res && res.authSetting && res.authSetting["scope.userInfo"]) {
+                            requestDirectly();
+                        } else {
+                            requestByButton();
+                        }
+                    },
+                    fail: reject,
+                });
+            };
+
+            if (wxApi.getUserProfile) {
+                wxApi.getUserProfile({
+                    desc: "Complete your game profile",
+                    lang: "zh_CN",
+                    success: normalize,
+                    fail: (err: any) => {
+                        const errMsg = err && err.errMsg ? String(err.errMsg).toLowerCase() : "";
+                        if (errMsg.indexOf("not supported") >= 0 || errMsg.indexOf("unsupported") >= 0) {
+                            requestLegacyUserInfo();
+                            return;
+                        }
+                        reject(err);
                     },
                 });
+                return;
+            }
 
-                button.onTap((res: any) => {
-                    if (button.hide) {
-                        button.hide();
-                    }
-                    if (button.destroy) {
-                        button.destroy();
-                    }
-
-                    if (res && res.errMsg === "getUserInfo:ok") {
-                        normalize(res);
-                    } else {
-                        reject(res);
-                    }
-                });
-                button.show();
-            };
-
-            const requestDirectly = () => {
-                if (wxApi.getUserInfo) {
-                    wxApi.getUserInfo({
-                        success: normalize,
-                        fail: requestByButton,
-                    });
-                    return;
-                }
-
-                requestByButton();
-            };
-
-            wxApi.getSetting({
-                success: (res: any) => {
-                    if (res && res.authSetting && res.authSetting["scope.userInfo"]) {
-                        requestDirectly();
-                    } else {
-                        requestByButton();
-                    }
-                },
-                fail: reject,
-            });
+            requestLegacyUserInfo();
         });
     }
 

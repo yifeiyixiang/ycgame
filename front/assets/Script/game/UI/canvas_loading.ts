@@ -280,16 +280,47 @@ export class LoadingCanvasController extends BaseView {
 
     }
 
-    loginClick(){
-        GameHttpClient.getInstance().sendLogin(this.wxUid, "测试", "", ()=>{
+    async loginClick(){
+        if (this.isStartLogin) {
+            return;
+        }
+
+        this.isStartLogin = true;
+        let loginCode = this.wxUid || "";
+        let clientAppId = "";
+        let clientEnv = WECHAT ? "wechat" : (NATIVE ? "native" : "other");
+        let loginNickname = "";
+        let loginAvatar = "";
+
+        try {
+            if (WECHAT) {
+                clientAppId = GamePlatform.getWechatAppId();
+                const userInfo = await GamePlatform.requestWechatUserInfo();
+                loginNickname = ((userInfo && (userInfo.nickName || userInfo.nickname)) || "").trim();
+                loginAvatar = ((userInfo && (userInfo.avatarUrl || userInfo.avatar)) || "").trim();
+                loginCode = await GamePlatform.requestWechatLoginCode();
+            } else if (!loginCode) {
+                loginCode = "dev:" + (this.account.string.trim() || "preview");
+                loginNickname = (playerDataStore.roleName || "").trim();
+                loginAvatar = (playerDataStore.roleAvatar || "").trim();
+            }
+        } catch (err) {
+            console.warn("wechat auth/login failed:", err);
+            this.isStartLogin = false;
+            this.toast(WECHAT ? "wechat auth/login failed" : "login failed");
+            return;
+        }
+
+        GameHttpClient.getInstance().sendLogin(loginCode, loginNickname, loginAvatar, ()=>{
             this.isCanEnter = true;
 
             find("loading/page/loginBtn2", this.node).active = false;
             this.bar.node.active = true;
             this.txt.node.active = true;
         }, (des:string)=>{
+            this.isStartLogin = false;
             this.toast(des)
-        });
+        }, clientAppId, clientEnv);
     }
 
     update(deltaTime: number) {
