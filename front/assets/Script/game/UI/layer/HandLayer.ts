@@ -41,7 +41,7 @@ export class HandLayer extends BaseView {
     obj: any
 
     onLoad() {
-        this.bindButton(this.btnOver, this.onClickBtnOver);
+        this.bindButton(this.btnOver, this._fn_th);
 
         if (Const.isOnline) {
             this.btnOver.active = false;
@@ -76,24 +76,24 @@ export class HandLayer extends BaseView {
         }
 
         this.id = id;
-        this.unschedule(this.initUITimer)
+        this.unschedule(this._fn_pi)
         this.startNode = obj.startNode;
         this.endNode = obj.endNode;
 
         if (obj.delayTime > 0) {
             this.bgNode.active = true;
             this.uiNode.active = false;
-            this.scheduleOnce(this.initUITimer, obj.delayTime);
+            this.scheduleOnce(this._fn_pi, obj.delayTime);
         } else {
-            this.initUI(obj);
+            this._fn_ph(obj);
         }
     }
 
-    initUITimer() {
-        this.initUI(this.obj)
+    _fn_pi() {
+        this._fn_ph(this.obj)
     }
 
-    initUI(obj: any) {
+    _fn_ph(obj: any) {
         let id = this.id;
 
         this.bgNode.active = false;
@@ -109,8 +109,8 @@ export class HandLayer extends BaseView {
 
         Tween.stopAllByTarget(this.maskNode);
 
-        let pos = UtilPub.convertToWorldSpace(node);
-        pos = UtilPub.convertToNodeSpace(this.maskNode, pos);
+        let pos = UtilPub._fn_dp(node);
+        pos = UtilPub._fn_do(this.maskNode, pos);
         let ratio = 1;
         if (obj.isScene) {
 
@@ -183,12 +183,12 @@ export class HandLayer extends BaseView {
             let startNode = obj.startNode;
             let endNode = obj.endNode;
             Tween.stopAllByTarget(this.handNode);
-            let endPos = UtilPub.convertToWorldSpace(endNode);
-            endPos = UtilPub.convertToNodeSpace(this.handNode, endPos);
+            let endPos = UtilPub._fn_dp(endNode);
+            endPos = UtilPub._fn_do(this.handNode, endPos);
 
             let handOpacity = this.handNode.getComponent(UIOpacity)!;
             tween(this.handNode).call(() => {
-                UtilPub.setNodePositionByOtherNode(this.handNode, startNode);
+                UtilPub._fn_afg(this.handNode, startNode);
                 handOpacity.opacity = 255;
                 this.handNode.getComponent(sp.Skeleton)!.paused = false;
                 this.handNode.getComponent(AnimationCtrl)!.playAnimation("move", true);
@@ -204,8 +204,8 @@ export class HandLayer extends BaseView {
 
             let handPos = pos.clone();
             if (nodeHand) {
-                handPos = UtilPub.convertToWorldSpace(nodeHand);
-                handPos = UtilPub.convertToNodeSpace(this.handNode, handPos);
+                handPos = UtilPub._fn_dp(nodeHand);
+                handPos = UtilPub._fn_do(this.handNode, handPos);
             }
             this.handNode.position = handPos;
             this.handNode.getComponent(sp.Skeleton)!.paused = false;
@@ -231,7 +231,7 @@ export class HandLayer extends BaseView {
         this.handNode.active = false;
     }
 
-    hideDialog() {
+    _fn_nk() {
         this.dialogNode.active = false;
     }
 
@@ -239,12 +239,12 @@ export class HandLayer extends BaseView {
         super.close();
     }
 
-    onClickBtnOver() {
-        let handIndex = mergeBoardStateStore.getHandIndex();
+    _fn_th() {
+        let handIndex = mergeBoardStateStore._fn_hj();
         for (let i = handIndex; i < handData.length; i++) {
-            GamePlatform.track("完成新手教程" + i);
+            GamePlatform._fn_aja("完成新手教程" + i);
         }
-        mergeBoardStateStore.setHandIndex(handData.length);
+        mergeBoardStateStore._fn_aev(handData.length);
         this.close();
     }
 

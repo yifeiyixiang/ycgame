@@ -59,18 +59,18 @@ export class PetDetialsView extends BaseView {
     curContent:Node;
 
     onLoad() {
-        this.bindButton(this.btnClose, this.onClickBtnClose);
+        this.bindButton(this.btnClose, this._fn_sz);
 
         this.bindButton(find("root/nameBg/btnName", this.node)!, () => {
-            UiLayerService.instance.showDialog(Const.Dialogs.PetNameView, this.curData)
+            UiLayerService.instance._fn_ahg(Const.Dialogs.PetNameView, this.curData)
         })
 
         this.bindButton(find("root/btnFangsheng", this.node)!, () => {
-            UiLayerService.instance.showDialog(Const.Dialogs.PetComonTipView, [1, this.curData])
+            UiLayerService.instance._fn_ahg(Const.Dialogs.PetComonTipView, [1, this.curData])
         })
 
         this.bindButton(find("root/btnXiuxi", this.node)!, () => {
-            UiLayerService.instance.showDialog(Const.Dialogs.PetComonTipView, [3, this.curData])
+            UiLayerService.instance._fn_ahg(Const.Dialogs.PetComonTipView, [3, this.curData])
         })
 
         this.shuxingNode.active = true
@@ -78,7 +78,7 @@ export class PetDetialsView extends BaseView {
     }
 
     onEnable() {
-        this.on(GD.event.updateGame, this.refresh)
+        this.on(GD.event.updateGame, this._fn_ys)
     }
 
     onDisable() {
@@ -89,26 +89,26 @@ export class PetDetialsView extends BaseView {
         super.show(args);
 
         this.curData = args;
-        this.curCfg = TableDataService.ins().getTableValueByID(Const.Tables.new_prop, this.curData.prop_id);
+        this.curCfg = TableDataService.ins()._fn_ly(Const.Tables.new_prop, this.curData.prop_id);
 
 
 
-        this.getData();
+        this._fn_gq();
     }
 
-    getData(){
-        GameHttpClient.getInstance().getPetList();
-        GameHttpClient.getInstance().sednBagInfo(this.curItemType);
+    _fn_gq(){
+        GameHttpClient._fn_ho()._fn_jc();
+        GameHttpClient._fn_ho().sednBagInfo(this.curItemType);
     }
 
-    refresh(){
+    _fn_ys(){
 
         if (!this.curData){
             this.close();
             return;
         }
 
-        this.curData = GameRuntimeData.getPetDataById(this.curData.id);
+        this.curData = GameRuntimeData._fn_jb(this.curData.id);
 
         if (!this.curData){
             this.close();
@@ -151,7 +151,7 @@ export class PetDetialsView extends BaseView {
 
         for (let bagIndex = 0; bagIndex < playerDataStore.bagProps.length; bagIndex++) {
             const bagRecord:BagPropRecord = playerDataStore.bagProps[bagIndex];
-            let itemConfig:ShopConfigRecord = TableDataService.ins().getTableValueByID(Const.Tables.new_prop, bagRecord.prop_id);
+            let itemConfig:ShopConfigRecord = TableDataService.ins()._fn_ly(Const.Tables.new_prop, bagRecord.prop_id);
 
             let petItemCell = this.curContent.children[bagIndex];
             if (!petItemCell){
@@ -165,7 +165,7 @@ export class PetDetialsView extends BaseView {
             petItemCell.getChildByName("countLab").getComponent(Label).string = bagRecord.prop_count + ""
 
             if (itemConfig.icon){
-                this.setSpriteFrame(petItemCell.getChildByName("icon").getComponent(Sprite), Const.resPath.icon + itemConfig.icon, () => { }, 60)
+                this._fn_agk(petItemCell.getChildByName("icon").getComponent(Sprite), Const.resPath.icon + itemConfig.icon, () => { }, 60)
                 petItemCell.getChildByName("icon").active = true;
             }else{
                 petItemCell.getChildByName("icon").active = false;
@@ -180,8 +180,8 @@ export class PetDetialsView extends BaseView {
 
                 petItemCell.getChildByName("btnUse").on("click", ()=>{
 
-                    GameHttpClient.getInstance().sendPetAction(4, this.curData.id, itemConfig.id, 0, "", ()=>{
-                        GameHttpClient.getInstance().sednBagInfo(2);
+                    GameHttpClient._fn_ho()._fn_adt(4, this.curData.id, itemConfig.id, 0, "", ()=>{
+                        GameHttpClient._fn_ho().sednBagInfo(2);
                     })
                 }, this);
             }else{
@@ -191,7 +191,7 @@ export class PetDetialsView extends BaseView {
 
                 petItemCell.getChildByName("btnDress").on("click", ()=>{
 
-                    GameHttpClient.getInstance().sendPetAction(5, this.curData.id, itemConfig.id, bagRecord.id);
+                    GameHttpClient._fn_ho()._fn_adt(5, this.curData.id, itemConfig.id, bagRecord.id);
                 }, this);
             }
         }
@@ -205,17 +205,17 @@ export class PetDetialsView extends BaseView {
             this.shuxingNode.active = true
             this.skinNode.active = false
             this.curItemType = 2
-            this.getData();
+            this._fn_gq();
 
         }else if (str == "togSkin"){
             this.shuxingNode.active = false
             this.skinNode.active = true
             this.curItemType = 3
-            this.getData();
+            this._fn_gq();
         }
     }
 
-    onClickBtnClose() {
+    _fn_sz() {
         this.close();
     }
 

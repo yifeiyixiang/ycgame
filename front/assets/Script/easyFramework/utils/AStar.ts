@@ -53,16 +53,16 @@ export default class AStar {
         this.mEnd = end;
         this.obstacles = {};
         obstacles.forEach((ele) => {
-            this.setObstacles(ele.x, ele.y);
+            this._fn_afk(ele.x, ele.y);
         });
 
         this.nodePool = {};
 
-        this.mStartNode  = this.createNode(this.mStart.x, this.mStart.y);
-        this.mEndNode    = this.createNode(this.mEnd.x, this.mEnd.y);
+        this.mStartNode  = this._fn_dv(this.mStart.x, this.mStart.y);
+        this.mEndNode    = this._fn_dv(this.mEnd.x, this.mEnd.y);
     }
 
-    public clean() {
+    public _fn_cr() {
         this.mStartNode = null!;
         this.mEndNode = null!;
     }
@@ -73,8 +73,8 @@ export default class AStar {
 
 
 
-    public setObstacles(x: number, y: number) {
-        if (!this.checkNode(x, y)) return;
+    public _fn_afk(x: number, y: number) {
+        if (!this._fn_cb(x, y)) return;
         this.obstacles[`${x}_${y}`] = true;
     }
 
@@ -82,7 +82,7 @@ export default class AStar {
 
 
 
-    public clearObstacles(x: number, y: number) {
+    public _fn_cy(x: number, y: number) {
         delete this.obstacles[`${x}_${y}`];
     }
 
@@ -90,7 +90,7 @@ export default class AStar {
 
 
 
-    public checkObstacles(x: number, y: number) {
+    public _fn_cd(x: number, y: number) {
         return this.obstacles[`${x}_${y}`];
     }
 
@@ -99,7 +99,7 @@ export default class AStar {
 
 
 
-    public checkNode(x: number, y: number) {
+    public _fn_cb(x: number, y: number) {
         return x >= 0 && y >= 0 && x <= this.mSize.x && y <= this.mSize.y;
     }
 
@@ -120,7 +120,7 @@ export default class AStar {
 
 
 
-    public run(type: 4|8 = 4) {
+    public _fn_acl(type: 4|8 = 4) {
         this.mType = type;
 
 
@@ -146,11 +146,11 @@ export default class AStar {
             if (curr === goal) {
                 break;
             }
-            for (let next of this.getNeighbors(curr)) {
-                const nextCost = this.costSoFar.get(curr)! + this.getCost(curr, next);
+            for (let next of this._fn_im(curr)) {
+                const nextCost = this.costSoFar.get(curr)! + this._fn_gl(curr, next);
                 if (!this.costSoFar.has(next) || nextCost < this.costSoFar.get(next)!) {
                     this.costSoFar.set(next, nextCost);
-                    const preCost = this.getCost(next, goal);
+                    const preCost = this._fn_gl(next, goal);
                     this.frontier.put(next, nextCost + preCost);
                     this.cameForm.set(next, curr);
                 }
@@ -163,7 +163,7 @@ export default class AStar {
 
 
 
-    getPath() {
+    _fn_iz() {
         const arr = [];
         let node = this.mEndNode;
         arr.push(node);
@@ -174,7 +174,7 @@ export default class AStar {
         return arr;
     }
 
-    getNeighbors(node: AStarNode) {
+    _fn_im(node: AStarNode) {
         const neighbors = [];
 
         if (this.mType === 8) {
@@ -206,7 +206,7 @@ export default class AStar {
         return neighbors;
     }
 
-    getCost(node1: AStarNode, node2: AStarNode) {
+    _fn_gl(node1: AStarNode, node2: AStarNode) {
         return Vec2.distance(new Vec2(node1.x, node1.y), new Vec2(node2.x, node2.y));
     }
 
@@ -216,18 +216,18 @@ export default class AStar {
     }
 
     private getNode(x: number, y: number): AStarNode {
-        if (!this.checkNode(x, y)) return null!;
-        if (this.checkObstacles(x, y)) return null!;
-        const key = this.getNodeKey(x, y);
-        return this.nodePool[key] || this.createNode(x, y);
+        if (!this._fn_cb(x, y)) return null!;
+        if (this._fn_cd(x, y)) return null!;
+        const key = this._fn_in(x, y);
+        return this.nodePool[key] || this._fn_dv(x, y);
     }
-    private createNode(x: number, y: number) {
-        const key = this.getNodeKey(x, y);
+    private _fn_dv(x: number, y: number) {
+        const key = this._fn_in(x, y);
         this.nodePool[key] = new AStarNode(x, y);
         return this.nodePool[key];
     }
 
-    private getNodeKey(x: number, y: number) {
+    private _fn_in(x: number, y: number) {
         return `${x}_${y}`;
     }
 }

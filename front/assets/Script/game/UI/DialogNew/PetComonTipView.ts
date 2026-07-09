@@ -38,24 +38,24 @@ export class PetComonTipView extends BaseView {
 
         this.bindButton(find("root/btnSave", this.node)!, ()=>{
             if (this.type == 1){
-                GameHttpClient.getInstance().sendPetAction(3, this.selectData.id, 0, 0, "", ()=>{
-                    GameHttpClient.getInstance().getPetList(()=>{
+                GameHttpClient._fn_ho()._fn_adt(3, this.selectData.id, 0, 0, "", ()=>{
+                    GameHttpClient._fn_ho()._fn_jc(()=>{
                         Notifications.emit(GD.event.updateScenePet);
                     });
-                    this.toast("放生成功")
+                    this._fn_aiu("放生成功")
                     this.close();
                 })
             }
             else if (this.type == 2){
-                GameHttpClient.getInstance().sendPetAction(1, this.selectData.id, 0, 0, "", ()=>{
-                    this.toast("放置成功")
+                GameHttpClient._fn_ho()._fn_adt(1, this.selectData.id, 0, 0, "", ()=>{
+                    this._fn_aiu("放置成功")
                     Notifications.emit(GD.event.updateScenePet);
                     this.close();
                 })
             }
             else if (this.type == 3){
-                GameHttpClient.getInstance().sendPetAction(2, this.selectData.id, 0, 0, "", ()=>{
-                    this.toast("宠物已休息")
+                GameHttpClient._fn_ho()._fn_adt(2, this.selectData.id, 0, 0, "", ()=>{
+                    this._fn_aiu("宠物已休息")
                     Notifications.emit(GD.event.updateScenePet);
                     this.close();
                 })

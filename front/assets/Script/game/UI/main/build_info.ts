@@ -23,14 +23,14 @@ export class BuildInfoPanelController extends BaseView {
 
     show(args: any) {
         super.show(args)
-        this.initInfo(this._layerData.id)
+        this._fn_ob(this._layerData.id)
     }
 
-    initInfo(id: number) {
-        let roomData = TableDataService.ins().getTableValueByID(Const.Tables.scene_room, id)
+    _fn_ob(id: number) {
+        let roomData = TableDataService.ins()._fn_ly(Const.Tables.scene_room, id)
         this.titleLabel.string = roomData.name
         this.infoLabel.string = roomData.desc
-        this.setSpriteFrame(this.icon, Const.resPath.buildpicture + roomData.picture)
+        this._fn_agk(this.icon, Const.resPath.buildpicture + roomData.picture)
 
     }
 

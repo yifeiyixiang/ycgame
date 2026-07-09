@@ -29,11 +29,11 @@ export class ZhuangshiLayer extends BaseView {
     selectType:number = 1
 
     onLoad() {
-        this.bindButton(this.btnClose, this.onClickBtnClose);
+        this.bindButton(this.btnClose, this._fn_sz);
     }
 
     onEnable() {
-        this.on(GD.event.updateGame, this.refresh)
+        this.on(GD.event.updateGame, this._fn_ys)
     }
 
     onDisable() {
@@ -45,13 +45,13 @@ export class ZhuangshiLayer extends BaseView {
     show(args: any) {
         super.show(args);
 
-        GameHttpClient.getInstance().sednBagInfo(this.itemType, ()=>{
+        GameHttpClient._fn_ho().sednBagInfo(this.itemType, ()=>{
             playerDataStore.goodIsCanOperate = true;
             GameEventManager.eventTarget.emit(GameEventManager.EEventName.REFRESH_GOOD_STATU);
         });
     }
 
-    refresh(){
+    _fn_ys(){
 
         for (let cellIndex = 0; cellIndex < this.listContent.children.length; cellIndex++) {
             const decorationCellNode = this.listContent.children[cellIndex];
@@ -63,7 +63,7 @@ export class ZhuangshiLayer extends BaseView {
         let visibleCellIndex:number = 0;
         for (let bagIndex = 0; bagIndex < playerDataStore.bagProps.length; bagIndex++) {
             const decorationRecord:BagPropRecord = playerDataStore.bagProps[bagIndex];
-            let decorationConfig:ShopConfigRecord = TableDataService.ins().getTableValueByID(Const.Tables.new_prop, decorationRecord.prop_id);
+            let decorationConfig:ShopConfigRecord = TableDataService.ins()._fn_ly(Const.Tables.new_prop, decorationRecord.prop_id);
             if (decorationConfig.typeson == this.selectType && !decorationRecord.is_active){
                 let decorationCellNode = this.listContent.children[visibleCellIndex];
                 if (!decorationCellNode){
@@ -79,7 +79,7 @@ export class ZhuangshiLayer extends BaseView {
     }
 
     onClickHandler(eve:Event, str:string){
-        AudioPlaybackService.instance.playSound(Const.Audio.btn)
+        AudioPlaybackService.instance._fn_xc(Const.Audio.btn)
         if (str && str.includes("tog")){
             let selectedDecorationType = Number(str.slice(-1)) ;
             if (this.selectType != selectedDecorationType){
@@ -87,7 +87,7 @@ export class ZhuangshiLayer extends BaseView {
 
 
 
-                this.refresh();
+                this._fn_ys();
             }
         }
         else if (str == "click"){
@@ -95,7 +95,7 @@ export class ZhuangshiLayer extends BaseView {
         }
     }
 
-    onClickBtnClose() {
+    _fn_sz() {
         this.close();
     }
 

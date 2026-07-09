@@ -38,22 +38,22 @@ export class NewItemLayer extends BaseView {
     show(propConfigId: any) {
         super.show(propConfigId);
 
-        let propConfig = TableDataService.ins().getTableValueByID(Const.Tables.prop, propConfigId);
-        this.setString(this.nameNode, propConfig.name);
-        this.setString(this.lvNode, propConfig.luna + localText.lv);
-        this.setSpriteFrame2(this.iconNode.getComponent(Sprite)!, Const.resPath.icon + propConfig.icon);
-        this.setString(this.infoNode, propConfig.mask);
+        let propConfig = TableDataService.ins()._fn_ly(Const.Tables.prop, propConfigId);
+        this._fn_ago(this.nameNode, propConfig.name);
+        this._fn_ago(this.lvNode, propConfig.luna + localText.lv);
+        this._fn_agl(this.iconNode.getComponent(Sprite)!, Const.resPath.icon + propConfig.icon);
+        this._fn_ago(this.infoNode, propConfig.mask);
 
-        this.bindButton(this.btnClose, this.onClickBtnClose);
+        this.bindButton(this.btnClose, this._fn_sz);
 
-        let handIndex = mergeBoardStateStore.getHandIndex();
+        let handIndex = mergeBoardStateStore._fn_hj();
         if (handIndex == handIndexs.boardItemReveal) {
-            mergeBoardStateStore.addHandIndex();
+            mergeBoardStateStore._fn_e();
             let handGuidePayload: any = {};
             handGuidePayload.id = handIndex;
             handGuidePayload.node = this.btnClose;
             handGuidePayload.delayTime = 0.5;
-            UiLayerService.instance.showDialog(Const.Dialogs.HandLayer, handGuidePayload);
+            UiLayerService.instance._fn_ahg(Const.Dialogs.HandLayer, handGuidePayload);
         }
 
         this.produceLayer.removeAllChildren();
@@ -64,16 +64,16 @@ export class NewItemLayer extends BaseView {
                 let atomNode = instantiate(this.propItem);
                 atomNode.parent = this.produceLayer;
                 atomNode.active = true;
-                let atomPropConfig = TableDataService.ins().getTableValueByID(Const.Tables.prop, atomPropId);
-                this.setString(find("name", atomNode), atomPropConfig.name);
-                this.setSpriteFrame2(find("icon", atomNode)!.getComponent(Sprite)!, Const.resPath.icon + atomPropConfig.icon);
+                let atomPropConfig = TableDataService.ins()._fn_ly(Const.Tables.prop, atomPropId);
+                this._fn_ago(find("name", atomNode), atomPropConfig.name);
+                this._fn_agl(find("icon", atomNode)!.getComponent(Sprite)!, Const.resPath.icon + atomPropConfig.icon);
             }
         }
     }
 
-    onClickBtnClose() {
+    _fn_sz() {
         this.close();
-        mergeBoardStateStore.closeHandLayer();
+        mergeBoardStateStore._fn_df();
         this.emit(GD.event.refreshHandLayer);
     }
 

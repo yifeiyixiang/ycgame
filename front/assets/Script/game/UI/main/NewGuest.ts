@@ -22,18 +22,18 @@ export class NewGuest extends BaseView {
 
     show(args: any) {
         super.show(args)
-        this.initInfo(this._layerData.id)
+        this._fn_ob(this._layerData.id)
 
     }
 
-    initInfo(id: number) {
-        let guestData = TableDataService.ins().getTableValueByID(Const.Tables.scene_guest, id)
+    _fn_ob(id: number) {
+        let guestData = TableDataService.ins()._fn_ly(Const.Tables.scene_guest, id)
         this.titlelabel.string = guestData.name
         this.infoLabel.string = guestData.desc
 
-        GamePlatform.track("解锁新肥鹅-" + guestData.name)
+        GamePlatform._fn_aja("解锁新肥鹅-" + guestData.name)
 
-        ResourceLoaderService.loadResWithBundle( guestData.sp, sp.SkeletonData, (err, skedata) => {
+        ResourceLoaderService._fn_rq( guestData.sp, sp.SkeletonData, (err, skedata) => {
             this.guestSpine.skeletonData = skedata;
             this.guestSpine.setSkin("skin1")
             this.guestSpine.setAnimation(0, "idle1", true);

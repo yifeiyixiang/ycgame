@@ -28,7 +28,7 @@ export class AudioPlaybackService extends Component {
 
 
     init(audioSource: AudioSource) {
-        this.soundVolume = this.getConfiguration(false) ? 1 : 0;
+        this.soundVolume = this._fn_gk(false) ? 1 : 0;
 
         AudioPlaybackService._audioSource = audioSource;
 
@@ -46,24 +46,24 @@ export class AudioPlaybackService extends Component {
 
     }
 
-    initMusic() {
-        let stat = GameStorage.getString('music', 'true');
+    _fn_oj() {
+        let stat = GameStorage._fn_lq('music', 'true');
 
         if (stat == 'true') {
-            AudioPlaybackService.instance.openMusic()
+            AudioPlaybackService.instance._fn_wg()
         } else {
-            AudioPlaybackService.instance.closeMusic()
+            AudioPlaybackService.instance._fn_dg()
         }
 
-        let stat2 = GameStorage.getString('sound', 'true');
+        let stat2 = GameStorage._fn_lq('sound', 'true');
         if (stat2 == 'true') {
-            AudioPlaybackService.instance.openSound()
+            AudioPlaybackService.instance._fn_wi()
         } else {
-            AudioPlaybackService.instance.closeSound()
+            AudioPlaybackService.instance._fn_dh()
         }
     }
 
-    check() {
+    _fn_bc() {
         let now = new Date().getTime()
         let newArr = []
         for (let i = 0; i < this.effectConcurrency.length; i++) {
@@ -82,12 +82,12 @@ export class AudioPlaybackService extends Component {
     }
 
 
-    getConfiguration(isMusic: boolean) {
+    _fn_gk(isMusic: boolean) {
         let state;
         if (isMusic) {
-            state = GameStorage.getString(Const.CacheDataKey.music);
+            state = GameStorage._fn_lq(Const.CacheDataKey.music);
         } else {
-            state = GameStorage.getString(Const.CacheDataKey.sound);
+            state = GameStorage._fn_lq(Const.CacheDataKey.sound);
         }
 
 
@@ -95,7 +95,7 @@ export class AudioPlaybackService extends Component {
         return state === undefined || state === 'true';
     }
 
-    playMusicInit(loop: boolean) {
+    _fn_xa(loop: boolean) {
         const audioSource = AudioPlaybackService._audioSource!;
         assert(audioSource, 'AudioManager not inited!');
         audioSource.loop = loop;
@@ -112,7 +112,7 @@ export class AudioPlaybackService extends Component {
 
 
 
-    playMusic(loop: boolean, audioName: string = "bgm") {
+    _fn_wz(loop: boolean, audioName: string = "bgm") {
 
         const audioSource = AudioPlaybackService._audioSource!;
         assert(audioSource, 'AudioManager not inited!');
@@ -127,7 +127,7 @@ export class AudioPlaybackService extends Component {
             }
         }
 
-        let playFn = (clip: AudioClip) => {
+        let _fn_wy = (clip: AudioClip) => {
             this.clips[name] = clip
             audioSource.stop()
             audioSource.clip = clip
@@ -135,7 +135,7 @@ export class AudioPlaybackService extends Component {
             audioSource.volume = 0.3;
             if (!audioSource.playing) {
                 audioSource.play();
-                if (this.isOpenMusic() == false) {
+                if (this._fn_qf() == false) {
                     audioSource.stop()
                 }
                 audioSource.volume = 0.6
@@ -144,10 +144,10 @@ export class AudioPlaybackService extends Component {
 
 
         if (this.clips[name]) {
-            playFn(this.clips[name])
+            _fn_wy(this.clips[name])
         } else {
 
-            ResourceLoaderService.loadResWithBundle(audioName, AudioClip, (err, clip) => {
+            ResourceLoaderService._fn_rq(audioName, AudioClip, (err, clip) => {
 
 
                 if (err) {
@@ -155,7 +155,7 @@ export class AudioPlaybackService extends Component {
                     return;
                 }
                 if (clip) {
-                    playFn(clip)
+                    _fn_wy(clip)
                 }
             })
         }
@@ -166,11 +166,11 @@ export class AudioPlaybackService extends Component {
 
 
 
-    playSound(audioName: string) {
+    _fn_xc(audioName: string) {
         if (director.getScene()!.name == "hotupdate") {
             return;
         }
-        if (this.isOpenSound() == false) return
+        if (this._fn_qg() == false) return
 
 
 
@@ -193,10 +193,10 @@ export class AudioPlaybackService extends Component {
 
         let name = audioName.split("|")[1]
         if (this.clips[name]) {
-            this.playSoundCtl(name, this.clips[name])
+            this._fn_xd(name, this.clips[name])
         } else {
 
-            ResourceLoaderService.loadResWithBundle(audioName, AudioClip, (err, clip) => {
+            ResourceLoaderService._fn_rq(audioName, AudioClip, (err, clip) => {
 
 
                 if (err) {
@@ -205,7 +205,7 @@ export class AudioPlaybackService extends Component {
                 }
                 if (clip) {
                     this.clips[name] = clip
-                    this.playSoundCtl(name, this.clips[name])
+                    this._fn_xd(name, this.clips[name])
                 }
             })
 
@@ -213,10 +213,10 @@ export class AudioPlaybackService extends Component {
 
     }
 
-    playOneShotFake(clip: AudioClip) {
-        if (this.isOpenSound()) {
+    _fn_xb(clip: AudioClip) {
+        if (this._fn_qg()) {
             if (Const.AudioTime[clip.name] != null) {
-                this.check()
+                this._fn_bc()
                 if (this.effectConcurrency.length > Const.AudioCnt) { return }
                 let num = new Date().getTime() + Const.AudioTime[clip.name]
 
@@ -239,21 +239,21 @@ export class AudioPlaybackService extends Component {
 
     }
 
-    playSoundCtl(name: string, clip: AudioClip) {
+    _fn_xd(name: string, clip: AudioClip) {
 
         if (this.effectCache[name] == undefined) {
             this.effectCache[name] = new Date().getTime()
-            this.playOneShotFake(clip)
+            this._fn_xb(clip)
         } else {
             let diff = new Date().getTime() - this.effectCache[name]
             if (diff > 88) {
                 this.effectCache[name] = new Date().getTime()
-                this.playOneShotFake(clip)
+                this._fn_xb(clip)
             }
         }
     }
 
-    setMusicVolume(flag: number) {
+    _fn_aff(flag: number) {
         const audioSource = AudioPlaybackService._audioSource!;
         assert(audioSource, 'AudioManager not inited!');
 
@@ -261,61 +261,61 @@ export class AudioPlaybackService extends Component {
         audioSource.volume = flag;
     }
 
-    setSoundVolume(flag: number) {
+    _fn_agi(flag: number) {
         this.soundVolume = flag;
     }
 
-    openMusic() {
+    _fn_wg() {
         const audioSource = AudioPlaybackService._audioSource!;
         audioSource.play()
-        GameStorage.setString(Const.CacheDataKey.music, 'true');
+        GameStorage._fn_ago(Const.CacheDataKey.music, 'true');
     }
 
-    closeMusic() {
+    _fn_dg() {
         const audioSource = AudioPlaybackService._audioSource!;
         audioSource.stop()
-        GameStorage.setString(Const.CacheDataKey.music, 'false');
+        GameStorage._fn_ago(Const.CacheDataKey.music, 'false');
     }
 
-    clickMusic() {
-        if (this.isOpenMusic()) {
-            this.closeMusic()
+    _fn_dd() {
+        if (this._fn_qf()) {
+            this._fn_dg()
         } else {
-            this.openMusic()
+            this._fn_wg()
         }
     }
 
-    isOpenMusic() {
-        return GameStorage.getString(Const.CacheDataKey.music, 'true') == "true";
+    _fn_qf() {
+        return GameStorage._fn_lq(Const.CacheDataKey.music, 'true') == "true";
     }
 
-    openSound() {
-        GameStorage.setString(Const.CacheDataKey.sound, 'true');
+    _fn_wi() {
+        GameStorage._fn_ago(Const.CacheDataKey.sound, 'true');
     }
 
-    isOpenSound() {
-        return GameStorage.getString(Const.CacheDataKey.sound, 'true') == "true";
+    _fn_qg() {
+        return GameStorage._fn_lq(Const.CacheDataKey.sound, 'true') == "true";
     }
 
-    closeSound() {
-        GameStorage.setString(Const.CacheDataKey.sound, 'false');
+    _fn_dh() {
+        GameStorage._fn_ago(Const.CacheDataKey.sound, 'false');
     }
 
 
-    clickSound() {
-        if (this.isOpenSound()) {
-            this.closeSound()
+    _fn_de() {
+        if (this._fn_qg()) {
+            this._fn_dh()
         } else {
-            this.openSound()
+            this._fn_wi()
         }
     }
-    pauseMusic() {
+    _fn_wt() {
         const audioSource = AudioPlaybackService._audioSource!;
         audioSource.stop()
 
     }
 
-    resumeMusic() {
+    _fn_aca() {
         const audioSource = AudioPlaybackService._audioSource!;
         audioSource.play()
 

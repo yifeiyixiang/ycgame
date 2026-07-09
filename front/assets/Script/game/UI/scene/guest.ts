@@ -65,31 +65,31 @@ export class guest extends SceneItemBaseController {
     onLoad() {
 
         this.bindButton(this.btn, () => {
-            UiLayerService.instance.showDialog(Const.Dialogs.GodWealthLayer)
+            UiLayerService.instance._fn_ahg(Const.Dialogs.GodWealthLayer)
         })
     }
 
-    getOneGuest(guestId?: number) {
-        let unlockGuestsData = UtilScene.getUnlockGuestData()
+    _fn_ir(guestId?: number) {
+        let unlockGuestsData = UtilScene._fn_mt()
         if (unlockGuestsData.length == 0) {
             return false
         }
-        let guestData = unlockGuestsData[UtilPub.ranInt(0, unlockGuestsData.length - 1)]
+        let guestData = unlockGuestsData[UtilPub._fn_ym(0, unlockGuestsData.length - 1)]
         if (guestId != null) {
-            guestData = TableDataService.ins().getTableValueByID(Const.Tables.scene_guest, guestId)
+            guestData = TableDataService.ins()._fn_ly(Const.Tables.scene_guest, guestId)
         }
-        let spineName = UtilScene.getResSpineIcon(guestData.sp)
+        let spineName = UtilScene._fn_kc(guestData.sp)
 
         if (guestData.id == 88801) {
-            let item = TableDataService.ins().getTableValueByID(Const.Tables.avatarStyle, playerDataStore.avatarLookId)
+            let item = TableDataService.ins()._fn_ly(Const.Tables.avatarStyle, playerDataStore.avatarLookId)
             if (item.type == 1) {
-                spineName = UtilScene.getResSpineIcon(guestData.sp)
+                spineName = UtilScene._fn_kc(guestData.sp)
             } else {
-                spineName = UtilScene.getResSpineIcon(guestData.sp2)
+                spineName = UtilScene._fn_kc(guestData.sp2)
             }
         }
 
-        ResourceLoaderService.loadResWithBundle(spineName, sp.SkeletonData, (err, skedata) => {
+        ResourceLoaderService._fn_rq(spineName, sp.SkeletonData, (err, skedata) => {
             if (err) {
                 console.error("guest spine resource not found", guestData, err)
             }
@@ -100,8 +100,8 @@ export class guest extends SceneItemBaseController {
         })
 
         this.guestData = guestData
-        this.sceneNewItemNewSkinData = TableDataService.ins().getTableValueByID(Const.Tables.scene_skin, this.guestData.skin)
-        this.sceneItemData = TableDataService.ins().getTableValueByID(Const.Tables.scene_item, this.sceneNewItemNewSkinData.scene)
+        this.sceneNewItemNewSkinData = TableDataService.ins()._fn_ly(Const.Tables.scene_skin, this.guestData.skin)
+        this.sceneItemData = TableDataService.ins()._fn_ly(Const.Tables.scene_item, this.sceneNewItemNewSkinData.scene)
 
         UtilPub.log("--增加客人ID--", guestId)
 
@@ -112,16 +112,16 @@ export class guest extends SceneItemBaseController {
 
 
 
-    getIdleSceneItem() {
+    _fn_hm() {
 
-        let skinDataArr = TableDataService.ins().getTableValuesByType(Const.Tables.scene_skin, "prefab", this.sceneNewItemNewSkinData.prefab)
+        let skinDataArr = TableDataService.ins()._fn_mb(Const.Tables.scene_skin, "prefab", this.sceneNewItemNewSkinData.prefab)
 
         if (this.guestData.id == 88001) {
             skinDataArr = []
-            let skinAllDataArr = TableDataService.ins().getTableValuesByType(Const.Tables.scene_guest_ani, "guest", this.guestData.id)
+            let skinAllDataArr = TableDataService.ins()._fn_mb(Const.Tables.scene_guest_ani, "guest", this.guestData.id)
             skinAllDataArr.forEach(row => {
                 if ((row.skin + "").indexOf("10061") != -1) {
-                    skinDataArr.push(TableDataService.ins().getTableValueByID(Const.Tables.scene_skin, row.skin))
+                    skinDataArr.push(TableDataService.ins()._fn_ly(Const.Tables.scene_skin, row.skin))
                 }
             })
         }
@@ -132,17 +132,17 @@ export class guest extends SceneItemBaseController {
         for (let i = 0; i < skinDataArr.length; i++) {
             let item = skinDataArr[i]
 
-            if (SceneData.ins.getSceneSkinById(item.id) == GSceneSkinState.noGotted) {
+            if (SceneData.ins._fn_ky(item.id) == GSceneSkinState.noGotted) {
                 continue
             }
-            let script: GISceneItemParent = UtilScene.getSceneItemNodeById(item.scene)!
+            let script: GISceneItemParent = UtilScene._fn_kv(item.scene)!
 
 
-            if (Const.IsShowOpsDialog == true && Const.SelSceneNode != null && UtilScene.getSceneNodeScript(Const.SelSceneNode).id == script.id) {
+            if (Const.IsShowOpsDialog == true && Const.SelSceneNode != null && UtilScene._fn_kw(Const.SelSceneNode).id == script.id) {
 
                 continue
             }
-            if (script != null && script.guestNode == null && SceneData.ins.getSceneSkinById(script.skin) == GSceneSkinState.gotted) {
+            if (script != null && script.guestNode == null && SceneData.ins._fn_ky(script.skin) == GSceneSkinState.gotted) {
                 map.set(item.scene, script)
             }
         }
@@ -151,7 +151,7 @@ export class guest extends SceneItemBaseController {
             for (let key of map.keys()) {
                 arr.push(key)
             }
-            let k = arr[UtilPub.ranInt(0, arr.length - 1)]
+            let k = arr[UtilPub._fn_ym(0, arr.length - 1)]
 
             pickOne = map.get(k)!
         }
@@ -161,35 +161,35 @@ export class guest extends SceneItemBaseController {
 
     initGodWealth(state: GGuestState = GGuestState.streetWalk) {
         this.btn.active = true
-        let res = this.getOneGuest(88014)
+        let res = this._fn_ir(88014)
         this.state = state
         this.node.active = true
         this.scheduleOnce(() => {
             this.node.active = true
         }, 1)
-        this.curGridPoint = this.getEmptyStreetTargetPoint()
+        this.curGridPoint = this._fn_hb()
         if (this.curGridPoint == null) {
             return
         }
-        let pos = UtilScene.getBottomGridPos(this.curGridPoint.x, this.curGridPoint.y)
+        let pos = UtilScene._fn_fw(this.curGridPoint.x, this.curGridPoint.y)
         this.node.worldPosition = this.node.parent!.getComponent(UITransform)!.convertToWorldSpaceAR(pos)
         this.calEnterRoomTime = -999999
         let val = 100 * Const.GuestSpeedTime
-        this.speed = UtilPub.ranInt(Math.round(val * 0.8), Math.round(val * 1.5))
+        this.speed = UtilPub._fn_ym(Math.round(val * 0.8), Math.round(val * 1.5))
         Const.Guests.push(this.node)
     }
 
     init(state: GGuestState = GGuestState.subway) {
 
         this.btn.active = false
-        let res = this.getOneGuest()
+        let res = this._fn_ir()
 
         if (res == false) {
             UtilPub.log("没有客人--------------")
             return
         }
         let val = 100 * Const.GuestSpeedTime
-        this.speed = UtilPub.ranInt(Math.round(val * 0.8), Math.round(val * 1.5))
+        this.speed = UtilPub._fn_ym(Math.round(val * 0.8), Math.round(val * 1.5))
 
 
         if (this.guestData.id == 88801) {
@@ -200,14 +200,14 @@ export class guest extends SceneItemBaseController {
 
         if (this.state == GGuestState.streetWalk) {
             this.node.parent = Const.StreetFixedNode
-            this.curGridPoint = this.getEmptyStreetTargetPoint()
-            let pos = UtilScene.getBottomGridPos(this.curGridPoint.x, this.curGridPoint.y)
+            this.curGridPoint = this._fn_hb()
+            let pos = UtilScene._fn_fw(this.curGridPoint.x, this.curGridPoint.y)
             this.node.worldPosition = this.node.parent!.getComponent(UITransform)!.convertToWorldSpaceAR(pos)
 
         } else if (this.state == GGuestState.roomWalk) {
             this.node.parent = Const.ItemParent
-            this.curGridPoint = this.getEmptyRoomTargetPoint()
-            let pos = UtilScene.getBottomGridPos(this.curGridPoint.x, this.curGridPoint.y)
+            this.curGridPoint = this._fn_ha()
+            let pos = UtilScene._fn_fw(this.curGridPoint.x, this.curGridPoint.y)
             this.node.worldPosition = this.node.parent!.getComponent(UITransform)!.convertToWorldSpaceAR(pos)
 
         } else if (this.state == GGuestState.subway) {
@@ -246,8 +246,8 @@ export class guest extends SceneItemBaseController {
 
 
 
-    getEmptyStreetTargetPoint() {
-        let idx = UtilPub.ranInt(0, UtilScene.streetEmptyGrids.length - 1)
+    _fn_hb() {
+        let idx = UtilPub._fn_ym(0, UtilScene.streetEmptyGrids.length - 1)
         let p = UtilScene.streetEmptyGrids[idx]
         return p
     }
@@ -256,13 +256,13 @@ export class guest extends SceneItemBaseController {
 
 
 
-    getEmptyRoomTargetPoint() {
-        let idx = UtilPub.ranInt(0, UtilScene.roomEmptyGrids.length - 1)
+    _fn_ha() {
+        let idx = UtilPub._fn_ym(0, UtilScene.roomEmptyGrids.length - 1)
         let p = UtilScene.roomEmptyGrids[idx]
         return p
     }
 
-    nextPosIsBlock(p: Vec2) {
+    _fn_sf(p: Vec2) {
         if (this.state == GGuestState.streetWalking) {
             return UtilScene.streetObstaclesMap.get(p.x + "," + p.y) != null
         } else if (this.state == GGuestState.roomWalking || this.state == GGuestState.backing) {
@@ -271,7 +271,7 @@ export class guest extends SceneItemBaseController {
     }
 
     getWalkTime() {
-        return UtilPub.getDis2D(this.node.worldPosition, this.targetPos) / this.speed / Const.GuestSpeedTime
+        return UtilPub._fn_gv(this.node.worldPosition, this.targetPos) / this.speed / Const.GuestSpeedTime
     }
 
     testRoomWayIsBlock() {
@@ -280,10 +280,10 @@ export class guest extends SceneItemBaseController {
             return true
         }
 
-        let endPos = this.getEmptyRoomTargetPoint()
+        let endPos = this._fn_ha()
         this.star.init(v2(Const.MaxRoomX, Const.MaxRoomY), UtilScene.roomDoorPos, endPos, UtilScene.roomObstacles)
-        this.star.run()
-        this.path = this.star.getPath()
+        this.star._fn_acl()
+        this.path = this.star._fn_iz()
         this.isMoving = true
 
         if (this.path.length == 1 && this.path[0].x == endPos.x && this.path[0].y == endPos.y) {
@@ -292,7 +292,7 @@ export class guest extends SceneItemBaseController {
         return false
     }
 
-    checkStandy() {
+    _fn_ch() {
 
         if (this.state == GGuestState.subway) {
             this.state = GGuestState.subwaying
@@ -300,7 +300,7 @@ export class guest extends SceneItemBaseController {
             this.node.worldPosition = Const.GuestStartPos.worldPosition
 
             this.curGridPoint = v2(UtilScene.subway.x, UtilScene.subway.y)
-            let pos = UtilScene.getBottomGridPos(UtilScene.subway.x, UtilScene.subway.y)
+            let pos = UtilScene._fn_fw(UtilScene.subway.x, UtilScene.subway.y)
             this.targetPos = this.node.parent!.getComponent(UITransform)!.convertToWorldSpaceAR(pos)
 
             this.spineAni.setAnimation(0, GSpineAni.walk1, true);
@@ -313,22 +313,22 @@ export class guest extends SceneItemBaseController {
         }
     }
 
-    checkStreet() {
+    _fn_ci() {
         if (this.state == GGuestState.streetWalk) {
 
-            if (UtilPub.ranInt(0, 100) < 30 && this.guestData && this.guestData.id != 88014) {
+            if (UtilPub._fn_ym(0, 100) < 30 && this.guestData && this.guestData.id != 88014) {
                 this.state = GGuestState.queueForRoomDoor
 
             } else if (this.curGridPoint) {
 
                 this.node.parent = Const.StreetFixedNode
 
-                this.targetPoint = this.getEmptyStreetTargetPoint()
+                this.targetPoint = this._fn_hb()
 
 
                 this.star.init(v2(Const.MaxStreetX, Const.MaxStreetY - 1), this.curGridPoint, this.targetPoint, UtilScene.streetObstacles)
-                this.star.run()
-                this.path = this.star.getPath()
+                this.star._fn_acl()
+                this.path = this.star._fn_iz()
 
 
                 if (this.path.length == 1) {
@@ -360,8 +360,8 @@ export class guest extends SceneItemBaseController {
 
 
             this.star.init(v2(Const.MaxStreetX, Const.MaxStreetY), this.curGridPoint, this.targetPoint, UtilScene.streetObstacles)
-            this.star.run()
-            this.path = this.star.getPath()
+            this.star._fn_acl()
+            this.path = this.star._fn_iz()
 
 
 
@@ -380,24 +380,24 @@ export class guest extends SceneItemBaseController {
         }
     }
 
-    checkRoomWalk() {
+    _fn_cg() {
         if (this.state == GGuestState.roomWalk) {
 
             if (this.calEnterRoomTime > this.maxRoomTime) {
                 this.calEnterRoomTime = 0
                 this.state = GGuestState.back
                 UtilPub.log("-------选择离开----")
-            } else if (UtilPub.ranInt(0, 100) < this.toWorkRate && this.calTimeWorkRest <= 0 && this.guestData.id != 88011 && this.guestData.id != 88801) {
+            } else if (UtilPub._fn_ym(0, 100) < this.toWorkRate && this.calTimeWorkRest <= 0 && this.guestData.id != 88011 && this.guestData.id != 88801) {
                 this.state = GGuestState.goToWork
 
             } else {
-                let pos = UtilScene.getBottomGridPos(this.curGridPoint.x, this.curGridPoint.y)
+                let pos = UtilScene._fn_fw(this.curGridPoint.x, this.curGridPoint.y)
                 this.node.worldPosition = this.node.parent!.getComponent(UITransform)!.convertToWorldSpaceAR(pos)
 
-                let endPoint = this.getEmptyRoomTargetPoint()
+                let endPoint = this._fn_ha()
                 this.star.init(v2(Const.MaxRoomX, Const.MaxRoomY), this.curGridPoint, endPoint, UtilScene.roomObstacles)
-                this.star.run()
-                this.path = this.star.getPath()
+                this.star._fn_acl()
+                this.path = this.star._fn_iz()
 
 
 
@@ -417,12 +417,12 @@ export class guest extends SceneItemBaseController {
         }
     }
 
-    checkBack() {
+    _fn_bm() {
         if (this.state == GGuestState.back) {
             let endPoint = UtilScene.roomDoorPos
             this.star.init(v2(Const.MaxRoomX, Const.MaxRoomY), this.curGridPoint, endPoint, UtilScene.roomObstacles)
-            this.star.run()
-            this.path = this.star.getPath()
+            this.star._fn_acl()
+            this.path = this.star._fn_iz()
 
 
 
@@ -451,7 +451,7 @@ export class guest extends SceneItemBaseController {
 
 
 
-    getTargetRoundEmptyGrid() {
+    _fn_mg() {
         let startPos = v2(this.targetSceneItemScript.curGridPoint.x - 1, this.targetSceneItemScript.curGridPoint.y - 1)
         let size = v2(this.targetSceneItemScript.itemSize.x + 1, this.targetSceneItemScript.itemSize.y + 1)
         for (let i = 0; i < size.x; i++) {
@@ -466,24 +466,24 @@ export class guest extends SceneItemBaseController {
         return null
     }
 
-    checkToWork() {
+    _fn_cl() {
         if (this.state == GGuestState.goToWork) {
             this.state = GGuestState.goToWorking
-            this.getIdleSceneItem()
+            this._fn_hm()
 
             if (this.targetSceneItemScript != null) {
                 this.targetSceneItemScript.guestNode = this.node
                 UtilPub.log("-------找到工作----", this.targetSceneItemScript)
 
-                let endPoint = this.getTargetRoundEmptyGrid()
+                let endPoint = this._fn_mg()
                 if (endPoint == null) {
 
                     this.state = GGuestState.roomWalk
                     return
                 }
                 this.star.init(v2(Const.MaxRoomX, Const.MaxRoomY), this.curGridPoint, endPoint, UtilScene.roomObstacles)
-                this.star.run()
-                this.path = this.star.getPath()
+                this.star._fn_acl()
+                this.path = this.star._fn_iz()
 
 
 
@@ -518,12 +518,12 @@ export class guest extends SceneItemBaseController {
         this.isSelOps = isUp
     }
 
-    setWorkingAni() {
+    _fn_agt() {
 
         let selIconNode = this.targetSceneItemScript.node.getChildByName("icon" + this.targetSceneItemScript.curFace)!
         selIconNode.active = false
 
-        let aniData = TableDataService.ins().getTableValuesByType2(Const.Tables.scene_guest_ani, "guest", this.guestData.id, "skin", this.targetSceneItemScript.skin + "")[0]
+        let aniData = TableDataService.ins()._fn_mc(Const.Tables.scene_guest_ani, "guest", this.guestData.id, "skin", this.targetSceneItemScript.skin + "")[0]
 
 
         let delta = v2(0, 0)
@@ -553,14 +553,14 @@ export class guest extends SceneItemBaseController {
         this.node.worldPosition = v3(this.node.worldPosition.x + delta.x, this.node.worldPosition.y + delta.y, this.node.worldPosition.z)
     }
 
-    checkWork() {
+    _fn_cq() {
         if (this.state == GGuestState.work) {
             this.state = GGuestState.working
-            this.setWorkingAni()
+            this._fn_agt()
         }
     }
 
-    runPath() {
+    _fn_acm() {
 
         if (this.path.length > 0 && this.isMoving == false && this.state % 2 == 0) {
 
@@ -571,21 +571,21 @@ export class guest extends SceneItemBaseController {
             let delay = 0
             let targetPoint = new AStarNode(this.curGridPoint.x, this.curGridPoint.y)
 
-            if (UtilPub.ranInt(0, 100) < this.poseRate) {
+            if (UtilPub._fn_ym(0, 100) < this.poseRate) {
                 delay = 3
-                if (UtilPub.ranInt(0, 100) < 50) {
+                if (UtilPub._fn_ym(0, 100) < 50) {
                     this.setAniState(this.node.scale.x, GSpineAni.pose1, false)
                 } else {
                     this.setAniState(this.node.scale.x, GSpineAni.pose2, false)
                 }
-                let pos = UtilScene.getBottomGridPos(targetPoint.x, targetPoint.y)
+                let pos = UtilScene._fn_fw(targetPoint.x, targetPoint.y)
                 this.targetPos = this.node.parent!.getComponent(UITransform)!.convertToWorldSpaceAR(pos)
             } else {
                 targetPoint = this.path.pop()!
 
 
 
-                if (this.nextPosIsBlock(v2(targetPoint.x, targetPoint.y))) {
+                if (this._fn_sf(v2(targetPoint.x, targetPoint.y))) {
 
                     this.path = []
                     this.isMoving = true
@@ -605,7 +605,7 @@ export class guest extends SceneItemBaseController {
                     return
                 }
 
-                let pos = UtilScene.getBottomGridPos(targetPoint.x, targetPoint.y)
+                let pos = UtilScene._fn_fw(targetPoint.x, targetPoint.y)
                 this.targetPos = this.node.parent!.getComponent(UITransform)!.convertToWorldSpaceAR(pos)
 
 
@@ -624,7 +624,7 @@ export class guest extends SceneItemBaseController {
                     deltaX = 0
                     deltaY = 0
                     this.curGridPoint = v2(targetPoint.x, targetPoint.y)
-                    let pos = UtilScene.getBottomGridPos(this.curGridPoint.x, this.curGridPoint.y)
+                    let pos = UtilScene._fn_fw(this.curGridPoint.x, this.curGridPoint.y)
                     this.node.worldPosition = this.node.parent!.getComponent(UITransform)!.convertToWorldSpaceAR(pos)
                 }
 
@@ -656,18 +656,18 @@ export class guest extends SceneItemBaseController {
 
             if (delay == 0) {
                 this.aniTween = tween(this.node).to(this.getWalkTime(), { worldPosition: this.targetPos }).call(() => {
-                    this.runPathEnd(targetPoint)
+                    this._fn_acn(targetPoint)
                 }).start()
             } else {
                 this.aniTween = tween(this.node).to(this.getWalkTime(), { worldPosition: this.targetPos }).delay(delay / Const.GuestSpeedTime).call(() => {
-                    this.runPathEnd(targetPoint)
+                    this._fn_acn(targetPoint)
                 }).start()
             }
 
         }
     }
 
-    runPathEnd(targetPoint: AStarNode) {
+    _fn_acn(targetPoint: AStarNode) {
         this.targetPos = null!
         this.curGridPoint = v2(targetPoint.x, targetPoint.y)
 
@@ -687,15 +687,15 @@ export class guest extends SceneItemBaseController {
                 this.state = GGuestState.work
             } else if (this.state == GGuestState.backing) {
 
-                this.leaveAway()
+                this._fn_rd()
             }
         } else {
             this.isMoving = false
-            this.runPath()
+            this._fn_acm()
         }
     }
 
-    leaveAway() {
+    _fn_rd() {
         this.state = GGuestState.subway
         this.node.active = false
         this.emit(GD.event.guestLeave, this.node)
@@ -705,13 +705,13 @@ export class guest extends SceneItemBaseController {
         this.calTime += deltaTime
         if (this.calTime > 0.3 / Const.GuestSpeedTime) {
             this.calTime = 0
-            this.checkWork()
-            this.checkToWork()
-            this.checkBack()
-            this.checkRoomWalk()
-            this.checkStandy()
-            this.checkStreet()
-            if (this.isMovingEnd == true) this.runPath()
+            this._fn_cq()
+            this._fn_cl()
+            this._fn_bm()
+            this._fn_cg()
+            this._fn_ch()
+            this._fn_ci()
+            if (this.isMovingEnd == true) this._fn_acm()
 
         }
 
@@ -728,7 +728,7 @@ export class guest extends SceneItemBaseController {
 
                     if (this.curSceneItemFace != this.targetSceneItemScript.curFace) {
                         this.curSceneItemFace = this.targetSceneItemScript.curFace
-                        this.setWorkingAni()
+                        this._fn_agt()
                         UtilPub.log("--------测试---")
                     }
 
@@ -740,19 +740,19 @@ export class guest extends SceneItemBaseController {
                 this.calWorkTime += deltaTime
             }
             if (this.calWorkTime > this.workTime) {
-                this.workTime = UtilPub.ranInt(this.workTimeBaseVal * 0.7, this.workTimeBaseVal * 1.3)
+                this.workTime = UtilPub._fn_ym(this.workTimeBaseVal * 0.7, this.workTimeBaseVal * 1.3)
                 this.calWorkTime = 0
                 this.targetSceneItemScript.guestNode = null!
                 this.node.parent = Const.ItemParent
 
-                let curPos = this.getTargetRoundEmptyGrid()
+                let curPos = this._fn_mg()
                 if (curPos == null) {
-                    this.leaveAway()
+                    this._fn_rd()
                     UtilPub.log("-----被强制离开", this.targetSceneItemScript.node)
                 } else {
                     this.state = GGuestState.roomWalk
                     this.curGridPoint = curPos
-                    let pos = UtilScene.getBottomGridPos(this.curGridPoint.x, this.curGridPoint.y)
+                    let pos = UtilScene._fn_fw(this.curGridPoint.x, this.curGridPoint.y)
                     this.node.worldPosition = this.node.parent!.getComponent(UITransform)!.convertToWorldSpaceAR(pos)
                     this.setAniState(this.node.scale.x, GSpineAni.idle1, false)
                 }

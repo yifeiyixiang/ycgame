@@ -22,7 +22,7 @@ export class AvatarListView extends BaseView {
 
 
     start() {
-        this.bindButton(find("root/btnClose", this.node)!, this.popClose)
+        this.bindButton(find("root/btnClose", this.node)!, this._fn_xe)
     }
 
     show(args: any) {
@@ -31,7 +31,7 @@ export class AvatarListView extends BaseView {
 
 
 
-        aiRobot.stopUpdate();
+        aiRobot._fn_ain();
     }
 
     updateInfo() {
@@ -39,15 +39,15 @@ export class AvatarListView extends BaseView {
     }
 
     openDuihuanMa() {
-        AudioPlaybackService.instance.playSound(Const.Audio.btn)
+        AudioPlaybackService.instance._fn_xc(Const.Audio.btn)
 
-        GamePlatform.track("查看设置-兑换码")
-        UiLayerService.instance.pushShowDialog(Const.Dialogs.CodeDialog)
+        GamePlatform._fn_aja("查看设置-兑换码")
+        UiLayerService.instance._fn_xw(Const.Dialogs.CodeDialog)
     }
 
     openRoleInfo() {
-        AudioPlaybackService.instance.playSound(Const.Audio.btn)
-        UiLayerService.instance.pushShowDialog(Const.Dialogs.RoleInfoDialog)
+        AudioPlaybackService.instance._fn_xc(Const.Audio.btn)
+        UiLayerService.instance._fn_xw(Const.Dialogs.RoleInfoDialog)
     }
 }
 

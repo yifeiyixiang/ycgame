@@ -59,7 +59,7 @@ export class HotUpdate extends BaseView {
 
     btnUpdateStatus: HintBtnStatus = HintBtnStatus.error;
 
-    checkCb(event: any) {
+    _fn_bn(event: any) {
         console.log('Code: ' + event.getEventCode());
 
         this._am.setEventCallback(null!);
@@ -68,16 +68,16 @@ export class HotUpdate extends BaseView {
 
         switch (event.getEventCode()) {
             case jsb.EventAssetsManager.ERROR_NO_LOCAL_MANIFEST:
-                this.showHintLayer(localText.hotupdate.noLocalManifest);
+                this._fn_ahk(localText.hotupdate.noLocalManifest);
                 break;
             case jsb.EventAssetsManager.ERROR_DOWNLOAD_MANIFEST:
             case jsb.EventAssetsManager.ERROR_PARSE_MANIFEST:
-                this.showHintLayer(localText.hotupdate.remoteManifestError);
+                this._fn_ahk(localText.hotupdate.remoteManifestError);
                 break;
             case jsb.EventAssetsManager.ALREADY_UP_TO_DATE:
                 this.infoLabel.string = localText.hotupdate.alreadyNew;
 
-                this.onClickBtnEnterGame();
+                this._fn_tb();
                 break;
             case jsb.EventAssetsManager.NEW_VERSION_FOUND:
 
@@ -85,7 +85,7 @@ export class HotUpdate extends BaseView {
 
                 this.infoLabel.string = localText.hotupdate.updating;
 
-                this.hotUpdate();
+                this._fn_no();
                 break;
             default:
                 return;
@@ -93,16 +93,16 @@ export class HotUpdate extends BaseView {
 
     }
 
-    getSizeKB(bytes: number) {
+    _fn_lj(bytes: number) {
         return Math.ceil(bytes / 1024);
     }
 
-    updateCb(event: any) {
+    _fn_ajl(event: any) {
         var needRestart = false;
         var failed = false;
         switch (event.getEventCode()) {
             case jsb.EventAssetsManager.ERROR_NO_LOCAL_MANIFEST:
-                this.showHintLayer(localText.hotupdate.noLocalManifest);
+                this._fn_ahk(localText.hotupdate.noLocalManifest);
                 failed = true;
                 break;
             case jsb.EventAssetsManager.UPDATE_PROGRESSION:
@@ -110,7 +110,7 @@ export class HotUpdate extends BaseView {
                 this.fileProgress.progress = event.getPercentByFile();
 
                 this.fileLabel.string = event.getDownloadedFiles() + ' / ' + event.getTotalFiles();
-                this.sizeLabel.string = this.getSizeKB(event.getDownloadedBytes()) + ' / ' + this.getSizeKB(event.getTotalBytes()) + "KB";
+                this.sizeLabel.string = this._fn_lj(event.getDownloadedBytes()) + ' / ' + this._fn_lj(event.getTotalBytes()) + "KB";
 
                 this.sizeLabel.string = Math.floor(event.getPercent() * 1000) / 10 + "%";
 
@@ -122,13 +122,13 @@ export class HotUpdate extends BaseView {
                 break;
             case jsb.EventAssetsManager.ERROR_DOWNLOAD_MANIFEST:
             case jsb.EventAssetsManager.ERROR_PARSE_MANIFEST:
-                this.showHintLayer(localText.hotupdate.remoteManifestError);
+                this._fn_ahk(localText.hotupdate.remoteManifestError);
                 failed = true;
                 break;
             case jsb.EventAssetsManager.ALREADY_UP_TO_DATE:
                 this.infoLabel.string = localText.hotupdate.alreadyNew;
 
-                this.onClickBtnEnterGame();
+                this._fn_tb();
                 failed = true;
                 break;
             case jsb.EventAssetsManager.UPDATE_FINISHED:
@@ -136,12 +136,12 @@ export class HotUpdate extends BaseView {
                 needRestart = true;
                 break;
             case jsb.EventAssetsManager.UPDATE_FAILED:
-                this.showHintLayer(localText.hotupdate.updateFail.format(event.getMessage()));
+                this._fn_ahk(localText.hotupdate.updateFail.format(event.getMessage()));
                 this._updating = false;
                 this._canRetry = true;
                 break;
             case jsb.EventAssetsManager.ERROR_UPDATING:
-                this.showHintLayer(localText.hotupdate.updateFail.format(event.getAssetId() + "," + event.getMessage()));
+                this._fn_ahk(localText.hotupdate.updateFail.format(event.getAssetId() + "," + event.getMessage()));
                 break;
             case jsb.EventAssetsManager.ERROR_DECOMPRESS:
                 this.infoLabel.string = event.getMessage();
@@ -187,7 +187,7 @@ export class HotUpdate extends BaseView {
         }
     }
 
-    retry() {
+    _fn_acb() {
         if (!this._updating && this._canRetry) {
 
             this._canRetry = false;
@@ -203,19 +203,19 @@ export class HotUpdate extends BaseView {
             return;
         }
         if (!this._am.getLocalManifest() || !this._am.getLocalManifest().isLoaded()) {
-            this.showHintLayer(localText.hotupdate.noLocalManifest);
+            this._fn_ahk(localText.hotupdate.noLocalManifest);
             return;
         }
-        this._am.setEventCallback(this.checkCb.bind(this));
+        this._am.setEventCallback(this._fn_bn.bind(this));
 
         this._am.checkUpdate();
         this._updating = true;
     }
 
-    hotUpdate() {
+    _fn_no() {
         if (this._am && !this._updating) {
             this.infoLabel.string = localText.hotupdate.updating;
-            this._am.setEventCallback(this.updateCb.bind(this));
+            this._am.setEventCallback(this._fn_ajl.bind(this));
 
             this._failCount = 0;
             this._am.update();
@@ -223,7 +223,7 @@ export class HotUpdate extends BaseView {
         }
     }
 
-    showHintLayer(msg: string, status: HintBtnStatus = HintBtnStatus.error) {
+    _fn_ahk(msg: string, status: HintBtnStatus = HintBtnStatus.error) {
         this.btnUpdateStatus = status;
         this.hintLayer.active = true;
         this.hintLayerMsgLabel.string = msg;
@@ -270,10 +270,10 @@ export class HotUpdate extends BaseView {
         this.fileProgress.progress = 0;
 
         this.hintLayer.active = false;
-        this.bindButton(this.btnUpdate, this.onClickBtnUpdate);
+        this.bindButton(this.btnUpdate, this._fn_tt);
 
-        this.bindButton(this.btnCheck, this.onClickBtnCheck);
-        this.bindButton(this.btnEnterGame, this.onClickBtnEnterGame);
+        this.bindButton(this.btnCheck, this._fn_sy);
+        this.bindButton(this.btnEnterGame, this._fn_tb);
 
         if (!jsb) {
             this.node.active = false;
@@ -341,7 +341,7 @@ export class HotUpdate extends BaseView {
         this.versionLabel.string = this._am.getLocalManifest().getVersion();
         Const.hotupdateVersion = this._am.getLocalManifest().getVersion();
 
-        this.onClickBtnCheck();
+        this._fn_sy();
     }
 
     onDestroy() {
@@ -351,12 +351,12 @@ export class HotUpdate extends BaseView {
         }
     }
 
-    onClickBtnUpdate() {
+    _fn_tt() {
         director.loadScene("loading");
         return
         switch (this.btnUpdateStatus) {
             case HintBtnStatus.update:
-                this.hotUpdate();
+                this._fn_no();
                 break;
             case HintBtnStatus.error:
 
@@ -368,11 +368,11 @@ export class HotUpdate extends BaseView {
         this.hintLayer.active = false;
     }
 
-    onClickBtnCheck() {
+    _fn_sy() {
         this.checkUpdate();
     }
 
-    onClickBtnEnterGame() {
+    _fn_tb() {
         director.loadScene("loading");
     }
 

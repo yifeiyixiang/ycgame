@@ -14,14 +14,14 @@ export class TreasureModel {
     private static _timeData: any = null
     static get timeData() {
         if (this._timeData == null) {
-            this._timeData = TableDataService.ins().getTableValueByKey(Const.Tables.privilege, "key", "10012")
+            this._timeData = TableDataService.ins()._fn_lz(Const.Tables.privilege, "key", "10012")
         }
         return this._timeData!
     }
 
-    static initLimitData(force: boolean = false) {
-        let propData = TableDataService.ins().getTableValuesByType(Const.Tables.prop, "abao1", "1")
-        let propData2 = TableDataService.ins().getTableValuesByType(Const.Tables.prop, "abao2", "2")
+    static _fn_of(force: boolean = false) {
+        let propData = TableDataService.ins()._fn_mb(Const.Tables.prop, "abao1", "1")
+        let propData2 = TableDataService.ins()._fn_mb(Const.Tables.prop, "abao2", "2")
         let bao1 = []
         let bao2 = []
 
@@ -31,19 +31,19 @@ export class TreasureModel {
         }
 
         this._treasureData = { bao1: bao1, bao2: bao2, receive: [0, 0, 0, 0, 0, 0, 0], freeReflesh: 0 }
-        this._treasureData = playerDataStore.getLimitTimeData(this.timeData.dataKey, this.timeData.cdTime, this._treasureData, force)
+        this._treasureData = playerDataStore._fn_ig(this.timeData.dataKey, this.timeData.cdTime, this._treasureData, force)
         return this._treasureData
     }
 
     static get treasureData() {
         if (this._treasureData == null) {
-            this.initLimitData(false)
+            this._fn_of(false)
         }
         return this._treasureData
     }
 
-    static saveTreasureData() {
-        playerDataStore.getLimitTimeData(this.timeData.dataKey, this.timeData.cdTime, this.treasureData, true)
+    static _fn_act() {
+        playerDataStore._fn_ig(this.timeData.dataKey, this.timeData.cdTime, this.treasureData, true)
     }
 
 
@@ -63,10 +63,10 @@ export class TreasureModel {
 
     static set receiveGift(state: number) {
         this.treasureData.receive[6] = state
-        this.saveTreasureData()
+        this._fn_act()
     }
 
-    static checkCompseHasProp(propId: number) {
+    static _fn_bq(propId: number) {
         return false
         for (let index = 0; index < 6; index++) {
             if (this.treasureData.bao1[index].id == propId && this.treasureData.receive[index] == 0) {

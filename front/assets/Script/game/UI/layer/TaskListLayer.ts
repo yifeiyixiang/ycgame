@@ -28,16 +28,16 @@ export class TaskListLayer extends BaseView {
 
 
     onLoad() {
-        this.bindButton(this.btnClose, this.onClickBtnClose);
+        this.bindButton(this.btnClose, this._fn_sz);
     }
 
     show(args: any) {
         super.show(args);
-        this.initUI();
+        this._fn_ph();
     }
 
-    initUI() {
-        let taskGroupMap = mergeBoardStateStore.createTask2();
+    _fn_ph() {
+        let taskGroupMap = mergeBoardStateStore._fn_dx();
 
         this.listContent.removeAllChildren()
         for (const taskGroupId in taskGroupMap) {
@@ -47,25 +47,25 @@ export class TaskListLayer extends BaseView {
                 taskGroupNode.position = Vec3.ZERO
                 taskGroupNode.parent = this.listContent
                 taskGroupNode.active = true
-                let taskUnlockConfig = TableDataService.ins().getTableValueByID(Const.Tables.taskUnlock, parseInt(taskGroupId))
-                this.setString(find("title", taskGroupNode)!, taskUnlockConfig.name);
-                let taskProgress = mergeBoardStateStore.getTaskProgress(parseInt(taskGroupId))
-                this.setString(find("ProgressBar/roomBar/Label", taskGroupNode)!, Math.floor(taskProgress * 100) + "%");
+                let taskUnlockConfig = TableDataService.ins()._fn_ly(Const.Tables.taskUnlock, parseInt(taskGroupId))
+                this._fn_ago(find("title", taskGroupNode)!, taskUnlockConfig.name);
+                let taskProgress = mergeBoardStateStore._fn_mk(parseInt(taskGroupId))
+                this._fn_ago(find("ProgressBar/roomBar/Label", taskGroupNode)!, Math.floor(taskProgress * 100) + "%");
                 find("ProgressBar/roomBar", taskGroupNode)!.getComponent(ProgressBar)!.progress = taskProgress
                 for (let taskIndex = 0; taskIndex < taskGroup.length; taskIndex++) {
                     let taskItemData = taskGroup[taskIndex];
                     let taskItemNode = instantiate(this.tempItem)
                     taskItemNode.position = Vec3.ZERO
                     taskItemNode.parent = find("Layout", taskGroupNode)!
-                    this.refreshTaskItem(taskItemNode, taskItemData)
+                    this._fn_zv(taskItemNode, taskItemData)
                 }
                 let giftBtn = find("ProgressBar/gift", taskGroupNode)!
                 let btnReceive = find("btnReceive", taskGroupNode)!
 
                 this.bindButton(giftBtn, () => {
 
-                    let giftWorldPos = UtilPub.convertToWorldSpace(giftBtn)
-                    UiLayerService.instance.showDialog(Const.Dialogs.RewardPopupItemController, { RewardItemRecord: taskUnlockConfig.taskReward, pos: giftWorldPos })
+                    let giftWorldPos = UtilPub._fn_dp(giftBtn)
+                    UiLayerService.instance._fn_ahg(Const.Dialogs.RewardPopupItemController, { RewardItemRecord: taskUnlockConfig.taskReward, pos: giftWorldPos })
                 })
                 if (taskGroup.length > 0) {
                     btnReceive.active = false
@@ -75,10 +75,10 @@ export class TaskListLayer extends BaseView {
                     this.bindButton(btnReceive, () => {
                         for (let rewardIndex = 0; rewardIndex < taskUnlockConfig.taskReward.length; rewardIndex++) {
                             const rewardEntry = taskUnlockConfig.taskReward[rewardIndex];
-                            mergeBoardStateStore.addPropNum(rewardEntry[0], rewardEntry[1])
+                            mergeBoardStateStore._fn_m(rewardEntry[0], rewardEntry[1])
                         }
-                        mergeBoardStateStore.setTaskGetReward(parseInt(taskGroupId))
-                        this.initUI()
+                        mergeBoardStateStore._fn_ags(parseInt(taskGroupId))
+                        this._fn_ph()
                     })
                 }
             }
@@ -87,25 +87,25 @@ export class TaskListLayer extends BaseView {
 
     }
 
-    refreshTaskItem(taskItemNode: Node, taskData: any) {
+    _fn_zv(taskItemNode: Node, taskData: any) {
         let propSlotNodes = find("propLayer", taskItemNode)!.children;
         let isTaskReady = true
         propSlotNodes.forEach((propItem: Node, propIndex: number) => {
             let requiredProp = taskData.propArr[propIndex];
             if (requiredProp) {
                 propItem.active = true;
-                let propConfig = TableDataService.ins().getTableValueByID(Const.Tables.prop, requiredProp.id);
+                let propConfig = TableDataService.ins()._fn_ly(Const.Tables.prop, requiredProp.id);
                 if (!propConfig) {
                     propItem.active = false;
                     return;
                 }
-                this.setSpriteFrame2(find("icon", propItem)!.getComponent(Sprite)!, Const.resPath.icon + propConfig.icon);
-                let ownedPropInfo = mergeBoardStateStore.getRoomDataHasInfoById(requiredProp.id);
+                this._fn_agl(find("icon", propItem)!.getComponent(Sprite)!, Const.resPath.icon + propConfig.icon);
+                let ownedPropInfo = mergeBoardStateStore._fn_kg(requiredProp.id);
                 let displayCount = ownedPropInfo.num;
                 if (displayCount >= requiredProp.num) {
                     displayCount = requiredProp.num;
                 }
-                this.setString(find("num", propItem), displayCount + "/" + requiredProp.num);
+                this._fn_ago(find("num", propItem), displayCount + "/" + requiredProp.num);
                 let bgNode = find("bg", propItem)!;
                 let gouNode = find("gou", propItem)!;
                 if (ownedPropInfo.num >= requiredProp.num) {
@@ -118,16 +118,16 @@ export class TaskListLayer extends BaseView {
                 }
                 // @ts-ignore
                 propItem.propRow = propConfig;
-                this.bindButton(propItem, this.onClickTaskPropItem);
+                this.bindButton(propItem, this._fn_uk);
 
             } else {
                 propItem.active = false;
             }
         });
 
-        this.setString(find("awardLayer/prop/num", taskItemNode)!, taskData.starNum);
+        this._fn_ago(find("awardLayer/prop/num", taskItemNode)!, taskData.starNum);
 
-        this.setString(find("id", taskItemNode)!, "id" + taskData.id);
+        this._fn_ago(find("id", taskItemNode)!, "id" + taskData.id);
 
 
         let btnRefresh = find("btnRefresh", taskItemNode)!;
@@ -139,8 +139,8 @@ export class TaskListLayer extends BaseView {
         // @ts-ignore
         btnFinish.task = taskData;
 
-        this.bindButton(btnRefresh, this.onClickBtnRefresh);
-        this.bindButton(btnFinish, this.onClickBtnFinish);
+        this.bindButton(btnRefresh, this._fn_tj);
+        this.bindButton(btnFinish, this._fn_tc);
 
 
 
@@ -153,7 +153,7 @@ export class TaskListLayer extends BaseView {
             btnRefresh.active = true
         }
 
-        if (mergeBoardStateStore.getHandIndex() >= 8) {
+        if (mergeBoardStateStore._fn_hj() >= 8) {
 
         } else {
             btnRefresh.active = false;
@@ -163,14 +163,14 @@ export class TaskListLayer extends BaseView {
     }
 
 
-    onClickTaskPropItem(btn: Button) {
+    _fn_uk(btn: Button) {
         // @ts-ignore
         let propRow = btn.node.propRow;
-        mergeBoardStateStore.openPropInfoLayer(propRow.id);
+        mergeBoardStateStore._fn_wh(propRow.id);
     }
 
 
-    onClickBtnFinish(btn: Button) {
+    _fn_tc(btn: Button) {
 
         // @ts-ignore
         let taskData = btn.node.task;
@@ -181,21 +181,21 @@ export class TaskListLayer extends BaseView {
     }
 
 
-    onClickBtnRefresh(btn: Button) {
+    _fn_tj(btn: Button) {
         this.close()
         return
         // @ts-ignore
         let taskData = btn.node.task;
 
-        mergeBoardStateStore.openAd("刷新任务", (isAward: boolean) => {
+        mergeBoardStateStore._fn_we("刷新任务", (isAward: boolean) => {
             if (isAward) {
                 mergeBoardStateStore.refreshTask(taskData);
-                this.initUI();
+                this._fn_ph();
             }
         });
     }
 
-    onClickBtnClose() {
+    _fn_sz() {
         this.close();
     }
 

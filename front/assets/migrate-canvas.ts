@@ -42,16 +42,16 @@ director.on(Director.EVENT_AFTER_SCENE_LAUNCH, () => {
             const availableLayers = ~usedLayer;
             const lastAvailableLayer = availableLayers & ~(availableLayers - 1);
             val.cameraComponent!.visibility = lastAvailableLayer | (val.cameraComponent!.visibility & builtinLayerMask);
-            setChildrenLayer(val.node, lastAvailableLayer);
+            _fn_aeo(val.node, lastAvailableLayer);
             usedLayer |= availableLayers;
         }
     });
 });
 
-function setChildrenLayer (node: Node, layer: number) {
+function _fn_aeo (node: Node, layer: number) {
     for (let i = 0, l = node.children.length; i < l; i++) {
         node.children[i].layer = layer;
-        setChildrenLayer(node.children[i], layer);
+        _fn_aeo(node.children[i], layer);
     }
 }
 
@@ -62,15 +62,15 @@ if(!EDITOR) {
         setParentEngine.call(this, value, keepWorldTransform);
         if (!value) return;
 
-        let layer = getCanvasCameraLayer(this);
+        let layer = _fn_gb(this);
         if (layer) {
             this.layer = layer;
-            setChildrenLayer(this, layer);
+            _fn_aeo(this, layer);
         }
     }
 }
 
-function getCanvasCameraLayer (node: Node) {
+function _fn_gb (node: Node) {
     let layer = 0;
     let canvas = node.getComponent(Canvas);
     if (canvas && canvas.cameraComponent) {
@@ -82,7 +82,7 @@ function getCanvasCameraLayer (node: Node) {
         return layer;
     }
     if (node.parent) {
-        layer = getCanvasCameraLayer(node.parent);
+        layer = _fn_gb(node.parent);
     }
     return layer;
 }

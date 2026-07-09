@@ -32,22 +32,22 @@ export class GoodsItemDragController extends BaseView {
 
     onLoad() {
 
-        this.icon.node.on(Node.EventType.TOUCH_START, this.onTouchStart, this);
-        this.icon.node.on(Node.EventType.TOUCH_MOVE, this.onTouchMove, this);
-        this.icon.node.on(Node.EventType.TOUCH_END, this.onTouchEnd, this);
-        this.icon.node.on(Node.EventType.TOUCH_CANCEL, this.onTouchEnd, this);
+        this.icon.node.on(Node.EventType.TOUCH_START, this._fn_wa, this);
+        this.icon.node.on(Node.EventType.TOUCH_MOVE, this._fn_vz, this);
+        this.icon.node.on(Node.EventType.TOUCH_END, this._fn_vx, this);
+        this.icon.node.on(Node.EventType.TOUCH_CANCEL, this._fn_vx, this);
 
-        GameEventManager.eventTarget.on(GameEventManager.EEventName.REFRESH_GOOD_STATU, this.refreshStatu, this);
+        GameEventManager.eventTarget.on(GameEventManager.EEventName.REFRESH_GOOD_STATU, this._fn_zu, this);
     }
 
     onDestroy() {
 
-        this.icon.node.off(Node.EventType.TOUCH_START, this.onTouchStart, this);
-        this.icon.node.off(Node.EventType.TOUCH_MOVE, this.onTouchMove, this);
-        this.icon.node.off(Node.EventType.TOUCH_END, this.onTouchEnd, this);
-        this.icon.node.off(Node.EventType.TOUCH_CANCEL, this.onTouchEnd, this);
+        this.icon.node.off(Node.EventType.TOUCH_START, this._fn_wa, this);
+        this.icon.node.off(Node.EventType.TOUCH_MOVE, this._fn_vz, this);
+        this.icon.node.off(Node.EventType.TOUCH_END, this._fn_vx, this);
+        this.icon.node.off(Node.EventType.TOUCH_CANCEL, this._fn_vx, this);
 
-        GameEventManager.eventTarget.off(GameEventManager.EEventName.REFRESH_GOOD_STATU, this.refreshStatu, this);
+        GameEventManager.eventTarget.off(GameEventManager.EEventName.REFRESH_GOOD_STATU, this._fn_zu, this);
     }
 
      init(decorationRecord:BagPropRecord){
@@ -56,24 +56,24 @@ export class GoodsItemDragController extends BaseView {
 
         this.id = this.decorationRecord.id
 
-        this.decorationConfig = TableDataService.ins().getTableValueByID(Const.Tables.new_prop, this.decorationRecord.prop_id);
+        this.decorationConfig = TableDataService.ins()._fn_ly(Const.Tables.new_prop, this.decorationRecord.prop_id);
 
 
         this.node.setPosition(this.decorationRecord.position_x, this.decorationRecord.position_y, 0)
 
         if (this.decorationConfig.decoration_res){
-            this.setSpriteFrame(this.icon, Const.resPath.icon + this.decorationConfig.decoration_res, () => { })
+            this._fn_agk(this.icon, Const.resPath.icon + this.decorationConfig.decoration_res, () => { })
             this.icon.node.active = true;
         }else{
             this.icon.node.active = false;
         }
 
-        this.refreshStatu();
+        this._fn_zu();
     }
 
-    refreshStatu(){
+    _fn_zu(){
 
-        let latestDecorationRecord = GameRuntimeData.getBagDataById(this.id)
+        let latestDecorationRecord = GameRuntimeData._fn_fp(this.id)
         if (latestDecorationRecord){
             this.decorationRecord = latestDecorationRecord;
         }
@@ -101,7 +101,7 @@ export class GoodsItemDragController extends BaseView {
         }
     }
 
-    private onTouchStart(event: EventTouch) {
+    private _fn_wa(event: EventTouch) {
         if (!playerDataStore.goodIsCanOperate){
             return;
         }
@@ -119,7 +119,7 @@ export class GoodsItemDragController extends BaseView {
         GameEventManager.eventTarget.emit(GameEventManager.EEventName.ID_Drangging,  this.isDragging)
     }
 
-    private onTouchMove(e: EventTouch): void {
+    private _fn_vz(e: EventTouch): void {
          if (!playerDataStore.goodIsCanOperate){
             return;
         }
@@ -136,19 +136,19 @@ export class GoodsItemDragController extends BaseView {
     }
 
 
-    private onTouchEnd() {
+    private _fn_vx() {
         this.isDragging = false;
         if (!playerDataStore.goodIsCanOperate){
             return;
         }
 
-        GameHttpClient.getInstance().sendGoodPos(1, this.decorationRecord.id, this.node.position.x, this.node.position.y);
+        GameHttpClient._fn_ho().sendGoodPos(1, this.decorationRecord.id, this.node.position.x, this.node.position.y);
 
         GameEventManager.eventTarget.emit(GameEventManager.EEventName.ID_Drangging,  this.isDragging)
     }
 
     onCloseClick(){
-        GameHttpClient.getInstance().sendGoodPos(2, this.decorationRecord.id, 0, 0);
+        GameHttpClient._fn_ho().sendGoodPos(2, this.decorationRecord.id, 0, 0);
     }
 }
 

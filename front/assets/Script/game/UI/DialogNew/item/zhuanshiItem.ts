@@ -62,11 +62,11 @@ export class DiamondItemCellController extends BaseView {
             return;
         }
 
-        this.decorationConfig = TableDataService.ins().getTableValueByID(Const.Tables.new_prop, this.decorationRecord.prop_id);
+        this.decorationConfig = TableDataService.ins()._fn_ly(Const.Tables.new_prop, this.decorationRecord.prop_id);
         this.nameLab.string = this.decorationConfig.name;
 
         if (this.decorationConfig.icon){
-            this.setSpriteFrame(this.icon, Const.resPath.icon + this.decorationConfig.icon, () => { }, 60)
+            this._fn_agk(this.icon, Const.resPath.icon + this.decorationConfig.icon, () => { }, 60)
             this.icon.node.active = true;
         }else{
             this.icon.node.active = false;
@@ -109,7 +109,7 @@ export class DiamondItemCellController extends BaseView {
 
 
     onClickHandler(eve:Event, str:string){
-        AudioPlaybackService.instance.playSound(Const.Audio.btn)
+        AudioPlaybackService.instance._fn_xc(Const.Audio.btn)
 
 
         let canOperateDecoration:boolean = false;
@@ -119,23 +119,23 @@ export class DiamondItemCellController extends BaseView {
             canOperateDecoration = true;
         }else{
             canOperateDecoration = false;
-            this.toast("当前场景不可操作该装饰品");
+            this._fn_aiu("当前场景不可操作该装饰品");
         }
         if (canOperateDecoration){
-            GameHttpClient.getInstance().sendGoodPos(1, this.decorationRecord.id, 0, 0);
+            GameHttpClient._fn_ho().sendGoodPos(1, this.decorationRecord.id, 0, 0);
         }
     }
 
-    onBtnSell(){
+    _fn_sn(){
 
     }
-    onbtnDress(){
+    _fn_sm(){
 
     }
-    onbtnUndress(){
+    _fn_so(){
 
     }
-    onbtnUse(){
+    _fn_sp(){
 
     }
 

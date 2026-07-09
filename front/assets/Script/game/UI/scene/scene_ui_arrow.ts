@@ -10,10 +10,10 @@ export class SceneArrowIndicatorController extends BaseUiComponent {
 
     onEnable(){
         this.calTime=0
-        this.showArrow()
+        this._fn_ahb()
     }
 
-    showArrow(){
+    _fn_ahb(){
         this.aniTween.stop()
         this.bar.progress = 0
         this.aniTween = tween(this.bar).to(0.4, {progress:1}).start()
@@ -27,7 +27,7 @@ export class SceneArrowIndicatorController extends BaseUiComponent {
     update(dt: number) {
         this.calTime+=dt
         if(this.calTime>2){
-            NodePoolService.instance.putNode(this.node)
+            NodePoolService.instance._fn_xz(this.node)
         }
     }
 }

@@ -44,15 +44,15 @@ export class guest_mgr extends BaseUiComponent {
     onLoad() {
         this.on(GD.event.intoTheWaitQueue, this.intoTheWaitQueue)
         this.on(GD.event.guestLeave, this.guestLeave)
-        this.getRoomMaxGuests()
-        this.genWaitGrids()
+        this._fn_kl()
+        this._fn_fe()
     }
 
-    getRoomMaxGuests(){
-        let roomRows = TableDataService.ins().getTableValuesByType(Const.Tables.scene_room, "type", "1")
+    _fn_kl(){
+        let roomRows = TableDataService.ins()._fn_mb(Const.Tables.scene_room, "type", "1")
         this.roomLimit=0
         roomRows.forEach((item:any)=>{
-            if(SceneData.ins.getRoomLockInfoById(item.id)==GSceneRoomState.unlock){
+            if(SceneData.ins._fn_kk(item.id)==GSceneRoomState.unlock){
                 this.roomLimit+= item.cnt
             }
         })
@@ -63,7 +63,7 @@ export class guest_mgr extends BaseUiComponent {
         let arr:Node[] = []
         Const.Guests.forEach(item=>{
             if(node.uuid == item.uuid){
-                NodePoolService.instance.putNode(item)
+                NodePoolService.instance._fn_xz(item)
             }else{
                 arr.push(item)
             }
@@ -72,7 +72,7 @@ export class guest_mgr extends BaseUiComponent {
     }
 
 
-    genWaitGrids(){
+    _fn_fe(){
         for(let i=0;i<this.streetLimit; i++){
 
             this.waitGrids.set(this.waitStartPos.x+","+(this.waitStartPos.y-i), GStreetQueueFlag.noOccupy)
@@ -120,7 +120,7 @@ export class guest_mgr extends BaseUiComponent {
         }
     }
 
-    outTheWaitQueue(){
+    _fn_wn(){
 
 
 
@@ -141,7 +141,7 @@ export class guest_mgr extends BaseUiComponent {
                     pickOne.parent = Const.ItemParent
                     pickOne.worldPosition = oldPos
                     script.curGridPoint = v2(UtilScene.roomDoorPos.x, UtilScene.roomDoorPos.y)
-                    let pos = UtilScene.getBottomGridPos(script.curGridPoint.x, script.curGridPoint.y)
+                    let pos = UtilScene._fn_fw(script.curGridPoint.x, script.curGridPoint.y)
 
                     script.targetPos = script.node.parent!.getComponent(UITransform)!.convertToWorldSpaceAR(pos)
 
@@ -174,11 +174,11 @@ export class guest_mgr extends BaseUiComponent {
         }
     }
 
-    updQueue(){
+    _fn_ajw(){
 
     }
 
-    getStreetGuestCnt(){
+    _fn_lp(){
         let streetCnt =0
         Const.Guests.forEach(item=>{
             let script = item.getComponent(guest)!
@@ -189,7 +189,7 @@ export class guest_mgr extends BaseUiComponent {
         return streetCnt
     }
 
-    getRoomGuestCnt(){
+    _fn_ki(){
         let roomCnt =0
         Const.Guests.forEach(item=>{
             let script = item.getComponent(guest)!
@@ -203,17 +203,17 @@ export class guest_mgr extends BaseUiComponent {
     init(){
 
         this.spineFile = ""
-        UtilScene.setGuestMaxNum()
+        UtilScene._fn_aeu()
 
-        UtilScene.initAStarObstacles()
+        UtilScene._fn_nq()
 
 
 
-        let unlockGuestsData = UtilScene.getUnlockGuestData()
+        let unlockGuestsData = UtilScene._fn_mt()
         if(unlockGuestsData.length>0){
-            UtilPub.getPrefab(Const.Prefabs.guest,(p:Prefab)=>{
+            UtilPub._fn_jj(Const.Prefabs.guest,(p:Prefab)=>{
 
-                let n = UtilPub.ranInt(2, Math.floor(this.streetLimit/2))
+                let n = UtilPub._fn_ym(2, Math.floor(this.streetLimit/2))
 
                 for(let i=0;i<n;i++){
 
@@ -221,7 +221,7 @@ export class guest_mgr extends BaseUiComponent {
                     let item = NodePoolService.instance.getNode(p, Const.StreetFixedNode,false)
                     item.getComponent(guest)!.init(GGuestState.streetWalk)
                 }
-                let roomCnt= Math.round(this.roomLimit * UtilPub.ranInt(15,35)/100)
+                let roomCnt= Math.round(this.roomLimit * UtilPub._fn_ym(15,35)/100)
                 for(let i=0;i<roomCnt;i++){
 
                     UtilPub.log("room spawn count", i)
@@ -232,19 +232,19 @@ export class guest_mgr extends BaseUiComponent {
         }
     }
 
-    orderGuests(){
-       UtilScene.orderSceneItemNodeChildren(Const.StreetFixedNode)
-       UtilScene.orderSceneItemNodeChildren(Const.ItemParent)
+    _fn_wl(){
+       UtilScene._fn_wm(Const.StreetFixedNode)
+       UtilScene._fn_wm(Const.ItemParent)
     }
 
-    guestBugLeave(){
+    _fn_nd(){
 
         let newArr:Node[] = []
         Const.Guests.forEach(item=>{
             let script = item.getComponent(guest)!
             if(script.failCnt>=script.maxFailCnt){
                 script.state = GGuestState.subway
-                NodePoolService.instance.putNode(script.node)
+                NodePoolService.instance._fn_xz(script.node)
                 UtilPub.log("----------清理bug客人", script)
             }
             newArr.push(script.node)
@@ -253,7 +253,7 @@ export class guest_mgr extends BaseUiComponent {
 
     }
 
-    checkGuests(){
+    _fn_bs(){
         Const.Guests.forEach(item=>{
             let g = item.getComponent(guest)!
             UtilPub.log("-----客人信息---", g.state)
@@ -263,16 +263,16 @@ export class guest_mgr extends BaseUiComponent {
     update(deltaTime:number) {
         this.calTime += deltaTime
         if(this.calTime > this.interval){
-            this.interval = UtilPub.ranInt(2,5)
+            this.interval = UtilPub._fn_ym(2,5)
             this.calTime = 0
 
 
-            if(this.getStreetGuestCnt() < this.streetLimit && this.getRoomGuestCnt()<this.roomLimit){
+            if(this._fn_lp() < this.streetLimit && this._fn_ki()<this.roomLimit){
 
-                let unlockGuestsData = UtilScene.getUnlockGuestData()
+                let unlockGuestsData = UtilScene._fn_mt()
                 if(unlockGuestsData.length>0){
 
-                    UtilPub.getPrefab(Const.Prefabs.guest,(p:Prefab)=>{
+                    UtilPub._fn_jj(Const.Prefabs.guest,(p:Prefab)=>{
                         let item = NodePoolService.instance.getNode(p, Const.StreetFixedNode,false)
                         item.getComponent(guest)!.init(GGuestState.subway)
                     })
@@ -284,7 +284,7 @@ export class guest_mgr extends BaseUiComponent {
 
                 Const.isGodWealthShow=true
                 UtilPub.log("----------增加财神-----")
-                UtilPub.getPrefab(Const.Prefabs.guest,(p:Prefab)=>{
+                UtilPub._fn_jj(Const.Prefabs.guest,(p:Prefab)=>{
                     let item = NodePoolService.instance.getNode(p, Const.StreetFixedNode,false)
                     item.getComponent(guest)!.initGodWealth(GGuestState.streetWalk)
                 })
@@ -299,23 +299,23 @@ export class guest_mgr extends BaseUiComponent {
             this.intoTheWaitQueue()
 
 
-            if(this.getRoomGuestCnt()< this.roomLimit){
-                this.outTheWaitQueue()
+            if(this._fn_ki()< this.roomLimit){
+                this._fn_wn()
             }
         }
 
         this.orderGuestCalTime += deltaTime
         if(this.orderGuestCalTime>0.6){
             this.orderGuestCalTime=0
-            this.orderGuests()
+            this._fn_wl()
 
         }
 
         this.bugLeaveCalTime += deltaTime
         if(this.bugLeaveCalTime>3){
             this.bugLeaveCalTime = 0
-            this.guestBugLeave()
-            this.getRoomMaxGuests()
+            this._fn_nd()
+            this._fn_kl()
 
 
         }

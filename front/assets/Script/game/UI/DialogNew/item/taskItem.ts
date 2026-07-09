@@ -52,7 +52,7 @@ export class TaskItemCellController extends BaseView {
         this.proLab.string = this.taskData.done_count + "/" + this.taskData.task_count;
         this.progressBar.progress = this.taskData.done_count/this.taskData.task_count;
 
-        let taskConfig:TaskConfigRecord = TableDataService.ins().getTableValueByID(Const.Tables.new_task, this.taskData.task_id);
+        let taskConfig:TaskConfigRecord = TableDataService.ins()._fn_ly(Const.Tables.new_task, this.taskData.task_id);
         if(this.taskData.task_type == 1){
             this.desLab.string = "当日签到";
         }
@@ -81,9 +81,9 @@ export class TaskItemCellController extends BaseView {
 
 
     onClickHandler(eve:Event, str:string){
-        AudioPlaybackService.instance.playSound(Const.Audio.btn)
+        AudioPlaybackService.instance._fn_xc(Const.Audio.btn)
         if (str == "receive"){
-            GameHttpClient.getInstance().sendRecivieTaskReward(this.taskData?.task_type);
+            GameHttpClient._fn_ho().sendRecivieTaskReward(this.taskData?.task_type);
         }
         else if (str == "ad"){
 

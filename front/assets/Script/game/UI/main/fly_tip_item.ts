@@ -31,7 +31,7 @@ export class FloatingTipItemController extends BaseUiComponent {
 
             .to(0.1, {scale:v3(0.6,0,0)})
             .call(()=>{
-                NodePoolService.instance.putNode(this.node)
+                NodePoolService.instance._fn_xz(this.node)
             }),
             tween()
             .to(0.1, {scale:v3(1.3,1,1)})

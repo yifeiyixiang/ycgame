@@ -65,7 +65,7 @@ export class NodePoolService extends Component {
 
 
 
-    putNode (node: Node) {
+    _fn_xz (node: Node) {
         if(node==null) return
         let name = node.name;
         let pool = null;
@@ -82,25 +82,25 @@ export class NodePoolService extends Component {
         pool.put(node);
     }
 
-    putNodeArr(nodes: Node[]){
+    _fn_ya(nodes: Node[]){
         if(nodes.length==0) return
         for(let i=0; i<nodes.length; i++){
-            NodePoolService.instance.putNode(nodes[i])
+            NodePoolService.instance._fn_xz(nodes[i])
         }
     }
 
-    putNodeObjString(nodes:GTypeStrNode){
+    _fn_yc(nodes:GTypeStrNode){
         for(let key in nodes){
             if(nodes.hasOwnProperty(key)){
-                NodePoolService.instance.putNode(nodes[key])
+                NodePoolService.instance._fn_xz(nodes[key])
             }
         }
     }
 
-    putNodeObjNumber(nodes:{[key: number]: Node}){
+    _fn_yb(nodes:{[key: number]: Node}){
         for(let key in nodes){
             if(nodes.hasOwnProperty(key)){
-                NodePoolService.instance.putNode(nodes[key])
+                NodePoolService.instance._fn_xz(nodes[key])
             }
         }
     }
@@ -115,7 +115,7 @@ export class NodePoolService extends Component {
         }
     }
 
-    clearCompatPool (cb?:Function) {
+    _fn_cw (cb?:Function) {
         for(let nodeName in this.dictPool){
             if(this.dictPool.hasOwnProperty(nodeName)){
                 let pool = this.dictPool[nodeName]

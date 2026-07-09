@@ -32,14 +32,14 @@ export class ShopPowerDialog extends BaseView {
     _monthCardState: any = null
 
     start() {
-        this.bindButton(find("root/btnClose", this.node)!, this.popClose)
+        this.bindButton(find("root/btnClose", this.node)!, this._fn_xe)
     }
 
     show(args: any) {
         super.show(args)
         this.initData()
 
-        ServerCtrJSF.GetInstance().reqGetUserDataObjByKey(GameStorage.Key(Const.MoneyKeys.MonthCharge))
+        ServerCtrJSF._fn_hp()._fn_aau(GameStorage._fn_rb(Const.MoneyKeys.MonthCharge))
         this._monthCardState = {}
         this._monthCardState.have = false
         this.videoPower.active = true
@@ -48,21 +48,21 @@ export class ShopPowerDialog extends BaseView {
 
     onEnable() {
 
-        director.off(GNetCmd.GetUserDataByKey.toString(), this.onMessageEvent, this);
-        director.on(GNetCmd.GetUserDataByKey.toString(), this.onMessageEvent, this);
+        director.off(GNetCmd.GetUserDataByKey.toString(), this._fn_uw, this);
+        director.on(GNetCmd.GetUserDataByKey.toString(), this._fn_uw, this);
     }
 
     onDisable() {
 
-        director.off(GNetCmd.GetUserDataByKey.toString(), this.onMessageEvent, this);
+        director.off(GNetCmd.GetUserDataByKey.toString(), this._fn_uw, this);
     }
 
-    onMessageEvent(userDataPayload: any) {
+    _fn_uw(userDataPayload: any) {
         console.log("onMessageEvent:", userDataPayload);
-        let monthCardRecord = ServerCtrJSF.GetInstance().getUserDataByKey(userDataPayload, Const.MoneyKeys.MonthCharge)
+        let monthCardRecord = ServerCtrJSF._fn_hp()._fn_mu(userDataPayload, Const.MoneyKeys.MonthCharge)
         if (monthCardRecord) {
             this._monthCardState = {}
-            this._monthCardState.have = MonthCard.checkMonthCard(userDataPayload) ? 1 : 0
+            this._monthCardState.have = MonthCard._fn_ca(userDataPayload) ? 1 : 0
 
         }
     }
@@ -73,18 +73,18 @@ export class ShopPowerDialog extends BaseView {
         this.needDiamLabel.string = "X" + TableDataService.ins().config[Const.config.diamonsPower][1] * playerDataStore.buyPowerTime
         this.cardAddPower.string = "+" + TableDataService.ins().config[Const.config.CardAddPower]
 
-        let videoPowerGift = TableDataService.ins().getTableValuesByType2ByOne(Const.Tables.giftFree, "type", "1", "typeson", "2")
+        let videoPowerGift = TableDataService.ins()._fn_md(Const.Tables.giftFree, "type", "1", "typeson", "2")
         if (videoPowerGift) {
-            this.initItem(this.videoPower, videoPowerGift)
+            this._fn_oc(this.videoPower, videoPowerGift)
         } else {
             this.videoPower.active = false
             this.cardPower.active = true
         }
     }
 
-    initItem(powerGiftNode: Node, giftConfig: any) {
+    _fn_oc(powerGiftNode: Node, giftConfig: any) {
 
-        let receiveTime = playerDataStore.getReceiveTime(giftConfig.dataKey, giftConfig.cdTime)
+        let receiveTime = playerDataStore._fn_jz(giftConfig.dataKey, giftConfig.cdTime)
 
 
         if (receiveTime < giftConfig.receiveTime) {
@@ -104,34 +104,34 @@ export class ShopPowerDialog extends BaseView {
     }
 
     onClickGet(event: any, giftConfig: any) {
-        AudioPlaybackService.instance.playSound(Const.Audio.btn)
+        AudioPlaybackService.instance._fn_xc(Const.Audio.btn)
 
         if (giftConfig.type == 1) {
-            let receiveTime = playerDataStore.getReceiveTime(giftConfig.dataKey, giftConfig.cdTime)
-            RewardVideoManager.showVideo("免费体力" + receiveTime + "次", () => {
-                this.onVideoBack(giftConfig)
+            let receiveTime = playerDataStore._fn_jz(giftConfig.dataKey, giftConfig.cdTime)
+            RewardVideoManager._fn_ahy("免费体力" + receiveTime + "次", () => {
+                this._fn_wc(giftConfig)
             })
             return
             if (this._monthCardState.have) {
 
-                this.onVideoBack(giftConfig)
+                this._fn_wc(giftConfig)
             } else {
 
-                let receiveTime = playerDataStore.getReceiveTime(giftConfig.dataKey, giftConfig.cdTime)
-                RewardVideoManager.showVideo("免费体力" + receiveTime + "次", () => {
-                    this.onVideoBack(giftConfig)
+                let receiveTime = playerDataStore._fn_jz(giftConfig.dataKey, giftConfig.cdTime)
+                RewardVideoManager._fn_ahy("免费体力" + receiveTime + "次", () => {
+                    this._fn_wc(giftConfig)
                 })
             }
         }
     }
 
-    onVideoBack(giftConfig: any) {
-        playerDataStore.getProp(giftConfig.price3, this.node.getComponent(UITransform)!.convertToWorldSpaceAR(v3(0, 0, 0)), v3(0, 0, 0))
+    _fn_wc(giftConfig: any) {
+        playerDataStore._fn_jk(giftConfig.price3, this.node.getComponent(UITransform)!.convertToWorldSpaceAR(v3(0, 0, 0)), v3(0, 0, 0))
         this.emit(GD.event.updateMoney)
-        playerDataStore.setReceiveTime(giftConfig.dataKey, giftConfig.cdTime)
-        let videoPowerGift = TableDataService.ins().getTableValuesByType2ByOne(Const.Tables.giftFree, "type", "1", "typeson", "2")
+        playerDataStore._fn_afo(giftConfig.dataKey, giftConfig.cdTime)
+        let videoPowerGift = TableDataService.ins()._fn_md(Const.Tables.giftFree, "type", "1", "typeson", "2")
         if (videoPowerGift) {
-            this.initItem(this.videoPower, videoPowerGift)
+            this._fn_oc(this.videoPower, videoPowerGift)
         } else {
             this.videoPower.active = false
             this.cardPower.active = true
@@ -149,22 +149,22 @@ export class ShopPowerDialog extends BaseView {
 
 
 
-        AudioPlaybackService.instance.playSound(Const.Audio.btn)
+        AudioPlaybackService.instance._fn_xc(Const.Audio.btn)
 
-        if (playerDataStore.checkAndUseDiamonds(TableDataService.ins().config[Const.config.diamonsPower][1] * playerDataStore.buyPowerTime)) {
-            GamePlatform.track("钻石购买体力 " + (TableDataService.ins().config[Const.config.diamonsPower][1] * playerDataStore.buyPowerTime) + "钻石")
-            playerDataStore.getProp([GoodsType.Power, TableDataService.ins().config[Const.config.diamonsPower][0] + (this._monthCardState.have == 1 ? TableDataService.ins().config[Const.config.CardAddPower] : 0)], this.node.getComponent(UITransform)!.convertToWorldSpaceAR(v3(0, 0, 0)), v3(0, 0, 0))
-            playerDataStore.addBuyPowerTime()
+        if (playerDataStore._fn_bg(TableDataService.ins().config[Const.config.diamonsPower][1] * playerDataStore.buyPowerTime)) {
+            GamePlatform._fn_aja("钻石购买体力 " + (TableDataService.ins().config[Const.config.diamonsPower][1] * playerDataStore.buyPowerTime) + "钻石")
+            playerDataStore._fn_jk([GoodsType.Power, TableDataService.ins().config[Const.config.diamonsPower][0] + (this._monthCardState.have == 1 ? TableDataService.ins().config[Const.config.CardAddPower] : 0)], this.node.getComponent(UITransform)!.convertToWorldSpaceAR(v3(0, 0, 0)), v3(0, 0, 0))
+            playerDataStore._fn_b()
             this.emit(GD.event.updateMoney)
             this.initData()
-            mergeBoardStateStore.addManagerVal(Const.ManagerTypes.diamondBuyPower);
+            mergeBoardStateStore._fn_h(Const.ManagerTypes.diamondBuyPower);
         } else {
-            this.toast("钻石不足")
+            this._fn_aiu("钻石不足")
         }
     }
 
     onOpenCard() {
-        UiLayerService.instance.showDialog(Const.Dialogs.MonthCard)
+        UiLayerService.instance._fn_ahg(Const.Dialogs.MonthCard)
     }
 }
 

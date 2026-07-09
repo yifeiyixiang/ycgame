@@ -40,30 +40,30 @@ export default class BaseView extends BaseUiComponent {
             tween(this.AniNode).to(0.1, { scale: new Vec3(0.3, 0.3, 0.3) }).call(() => {
                 this.node.active = false
                 this.AniNode.scale = new Vec3(1, 1, 1)
-                UiLayerService.instance.hideDialog(this.dialogPath)
+                UiLayerService.instance._fn_nk(this.dialogPath)
             }).start()
         } else {
-            UiLayerService.instance.hideDialog(this.dialogPath)
+            UiLayerService.instance._fn_nk(this.dialogPath)
         }
         UtilPub.log("close---this.dialogPath----", this.dialogPath)
     }
 
-    popClose() {
+    _fn_xe() {
         this.AniNode = this.node.getChildByName("root")!
         if (this.AniNode != null) {
             tween(this.AniNode).to(0.1, { scale: new Vec3(0.3, 0.3, 0.3) }).call(() => {
                 this.node.active = false
                 this.AniNode.scale = new Vec3(1, 1, 1)
-                UiLayerService.instance.popHideDialog(this.dialogPath)
+                UiLayerService.instance._fn_xf(this.dialogPath)
             }).start()
         } else {
-            UiLayerService.instance.popHideDialog(this.dialogPath)
+            UiLayerService.instance._fn_xf(this.dialogPath)
         }
         UtilPub.log("popClose---this.dialogPath----", this.dialogPath)
     }
 
 
-    getScreenScale() {
+    _fn_la() {
         let screen1 = view.getVisibleSize()
         let resolute = view.getDesignResolutionSize()
         let scale = 1
@@ -79,7 +79,7 @@ export default class BaseView extends BaseUiComponent {
 
     }
 
-    setBtnGrayScale(target:Node, gray:boolean){
+    _fn_aem(target:Node, gray:boolean){
 
     }
 }

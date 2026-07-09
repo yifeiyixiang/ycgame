@@ -19,7 +19,7 @@ export class DuihuanDialog extends BaseView {
 
 
     start() {
-        this.bindButton(find("root/btnClose", this.node)!, this.popClose)
+        this.bindButton(find("root/btnClose", this.node)!, this._fn_xe)
     }
 
     show(args: any) {
@@ -29,16 +29,16 @@ export class DuihuanDialog extends BaseView {
     }
     onEnable() {
 
-        director.off(GNetCmd.GetActiveCode.toString(), this.onMessageEvent, this);
-        director.on(GNetCmd.GetActiveCode.toString(), this.onMessageEvent, this);
+        director.off(GNetCmd.GetActiveCode.toString(), this._fn_uw, this);
+        director.on(GNetCmd.GetActiveCode.toString(), this._fn_uw, this);
     }
 
     onDisable() {
 
-        director.off(GNetCmd.GetActiveCode.toString(), this.onMessageEvent, this);
+        director.off(GNetCmd.GetActiveCode.toString(), this._fn_uw, this);
     }
 
-    onMessageEvent(value: any) {
+    _fn_uw(value: any) {
         console.log("onMessageEvent:", value);
         if (value.status != 'success') {
 
@@ -54,14 +54,14 @@ export class DuihuanDialog extends BaseView {
             this.emit(GD.event.showTip, { msg: msg })
             return null;
         }
-        UiLayerService.instance.pushShowDialog(Const.Dialogs.RewardDialog, { reward: value.rewards })
+        UiLayerService.instance._fn_xw(Const.Dialogs.RewardDialog, { reward: value.rewards })
     }
 
     openDuihuanMa() {
-        AudioPlaybackService.instance.playSound(Const.Audio.btn)
+        AudioPlaybackService.instance._fn_xc(Const.Audio.btn)
         let code = this.codeEditBox.string
-        GamePlatform.track("查看设置-兑换码兑换")
-        ServerCtrJSF.GetInstance().reqGetActiveCode(code)
+        GamePlatform._fn_aja("查看设置-兑换码兑换")
+        ServerCtrJSF._fn_hp()._fn_aar(code)
 
     }
 }

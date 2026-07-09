@@ -27,7 +27,7 @@ export class GameHttpClient {
 
     private tiems:number;
 
-    public static getInstance():GameHttpClient {
+    public static _fn_ho():GameHttpClient {
         if(this.instance == null) {
             this.instance = new GameHttpClient();
         }
@@ -40,13 +40,13 @@ export class GameHttpClient {
 
 
         }
-        ZcApiGateway.http.addHeader("Content-Type", "application/json; charset=utf-8");
+        ZcApiGateway.http._fn_f("Content-Type", "application/json; charset=utf-8");
 
 
     }
 
 
-    sendLogin(code:string = "", nickname:string = "", avatar:string = "", successFun:Function = ()=>{}, failFun:Function = ()=>{}, clientAppId:string = "", clientEnv:string = ""){
+    _fn_adq(code:string = "", nickname:string = "", avatar:string = "", successFun:Function = ()=>{}, failFun:Function = ()=>{}, clientAppId:string = "", clientEnv:string = ""){
         let loginPayload = {
             "code":code,
             "nickname":nickname || "",
@@ -58,20 +58,20 @@ export class GameHttpClient {
         this.isInit = true;
         this.argc.loginCallBack = successFun;
         this.argc.loginCallBack2 = failFun;
-        ZcApiGateway.http.post("/api/login", this.onLogin.bind(this), loginPayload);
+        ZcApiGateway.http._fn_xi("/api/login", this._fn_uu.bind(this), loginPayload);
     }
 
-    onLogin(res:HttpResponsePacket){
+    _fn_uu(res:HttpResponsePacket){
         if (res.res && res.res.code == 200){
             if (res.res.data){
 
-                ZcApiGateway.http.addHeader("Authorization", res.res.data.token);
+                ZcApiGateway.http._fn_f("Authorization", res.res.data.token);
 
                 if (this.isInit){
-                    this.getPetList();
-                    this.sendAdpropcount();
+                    this._fn_jc();
+                    this._fn_adl();
 
-                    this.sednGetUserInfo();
+                    this._fn_adg();
 
 
 
@@ -85,7 +85,7 @@ export class GameHttpClient {
                 }
             }
         }else{
-            this.showFail("登录失败: " , res.res? res.res.msg: res.err)
+            this._fn_ahh("登录失败: " , res.res? res.res.msg: res.err)
 
             if (this.argc.loginCallBack2){
                 this.argc.loginCallBack2(res.res? res.res.msg: res.err)
@@ -95,13 +95,13 @@ export class GameHttpClient {
     }
 
 
-    sednGetUserInfo(){
+    _fn_adg(){
         let userInfoPayload = {
         }
-        ZcApiGateway.http.post("/api/userinfo", this.onsednGetUserInfo.bind(this), userInfoPayload);
+        ZcApiGateway.http._fn_xi("/api/userinfo", this._fn_vj.bind(this), userInfoPayload);
     }
 
-    onsednGetUserInfo(res:HttpResponsePacket){
+    _fn_vj(res:HttpResponsePacket){
         if (res.res && res.res.code == 200){
             if (res.res.data){
                 let userInfoResponse = res.res.data
@@ -120,10 +120,10 @@ export class GameHttpClient {
                     sys.localStorage.clear();
                 }
 
-                this.refreshView();
+                this._fn_aaa();
             }
         }else{
-            this.showFail("" , res.res? res.res.msg: res.err)
+            this._fn_ahh("" , res.res? res.res.msg: res.err)
         }
     }
 
@@ -133,57 +133,57 @@ export class GameHttpClient {
             store_type:store_type
         }
         this.argc.sednBagInfo = successFun;
-        ZcApiGateway.http.post("/api/bag", this.onsednBagInfo.bind(this), bagRequestPayload);
+        ZcApiGateway.http._fn_xi("/api/bag", this._fn_vi.bind(this), bagRequestPayload);
     }
 
-    onsednBagInfo(res:HttpResponsePacket){
+    _fn_vi(res:HttpResponsePacket){
         if (res.res && res.res.code == 200){
             if (res.res.data){
                 let bagResponse = res.res.data
                 playerDataStore.bagProps = bagResponse.userprop;
 
-                this.refreshView();
+                this._fn_aaa();
                 if (this.argc.sednBagInfo){
                     this.argc.sednBagInfo(res)
                     this.argc.sednBagInfo = null;
                 }
             }
         }else{
-            this.showFail("" , res.res? res.res.msg: res.err)
+            this._fn_ahh("" , res.res? res.res.msg: res.err)
         }
     }
 
 
-    sendSellBagItem(store_type:number = 2, id:number){
+    _fn_adx(store_type:number = 2, id:number){
         let sellPropPayload = {
             store_type:store_type,
             sole_id:id,
         }
-        ZcApiGateway.http.post("/api/sellprop", this.onsednSellBagItem.bind(this), sellPropPayload);
+        ZcApiGateway.http._fn_xi("/api/sellprop", this._fn_vk.bind(this), sellPropPayload);
     }
 
-    onsednSellBagItem(res:HttpResponsePacket){
+    _fn_vk(res:HttpResponsePacket){
         if (res.res && res.res.code == 200){
             if (res.res.data){
                 let sellPropResponse = res.res.data
                 playerDataStore.bagProps = sellPropResponse.userprop;
 
-                this.refreshView();
+                this._fn_aaa();
             }
         }else{
-            this.showFail("" , res.res? res.res.msg: res.err)
+            this._fn_ahh("" , res.res? res.res.msg: res.err)
         }
     }
 
 
-    getPetList(successFun:Function = ()=>{}){
+    _fn_jc(successFun:Function = ()=>{}){
         let petListPayload = {
         }
         this.argc.getPetListCallBack = successFun;
-        ZcApiGateway.http.post("/api/pet", this.ongetPetList.bind(this), petListPayload);
+        ZcApiGateway.http._fn_xi("/api/pet", this._fn_us.bind(this), petListPayload);
     }
 
-    ongetPetList(res:HttpResponsePacket){
+    _fn_us(res:HttpResponsePacket){
         if (res.res && res.res.code == 200){
             if (res.res.data){
                 let petListResponse = res.res.data.userpet
@@ -192,7 +192,7 @@ export class GameHttpClient {
                 playerDataStore.pet_score = petListResponse.pet_score;
                 playerDataStore.pets = petListResponse.pets;
 
-                this.refreshView();
+                this._fn_aaa();
 
                 GameEventManager.eventTarget.emit(GameEventManager.EEventName.REFRESH_PET_DATA);
 
@@ -202,12 +202,12 @@ export class GameHttpClient {
                 }
             }
         }else{
-            this.showFail("" , res.res? res.res.msg: res.err)
+            this._fn_ahh("" , res.res? res.res.msg: res.err)
         }
     }
 
 
-    sendPetAction(types:number, petId:number = 0, propId:number = 0, clothing_id:number = 0, name:string = "", successFun:Function = ()=>{}){
+    _fn_adt(types:number, petId:number = 0, propId:number = 0, clothing_id:number = 0, name:string = "", successFun:Function = ()=>{}){
         let petActionPayload = {
             "types":types,
             "sole_id":petId,
@@ -217,10 +217,10 @@ export class GameHttpClient {
         }
 
         this.argc.sendPetActionCallBack = successFun;
-        ZcApiGateway.http.post("/api/petaction", this.onsendPetAction.bind(this), petActionPayload);
+        ZcApiGateway.http._fn_xi("/api/petaction", this._fn_vs.bind(this), petActionPayload);
     }
 
-    onsendPetAction(res:HttpResponsePacket){
+    _fn_vs(res:HttpResponsePacket){
         if (res.res && res.res.code == 200){
             if (res.res.data){
                 let updatedPetRecord = res.res.data.userpet
@@ -238,29 +238,29 @@ export class GameHttpClient {
                     this.argc.sendPetActionCallBack = null;
                 }
 
-                this.refreshView();
+                this._fn_aaa();
 
                 GameEventManager.eventTarget.emit(GameEventManager.EEventName.REFRESH_PET_DATA);
 
             }
         }else{
-            this.showFail("" , res.res? res.res.msg: res.err)
+            this._fn_ahh("" , res.res? res.res.msg: res.err)
         }
     }
 
 
 
-    sendBuyProp(propId:number, type:number, successFun:Function = ()=>{}){
+    _fn_adn(propId:number, type:number, successFun:Function = ()=>{}){
         let buyPropPayload = {
             prop_id:propId,
             types:type,
         }
 
         this.argc.sendBuyPropCallBack = successFun;
-        ZcApiGateway.http.post("/api/buyprop", this.onsendBuyProp.bind(this), buyPropPayload);
+        ZcApiGateway.http._fn_xi("/api/buyprop", this._fn_vo.bind(this), buyPropPayload);
     }
 
-    onsendBuyProp(res:HttpResponsePacket){
+    _fn_vo(res:HttpResponsePacket){
         if (res.res && res.res.code == 200){
             if (res.res.data){
                 let buyPropResponse = res.res.data
@@ -268,10 +268,10 @@ export class GameHttpClient {
                 playerDataStore.userInfodata = buyPropResponse.userdata;
                 playerDataStore.coinprop = buyPropResponse.coinprop;
                 playerDataStore.adProps = buyPropResponse.ad_prop;
-                this.refreshView();
+                this._fn_aaa();
 
 
-                this.showReward(buyPropResponse)
+                this._fn_ahp(buyPropResponse)
 
                 if (this.argc.sendBuyPropCallBack){
                     this.argc.sendBuyPropCallBack(res)
@@ -279,30 +279,30 @@ export class GameHttpClient {
                 }
             }
         }else{
-            this.showFail("" , res.res? res.res.msg: res.err)
+            this._fn_ahh("" , res.res? res.res.msg: res.err)
         }
     }
 
 
-    sendADWatch(type:number, successFun:Function = ()=>{}){
+    _fn_adm(type:number, successFun:Function = ()=>{}){
         let adWatchPayload = {
             types:type,
         }
 
         this.argc.sendADWatchCallBack = successFun;
-        ZcApiGateway.http.post("/api/adwatch", this.onsendADWatch.bind(this), adWatchPayload);
+        ZcApiGateway.http._fn_xi("/api/adwatch", this._fn_vn.bind(this), adWatchPayload);
     }
 
-    onsendADWatch(res:HttpResponsePacket){
+    _fn_vn(res:HttpResponsePacket){
         if (res.res && res.res.code == 200){
             if (res.res.data){
                 let adWatchResponse = res.res.data
 
                 playerDataStore.userInfodata = adWatchResponse.userdata;
                 playerDataStore.coinprop = adWatchResponse.coinprop;
-                this.refreshView();
+                this._fn_aaa();
 
-                this.showReward(adWatchResponse)
+                this._fn_ahp(adWatchResponse)
 
                 if (this.argc.sendADWatchCallBack){
                     this.argc.sendADWatchCallBack(res)
@@ -310,18 +310,18 @@ export class GameHttpClient {
                 }
             }
         }else{
-            this.showFail("" , res.res? res.res.msg: res.err)
+            this._fn_ahh("" , res.res? res.res.msg: res.err)
         }
     }
 
 
-    sendSign(){
+    _fn_ady(){
         let signPayload = {
         }
-        ZcApiGateway.http.post("/api/sign", this.onsendSign.bind(this), signPayload);
+        ZcApiGateway.http._fn_xi("/api/sign", this._fn_vv.bind(this), signPayload);
     }
 
-    onsendSign(res:HttpResponsePacket){
+    _fn_vv(res:HttpResponsePacket){
         if (res.res && res.res.code == 200){
             if (res.res.data){
                 let signResponse = res.res.data
@@ -330,54 +330,54 @@ export class GameHttpClient {
                 playerDataStore.userInfodata.user_sign.sign_in_days = signResponse.sign_in_days;
                 playerDataStore.userInfodata.user_sign.sign_status = signResponse.sign_status;
 
-                this.showReward(signResponse)
+                this._fn_ahp(signResponse)
 
-                this.refreshView();
+                this._fn_aaa();
             }
         }else{
-            this.showFail("" , res.res? res.res.msg: res.err)
+            this._fn_ahh("" , res.res? res.res.msg: res.err)
         }
     }
 
 
-    sendWheel(successFun:Function = ()=>{}){
+    _fn_aee(successFun:Function = ()=>{}){
         let wheelPayload = {
 
         }
 
         this.argc.sendWheelCallBack = successFun;
-        ZcApiGateway.http.post("/api/wheel", this.onsendWheel.bind(this), wheelPayload);
+        ZcApiGateway.http._fn_xi("/api/wheel", this._fn_vw.bind(this), wheelPayload);
     }
 
-    onsendWheel(res:HttpResponsePacket){
+    _fn_vw(res:HttpResponsePacket){
         if (res.res && res.res.code == 200){
             if (res.res.data){
                 let wheelResponse = res.res.data
 
                 playerDataStore.coinprop = wheelResponse.coinprop;
-                this.refreshView();
+                this._fn_aaa();
                 if (this.argc.sendWheelCallBack){
                     this.argc.sendWheelCallBack(res)
                     this.argc.sendWheelCallBack = null;
                 }
             }
         }else{
-            this.showFail("" , res.res? res.res.msg: res.err)
+            this._fn_ahh("" , res.res? res.res.msg: res.err)
         }
     }
 
 
-    sendChangeInfo(type:number, value:string, successFun:Function = ()=>{}){
+    _fn_adp(type:number, value:string, successFun:Function = ()=>{}){
         let profileChangePayload = {
             types:type,
             value:value,
         }
 
         this.argc.sendChangeInfoCallBack = successFun;
-        ZcApiGateway.http.post("/api/changeu", this.onsendChangeInfoCallBack.bind(this), profileChangePayload);
+        ZcApiGateway.http._fn_xi("/api/changeu", this._fn_vp.bind(this), profileChangePayload);
     }
 
-    onsendChangeInfoCallBack(res:HttpResponsePacket){
+    _fn_vp(res:HttpResponsePacket){
         if (res.res && res.res.code == 200){
             if (res.res.data){
                 let profileChangeResponse = res.res.data
@@ -388,10 +388,10 @@ export class GameHttpClient {
                     this.argc.sendChangeInfoCallBack(res)
                     this.argc.sendChangeInfoCallBack = null;
                 }
-                this.refreshView()
+                this._fn_aaa()
             }
         }else{
-            this.showFail("" , res.res? res.res.msg: res.err)
+            this._fn_ahh("" , res.res? res.res.msg: res.err)
         }
     }
 
@@ -400,17 +400,17 @@ export class GameHttpClient {
         let taskListPayload = {
         }
         this.argc.sendGetTaskList = successFun;
-        ZcApiGateway.http.post("/api/task", this.onsendGetTaskList.bind(this), taskListPayload);
+        ZcApiGateway.http._fn_xi("/api/task", this._fn_vq.bind(this), taskListPayload);
     }
 
-    onsendGetTaskList(res:HttpResponsePacket){
+    _fn_vq(res:HttpResponsePacket){
         if (res.res && res.res.code == 200){
             if (res.res.data){
                 let taskListResponse = res.res.data
 
                 playerDataStore.taskDataList = taskListResponse.usertask;
 
-                this.refreshView();
+                this._fn_aaa();
 
                 if (this.argc.sendGetTaskList){
                     this.argc.sendGetTaskList(res)
@@ -418,7 +418,7 @@ export class GameHttpClient {
                 }
             }
         }else{
-            this.showFail("" , res.res? res.res.msg: res.err)
+            this._fn_ahh("" , res.res? res.res.msg: res.err)
         }
     }
 
@@ -428,20 +428,20 @@ export class GameHttpClient {
             task_type:type
         }
         this.argc.sendRecivieTaskReward = successFun;
-        ZcApiGateway.http.post("/api/taskdone", this.onsendRecivieTaskReward.bind(this), taskRewardPayload);
+        ZcApiGateway.http._fn_xi("/api/taskdone", this._fn_vu.bind(this), taskRewardPayload);
     }
 
-    onsendRecivieTaskReward(res:HttpResponsePacket){
+    _fn_vu(res:HttpResponsePacket){
         if (res.res && res.res.code == 200){
             if (res.res.data){
                 let taskRewardResponse = res.res.data
 
 
                 playerDataStore.coinprop = taskRewardResponse.coinprop;
-                this.showReward(taskRewardResponse)
+                this._fn_ahp(taskRewardResponse)
 
 
-                GameHttpClient.getInstance().sendGetTaskList();
+                GameHttpClient._fn_ho().sendGetTaskList();
 
                 if (this.argc.sendRecivieTaskReward){
                     this.argc.sendRecivieTaskReward(res)
@@ -449,7 +449,7 @@ export class GameHttpClient {
                 }
             }
         }else{
-            this.showFail("" , res.res? res.res.msg: res.err)
+            this._fn_ahh("" , res.res? res.res.msg: res.err)
         }
     }
 
@@ -462,10 +462,10 @@ export class GameHttpClient {
             position_y:position_y,
         }
         this.argc.sendGoodPos = successFun;
-        ZcApiGateway.http.post("/api/decorationplace", this.onsendGoodPos.bind(this), decorationPlacePayload);
+        ZcApiGateway.http._fn_xi("/api/decorationplace", this._fn_vr.bind(this), decorationPlacePayload);
     }
 
-    onsendGoodPos(res:HttpResponsePacket){
+    _fn_vr(res:HttpResponsePacket){
         if (res.res && res.res.code == 200){
             if (res.res.data){
 
@@ -479,7 +479,7 @@ export class GameHttpClient {
                     }
                 }
 
-                this.refreshView();
+                this._fn_aaa();
 
                 GameEventManager.eventTarget.emit(GameEventManager.EEventName.ADD_ZHUNASHI)
 
@@ -489,7 +489,7 @@ export class GameHttpClient {
                 }
             }
         }else{
-            this.showFail("" , res.res? res.res.msg: res.err)
+            this._fn_ahh("" , res.res? res.res.msg: res.err)
         }
     }
 
@@ -502,10 +502,10 @@ export class GameHttpClient {
             "home_level":playerDataStore.roleLv,
         }
         this.argc.updateGold = successFun;
-        ZcApiGateway.http.post("/api/update", this.onupdateGold.bind(this), syncCurrencyPayload);
+        ZcApiGateway.http._fn_xi("/api/update", this._fn_wb.bind(this), syncCurrencyPayload);
     }
 
-    onupdateGold(res:HttpResponsePacket){
+    _fn_wb(res:HttpResponsePacket){
         if (res.res && res.res.code == 200){
             if (res.res.data){
                 console.log("同步数据成功");
@@ -515,7 +515,7 @@ export class GameHttpClient {
                 }
             }
         }else{
-            this.showFail("" , res.res? res.res.msg: res.err)
+            this._fn_ahh("" , res.res? res.res.msg: res.err)
         }
     }
 
@@ -529,14 +529,14 @@ export class GameHttpClient {
 
 
 
-    sendAdpropcount(){
+    _fn_adl(){
         let adCounterPayload = {
         }
 
-        ZcApiGateway.http.post("/api/adpropcount", this.onsendAdpropcount.bind(this), adCounterPayload);
+        ZcApiGateway.http._fn_xi("/api/adpropcount", this._fn_vm.bind(this), adCounterPayload);
     }
 
-    onsendAdpropcount(res:HttpResponsePacket){
+    _fn_vm(res:HttpResponsePacket){
         if (res.res && res.res.code == 200){
             if (res.res.data){
                 let adCounterResponse = res.res.data
@@ -544,7 +544,7 @@ export class GameHttpClient {
                 playerDataStore.adProps = adCounterResponse.ad_prop;
             }
         }else{
-            this.showFail("" , res.res? res.res.msg: res.err)
+            this._fn_ahh("" , res.res? res.res.msg: res.err)
         }
     }
 
@@ -553,10 +553,10 @@ export class GameHttpClient {
         let friendListPayload = {
         }
         this.argc.getFriendList = successFun;
-        ZcApiGateway.http.post("/api/friend", this.ongetFriendList.bind(this), friendListPayload);
+        ZcApiGateway.http._fn_xi("/api/friend", this._fn_uq.bind(this), friendListPayload);
     }
 
-    ongetFriendList(res:HttpResponsePacket){
+    _fn_uq(res:HttpResponsePacket){
         if (res.res && res.res.code == 200){
             if (res.res.data){
                 let friendRows = res.res.data.friend;
@@ -577,7 +577,7 @@ export class GameHttpClient {
                 }
             }
         }else{
-            this.showFail("" , res.res? res.res.msg: res.err)
+            this._fn_ahh("" , res.res? res.res.msg: res.err)
         }
     }
 
@@ -587,16 +587,16 @@ export class GameHttpClient {
             "userid":userid,
         }
         this.argc.getFriendSearch = successFun;
-        ZcApiGateway.http.post("/api/friendsearch", this.ongetFriendSearch.bind(this), friendSearchPayload);
+        ZcApiGateway.http._fn_xi("/api/friendsearch", this._fn_ur.bind(this), friendSearchPayload);
     }
 
-    ongetFriendSearch(res:HttpResponsePacket){
+    _fn_ur(res:HttpResponsePacket){
         if (res.res && res.res.code == 200){
             if (res.res.data){
                 let searchedFriend = res.res.data.user;
 
                 if (!searchedFriend){
-                    this.showFail("未找到该用户")
+                    this._fn_ahh("未找到该用户")
                 }
 
                 if (this.argc.getFriendSearch){
@@ -605,7 +605,7 @@ export class GameHttpClient {
                 }
             }
         }else{
-            this.showFail("" , res.res? res.res.msg: res.err)
+            this._fn_ahh("" , res.res? res.res.msg: res.err)
         }
     }
 
@@ -615,7 +615,7 @@ export class GameHttpClient {
 
         }
         this.argc.getFriendRecommend = successFun;
-        ZcApiGateway.http.post("/api/friendrecommend", this.ongetFriendRecommend.bind(this), friendRecommendPayload);
+        ZcApiGateway.http._fn_xi("/api/friendrecommend", this.ongetFriendRecommend.bind(this), friendRecommendPayload);
     }
 
     ongetFriendRecommend(res:HttpResponsePacket){
@@ -630,7 +630,7 @@ export class GameHttpClient {
                 }
             }
         }else{
-            this.showFail("" , res.res? res.res.msg: res.err)
+            this._fn_ahh("" , res.res? res.res.msg: res.err)
         }
     }
 
@@ -639,10 +639,10 @@ export class GameHttpClient {
         let friendApplyPayload = {
         }
         this.argc.getFriendApply = successFun;
-        ZcApiGateway.http.post("/api/friendapply", this.ongetFriendApply.bind(this), friendApplyPayload);
+        ZcApiGateway.http._fn_xi("/api/friendapply", this._fn_uo.bind(this), friendApplyPayload);
     }
 
-    ongetFriendApply(res:HttpResponsePacket){
+    _fn_uo(res:HttpResponsePacket){
         if (res.res && res.res.code == 200){
             if (res.res.data){
 
@@ -661,7 +661,7 @@ export class GameHttpClient {
                 }
             }
         }else{
-            this.showFail("" , res.res? res.res.msg: res.err)
+            this._fn_ahh("" , res.res? res.res.msg: res.err)
         }
     }
 
@@ -671,14 +671,14 @@ export class GameHttpClient {
             "userid":userid,
         }
         this.argc.getFriendAdd = successFun;
-        ZcApiGateway.http.post("/api/friendadd", this.ongetFriendAdd.bind(this), friendAddPayload);
+        ZcApiGateway.http._fn_xi("/api/friendadd", this._fn_un.bind(this), friendAddPayload);
     }
 
-    ongetFriendAdd(res:HttpResponsePacket){
+    _fn_un(res:HttpResponsePacket){
         if (res.res && res.res.code == 200){
             if (res.res){
 
-                this.showFail("添加好友，申请发送成功")
+                this._fn_ahh("添加好友，申请发送成功")
 
 
                 if (this.argc.getFriendAdd){
@@ -687,7 +687,7 @@ export class GameHttpClient {
                 }
             }
         }else{
-            this.showFail("" , res.res? res.res.msg: res.err)
+            this._fn_ahh("" , res.res? res.res.msg: res.err)
         }
     }
 
@@ -698,14 +698,14 @@ export class GameHttpClient {
             "type":type,
         }
         this.argc.getFriendApplyaction = successFun;
-        ZcApiGateway.http.post("/api/friendapplyaction", this.ongetFriendApplyaction.bind(this), friendApplyActionPayload);
+        ZcApiGateway.http._fn_xi("/api/friendapplyaction", this._fn_up.bind(this), friendApplyActionPayload);
     }
 
-    ongetFriendApplyaction(res:HttpResponsePacket){
+    _fn_up(res:HttpResponsePacket){
         if (res.res && res.res.code == 200){
             if (res.res.data){
 
-                this.showFail("操作成功")
+                this._fn_ahh("操作成功")
                 this.getFriendList();
                 if (this.argc.getFriendApplyaction){
                     this.argc.getFriendApplyaction(res)
@@ -713,19 +713,19 @@ export class GameHttpClient {
                 }
             }
         }else{
-            this.showFail("" , res.res? res.res.msg: res.err)
+            this._fn_ahh("" , res.res? res.res.msg: res.err)
         }
     }
 
 
-    sendactivity(successFun:Function = ()=>{}){
+    _fn_adk(successFun:Function = ()=>{}){
         let activityDrawPayload = {
         }
         this.argc.sendWheelCallBack = successFun;
-        ZcApiGateway.http.post("/api/activity", this.onsendactivity.bind(this), activityDrawPayload);
+        ZcApiGateway.http._fn_xi("/api/activity", this._fn_vl.bind(this), activityDrawPayload);
     }
 
-    onsendactivity(res:HttpResponsePacket){
+    _fn_vl(res:HttpResponsePacket){
         if (res.res && res.res.code == 200){
             if (res.res.data){
                 let activityDrawResponse = res.res.data
@@ -733,7 +733,7 @@ export class GameHttpClient {
                 playerDataStore.userInfodata.activity_count = activityDrawResponse.activity_count;
                 playerDataStore.userInfodata.activity_progress = activityDrawResponse.activity_progress;
 
-                this.showRewardProp(activityDrawResponse.draw_gift);
+                this._fn_ahq(activityDrawResponse.draw_gift);
 
                 if (this.argc.sendWheelCallBack){
                     this.argc.sendWheelCallBack(res)
@@ -741,38 +741,38 @@ export class GameHttpClient {
                 }
             }
         }else{
-            this.showFail("" , res.res? res.res.msg: res.err)
+            this._fn_ahh("" , res.res? res.res.msg: res.err)
         }
     }
 
 
-    sendProgressaward(prossId:number, successFun:Function = ()=>{}){
+    _fn_adu(prossId:number, successFun:Function = ()=>{}){
         let activityProgressPayload = {
             activity_progress_id: prossId,
         }
         this.argc.sendWheelCallBack = successFun;
-        ZcApiGateway.http.post("/api/activityprogressaward", this.onsendProgressaward.bind(this), activityProgressPayload);
+        ZcApiGateway.http._fn_xi("/api/activityprogressaward", this._fn_vt.bind(this), activityProgressPayload);
     }
 
-    onsendProgressaward(res:HttpResponsePacket){
+    _fn_vt(res:HttpResponsePacket){
         if (res.res && res.res.code == 200){
             if (res.res.data){
                 let activityProgressResponse = res.res.data
 
                 playerDataStore.userInfodata.activity_progress = activityProgressResponse.activity_progress;
 
-                this.showRewardProp(activityProgressResponse.activity_progress_award);
+                this._fn_ahq(activityProgressResponse.activity_progress_award);
 
                 playerDataStore.coinprop = activityProgressResponse.userprop;
 
-                this.refreshView();
+                this._fn_aaa();
                 if (this.argc.sendWheelCallBack){
                     this.argc.sendWheelCallBack(res)
                     this.argc.sendWheelCallBack = null;
                 }
             }
         }else{
-            this.showFail("" , res.res? res.res.msg: res.err)
+            this._fn_ahh("" , res.res? res.res.msg: res.err)
         }
     }
 
@@ -780,7 +780,7 @@ export class GameHttpClient {
 
 
 
-    refreshView(isGetTask:boolean = true){
+    _fn_aaa(isGetTask:boolean = true){
         GameEventManager.eventTarget.emit(GameEventManager.EEventName.REFRESH_GAME);
 
 
@@ -790,14 +790,14 @@ export class GameHttpClient {
         Notifications.emit(GD.event.updateGame);
     }
 
-    showReward(res:any){
+    _fn_ahp(res:any){
         if (res && res.rewards){
             let rewardRows = res.rewards;
-            this.showRewardProp(rewardRows);
+            this._fn_ahq(rewardRows);
         }
     }
 
-    showRewardProp(rewards:any[]){
+    _fn_ahq(rewards:any[]){
         let rewardItemRecords = [];
             for (let rewardIndex = 0; rewardIndex < rewards.length; rewardIndex++) {
                 const rewardRow = rewards[rewardIndex];
@@ -806,11 +806,11 @@ export class GameHttpClient {
                 }
             }
             if (rewardItemRecords.length > 0){
-                UiLayerService.instance.pushShowDialog(Const.Dialogs.RewardDialog, { reward: rewardItemRecords })
+                UiLayerService.instance._fn_xw(Const.Dialogs.RewardDialog, { reward: rewardItemRecords })
             }
     }
 
-    showFail(str:string,  msg:string = "") {
+    _fn_ahh(str:string,  msg:string = "") {
 
             GameEventManager.eventTarget.emit(GameEventManager.EEventName.SHOW_TIP, (str + msg))
 

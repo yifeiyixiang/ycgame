@@ -60,10 +60,10 @@ export class FrameAnimation extends Component {
     private frameNamHead : string = "";
 
     protected onLoad () : void {
-        this.InitAtlas();
+        this._fn_nr();
     }
 
-    private InitAtlas(){
+    private _fn_nr(){
         if(!this.atlas) {
             error("atlas not exist!")
             return;
@@ -79,7 +79,7 @@ export class FrameAnimation extends Component {
 
     protected start () : void {
         if(this.runAtStart) {
-            this.Play(this.Loop);
+            this._fn_wv(this.Loop);
         }
     }
 
@@ -90,7 +90,7 @@ export class FrameAnimation extends Component {
         this.frameStep += dt;
         if(this.frameStep >= this.interval) {
             this.frameStep-= this.interval;
-            this.ChangeFrame();
+            this._fn_bb();
         }
 
     }
@@ -98,7 +98,7 @@ export class FrameAnimation extends Component {
 
 
 
-    private ChangeFrame() : void{
+    private _fn_bb() : void{
         let isIndexEnd = this.currentIndex >= this.frameCount;
 
         if(!this.loop && isIndexEnd) {
@@ -134,16 +134,16 @@ export class FrameAnimation extends Component {
 
 
 
-    public setAtlas(atlas: SpriteAtlas) : void {
+    public _fn_aei(atlas: SpriteAtlas) : void {
         this.atlas = atlas;
-        this.InitAtlas();
+        this._fn_nr();
     }
 
 
 
 
 
-    public Play(loop : boolean = false) : void {
+    public _fn_wv(loop : boolean = false) : void {
 
         this.loop = loop;
         this.running = true;
@@ -151,27 +151,27 @@ export class FrameAnimation extends Component {
         this.currentIndex = 0;
 
 
-        this.ChangeFrame();
+        this._fn_bb();
     }
 
 
 
 
-    public Resume(loop : boolean = false) : void {
+    public _fn_abx(loop : boolean = false) : void {
         this.loop = loop;
         this.running = true;
 
-        this.ChangeFrame();
+        this._fn_bb();
     }
 
-    public Pause() : void {
+    public _fn_wq() : void {
         this.running = false;
     }
 
 
 
 
-    public Stop() : void {
+    public _fn_ail() : void {
         this.running = false;
         this.runAtStart = false;
     }

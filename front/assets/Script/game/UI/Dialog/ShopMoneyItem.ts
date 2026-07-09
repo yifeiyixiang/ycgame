@@ -41,13 +41,13 @@ export class ShopMoneyItem extends BaseView {
         }
 
         this.numLab.string = price3[1]
-        let fun = (node: any) => {
-            this.setImageCustomSize(node, 120)
+        let _fn_fa = (node: any) => {
+            this._fn_aex(node, 120)
         }
-        this.setSpriteFrame(this.icon.getComponent(Sprite)!, Const.resPath.icon + data.icon, fun)
+        this._fn_agk(this.icon.getComponent(Sprite)!, Const.resPath.icon + data.icon, _fn_fa)
 
         if (data.recharge && data.recharge > 0) {
-            let rechargeData = TableDataService.ins().getTableValueByID(Const.Tables.recharge, data.recharge)
+            let rechargeData = TableDataService.ins()._fn_ly(Const.Tables.recharge, data.recharge)
             this.priceLab.string = "￥" + rechargeData.cash
             find("btnbg/Layout/prop_diamond1", this.node)!.active = false
         } else {
@@ -70,25 +70,25 @@ export class ShopMoneyItem extends BaseView {
         let shopData = this._layerData.data
 
         if (this._priceType == PriceType.Diamonds) {
-            if (playerDataStore.checkAndUseDiamonds(TableDataService.ins().config[Const.config.diamonsPower][1] * playerDataStore.buyPowerTime)) {
+            if (playerDataStore._fn_bg(TableDataService.ins().config[Const.config.diamonsPower][1] * playerDataStore.buyPowerTime)) {
 
-                playerDataStore.getProp(GoodsType.Power + "," + TableDataService.ins().config[Const.config.diamonsPower][0], v3(0, 0, 0), v3(0, 0, 0))
-                playerDataStore.addBuyPowerTime()
+                playerDataStore._fn_jk(GoodsType.Power + "," + TableDataService.ins().config[Const.config.diamonsPower][0], v3(0, 0, 0), v3(0, 0, 0))
+                playerDataStore._fn_b()
                 this.emit(GD.event.updateMoney)
                 this.setData(this._layerData.data)
-                mergeBoardStateStore.addManagerVal(Const.ManagerTypes.diamondBuyPower);
+                mergeBoardStateStore._fn_h(Const.ManagerTypes.diamondBuyPower);
             }
             return
         }
         console.log("----等待支付接入")
-        this.onBuySuccessCB()
+        this._fn_sq()
     }
 
 
-    onBuySuccessCB() {
-        playerDataStore.getProp(this._layerData.data.price3, null, null)
+    _fn_sq() {
+        playerDataStore._fn_jk(this._layerData.data.price3, null, null)
         if (this._layerData.data.first && this._layerData.data.first != "") {
-            playerDataStore.getProp(this._layerData.data.first, null, null)
+            playerDataStore._fn_jk(this._layerData.data.first, null, null)
             this.emit(GD.event.updateMoney)
         }
     }

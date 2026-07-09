@@ -42,21 +42,21 @@ export class SceneOperationPanelController extends BaseUiComponent {
     shadowGridsData: Map<string, number> = new Map<string, number>()
 
     start() {
-        this.on(GD.event.cancelOpsHandler, this.cancelHandler)
+        this.on(GD.event.cancelOpsHandler, this._fn_ay)
         this.on(GD.event.clickDressItem, this.clickDressItem)
         this.bindButton(this.sure, this.sureHandler)
-        this.bindButton(this.cancel, this.cancelHandler)
+        this.bindButton(this.cancel, this._fn_ay)
         this.bindButton(this.rotate, () => {
             if (this._face == GFace.face1) {
                 return
             }
 
             let itemSize = v2(this._selItemAttr.itemSize.y, this._selItemAttr.itemSize.x)
-            let checkRes = UtilScene.isBottomGridOutBorder(this._selItemAttr.curGridPoint.x, this._selItemAttr.curGridPoint.y, itemSize)
+            let checkRes = UtilScene._fn_pr(this._selItemAttr.curGridPoint.x, this._selItemAttr.curGridPoint.y, itemSize)
 
             if (checkRes.res == false) {
                 this._selItemAttr.curGridPoint = v2(this._selItemAttr.curGridPoint.x - checkRes.offset.x, this._selItemAttr.curGridPoint.y - checkRes.offset.y)
-                let gridPos = UtilScene.getBottomGridPos(this._selItemAttr.curGridPoint.x, this._selItemAttr.curGridPoint.y)
+                let gridPos = UtilScene._fn_fw(this._selItemAttr.curGridPoint.x, this._selItemAttr.curGridPoint.y)
                 let worldPos = Const.GridParent.getComponent(UITransform)!.convertToWorldSpaceAR(gridPos)
                 this.node.worldPosition = worldPos
             }
@@ -66,12 +66,12 @@ export class SceneOperationPanelController extends BaseUiComponent {
         })
 
         this.bindButton(this.buy, () => {
-            UiLayerService.instance.showDialog(Const.Dialogs.SceneSkinDetailController, { skinId: this._selItemAttr.skin })
+            UiLayerService.instance._fn_ahg(Const.Dialogs.SceneSkinDetailController, { skinId: this._selItemAttr.skin })
         })
     }
 
     clickDressItem(skinId: number) {
-        if (SceneData.ins.getSceneSkinById(skinId) == GSceneSkinState.noGotted) {
+        if (SceneData.ins._fn_ky(skinId) == GSceneSkinState.noGotted) {
             this.buy.active = true
             this.sure.active = false
         } else {
@@ -87,33 +87,33 @@ export class SceneOperationPanelController extends BaseUiComponent {
             }
             this._selItemNode.parent = this._oriParent
 
-            this.hideShadow()
+            this._fn_nn()
         }
 
-        if (mergeBoardStateStore.getHandIndex() == handIndexs.putCashDesk) {
-            mergeBoardStateStore.closeHandLayer();
-            mergeBoardStateStore.addHandIndex();
-        } else if (mergeBoardStateStore.getHandIndex() == handIndexs.btnLvUp2) {
-            mergeBoardStateStore.addHandIndex()
+        if (mergeBoardStateStore._fn_hj() == handIndexs.putCashDesk) {
+            mergeBoardStateStore._fn_df();
+            mergeBoardStateStore._fn_e();
+        } else if (mergeBoardStateStore._fn_hj() == handIndexs.btnLvUp2) {
+            mergeBoardStateStore._fn_e()
         }
 
 
         this._selItemAttr.guestNode && this._selItemAttr.guestNode.getComponent(guest)!.ops(false)
         this._selItemAttr.flashForever(false)
         this.emit(GD.event.sureOps)
-        UiLayerService.instance.showDialog(Const.Dialogs.main)
+        UiLayerService.instance._fn_ahg(Const.Dialogs.main)
         this.emit(GD.event.refreshHandLayer);
         Const.IsShowOpsDialog = false
         Const.FloatStarParent.active = true
     }
 
-    cancelHandler() {
+    _fn_ay() {
         if (this._selItemAttr.type == GSceneItemType.carpet || this._selItemAttr.type == GSceneItemType.item || this._selItemAttr.type == GSceneItemType.pendant) {
             this._selItemNode.parent = this._oriParent
             this._selItemNode.worldPosition = this._oriPos
             this._selItemAttr.curGridPoint = this._oriCurPoint
             this._selItemAttr.setFace(this._oriFace)
-            this.hideShadow()
+            this._fn_nn()
         }
 
         this._selItemAttr.guestNode && this._selItemAttr.guestNode.getComponent(guest)!.ops(false)
@@ -121,7 +121,7 @@ export class SceneOperationPanelController extends BaseUiComponent {
         this._selItemAttr.switchIcon(this._oriSkin)
         this._selItemAttr.flashForever(false)
         this.emit(GD.event.cancelOps)
-        UiLayerService.instance.showDialog(Const.Dialogs.main)
+        UiLayerService.instance._fn_ahg(Const.Dialogs.main)
         Const.IsShowOpsDialog = false
         Const.FloatStarParent.active = true
     }
@@ -133,10 +133,10 @@ export class SceneOperationPanelController extends BaseUiComponent {
         Const.FloatStarParent.active = false
 
 
-        UiLayerService.instance.hideDialog(Const.Dialogs.main)
+        UiLayerService.instance._fn_nk(Const.Dialogs.main)
 
 
-        UiLayerService.instance.showDialog(Const.Dialogs.SceneSkinPanelController, { selScript: selItemAttr })
+        UiLayerService.instance._fn_ahg(Const.Dialogs.SceneSkinPanelController, { selScript: selItemAttr })
 
         this._oriSkin = selItemAttr.skin
         this._face = selItemAttr.faceMax
@@ -155,11 +155,11 @@ export class SceneOperationPanelController extends BaseUiComponent {
 
             let offsety = 30
             if (selItemAttr.type == GSceneItemType.pendant) {
-                let pos = UtilScene.getWallGridPos(selItemAttr.curGridPoint.x, selItemAttr.curGridPoint.y)
+                let pos = UtilScene._fn_mx(selItemAttr.curGridPoint.x, selItemAttr.curGridPoint.y)
                 this._oriPos = Const.ShadowWallParent.getComponent(UITransform)!.convertToWorldSpaceAR(pos).clone()
                 offsety = 18
             } else {
-                let pos = UtilScene.getBottomGridPos(selItemAttr.curGridPoint.x, selItemAttr.curGridPoint.y)
+                let pos = UtilScene._fn_fw(selItemAttr.curGridPoint.x, selItemAttr.curGridPoint.y)
                 this._oriPos = Const.GridParent.getComponent(UITransform)!.convertToWorldSpaceAR(pos).clone()
             }
 
@@ -176,8 +176,8 @@ export class SceneOperationPanelController extends BaseUiComponent {
 
             this.ops.position = v3(0, -this._targetHeight * 0.6, 0)
 
-            this.getItemPointMap(UtilScene.getItemSize(selItemAttr.itemSize, selItemAttr.curFace), selItemAttr.curGridPoint)
-            this.showShadow()
+            this._fn_hz(UtilScene._fn_ia(selItemAttr.itemSize, selItemAttr.curFace), selItemAttr.curGridPoint)
+            this._fn_aht()
         }
 
 
@@ -187,15 +187,15 @@ export class SceneOperationPanelController extends BaseUiComponent {
 
         this._selItemAttr.guestNode && this._selItemAttr.guestNode.getComponent(guest)!.ops(true)
 
-        let handIndex = mergeBoardStateStore.getHandIndex();
+        let handIndex = mergeBoardStateStore._fn_hj();
         if (handIndex == handIndexs.putCashDesk) {
             let obj: any = {};
-            obj.id = mergeBoardStateStore.getHandIndex();
+            obj.id = mergeBoardStateStore._fn_hj();
             obj.node = this.sure;
             obj.referNode = this._selItemNode;
             obj.isScene = 1;
             obj.delayTime = 0.5;
-            UiLayerService.instance.showDialog(Const.Dialogs.HandLayer, obj);
+            UiLayerService.instance._fn_ahg(Const.Dialogs.HandLayer, obj);
         }
     }
 
@@ -203,9 +203,9 @@ export class SceneOperationPanelController extends BaseUiComponent {
     updShadowOrGrid(selItemAttr: GISceneItemParent) {
 
 
-        this.getItemPointMap(
-            UtilScene.getItemSize(selItemAttr.itemSize, selItemAttr.curFace),
-            UtilScene.getRealGridPoint(selItemAttr.curGridPoint)
+        this._fn_hz(
+            UtilScene._fn_ia(selItemAttr.itemSize, selItemAttr.curFace),
+            UtilScene._fn_jy(selItemAttr.curGridPoint)
         )
 
 
@@ -216,7 +216,7 @@ export class SceneOperationPanelController extends BaseUiComponent {
                 node = Const.CarpetParent
             }
             node.children.forEach(item => {
-                let script = UtilScene.getSceneNodeScript(item)
+                let script = UtilScene._fn_kw(item)
                 if (script.type == GSceneItemType.item || script.type == GSceneItemType.carpet) {
                     for (let i = 0; i < script.itemSize.x; i++) {
                         for (let j = 0; j < script.itemSize.y; j++) {
@@ -234,10 +234,10 @@ export class SceneOperationPanelController extends BaseUiComponent {
             })
 
 
-            let roomRows = TableDataService.ins().getTableValuesByType(Const.Tables.scene_room, "type", "1")
+            let roomRows = TableDataService.ins()._fn_mb(Const.Tables.scene_room, "type", "1")
             roomRows.forEach((row: any) => {
 
-                if (SceneData.ins.getRoomLockInfoById(row.id) == GSceneRoomState.locked) {
+                if (SceneData.ins._fn_kk(row.id) == GSceneRoomState.locked) {
                     let roomSize = v2(row.x, row.y)
                     let roomPoint = v2(row.offset[0], row.offset[1])
                     for (let i = 0; i < roomSize.x; i++) {
@@ -256,7 +256,7 @@ export class SceneOperationPanelController extends BaseUiComponent {
 
         } else if (selItemAttr.type == GSceneItemType.pendant) {
             Const.PendantParent.children.forEach(item => {
-                let script = UtilScene.getSceneNodeScript(item)
+                let script = UtilScene._fn_kw(item)
                 for (let i = 0; i < script.itemSize.x; i++) {
                     for (let j = 0; j < script.itemSize.y; j++) {
                         let x = i + script.curGridPoint.x
@@ -288,21 +288,21 @@ export class SceneOperationPanelController extends BaseUiComponent {
         }
 
         if (this._isShowGrid) {
-            this.showGrid()
+            this._fn_ahj()
         } else {
-            this.showShadow()
+            this._fn_aht()
         }
 
     }
 
-    hideShadow() {
+    _fn_nn() {
 
-        NodePoolService.instance.putNodeArr(this.shadowGrids)
+        NodePoolService.instance._fn_ya(this.shadowGrids)
         this.shadowGrids = []
 
     }
 
-    getItemPointMap(itemSize: Vec2, startPoint: Vec2) {
+    _fn_hz(itemSize: Vec2, startPoint: Vec2) {
         this.shadowGridsData.clear()
         for (let i = 0; i < itemSize.x; i++) {
             for (let j = 0; j < itemSize.y; j++) {
@@ -313,12 +313,12 @@ export class SceneOperationPanelController extends BaseUiComponent {
         }
     }
 
-    showShadow() {
+    _fn_aht() {
 
-        NodePoolService.instance.putNodeArr(this.shadowGrids)
+        NodePoolService.instance._fn_ya(this.shadowGrids)
         this.shadowGrids = []
         if (this._selItemAttr.type == GSceneItemType.item || this._selItemAttr.type == GSceneItemType.carpet) {
-            UtilPub.getPrefab(Const.Prefabs.grid, (p: Prefab) => {
+            UtilPub._fn_jj(Const.Prefabs.grid, (p: Prefab) => {
                 this.shadowGridsData.forEach((value: number, key: string) => {
                     let arr = key.split(",")
                     let x = Number(arr[0])
@@ -327,14 +327,14 @@ export class SceneOperationPanelController extends BaseUiComponent {
                     item.getComponent(grid)!.init(x, y, GGridType.shadow)
 
                     item.scale = v3(1, 1, 1)
-                    item.position = UtilScene.getBottomGridPos(x, y)
+                    item.position = UtilScene._fn_fw(x, y)
                     this.shadowGrids.push(item)
                 })
 
             })
 
         } else if (this._selItemAttr.type == GSceneItemType.pendant) {
-            UtilPub.getPrefab(Const.Prefabs.grid_wall, (p: Prefab) => {
+            UtilPub._fn_jj(Const.Prefabs.grid_wall, (p: Prefab) => {
                 this.shadowGridsData.forEach((value: number, key: string) => {
                     let arr = key.split(",")
                     let x = Number(arr[0])
@@ -347,7 +347,7 @@ export class SceneOperationPanelController extends BaseUiComponent {
                     } else {
                         item.scale = v3(Math.abs(item.scale.x), item.scale.y, item.scale.z)
                     }
-                    item.position = UtilScene.getWallGridPos(x, y)
+                    item.position = UtilScene._fn_mx(x, y)
                     this.shadowGrids.push(item)
                 })
 
@@ -356,11 +356,11 @@ export class SceneOperationPanelController extends BaseUiComponent {
 
     }
 
-    showGrid() {
-        NodePoolService.instance.putNodeArr(this.shadowGrids)
+    _fn_ahj() {
+        NodePoolService.instance._fn_ya(this.shadowGrids)
         this.shadowGrids = []
         if (this._selItemAttr.type == GSceneItemType.item || this._selItemAttr.type == GSceneItemType.carpet) {
-            UtilPub.getPrefab(Const.Prefabs.grid, (p: Prefab) => {
+            UtilPub._fn_jj(Const.Prefabs.grid, (p: Prefab) => {
                 this.shadowGridsData.forEach((value: number, key: string) => {
                     let arr = key.split(",")
                     let x = Number(arr[0])
@@ -369,14 +369,14 @@ export class SceneOperationPanelController extends BaseUiComponent {
                     item.getComponent(grid)!.init(x, y, value == 1 ? GGridType.red : GGridType.green)
 
                     item.scale = v3(1, 1, 1)
-                    item.position = UtilScene.getBottomGridPos(x, y)
+                    item.position = UtilScene._fn_fw(x, y)
                     this.shadowGrids.push(item)
                 })
 
             })
 
         } else if (this._selItemAttr.type == GSceneItemType.pendant) {
-            UtilPub.getPrefab(Const.Prefabs.grid_wall, (p: Prefab) => {
+            UtilPub._fn_jj(Const.Prefabs.grid_wall, (p: Prefab) => {
                 this.shadowGridsData.forEach((value: number, key: string) => {
                     let arr = key.split(",")
                     let x = Number(arr[0])
@@ -389,7 +389,7 @@ export class SceneOperationPanelController extends BaseUiComponent {
                     } else {
                         item.scale = v3(Math.abs(item.scale.x), item.scale.y, item.scale.z)
                     }
-                    item.position = UtilScene.getWallGridPos(x, y)
+                    item.position = UtilScene._fn_mx(x, y)
                     this.shadowGrids.push(item)
                 })
 

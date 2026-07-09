@@ -21,7 +21,7 @@ export class GameStorageJSF extends Component {
     }
 
 
-    public setRobot(isRobot:boolean=false){
+    public _fn_aft(isRobot:boolean=false){
         let val = isRobot?"1":"0"
         sys.localStorage.setItem("login_isRobot", val);
     }
@@ -33,21 +33,21 @@ export class GameStorageJSF extends Component {
 
     GameKey = Const.SaveHead;
 
-    public  Key(key: string) {
+    public  _fn_rb(key: string) {
         return this.GameKey + key;
     }
 
-    public  GetRawKey(key: string) {
+    public  _fn_jx(key: string) {
         return key.replace(GameStorage.GameKey + "_", "")
     }
 
-     getStorage() {
+     _fn_lo() {
         return GameMemoryStorage
 
     }
 
-     getInt(key: string, def: number = 0) {
-        let n = this.getStorage().getItem(this.Key(key));
+     _fn_hr(key: string, def: number = 0) {
+        let n = this._fn_lo().getItem(this._fn_rb(key));
 
 
 
@@ -70,115 +70,115 @@ export class GameStorageJSF extends Component {
         return def;
     }
 
-     setInt(key: string, num: number) {
-        key = this.Key(key);
-        this.getStorage().setItem(key, num + "");
-        if(!this.isRobot) ServerCtrJSF.GetInstance().reqNewCloudNewSaveManual(key, num);
+     _fn_aey(key: string, num: number) {
+        key = this._fn_rb(key);
+        this._fn_lo().setItem(key, num + "");
+        if(!this.isRobot) ServerCtrJSF._fn_hp()._fn_aay(key, num);
     }
 
-     setIntMulti(dataObj: { [key: string]: number }) {
+     _fn_afc(dataObj: { [key: string]: number }) {
         for (let key of Object.keys(dataObj)) {
             let val = dataObj[key];
-            key = this.Key(key);
-            this.getStorage().setItem(key, val + "");
+            key = this._fn_rb(key);
+            this._fn_lo().setItem(key, val + "");
         }
-        if(!this.isRobot)  ServerCtrJSF.GetInstance().reqUploadMultiRecord(dataObj);
+        if(!this.isRobot)  ServerCtrJSF._fn_hp()._fn_abn(dataObj);
     }
 
-     setIntMemory(key: string, num: number) {
-        key = this.Key(key);
-        this.getStorage().setItem(key, num + "");
+     _fn_afb(key: string, num: number) {
+        key = this._fn_rb(key);
+        this._fn_lo().setItem(key, num + "");
     }
 
-     getBoolean(key: string, def: boolean = false) {
-        let n = this.getStorage().getItem(this.Key(key));
+     _fn_ft(key: string, def: boolean = false) {
+        let n = this._fn_lo().getItem(this._fn_rb(key));
         if (n != null && n != "") {
             return Number(n) == 1 ? true : false;
         }
         return def;
     }
 
-     setBoolean(key: string, is: boolean) {
-        key = this.Key(key);
+     _fn_aej(key: string, is: boolean) {
+        key = this._fn_rb(key);
         let v = is ? 1 : 0;
-        this.getStorage().setItem(key, v + "");
-        if(!this.isRobot) ServerCtrJSF.GetInstance().reqNewCloudNewSaveManual(key, v);
+        this._fn_lo().setItem(key, v + "");
+        if(!this.isRobot) ServerCtrJSF._fn_hp()._fn_aay(key, v);
     }
 
-     setBooleanMulti(dataObj: { [key: string]: boolean }) {
+     _fn_ael(dataObj: { [key: string]: boolean }) {
         for (let key of Object.keys(dataObj)) {
             let v = dataObj[key] ? 1 : 0;
-            key = this.Key(key);
-            this.getStorage().setItem(key, v + "");
+            key = this._fn_rb(key);
+            this._fn_lo().setItem(key, v + "");
         }
-        if(!this.isRobot) ServerCtrJSF.GetInstance().reqUploadMultiRecord(dataObj);
+        if(!this.isRobot) ServerCtrJSF._fn_hp()._fn_abn(dataObj);
     }
 
-     setBooleanMemory(key: string, is: boolean) {
-        key = this.Key(key);
+     _fn_aek(key: string, is: boolean) {
+        key = this._fn_rb(key);
         let v = is ? 1 : 0;
-        this.getStorage().setItem(key, v + "");
+        this._fn_lo().setItem(key, v + "");
     }
 
-     getString(key: string, def: string = '') {
-        let n = this.getStorage().getItem(this.Key(key));
+     _fn_lq(key: string, def: string = '') {
+        let n = this._fn_lo().getItem(this._fn_rb(key));
         if (n != null && n != "") {
             return n;
         }
         return def;
     }
 
-     getStringDisk(key: string, def: string = '') {
-        let n = sys.localStorage.getItem(this.Key(key));
+     _fn_ls(key: string, def: string = '') {
+        let n = sys.localStorage.getItem(this._fn_rb(key));
         if (n != null && n != "") {
             return n;
         }
         return def;
     }
-     setIntDisk(key: string, num: number) {
-        key = this.Key(key);
-        this.getStorage().setItem(key, num + "");
+     _fn_aez(key: string, num: number) {
+        key = this._fn_rb(key);
+        this._fn_lo().setItem(key, num + "");
     }
-     getIntDisk(key: string, def: number = 0) {
-        let n = sys.localStorage.getItem(this.Key(key));
+     _fn_hs(key: string, def: number = 0) {
+        let n = sys.localStorage.getItem(this._fn_rb(key));
         if (n != null && n != "") {
             return Number(n);
         }
         return def;
     }
-     setStringDisk(key: string, val: string) {
-        sys.localStorage.setItem(this.Key(key), val);
+     _fn_agp(key: string, val: string) {
+        sys.localStorage.setItem(this._fn_rb(key), val);
     }
 
-     setStringMemory(key: string, val: string) {
-        key = this.Key(key);
-        this.getStorage().setItem(key, val);
+     _fn_agq(key: string, val: string) {
+        key = this._fn_rb(key);
+        this._fn_lo().setItem(key, val);
         sys.localStorage.setItem(key, val);
     }
 
-     setString(key: string, str: string) {
-        key = this.Key(key);
-        this.getStorage().setItem(key, str);
+     _fn_ago(key: string, str: string) {
+        key = this._fn_rb(key);
+        this._fn_lo().setItem(key, str);
         if (key == GameStorage.GameKey + 'login_account') {
             return;
         }
-        if(!this.isRobot) ServerCtrJSF.GetInstance().reqNewCloudNewSaveManual(key, str);
+        if(!this.isRobot) ServerCtrJSF._fn_hp()._fn_aay(key, str);
     }
 
-    setStringMulti(dataObj: { [key: string]: string }) {
+    _fn_agr(dataObj: { [key: string]: string }) {
         for (let key of Object.keys(dataObj)) {
             let val = dataObj[key];
-            key = this.Key(key);
-            this.getStorage().setItem(key, val);
+            key = this._fn_rb(key);
+            this._fn_lo().setItem(key, val);
             if (key == GameStorage.GameKey + 'login_account') {
                 continue;
             }
         }
-        if(!this.isRobot) ServerCtrJSF.GetInstance().reqUploadMultiRecord(dataObj);
+        if(!this.isRobot) ServerCtrJSF._fn_hp()._fn_abn(dataObj);
     }
 
-    getObject(key: string, def: any = null) {
-        let n = this.getStorage().getItem(this.Key(key));
+    _fn_io(key: string, def: any = null) {
+        let n = this._fn_lo().getItem(this._fn_rb(key));
         if (n != null && n != "") {
             try {
                 let json = JSON.parse(n);
@@ -191,51 +191,51 @@ export class GameStorageJSF extends Component {
         return def;
     }
 
-     setObject(key: string, obj: any) {
-        key = this.Key(key);
+     _fn_afh(key: string, obj: any) {
+        key = this._fn_rb(key);
         let v = JSON.stringify(obj);
-        this.getStorage().setItem(key, v);
-        if(!this.isRobot)  ServerCtrJSF.GetInstance().reqNewCloudNewSaveManual(key, v);
+        this._fn_lo().setItem(key, v);
+        if(!this.isRobot)  ServerCtrJSF._fn_hp()._fn_aay(key, v);
     }
 
-     setObjectMulti(dataObj: { [key: string]: {} }) {
+     _fn_afj(dataObj: { [key: string]: {} }) {
         let tmpObj:{ [key: string]: {} } = {}
         for (let key of Object.keys(dataObj)) {
             let v = JSON.stringify(dataObj[key]);
-            key = this.Key(key);
-            this.getStorage().setItem(key, v);
+            key = this._fn_rb(key);
+            this._fn_lo().setItem(key, v);
             tmpObj[key] = v;
         }
-        if(!this.isRobot) ServerCtrJSF.GetInstance().reqUploadMultiRecord(tmpObj);
+        if(!this.isRobot) ServerCtrJSF._fn_hp()._fn_abn(tmpObj);
     }
 
-     sendObject(key: string, obj: any) {
-        key = this.Key(key);
+     _fn_ads(key: string, obj: any) {
+        key = this._fn_rb(key);
         let v = JSON.stringify(obj);
-        if(!this.isRobot) ServerCtrJSF.GetInstance().reqNewCloudNewSaveManual(key, v);
+        if(!this.isRobot) ServerCtrJSF._fn_hp()._fn_aay(key, v);
     }
 
 
-     setObjectMemory(key: string, obj: any) {
-        key = this.Key(key);
+     _fn_afi(key: string, obj: any) {
+        key = this._fn_rb(key);
         let v = JSON.stringify(obj);
-        this.getStorage().setItem(key, v);
+        this._fn_lo().setItem(key, v);
     }
 
      removeItem(key: string) {
-        key = this.Key(key);
-        this.getStorage().removeItem(key);
-        if(!this.isRobot) ServerCtrJSF.GetInstance().reqCloudDeleteManual(key);
+        key = this._fn_rb(key);
+        this._fn_lo().removeItem(key);
+        if(!this.isRobot) ServerCtrJSF._fn_hp()._fn_aao(key);
     }
 
-     removeMulti(keyArr: string[]) {
+     _fn_aai(keyArr: string[]) {
         let tmpObj: any = {};
         keyArr.forEach((key) => {
-            key = this.Key(key);
-            this.getStorage().removeItem(key);
+            key = this._fn_rb(key);
+            this._fn_lo().removeItem(key);
             tmpObj[key] = 0;
         });
-        if(!this.isRobot) ServerCtrJSF.GetInstance().reqDelMultiRecord(tmpObj);
+        if(!this.isRobot) ServerCtrJSF._fn_hp()._fn_aaq(tmpObj);
     }
 
      clear() {
@@ -251,7 +251,7 @@ export class GameStorageJSF extends Component {
             }
         }
 
-        let keys = this.getStorage().keys();
+        let keys = this._fn_lo().keys();
         for (let i = 0; i < keys.length; i++) {
             let key: string = keys[i];
             if (key.indexOf('login') == -1 && key.indexOf(this.GameKey) >=0) {
@@ -262,17 +262,17 @@ export class GameStorageJSF extends Component {
 
         for (let i = 0; i < list.length; i++) {
             const key = list[i];
-            this.getStorage().removeItem(key);
+            this._fn_lo().removeItem(key);
 
         }
-        this.getStorage().clear()
+        this._fn_lo().clear()
 
 
 
     }
 
 
-     clearByKey(gameKey: string) {
+     _fn_cu(gameKey: string) {
         let list: string[] = [];
         for (let i = 0; i < sys.localStorage.length; i++) {
             let key: string = sys.localStorage.key(i)!;
@@ -282,21 +282,21 @@ export class GameStorageJSF extends Component {
         }
         for (let i = 0; i < list.length; i++) {
             const key = list[i];
-            this.getStorage().removeItem(key);
-            if(!this.isRobot) ServerCtrJSF.GetInstance().reqCloudDeleteManual(key);
+            this._fn_lo().removeItem(key);
+            if(!this.isRobot) ServerCtrJSF._fn_hp()._fn_aao(key);
         }
     }
 
-     getStringArrayByKey(str: string) {
+     _fn_lr(str: string) {
 
         let list: any[] = [];
         let list2: any[] = [];
-        let keys = this.getStorage().keys();
+        let keys = this._fn_lo().keys();
         for (let i = 0; i < keys.length; i++) {
             const key: string = keys[i];
 
             if (key.indexOf(str) != -1) {
-                let n = this.getStorage().getItem(key);
+                let n = this._fn_lo().getItem(key);
 
                 list.push(n);
                 list2.push(key)
@@ -305,17 +305,17 @@ export class GameStorageJSF extends Component {
         return { keys: list2, values: list };
     }
 
-     getObjectArrayByKey(str: string) {
+     _fn_ip(str: string) {
 
         let list: any[] = [];
         let list2: any[] = [];
-        let keys = this.getStorage().keys();
-        str = this.Key(str);
+        let keys = this._fn_lo().keys();
+        str = this._fn_rb(str);
         for (let i = 0; i < keys.length; i++) {
             const key: string = keys[i];
 
             if (key.indexOf(str) == 0) {
-                let n = this.getStorage().getItem(key);
+                let n = this._fn_lo().getItem(key);
 
                 let value = null;
                 if (n != null && n != "") {
@@ -338,7 +338,7 @@ export class GameStorageJSF extends Component {
     }
 
 
-     getAll(isFirst: boolean = false) {
+     _fn_fi(isFirst: boolean = false) {
         let jsonData: any = {}
         for (let i = 0; i < sys.localStorage.length; i++) {
             const key: string = sys.localStorage.key(i)!;
@@ -434,13 +434,13 @@ export class GameStorageJSF extends Component {
         return jsonData
     }
 
-     async setAll(jsonData: any) {
+     async _fn_aeg(jsonData: any) {
 
         await this.clear();
 
 
         for (let key in jsonData) {
-            await this.getStorage().setItem(key, jsonData[key])
+            await this._fn_lo().setItem(key, jsonData[key])
         }
     }
 

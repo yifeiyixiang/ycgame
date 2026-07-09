@@ -36,8 +36,8 @@ export class grid extends BaseUiComponent {
         }
     }
 
-    clickGrid() {
-        UtilPub.log("------点击grid格子-- x:", this.x, " y:", this.y, UtilScene.getBottomGridPos(this.y, this.x))
+    _fn_dc() {
+        UtilPub.log("------点击grid格子-- x:", this.x, " y:", this.y, UtilScene._fn_fw(this.y, this.x))
     }
 
 }

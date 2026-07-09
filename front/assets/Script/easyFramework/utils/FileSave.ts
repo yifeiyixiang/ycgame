@@ -5,7 +5,7 @@ const { ccclass, property } = _decorator;
 @ccclass('FileSave')
 export class FileSave extends Component {
 
-    public static saveForBrowser(textToWrite:string, fileNameToSaveAs:string) {
+    public static _fn_acq(textToWrite:string, fileNameToSaveAs:string) {
         if (HTML5) {
             console.log("浏览器");
 

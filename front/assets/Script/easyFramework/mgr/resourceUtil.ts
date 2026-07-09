@@ -27,7 +27,7 @@ export class ResourceLoaderService {
     public static prefabs: { [key: string]: Prefab } = {}
     public static spriteFrames: { [key: string]: SpriteFrame } = {}
 
-    public static preloadPrefabs(ps: any) {
+    public static _fn_xm(ps: any) {
         return new Promise<void>((resolve, reject) => {
             let cnt = Object.keys(ps).length
             UtilPub.log("----------加载预制体 个数", cnt)
@@ -56,7 +56,7 @@ export class ResourceLoaderService {
         })
     }
 
-    public static preloadPrefab(ps: string) {
+    public static _fn_xl(ps: string) {
         return new Promise<Prefab>((resolve, reject) => {
             let cnt = 1
             let url = ps
@@ -78,7 +78,7 @@ export class ResourceLoaderService {
         })
     }
 
-    public static loadRes<T extends Asset>(url: string, type: AssetType<T> | null, cb?: LoadCompleteCallback<T>) {
+    public static _fn_ro<T extends Asset>(url: string, type: AssetType<T> | null, cb?: LoadCompleteCallback<T>) {
         if (type) {
             resources.load(url, type, (err, res) => {
                 if (err) {
@@ -105,7 +105,7 @@ export class ResourceLoaderService {
         }
     }
 
-    public static bandleHandler<T extends Asset>(bundleObj: AssetManager.Bundle | null, pathName: string, type: AssetType<T> | null, cb?: LoadCompleteCallback<T>) {
+    public static _fn_y<T extends Asset>(bundleObj: AssetManager.Bundle | null, pathName: string, type: AssetType<T> | null, cb?: LoadCompleteCallback<T>) {
         if (type) {
             bundleObj!.load(pathName, type, (err, res) => {
                 if (err) {
@@ -135,7 +135,7 @@ export class ResourceLoaderService {
     }
 
 
-    public static loadResWithBundle<T extends Asset>(url: string, type: AssetType<T> | null, cb?: LoadCompleteCallback<T>) {
+    public static _fn_rq<T extends Asset>(url: string, type: AssetType<T> | null, cb?: LoadCompleteCallback<T>) {
 
         let bundleName = url.split("|")[0]
         let pathName = url.split("|")[1]
@@ -145,14 +145,14 @@ export class ResourceLoaderService {
         if (bundleObj == null) {
             console.log("---开始下载---", bundleName, pathName, bundleObj)
             UtilPub.loadBundle(bundleName).then((bundle: AssetManager.Bundle | null) => {
-                this.bandleHandler(bundle, pathName, type, cb)
+                this._fn_y(bundle, pathName, type, cb)
             })
         } else {
-            this.bandleHandler(bundleObj, pathName, type, cb)
+            this._fn_y(bundleObj, pathName, type, cb)
         }
 
     }
-    public static loadResDirWithBundle<T extends Asset>(bundleName: string, dir: string, cb?: LoadDirCompleteCallback<T>) {
+    public static _fn_rp<T extends Asset>(bundleName: string, dir: string, cb?: LoadDirCompleteCallback<T>) {
         let bundleObj = assetManager.getBundle(bundleName)
         bundleObj!.loadDir(dir, (err, res) => {
             if (err) {
@@ -172,13 +172,13 @@ export class ResourceLoaderService {
 
 
 
-    public static getUIPrefabRes(prefabPath: string, cb?: (err: Error | null, asset?: Prefab) => void) {
-        this.loadRes(prefabPath, Prefab, cb);
+    public static _fn_mr(prefabPath: string, cb?: (err: Error | null, asset?: Prefab) => void) {
+        this._fn_ro(prefabPath, Prefab, cb);
     }
 
 
-    public static getUIPrefabResWithBundle(prefabPath: string, cb?: (err: Error | null, asset?: Prefab) => void) {
-        this.loadResWithBundle(prefabPath, Prefab, cb);
+    public static _fn_ms(prefabPath: string, cb?: (err: Error | null, asset?: Prefab) => void) {
+        this._fn_rq(prefabPath, Prefab, cb);
     }
 
 
@@ -188,8 +188,8 @@ export class ResourceLoaderService {
 
 
 
-    public static createUIWithBundle(path: string, cb?: (err: Error | null, node?: Node) => void, parent?: Node | null) {
-        this.getUIPrefabResWithBundle(path, (err: Error | null, prefab?: Prefab) => {
+    public static _fn_ea(path: string, cb?: (err: Error | null, node?: Node) => void, parent?: Node | null) {
+        this._fn_ms(path, (err: Error | null, prefab?: Prefab) => {
             if (err) return;
             let node;
             // @ts-ignore
@@ -212,8 +212,8 @@ export class ResourceLoaderService {
         });
     }
 
-    public static setSpriteFrame<T extends Asset>(path: string, sprite: Sprite, cb: LoadCompleteCallback<SpriteFrame>) {
-        this.loadRes<SpriteFrame>(path + '/spriteFrame', SpriteFrame, (err, spriteFrame) => {
+    public static _fn_agk<T extends Asset>(path: string, sprite: Sprite, cb: LoadCompleteCallback<SpriteFrame>) {
+        this._fn_ro<SpriteFrame>(path + '/spriteFrame', SpriteFrame, (err, spriteFrame) => {
             if (err) {
                 console.error('set sprite frame failed! err:', path, err);
                 cb(err, spriteFrame);
@@ -230,7 +230,7 @@ export class ResourceLoaderService {
 
 
 
-    public static setRemoteImage(url: string, sprite: Sprite, cb: LoadCompleteCallback<SpriteFrame>) {
+    public static _fn_afr(url: string, sprite: Sprite, cb: LoadCompleteCallback<SpriteFrame>) {
         if (!url || !url.startsWith('http')) {
             return;
         }
@@ -255,8 +255,8 @@ export class ResourceLoaderService {
 
 
 
-	public static setSkeEffect(skele:sp.Skeleton[], petData:PetProfileRecord, thisObj?:any){
-		let petCfg = TableDataService.ins().getTableValueByID(Const.Tables.new_prop, petData.prop_id);
+	public static _fn_agg(skele:sp.Skeleton[], petData:PetProfileRecord, thisObj?:any){
+		let petCfg = TableDataService.ins()._fn_ly(Const.Tables.new_prop, petData.prop_id);
 		let path:string = "";
 		if (petCfg.typeson == 1){
 
@@ -267,7 +267,7 @@ export class ResourceLoaderService {
 			path = "cat/json/mao/mao";
 		}
 
-        ResourceLoaderService.loadResWithBundle( "d1scene2|pets/gou", sp.SkeletonData, (err, skedata) => {
+        ResourceLoaderService._fn_rq( "d1scene2|pets/gou", sp.SkeletonData, (err, skedata) => {
             if (err) {
 					UtilPub.error("加载模型失败", err);
 					return;
@@ -296,7 +296,7 @@ export class ResourceLoaderService {
             skele[4].node.active = false;
 
             for (let i = 0; i < petData.fs_prop_id.length; i++) {
-                let itemCfg:ShopConfigRecord = TableDataService.ins().getTableValueByID(Const.Tables.new_prop, petData.fs_prop_id[i]);
+                let itemCfg:ShopConfigRecord = TableDataService.ins()._fn_ly(Const.Tables.new_prop, petData.fs_prop_id[i]);
                 if (itemCfg.sonname == 1){
 
                     skele[1].node.active = true;

@@ -14,7 +14,7 @@ export class RewardLayer extends BaseView {
     _drawArr: any = []
 
     start() {
-        this.bindButton(find("btnReward", this.node)!, this.popClose)
+        this.bindButton(find("btnReward", this.node)!, this._fn_xe)
     }
 
     show(args: any) {
@@ -42,13 +42,13 @@ export class RewardLayer extends BaseView {
             })
         }
         else if (type == GoodsType.prop) {
-            mergeBoardStateStore.addPropNum(id, num, this.node.getComponent(UITransform)!.convertToWorldSpaceAR(Vec3.ZERO))
+            mergeBoardStateStore._fn_m(id, num, this.node.getComponent(UITransform)!.convertToWorldSpaceAR(Vec3.ZERO))
             this.addPrefab(Const.Prefabs.PropItem, this.layer, (item: any) => {
                 item.getComponent(PropItem).setData(id, PropItemFlag.TouchInfo | PropItemFlag.HideName | PropItemFlag.ShowNum, num)
                 item.getComponent(PropItem).setSize(120)
             })
         } else {
-            SceneData.ins.setSceneSkinById(id, GSceneSkinState.gotted)
+            SceneData.ins._fn_agb(id, GSceneSkinState.gotted)
             this.addPrefab(Const.Prefabs.PropItem, this.layer, (item: any) => {
                 item.getComponent(PropItem).setSkinData(id)
                 item.getComponent(PropItem).setSize(300)

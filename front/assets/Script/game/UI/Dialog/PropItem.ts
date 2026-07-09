@@ -41,13 +41,13 @@ export class PropItem extends BaseView {
         this._propid = id
 
 
-        let data = TableDataService.ins().getTableValueByID(Const.Tables.prop, id)
+        let data = TableDataService.ins()._fn_ly(Const.Tables.prop, id)
         this._propdata = data
 
-        let dataNew = TableDataService.ins().getTableValueByID(Const.Tables.new_prop, id)
+        let dataNew = TableDataService.ins()._fn_ly(Const.Tables.new_prop, id)
 
         if (!this._propdata && dataNew){
-            this.setSpriteFrame(this.icon.getComponent(Sprite)!, Const.resPath.icon + dataNew.icon, () => { }, 120)
+            this._fn_agk(this.icon.getComponent(Sprite)!, Const.resPath.icon + dataNew.icon, () => { }, 120)
             this.nameLab.string = dataNew.name
 
             this.nameLab.node.active = true
@@ -58,7 +58,7 @@ export class PropItem extends BaseView {
         }
 
         if (!this._propdata) {
-            this.setSpriteFrame(this.icon.getComponent(Sprite)!, Const.resPath.propItembg + "wenhao", () => { }, 120)
+            this._fn_agk(this.icon.getComponent(Sprite)!, Const.resPath.propItembg + "wenhao", () => { }, 120)
             this.nameLab.node.active = true
             this.nameLab.string = id + ""
             this.gantan.active = false
@@ -67,7 +67,7 @@ export class PropItem extends BaseView {
             return this
         }
         if (flag & PropItemFlag.HideInfo) {
-            this.setSpriteFrame(this.icon.getComponent(Sprite)!, Const.resPath.propItembg + "wenhao", () => { }, 120)
+            this._fn_agk(this.icon.getComponent(Sprite)!, Const.resPath.propItembg + "wenhao", () => { }, 120)
             this.nameLab.node.active = false
             this.gantan.active = false
             this.lvLabel.active = false
@@ -75,18 +75,18 @@ export class PropItem extends BaseView {
             return this
         }
 
-        this.setSpriteFrame(this.icon.getComponent(Sprite)!, Const.resPath.icon + data.icon, () => { }, 150)
+        this._fn_agk(this.icon.getComponent(Sprite)!, Const.resPath.icon + data.icon, () => { }, 150)
         this.nameLab.string = this._propdata!.name
 
         if (flag & PropItemFlag.TouchInfo) {
-            this.bindButton(this.node, this.onOpenPropInfo)
+            this.bindButton(this.node, this._fn_vc)
             this.gantan.active = true
         } else {
             this.gantan.active = false
         }
 
         if (flag & PropItemFlag.ShowMinInfo) {
-            this.bindButton(this.node, this.onOpenPropMinInfo)
+            this.bindButton(this.node, this._fn_vd)
         }
 
         if (flag & PropItemFlag.ShowLevel) {
@@ -122,10 +122,10 @@ export class PropItem extends BaseView {
         this.lvLabel.active = false
         this.bg.getComponent(Sprite)!.spriteFrame = null
 
-        let data = TableDataService.ins().getTableValueByID(Const.Tables.scene_skin, id)
+        let data = TableDataService.ins()._fn_ly(Const.Tables.scene_skin, id)
         this._propdata = data
 
-        this.setSpriteFrame(this.icon.getComponent(Sprite)!, Const.resPath.icon + data.icon0, () => { }, 300)
+        this._fn_agk(this.icon.getComponent(Sprite)!, Const.resPath.icon + data.icon0, () => { }, 300)
         this.nameLab.string = data.name
         return this
     }
@@ -149,26 +149,26 @@ export class PropItem extends BaseView {
         if (path instanceof SpriteFrame) {
             this.bg.getComponent(Sprite)!.spriteFrame = path
         } else {
-            this.setSpriteFrame(this.bg.getComponent(Sprite)!, path)
+            this._fn_agk(this.bg.getComponent(Sprite)!, path)
         }
         return this
     }
 
     setItemBg(path: number) {
-        this.setSpriteFrame(this.bg.getComponent(Sprite)!, Const.resPath.propItembg + "propItembg" + path)
+        this._fn_agk(this.bg.getComponent(Sprite)!, Const.resPath.propItembg + "propItembg" + path)
         return this
     }
 
-    onOpenPropInfo() {
+    _fn_vc() {
         if (this._propdata.type <= 6 || this._propdata.type > 100 || this._propdata.type == 15 || this._propdata.type == 16 || this._propdata.type == 17 || this._propdata.type == 18) {
-            UiLayerService.instance.showDialog(Const.Dialogs.ItemCodexLayer, this._propdata.id);
+            UiLayerService.instance._fn_ahg(Const.Dialogs.ItemCodexLayer, this._propdata.id);
         } else {
-            UiLayerService.instance.showDialog(Const.Dialogs.PropItemInfo, { propdata: this._propdata })
+            UiLayerService.instance._fn_ahg(Const.Dialogs.PropItemInfo, { propdata: this._propdata })
         }
     }
 
-    onOpenPropMinInfo() {
-        UiLayerService.instance.showDialog(Const.Dialogs.PropMinInfo, { propdata: this._propdata })
+    _fn_vd() {
+        UiLayerService.instance._fn_ahg(Const.Dialogs.PropMinInfo, { propdata: this._propdata })
     }
 
     getPropId() {

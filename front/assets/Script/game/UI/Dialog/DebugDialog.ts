@@ -17,8 +17,8 @@ export class DebugDialog extends BaseView {
 
     start() {
         this.bindButton(find("root/btnClose", this.node)!, this.close)
-        this.bindButton(find("root/layout/btnClear", this.node)!, this.onClickClearAll)
-        this.bindButton(find("root/layout/btnExportScene", this.node)!, this.onClickExportScene)
+        this.bindButton(find("root/layout/btnClear", this.node)!, this._fn_tw)
+        this.bindButton(find("root/layout/btnExportScene", this.node)!, this._fn_tz)
     }
 
     show(args: any) {
@@ -28,13 +28,13 @@ export class DebugDialog extends BaseView {
     }
 
     initData() {
-        let setData = TableDataService.ins().getTable(Const.Tables.setting)
-        this.scrollViewSetData(this.list, setData, this.initItem, this)
+        let setData = TableDataService.ins()._fn_lt(Const.Tables.setting)
+        this._fn_adc(this.list, setData, this._fn_oc, this)
     }
 
-    initItem(itemUI: Node, item: any, index: number, self: any) {
+    _fn_oc(itemUI: Node, item: any, index: number, self: any) {
         itemUI.getChildByName("name")!.getComponent(Label)!.string = item.ps
-        itemUI.getChildByName("curNum")!.getComponent(Label)!.string = GameStorage.getInt(item.key, 0) + ""
+        itemUI.getChildByName("curNum")!.getComponent(Label)!.string = GameStorage._fn_hr(item.key, 0) + ""
         itemUI.getChildByName("EditBox")!.getComponent(EditBox)!.placeholder = item.editValue
         itemUI.getChildByName("EditBox")!.getComponent(EditBox)!.string = item.editValue
         if (item.type == 1) {
@@ -45,25 +45,25 @@ export class DebugDialog extends BaseView {
         }
     }
 
-    onClickClearAll() {
-        ServerCtrJSF.GetInstance().reqUploadEmptyRecord()
+    _fn_tw() {
+        ServerCtrJSF._fn_hp()._fn_abm()
         this.scheduleOnce(() => {
             game.end()
         }, 1.2)
     }
 
-    onClickExportScene() {
-        UtilScene.exportAllItems()
+    _fn_tz() {
+        UtilScene._fn_eq()
     }
 
     jianshaoNum(event: any, data: any) {
         let itemUI = data[1]
         let item = data[0]
-        GameStorage.setInt(item.key, GameStorage.getInt(item.key) - parseInt(itemUI.getChildByName("EditBox")!.getComponent(EditBox)!.string))
+        GameStorage._fn_aey(item.key, GameStorage._fn_hr(item.key) - parseInt(itemUI.getChildByName("EditBox")!.getComponent(EditBox)!.string))
         this.emit(GD.event.updateMoney)
 
 
-        itemUI.getChildByName("curNum")!.getComponent(Label)!.string = GameStorage.getInt(item.key, 0) + ""
+        itemUI.getChildByName("curNum")!.getComponent(Label)!.string = GameStorage._fn_hr(item.key, 0) + ""
 
 
     }
@@ -71,10 +71,10 @@ export class DebugDialog extends BaseView {
     addNum(event: any, data: any) {
         let itemUI = data[1]
         let item = data[0]
-        GameStorage.setInt(item.key, GameStorage.getInt(item.key) + parseInt(itemUI.getChildByName("EditBox")!.getComponent(EditBox)!.string))
+        GameStorage._fn_aey(item.key, GameStorage._fn_hr(item.key) + parseInt(itemUI.getChildByName("EditBox")!.getComponent(EditBox)!.string))
         this.emit(GD.event.updateMoney)
 
-        itemUI.getChildByName("curNum")!.getComponent(Label)!.string = GameStorage.getInt(item.key, 0) + ""
+        itemUI.getChildByName("curNum")!.getComponent(Label)!.string = GameStorage._fn_hr(item.key, 0) + ""
 
     }
 
@@ -83,11 +83,11 @@ export class DebugDialog extends BaseView {
         let item = data[0]
 
         let propId = parseInt(itemUI.getChildByName("EditBox")!.getComponent(EditBox)!.string)
-        let propData = TableDataService.ins().getTableValueByID(Const.Tables.prop, propId)
+        let propData = TableDataService.ins()._fn_ly(Const.Tables.prop, propId)
         if (propData) {
-            mergeBoardStateStore.addPropNum(propId, 1)
+            mergeBoardStateStore._fn_m(propId, 1)
         } else {
-            this.toast("道具ID 有误")
+            this._fn_aiu("道具ID 有误")
         }
     }
 }

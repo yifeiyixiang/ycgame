@@ -27,10 +27,10 @@ export default class ServerCtrJSF {
 
     private static instance: ServerCtrJSF = null!;
 
-    public static GetInstance() {
+    public static _fn_hp() {
         if (!this.instance) {
             this.instance = new ServerCtrJSF();
-            this.instance.InitServerCtr();
+            this.instance._fn_oy();
         }
         return this.instance;
     }
@@ -54,14 +54,14 @@ export default class ServerCtrJSF {
     regionList: any = {};
     serverList: any = {};
 
-    InitServerCtr() {
-        this.account = GameStorage.getStringDisk('login_account', '');
-        this.password = GameStorage.getStringDisk('login_password', this.password);
-        this.authCode = GameStorage.getStringDisk('login_authCode', this.authCode);
-        this.serverId = GameStorage.getIntDisk('login_serverId', 1);
+    _fn_oy() {
+        this.account = GameStorage._fn_ls('login_account', '');
+        this.password = GameStorage._fn_ls('login_password', this.password);
+        this.authCode = GameStorage._fn_ls('login_authCode', this.authCode);
+        this.serverId = GameStorage._fn_hs('login_serverId', 1);
     }
 
-    CheckIsHaveAccount() {
+    _fn_bv() {
         if (!this.account || this.account == '') {
 
             return false;
@@ -69,7 +69,7 @@ export default class ServerCtrJSF {
         return true;
     }
 
-    CheckHaveDataById(regionId: number) {
+    _fn_bu(regionId: number) {
         for (let i = 0; i < this.regionDataList.length; i++) {
             const data = this.regionDataList[i];
             if (data.regionId == regionId) {
@@ -78,38 +78,38 @@ export default class ServerCtrJSF {
         }
         return false;
     }
-    gameTime() {
-        return GameStorage.getInt('login_gameTime', 0);
+    _fn_fb() {
+        return GameStorage._fn_hr('login_gameTime', 0);
     }
 
-    addGameTime(num: number) {
-        num += this.gameTime()
-        GameStorage.setInt('login_gameTime', num);
+    _fn_d(num: number) {
+        num += this._fn_fb()
+        GameStorage._fn_aey('login_gameTime', num);
     }
 
 
     get prodUrlVersion() {
-        return GameStorage.getStringDisk('prod_url_version', "");
+        return GameStorage._fn_ls('prod_url_version', "");
     }
 
     set prodUrlVersion(str: string) {
         console.log("-@@@@@@@@@@@--------设置生产环境的url版本--", str)
-        GameStorage.setStringDisk('prod_url_version', str);
+        GameStorage._fn_agp('prod_url_version', str);
     }
 
 
     get version() {
-        return GameStorage.getStringDisk('login_version', "");
+        return GameStorage._fn_ls('login_version', "");
     }
 
     set version(str: string) {
         console.log("-@@@@@@@@@@@--------设置服务端版本号--", str)
-        GameStorage.setStringDisk('login_version', str);
+        GameStorage._fn_agp('login_version', str);
     }
 
     get Account() {
         if (this.account == "") {
-            this.account = UtilPub.randomString(8)
+            this.account = UtilPub._fn_yh(8)
         }
         return this.account;
     }
@@ -117,7 +117,7 @@ export default class ServerCtrJSF {
     set Account(str: string) {
         this.account = str;
         console.log("-@@@@@@@@@@@--------账号被修改--", str)
-        GameStorage.setStringDisk('login_account', this.account);
+        GameStorage._fn_agp('login_account', this.account);
     }
 
     get PassWord() {
@@ -126,7 +126,7 @@ export default class ServerCtrJSF {
 
     set PassWord(str: string) {
         this.password = str;
-        GameStorage.setStringDisk('login_password', this.password);
+        GameStorage._fn_agp('login_password', this.password);
     }
     get AuthCode() {
         return this.authCode;
@@ -134,7 +134,7 @@ export default class ServerCtrJSF {
 
     set AuthCode(str: string) {
         this.authCode = str;
-        GameStorage.setStringDisk('login_authCode', this.authCode);
+        GameStorage._fn_agp('login_authCode', this.authCode);
     }
 
     get ServerId() {
@@ -142,28 +142,28 @@ export default class ServerCtrJSF {
     }
     set ServerId(id: number) {
         this.serverId = id;
-        GameStorage.setStringDisk('login_serverId', this.serverId + "");
+        GameStorage._fn_agp('login_serverId', this.serverId + "");
     }
 
-    isOkToDownload() {
-        return mergeBoardStateStore.isHandDone() == true && ServerCtrJSF.GetInstance().gameTime() > 3 * 60
+    _fn_qe() {
+        return mergeBoardStateStore._fn_px() == true && ServerCtrJSF._fn_hp()._fn_fb() > 3 * 60
     }
 
-    UpdateRegions(regions: any) {
+    _fn_ajn(regions: any) {
         for (const key in regions) {
             const data = regions[key];
             this.regionList[key] = JSON.parse(data);
         }
     }
 
-    UpdateServers(servers: any) {
+    _fn_ajq(servers: any) {
         for (const key in servers) {
             const data = servers[key];
             this.serverList[key] = JSON.parse(data);
         }
     }
 
-    public GetServerData(serverId: number) {
+    public _fn_ld(serverId: number) {
         for (const key in this.serverList) {
             const data = this.serverList[key];
             if (data.id == serverId) {
@@ -172,7 +172,7 @@ export default class ServerCtrJSF {
         }
         return null;
     }
-    public GetStateIcon(status: string) {
+    public _fn_ln(status: string) {
         switch (status) {
             case ServerState.Normal:
                 return;
@@ -188,7 +188,7 @@ export default class ServerCtrJSF {
     }
 
 
-    public GetLastNewServer() {
+    public _fn_id() {
         let id = 1;
         for (const key in this.serverList) {
             const data = this.serverList[key];
@@ -204,19 +204,19 @@ export default class ServerCtrJSF {
 
 
 
-    public reqRegister(account: any, password: any) {
-        if (!WmSocketJSF.getInstance().isConnected()) return
+    public _fn_abc(account: any, password: any) {
+        if (!WmSocketJSF._fn_ho()._fn_pt()) return
         let data = {
             "cmd": GNetCmd.UserRegister,
             "lang": "zh",
             "account": account,
             "password": password,
         }
-        WmSocketJSF.getInstance().send({ "data": data });
+        WmSocketJSF._fn_ho().send({ "data": data });
     }
 
-    public reqLogin() {
-        if (!WmSocketJSF.getInstance().isConnected()) return
+    public _fn_aaw() {
+        if (!WmSocketJSF._fn_ho()._fn_pt()) return
         let data = {
             "cmd": GNetCmd.UserLogin,
             "lang": "zh",
@@ -224,11 +224,11 @@ export default class ServerCtrJSF {
             "password": this.password,
             'nickName': this.nickName + this.account
         }
-        WmSocketJSF.getInstance().send({ "data": data });
+        WmSocketJSF._fn_ho().send({ "data": data });
     }
 
 
-    public wxLoginBegin(failCb?: Function) {
+    public _fn_akc(failCb?: Function) {
         wx.login({
             success(loginResult) {
                 console.warn("-----微信登录--", loginResult);
@@ -240,7 +240,7 @@ export default class ServerCtrJSF {
                     jscode: loginResult.code,
                 };
                 console.warn('发送登录数据：', data);
-                WmSocketJSF.getInstance().send({ "data": data });
+                WmSocketJSF._fn_ho().send({ "data": data });
             },
             fail(res) {
                 let msg = "登录失败：" + res.errMsg;
@@ -249,8 +249,8 @@ export default class ServerCtrJSF {
         });
     }
 
-    public reqLoginByAccount(account: string, password: string, authCode: string) {
-        if (!WmSocketJSF.getInstance().isConnected()) return
+    public _fn_aax(account: string, password: string, authCode: string) {
+        if (!WmSocketJSF._fn_ho()._fn_pt()) return
         let data = {
             "cmd": GNetCmd.UserLogin,
             "lang": "zh",
@@ -259,12 +259,12 @@ export default class ServerCtrJSF {
             "authCode": authCode,
             'nickName': this.nickName + this.account
         }
-        WmSocketJSF.getInstance().send({ "data": data });
+        WmSocketJSF._fn_ho().send({ "data": data });
     }
 
 
-    public reqReceiveGodWealth(shareUserID: string, receicveIndex: number) {
-        if (!WmSocketJSF.getInstance().isConnected()) return
+    public _fn_aaz(shareUserID: string, receicveIndex: number) {
+        if (!WmSocketJSF._fn_ho()._fn_pt()) return
         let data = {
             "cmd": GNetCmd.ReceiveGodWealth,
             "lang": "zh",
@@ -272,12 +272,12 @@ export default class ServerCtrJSF {
             "shareUserID": shareUserID,
             "receicveIndex": receicveIndex,
         }
-        WmSocketJSF.getInstance().send({ "data": data });
+        WmSocketJSF._fn_ho().send({ "data": data });
     }
 
 
-    public reqSetPlayerPkgLog(propId: string, propName: string, num: number, coming: string) {
-        if (!WmSocketJSF.getInstance().isConnected()) return
+    public _fn_abe(propId: string, propName: string, num: number, coming: string) {
+        if (!WmSocketJSF._fn_ho()._fn_pt()) return
         let data = {
             "cmd": GNetCmd.SetPlayerPkgLog,
             "lang": "zh",
@@ -287,11 +287,11 @@ export default class ServerCtrJSF {
             'num': num,
             'coming': coming,
         }
-        WmSocketJSF.getInstance().send({ "data": data });
+        WmSocketJSF._fn_ho().send({ "data": data });
     }
 
-    public reqUniqueLoginByAccount(account: string, accountWay: GAccountWay = GAccountWay.guest) {
-        if (!WmSocketJSF.getInstance().isConnected()) return
+    public _fn_abk(account: string, accountWay: GAccountWay = GAccountWay.guest) {
+        if (!WmSocketJSF._fn_ho()._fn_pt()) return
         let platform = GPlatform.Google
         if (HTML5) {
             platform = GPlatform.H5
@@ -305,12 +305,12 @@ export default class ServerCtrJSF {
             "nickName": "测试账号",
         }
         console.log("--请求测试账号---", data)
-        WmSocketJSF.getInstance().send({ "data": data });
+        WmSocketJSF._fn_ho().send({ "data": data });
     }
 
 
-    public reqGetActiveCode(code: string) {
-        if (!WmSocketJSF.getInstance().isConnected()) return
+    public _fn_aar(code: string) {
+        if (!WmSocketJSF._fn_ho()._fn_pt()) return
         let data = {
             "cmd": GNetCmd.GetActiveCode,
             "lang": "zh",
@@ -318,7 +318,7 @@ export default class ServerCtrJSF {
             "code": code,
         }
         console.log("--请求激活码---", data)
-        WmSocketJSF.getInstance().send({ "data": data });
+        WmSocketJSF._fn_ho().send({ "data": data });
 
 
 
@@ -339,8 +339,8 @@ export default class ServerCtrJSF {
 
 
 
-    public reqCreateChargeOrder(orderNo: string, chargeVal: number, chargeItemId: number, chargeItemCnt: string, orderStatus: GOrderStatus) {
-        if (!WmSocketJSF.getInstance().isConnected()) return
+    public _fn_aap(orderNo: string, chargeVal: number, chargeItemId: number, chargeItemCnt: string, orderStatus: GOrderStatus) {
+        if (!WmSocketJSF._fn_ho()._fn_pt()) return
         let data = {
             "cmd": GNetCmd.CreateChargeOrder,
             "lang": "zh",
@@ -352,7 +352,7 @@ export default class ServerCtrJSF {
             "orderStatus": orderStatus,
         }
         console.log("--创建充值订单---", data)
-        WmSocketJSF.getInstance().send({ "data": data });
+        WmSocketJSF._fn_ho().send({ "data": data });
     }
 
 
@@ -361,8 +361,8 @@ export default class ServerCtrJSF {
 
 
 
-    public reqUpdChargeOrderStatus(orderNo: string, orderStatus: GOrderStatus) {
-        if (!WmSocketJSF.getInstance().isConnected()) return
+    public _fn_abl(orderNo: string, orderStatus: GOrderStatus) {
+        if (!WmSocketJSF._fn_ho()._fn_pt()) return
         let data = {
             "cmd": GNetCmd.UpdChargeOrderStatus,
             "lang": "zh",
@@ -371,21 +371,21 @@ export default class ServerCtrJSF {
             "orderStatus": orderStatus,
         }
         console.log("--修改充值订单---", data)
-        WmSocketJSF.getInstance().send({ "data": data });
+        WmSocketJSF._fn_ho().send({ "data": data });
     }
 
-    public reqRegionList() {
-        if (!WmSocketJSF.getInstance().isConnected()) return
+    public _fn_abb() {
+        if (!WmSocketJSF._fn_ho()._fn_pt()) return
         let data = {
             "cmd": GNetCmd.GetRegionList,
             "lang": "zh",
             "token": this.token,
         }
-        WmSocketJSF.getInstance().send({ "data": data });
+        WmSocketJSF._fn_ho().send({ "data": data });
     }
 
-    public reqRegionData() {
-        if (!WmSocketJSF.getInstance().isConnected()) return
+    public _fn_aba() {
+        if (!WmSocketJSF._fn_ho()._fn_pt()) return
         let data = {
             "cmd": GNetCmd.GetRegionData,
             "lang": "zh",
@@ -393,11 +393,11 @@ export default class ServerCtrJSF {
             "regionId": this.ServerId.toString()
         }
         console.log("--请求服务器数据---", data)
-        WmSocketJSF.getInstance().send({ "data": data });
+        WmSocketJSF._fn_ho().send({ "data": data });
     }
 
-    public reqGetUserDataByKey(key: string) {
-        if (!WmSocketJSF.getInstance().isConnected()) return
+    public _fn_aat(key: string) {
+        if (!WmSocketJSF._fn_ho()._fn_pt()) return
         let data = {
             "cmd": GNetCmd.GetUserDataByKey,
             "lang": "zh",
@@ -406,11 +406,11 @@ export default class ServerCtrJSF {
             "type": "normal",
             'model': "normal",
         }
-        WmSocketJSF.getInstance().send({ "data": data });
+        WmSocketJSF._fn_ho().send({ "data": data });
     }
 
-    public reqGetUserDataObjByKey(key: string) {
-        if (!WmSocketJSF.getInstance().isConnected()) return
+    public _fn_aau(key: string) {
+        if (!WmSocketJSF._fn_ho()._fn_pt()) return
         let data = {
             "cmd": GNetCmd.GetUserDataByKey,
             "lang": "zh",
@@ -419,17 +419,17 @@ export default class ServerCtrJSF {
             "type": "object",
             'model': "normal",
         }
-        WmSocketJSF.getInstance().send({ "data": data });
+        WmSocketJSF._fn_ho().send({ "data": data });
     }
 
-    public getUserDataByKey(value: any, key: string) {
+    public _fn_mu(value: any, key: string) {
         if (value.status != 'success') {
             console.log("请求失败~!")
             return null;
         }
         switch (value.cmd) {
             case GNetCmd.GetUserDataByKey:
-                if (value.key == GameStorage.Key(key)) {
+                if (value.key == GameStorage._fn_rb(key)) {
                     return value
                 }
                 break;
@@ -437,25 +437,25 @@ export default class ServerCtrJSF {
         return null;
     }
 
-    public reqGetCodeDataObjByKey(code: string) {
-        if (!WmSocketJSF.getInstance().isConnected()) return
+    public _fn_aas(code: string) {
+        if (!WmSocketJSF._fn_ho()._fn_pt()) return
         let data = {
             "cmd": GNetCmd.GetCodeDataByKey,
             "lang": "zh",
             "token": this.token,
             "code": code,
         }
-        WmSocketJSF.getInstance().send({ "data": data });
+        WmSocketJSF._fn_ho().send({ "data": data });
     }
 
-    public getCodeDataByKey(value: any, key: string) {
+    public _fn_gf(value: any, key: string) {
         if (value.status != 'success') {
             console.log("请求失败~!")
             return null;
         }
         switch (value.cmd) {
             case GNetCmd.GetUserDataByKey:
-                if (value.key == GameStorage.Key(key)) {
+                if (value.key == GameStorage._fn_rb(key)) {
                     return value
                 }
                 break;
@@ -464,52 +464,52 @@ export default class ServerCtrJSF {
     }
 
 
-    public reqDelMultiRecord(jsonData: {}) {
-        if (!WmSocketJSF.getInstance().isConnected()) return
-        CronCtrJSF.GetInstance().DelMultiRecord(jsonData);
+    public _fn_aaq(jsonData: {}) {
+        if (!WmSocketJSF._fn_ho()._fn_pt()) return
+        CronCtrJSF._fn_hp()._fn_ei(jsonData);
     }
 
-    public reqUploadMultiRecord(jsonData: {}) {
-        if (!WmSocketJSF.getInstance().isConnected()) return
-        CronCtrJSF.GetInstance().UploadMultiRecord(jsonData);
+    public _fn_abn(jsonData: {}) {
+        if (!WmSocketJSF._fn_ho()._fn_pt()) return
+        CronCtrJSF._fn_hp()._fn_ajz(jsonData);
     }
 
-    public reqUploadEmptyRecord() {
-        if (!WmSocketJSF.getInstance().isConnected()) return
-        CronCtrJSF.GetInstance().UploadEmptyRecord();
+    public _fn_abm() {
+        if (!WmSocketJSF._fn_ho()._fn_pt()) return
+        CronCtrJSF._fn_hp()._fn_ajy();
     }
 
-    public reqNewCloudNewSaveManual(key: string, val: any, isFirst: boolean = false) {
-        if (!WmSocketJSF.getInstance().isConnected()) return
-        CronCtrJSF.GetInstance().cloudSaveManual(key, val, isFirst);
+    public _fn_aay(key: string, val: any, isFirst: boolean = false) {
+        if (!WmSocketJSF._fn_ho()._fn_pt()) return
+        CronCtrJSF._fn_hp()._fn_dj(key, val, isFirst);
     }
 
-    public reqCloudDeleteManual(key: string) {
-        if (!WmSocketJSF.getInstance().isConnected()) return
-        CronCtrJSF.GetInstance().cloudDeleteManual(key);
+    public _fn_aao(key: string) {
+        if (!WmSocketJSF._fn_ho()._fn_pt()) return
+        CronCtrJSF._fn_hp()._fn_di(key);
     }
 
-    public UnloadAvatarUrl() {
-        if (!WmSocketJSF.getInstance().isConnected()) return
+    public _fn_ajh() {
+        if (!WmSocketJSF._fn_ho()._fn_pt()) return
         let data = {
             "cmd": GNetCmd.UploadAvatar,
             "lang": "zh",
             "token": this.token,
             "avatar": this.avatar,
         }
-        WmSocketJSF.getInstance().send({ "data": data });
+        WmSocketJSF._fn_ho().send({ "data": data });
     }
 
-    public loginHandler(value: any) {
+    public _fn_rz(value: any) {
         return
         console.log("onMessageEvent:", value);
         if (value.status != 'success') {
             console.log("请求失败~!")
-            ServerCtrJSF.GetInstance().isLogin = false;
+            ServerCtrJSF._fn_hp().isLogin = false;
 
             if (value.cmd == GNetCmd.GetRegionData) {
                 if (value.isBlock) {
-                    UiLayerService.instance.showDialog(Const.Dialogs.ConfirmPromptDialogController, {
+                    UiLayerService.instance._fn_ahg(Const.Dialogs.ConfirmPromptDialogController, {
                         content: "您的账号已经被封，禁止登录，请联系社群。",
                         type: GPromptType.blockAccount,
                         cb: () => {
@@ -520,7 +520,7 @@ export default class ServerCtrJSF {
             }
             return;
         }
-        let ctr = ServerCtrJSF.GetInstance();
+        let ctr = ServerCtrJSF._fn_hp();
         switch (value.cmd) {
             case GNetCmd.ReqWxSession:
             case GNetCmd.UniqueLogin:
@@ -533,7 +533,7 @@ export default class ServerCtrJSF {
                 if (value.nickName && value.nickName != '') {
                     ctr.nickName = value.nickName;
                 }
-                ServerCtrJSF.GetInstance().reqRegionData()
+                ServerCtrJSF._fn_hp()._fn_aba()
                 break;
             case GNetCmd.GetRegionData:
                 ctr.token = value.token;
@@ -542,7 +542,7 @@ export default class ServerCtrJSF {
                 if (ctr.version == "" || ctr.version == value.version) {
                     console.log("----版本资源匹配--通过")
                 } else {
-                    UiLayerService.instance.showDialog(Const.Dialogs.ConfirmPromptDialogController, {
+                    UiLayerService.instance._fn_ahg(Const.Dialogs.ConfirmPromptDialogController, {
                         content: "您当前游戏版本不是最新的，请重新进入游戏！",
                         type: GPromptType.resNotNewest,
                         cb: () => {
@@ -563,14 +563,14 @@ export default class ServerCtrJSF {
                     })
                 }else{
                     if (value.jsonData != "") {
-                        GameStorage.setAll(JSON.parse(value.jsonData))
+                        GameStorage._fn_aeg(JSON.parse(value.jsonData))
                     }
-                    GameStorage.setStringDisk('login_account', ctr.Account);
+                    GameStorage._fn_agp('login_account', ctr.Account);
                 }
 
 
 
-                if (ServerCtrJSF.GetInstance().isOkToDownload() == true) {
+                if (ServerCtrJSF._fn_hp()._fn_qe() == true) {
                     Notifications.emit(GD.event.loadAll, () => {
                         this.isLoadAll = true
                     })

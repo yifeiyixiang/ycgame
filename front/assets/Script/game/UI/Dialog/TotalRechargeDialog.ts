@@ -24,26 +24,26 @@ export class TotalRechargeDialog extends BaseView {
     _isCanBuyAll = true
     _activityData: any = null!
     start() {
-        this.bindButton(find("root/btnClose", this.node)!, this.popClose)
+        this.bindButton(find("root/btnClose", this.node)!, this._fn_xe)
     }
 
     show(args: any) {
         super.show(args)
         this._activityData = this._layerData.activityData
-        this.initShop(this._activityData.typeson)
+        this._fn_oz(this._activityData.typeson)
 
     }
 
-    initShop(type: number) {
+    _fn_oz(type: number) {
 
-        let lockData = TableDataService.ins().getTableValueByID(Const.Tables.lockActivity_item, this._activityData.lockType)
+        let lockData = TableDataService.ins()._fn_ly(Const.Tables.lockActivity_item, this._activityData.lockType)
         find("root/timelabel", this.node)!.getComponent(CdComponent)!.setCD(CDType.CDCondition, lockData.dataKey, lockData.activityTime)
-        let shopdata = TableDataService.ins().getTableValuesByType(Const.Tables.saleshop_RechargeReward, "type", this._activityData.typeson)
+        let shopdata = TableDataService.ins()._fn_mb(Const.Tables.saleshop_RechargeReward, "type", this._activityData.typeson)
         this.titlelabel.string = this._activityData.typename
-        this.setScrollViewData(this.dataContent, shopdata, this.item, this.initItem, this)
+        this._fn_agd(this.dataContent, shopdata, this.item, this._fn_oc, this)
     }
 
-    initItem(itemUi: Node, data: any, index: number, self: TotalRechargeDialog) {
+    _fn_oc(itemUi: Node, data: any, index: number, self: TotalRechargeDialog) {
         find("Layout", itemUi)!.removeAllChildren()
         let reward = data.reward
         reward.forEach((element: any) => {
@@ -54,7 +54,7 @@ export class TotalRechargeDialog extends BaseView {
         find("infoLabel", itemUi)!.getComponent(Label)!.string = data.typename
         let btnFree = find("btnFree", itemUi)!
         let receivelabel = find("receivelabel", itemUi)!
-        let receiveNum = playerDataStore.getActivityReceiveTime(data.dataKey)
+        let receiveNum = playerDataStore._fn_fg(data.dataKey)
         if (receiveNum < data.LimitTime) {
             btnFree.active = true
             receivelabel.active = false
@@ -67,11 +67,11 @@ export class TotalRechargeDialog extends BaseView {
 
     onClickFreeSaleShop(event: any, data: any) {
         data.reward.forEach((element: any) => {
-            mergeBoardStateStore.addPropNum(element[0], element[1])
+            mergeBoardStateStore._fn_m(element[0], element[1])
         });
-        playerDataStore.setActivityReceiveTime(data.dataKey)
+        playerDataStore._fn_aef(data.dataKey)
 
-        this.initItem(event.target.parent, data, 0, this)
+        this._fn_oc(event.target.parent, data, 0, this)
     }
 }
 

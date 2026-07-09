@@ -51,26 +51,26 @@ export class PetHomePanelController extends BaseView {
 
         GameEventManager.eventTarget.on(GameEventManager.EEventName.SHOW_TIP, this.showTip, this)
 
-        GameEventManager.eventTarget.on(GameEventManager.EEventName.ADD_ZHUNASHI, this.refreshGoodPfb, this)
+        GameEventManager.eventTarget.on(GameEventManager.EEventName.ADD_ZHUNASHI, this._fn_zc, this)
 
         GameEventManager.eventTarget.on(GameEventManager.EEventName.ID_Drangging, this.isdrage, this)
 
-        this.on(GD.event.updateScenePet, this.addPetPfb)
+        this.on(GD.event.updateScenePet, this._fn_k)
 
-        this.addPetPfb();
+        this._fn_k();
 
-        this.refresh();
+        this._fn_ys();
 
 
         this.scroll.cancelInnerEvents = false;
         this.scroll.content.zIndex = 1;
 
-        GameHttpClient.getInstance().sednBagInfo(4,  ()=>{
-            this.refreshGoodPfb();
+        GameHttpClient._fn_ho().sednBagInfo(4,  ()=>{
+            this._fn_zc();
         });
     }
 
-    refresh(){
+    _fn_ys(){
         this.btn1.active = playerDataStore.sceneStau == 2
 
         this.btn2.active = playerDataStore.sceneStau == 1
@@ -90,41 +90,41 @@ export class PetHomePanelController extends BaseView {
     }
 
     onClickHandler(eve:Event, str:string){
-        AudioPlaybackService.instance.playSound(Const.Audio.btn)
+        AudioPlaybackService.instance._fn_xc(Const.Audio.btn)
         if (str == "btn1"){
             playerDataStore.sceneStau = 1
-            this.refreshGoodPfb();
-            this.refresh();
+            this._fn_zc();
+            this._fn_ys();
         }
         else if (str == "btn2"){
             playerDataStore.sceneStau = 2;
-             this.refreshGoodPfb();
-            this.refresh();
+             this._fn_zc();
+            this._fn_ys();
         }
         else if (str == "btn3"){
            if(playerDataStore.pets.length == 0){
-                 GameHttpClient.getInstance().getPetList(()=>{
+                 GameHttpClient._fn_ho()._fn_jc(()=>{
                 if (playerDataStore.pets.length == 0){
-                    this.toast("您还未拥有宠物");
+                    this._fn_aiu("您还未拥有宠物");
                     return;
                 }
-                UiLayerService.instance.pushShowDialog(Const.Dialogs.PetListView)
+                UiLayerService.instance._fn_xw(Const.Dialogs.PetListView)
             })
            }else{
-                UiLayerService.instance.pushShowDialog(Const.Dialogs.PetListView)
+                UiLayerService.instance._fn_xw(Const.Dialogs.PetListView)
            }
         }
     }
 
 
-    addPetPfb(){
+    _fn_k(){
 
         let pets:PetProfileRecord[] = playerDataStore.pets;
 
 
          for (let petNodeIndex = 0; petNodeIndex < this.petPfbParent.children.length; petNodeIndex++) {
             let petNode = this.petPfbParent.children[petNodeIndex];
-            let petRecord:PetProfileRecord = GameRuntimeData.getPetDataById(petNode.getComponent(pet).petId);
+            let petRecord:PetProfileRecord = GameRuntimeData._fn_jb(petNode.getComponent(pet).petId);
             if(!petRecord){
                 petNode.removeFromParent()
                 petNode.destroy();
@@ -160,14 +160,14 @@ export class PetHomePanelController extends BaseView {
     }
 
 
-    refreshGoodPfb(){
+    _fn_zc(){
 
         let goods:BagPropRecord[] = playerDataStore.bagProps;
 
 
          for (let decorationNodeIndex = 0; decorationNodeIndex < this.goodPfbParent.children.length; decorationNodeIndex++) {
             let decorationNode = this.goodPfbParent.children[decorationNodeIndex];
-            let decorationRecord:BagPropRecord = GameRuntimeData.getBagDataById(decorationNode.getComponent(GoodsItemDragController).id);
+            let decorationRecord:BagPropRecord = GameRuntimeData._fn_fp(decorationNode.getComponent(GoodsItemDragController).id);
             if(!decorationRecord){
                 decorationNode.removeFromParent()
                 decorationNode.destroy();
@@ -202,7 +202,7 @@ export class PetHomePanelController extends BaseView {
         GameEventManager.eventTarget.emit(GameEventManager.EEventName.REFRESH_GOOD_STATU)
     }
 
-    addZhuanshi(decorationRecord:BagPropRecord){
+    _fn_t(decorationRecord:BagPropRecord){
         let alreadyMounted:boolean = false;
          for (let decorationNodeIndex = 0; decorationNodeIndex < this.goodPfbParent.children.length; decorationNodeIndex++) {
             let decorationNode = this.goodPfbParent.children[decorationNodeIndex];
@@ -225,7 +225,7 @@ export class PetHomePanelController extends BaseView {
     }
 
     showTip(tip:string){
-        this.toast(tip);
+        this._fn_aiu(tip);
     }
 }
 

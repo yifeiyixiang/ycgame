@@ -21,13 +21,13 @@ export class FirstRechargeDialogController extends BaseView {
     _isFirstRecharge = 0;
 
     start() {
-        this.bindButton(find("root/btnClose", this.node)!, this.popClose)
+        this.bindButton(find("root/btnClose", this.node)!, this._fn_xe)
     }
 
     show(args: any) {
         super.show(args)
 
-        let firstRechargeConfig = TableDataService.ins().getTableValueByKey(Const.Tables.shopTable, "type", 2)
+        let firstRechargeConfig = TableDataService.ins()._fn_lz(Const.Tables.shopTable, "type", 2)
         this.giftScroll.removeAllChildren()
         firstRechargeConfig.price3.forEach((rewardEntry: any, rewardIndex: number) => {
             this.addPrefab(Const.Prefabs.PropItem, this.giftScroll, (rewardNode: any) => {
@@ -36,10 +36,10 @@ export class FirstRechargeDialogController extends BaseView {
             })
         });
 
-        ServerCtrJSF.GetInstance().reqGetUserDataByKey(GameStorage.Key(Const.MoneyKeys.FirstCharge))
+        ServerCtrJSF._fn_hp()._fn_aat(GameStorage._fn_rb(Const.MoneyKeys.FirstCharge))
     }
 
-    initRechargeState() {
+    _fn_oq() {
         if (this._isFirstRecharge == 1) {
             find("root/btnReceive/Label", this.node)!.getComponent(Label)!.string = UtilGame.language("receive")
         } else if (this._isFirstRecharge == 0) {
@@ -51,18 +51,18 @@ export class FirstRechargeDialogController extends BaseView {
 
     onEnable() {
 
-        director.off(GNetCmd.GetUserDataByKey.toString(), this.onMessageEvent, this);
-        director.on(GNetCmd.GetUserDataByKey.toString(), this.onMessageEvent, this);
+        director.off(GNetCmd.GetUserDataByKey.toString(), this._fn_uw, this);
+        director.on(GNetCmd.GetUserDataByKey.toString(), this._fn_uw, this);
     }
 
     onDisable() {
 
-        director.off(GNetCmd.GetUserDataByKey.toString(), this.onMessageEvent, this);
+        director.off(GNetCmd.GetUserDataByKey.toString(), this._fn_uw, this);
     }
 
-    onMessageEvent(userDataPayload: any) {
+    _fn_uw(userDataPayload: any) {
         console.log("onMessageEvent:", userDataPayload);
-        let firstRechargeRecord = ServerCtrJSF.GetInstance().getUserDataByKey(userDataPayload, Const.MoneyKeys.FirstCharge)
+        let firstRechargeRecord = ServerCtrJSF._fn_hp()._fn_mu(userDataPayload, Const.MoneyKeys.FirstCharge)
         if (firstRechargeRecord) {
             if (firstRechargeRecord.val instanceof Number) {
                 this._isFirstRecharge = firstRechargeRecord.val
@@ -72,25 +72,25 @@ export class FirstRechargeDialogController extends BaseView {
                 }
             }
 
-            this.initRechargeState()
+            this._fn_oq()
         }
     }
 
     onClickGet(event: any, rewardPayload: any) {
         if (this._isFirstRecharge == 1) {
-            let firstRechargeConfig = TableDataService.ins().getTableValueByKey(Const.Tables.shopTable, "type", 2)
-            this.onVideoBack(firstRechargeConfig.price3)
+            let firstRechargeConfig = TableDataService.ins()._fn_lz(Const.Tables.shopTable, "type", 2)
+            this._fn_wc(firstRechargeConfig.price3)
         } else if (this._isFirstRecharge == 0) {
-            GameStorage.setInt(Const.MoneyKeys.FirstCharge, 1)
-            ServerCtrJSF.GetInstance().reqGetUserDataByKey(GameStorage.Key(Const.MoneyKeys.FirstCharge))
+            GameStorage._fn_aey(Const.MoneyKeys.FirstCharge, 1)
+            ServerCtrJSF._fn_hp()._fn_aat(GameStorage._fn_rb(Const.MoneyKeys.FirstCharge))
         }
     }
 
-    onVideoBack(rewardList: any) {
-        GameStorage.setInt(Const.MoneyKeys.FirstCharge, 2)
-        playerDataStore.getProp(rewardList,null,null)
+    _fn_wc(rewardList: any) {
+        GameStorage._fn_aey(Const.MoneyKeys.FirstCharge, 2)
+        playerDataStore._fn_jk(rewardList,null,null)
         this._isFirstRecharge = 2
-        this.initRechargeState()
+        this._fn_oq()
 
     }
 

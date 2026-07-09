@@ -10,20 +10,20 @@ export class SeasonAccessLayer extends BaseView {
 
     onLoad() {
 
-        this.bindButton(this.btnClose, this.onClickBtnClose);
+        this.bindButton(this.btnClose, this._fn_sz);
 
     }
 
     show(args: any) {
         super.show(args);
-        this.initUI();
+        this._fn_ph();
     }
 
-    initUI() {
+    _fn_ph() {
 
     }
 
-    onClickBtnClose() {
+    _fn_sz() {
         this.close();
     }
 

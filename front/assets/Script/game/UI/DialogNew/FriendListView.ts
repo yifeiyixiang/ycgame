@@ -27,7 +27,7 @@ export class FriendListView extends BaseView {
     listContent: Node = null!;
 
     onLoad() {
-        this.bindButton(this.btnClose, this.onClickBtnClose);
+        this.bindButton(this.btnClose, this._fn_sz);
 
 
 
@@ -37,17 +37,17 @@ export class FriendListView extends BaseView {
 
 
 
-        GameEventManager.eventTarget.on(GameEventManager.EEventName.REFRESH_FRIEND_DATA, this.refresh, this);
+        GameEventManager.eventTarget.on(GameEventManager.EEventName.REFRESH_FRIEND_DATA, this._fn_ys, this);
 
     }
 
     show(args: any) {
         super.show(args);
 
-        GameHttpClient.getInstance().getFriendList();
+        GameHttpClient._fn_ho().getFriendList();
     }
 
-    refresh(){
+    _fn_ys(){
          for (let cellIndex = 0; cellIndex < this.listContent.children.length; cellIndex++) {
             const friendCellNode = this.listContent.children[cellIndex];
             if (friendCellNode){
@@ -71,19 +71,19 @@ export class FriendListView extends BaseView {
     }
 
     onClickHandler(eve:Event, str:string){
-        AudioPlaybackService.instance.playSound(Const.Audio.btn)
+        AudioPlaybackService.instance._fn_xc(Const.Audio.btn)
         if (str == "tuijian"){
-            UiLayerService.instance.showDialog(Const.Dialogs.FriendDialogView, 1)
+            UiLayerService.instance._fn_ahg(Const.Dialogs.FriendDialogView, 1)
         }
         else if (str == "search"){
-            UiLayerService.instance.showDialog(Const.Dialogs.FriendDialogView, 2)
+            UiLayerService.instance._fn_ahg(Const.Dialogs.FriendDialogView, 2)
         }
         else if (str == "apply"){
-            UiLayerService.instance.showDialog(Const.Dialogs.FriendDialogView, 3)
+            UiLayerService.instance._fn_ahg(Const.Dialogs.FriendDialogView, 3)
         }
     }
 
-    onClickBtnClose() {
+    _fn_sz() {
         this.close();
     }
 

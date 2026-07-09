@@ -13,7 +13,7 @@ export class FlashStarController extends BaseUiComponent {
         if(this.calTime>3){
             this.calTime = 0
             console.log("------------caltime---", this.calTime)
-            NodePoolService.instance.putNode(this.node)
+            NodePoolService.instance._fn_xz(this.node)
         }
     }
 }

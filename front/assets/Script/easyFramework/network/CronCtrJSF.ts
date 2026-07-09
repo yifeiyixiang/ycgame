@@ -16,7 +16,7 @@ export default class CronCtrJSF extends BaseUiComponent {
 
     private static _instance: CronCtrJSF;
 
-    public static GetInstance(): CronCtrJSF {
+    public static _fn_hp(): CronCtrJSF {
         if (!this._instance) {
             this._instance = new CronCtrJSF();
             this._instance.init();
@@ -31,47 +31,47 @@ export default class CronCtrJSF extends BaseUiComponent {
 
 
     init() {
-        director.off(GNetCmd.Heartbeat.toString(), this.onHeartbeat, this)
-        director.off(GNetCmd.SaveUserRecord.toString(), this.respSaveUserRecord, this)
-        director.on(GNetCmd.Heartbeat.toString(), this.onHeartbeat, this)
-        director.on(GNetCmd.SaveUserRecord.toString(), this.respSaveUserRecord, this)
-        this.unschedule(this.reqHeartBeat)
-        this.schedule(this.reqHeartBeat, 3);
+        director.off(GNetCmd.Heartbeat.toString(), this._fn_ut, this)
+        director.off(GNetCmd.SaveUserRecord.toString(), this._fn_abu, this)
+        director.on(GNetCmd.Heartbeat.toString(), this._fn_ut, this)
+        director.on(GNetCmd.SaveUserRecord.toString(), this._fn_abu, this)
+        this.unschedule(this._fn_aav)
+        this.schedule(this._fn_aav, 3);
 
 
 
-        this.startHeartbeat()
+        this._fn_aii()
     }
 
-    startHeartbeat() {
+    _fn_aii() {
 
-        WmSocketJSF.getInstance();
+        WmSocketJSF._fn_ho();
 
     }
 
-    onHeartbeat(data: any) {
+    _fn_ut(data: any) {
         return
         if (data.status != GNetConst.ResSuccess) {
             console.error("heartbeat ", data)
-            this.unschedule(this.reqHeartBeat)
-            ServerCtrJSF.GetInstance().isLogin = false;
+            this.unschedule(this._fn_aav)
+            ServerCtrJSF._fn_hp().isLogin = false;
 
             if (data.isOccupied) {
-                UiLayerService.instance.showDialog(Const.Dialogs.ConfirmPromptDialogController, {
+                UiLayerService.instance._fn_ahg(Const.Dialogs.ConfirmPromptDialogController, {
                     content: "您的账号已经在其他设备登录，请重新进入游戏！",
                     type: GPromptType.loginOccupy,
                     cb: () => {
                     }
                 })
             } else if (data.isExpired) {
-                UiLayerService.instance.showDialog(Const.Dialogs.ConfirmPromptDialogController, {
+                UiLayerService.instance._fn_ahg(Const.Dialogs.ConfirmPromptDialogController, {
                     content: "您账号的登录信息已过期，请重新进入游戏！",
                     type: GPromptType.loginExpired,
                     cb: () => {
                     }
                 })
             } else {
-                UiLayerService.instance.showDialog(Const.Dialogs.ConfirmPromptDialogController, {
+                UiLayerService.instance._fn_ahg(Const.Dialogs.ConfirmPromptDialogController, {
                     content: "您账号的登录信息已过期，请重新登录！",
                     type: GPromptType.unkown,
                     cb: () => {
@@ -79,22 +79,22 @@ export default class CronCtrJSF extends BaseUiComponent {
                 })
             }
 
-            TimeCtrJSF.GetInstance().ReInit();
+            TimeCtrJSF._fn_hp()._fn_aab();
 
 
         } else {
-            TimeCtrJSF.GetInstance().UpdateServerTimeByHeartbeat(data.time * 1000);
-            WmSocketJSF.getInstance().lastHeartbeatTime = TimeCtrJSF.GetInstance().ServerTime
+            TimeCtrJSF._fn_hp()._fn_ajs(data.time * 1000);
+            WmSocketJSF._fn_ho().lastHeartbeatTime = TimeCtrJSF._fn_hp().ServerTime
         }
     }
 
-    reqHeartBeat() {
+    _fn_aav() {
 
         return
-        if (WmSocketJSF.getInstance().isConnected() == false) {
-            if (ServerCtrJSF.GetInstance().isLogin == true) {
+        if (WmSocketJSF._fn_ho()._fn_pt() == false) {
+            if (ServerCtrJSF._fn_hp().isLogin == true) {
                 director.emit(GEvent.connect_fail)
-                UiLayerService.instance.showDialog(Const.Dialogs.ConfirmPromptDialogController, {
+                UiLayerService.instance._fn_ahg(Const.Dialogs.ConfirmPromptDialogController, {
                     content: "服务器连接已经断开，请确认重新登录！",
                     type: GPromptType.reconnect,
                     cb: () => {
@@ -103,23 +103,23 @@ export default class CronCtrJSF extends BaseUiComponent {
                 })
             }
         } else {
-            if (ServerCtrJSF.GetInstance().isLogin == true) {
-                this.heartbeatCheck()
+            if (ServerCtrJSF._fn_hp().isLogin == true) {
+                this._fn_ni()
             }
         }
     }
 
-    respSaveUserRecord(data: any) {
+    _fn_abu(data: any) {
         if (data.status == GNetConst.ResFail) {
             console.error("接受ws消息，保存失败--------", data)
         }
     }
 
-    cloudSaveManual(key: string, val: any, isFirst: boolean = false) {
-        if (!ServerCtrJSF.GetInstance().isLogin) {
+    _fn_dj(key: string, val: any, isFirst: boolean = false) {
+        if (!ServerCtrJSF._fn_hp().isLogin) {
             return;
         }
-        if (!WmSocketJSF.getInstance().isConnected()) {
+        if (!WmSocketJSF._fn_ho()._fn_pt()) {
             director.emit(GEvent.connect_fail)
             return
         }
@@ -129,19 +129,19 @@ export default class CronCtrJSF extends BaseUiComponent {
             "cmd": GNetCmd.SaveUserRecord,
             "lang": "zh",
             "type": "single",
-            "token": ServerCtrJSF.GetInstance().token,
+            "token": ServerCtrJSF._fn_hp().token,
             "key": key,
             "val": String(val),
             "dml": "add upd"
         }
-        WmSocketJSF.getInstance().send({ "data": data });
+        WmSocketJSF._fn_ho().send({ "data": data });
     }
 
-    UploadEmptyRecord() {
-        if (!ServerCtrJSF.GetInstance().isLogin) {
+    _fn_ajy() {
+        if (!ServerCtrJSF._fn_hp().isLogin) {
             return;
         }
-        if (!WmSocketJSF.getInstance().isConnected()) {
+        if (!WmSocketJSF._fn_ho()._fn_pt()) {
             director.emit(GEvent.connect_fail)
             return
         }
@@ -150,17 +150,17 @@ export default class CronCtrJSF extends BaseUiComponent {
             "cmd": GNetCmd.SaveUserRecordAll,
             "lang": "zh",
             "type": "single",
-            "token": ServerCtrJSF.GetInstance().token,
+            "token": ServerCtrJSF._fn_hp().token,
             "allData": JSON.stringify({}),
         }
-        WmSocketJSF.getInstance().send({ "data": data });
+        WmSocketJSF._fn_ho().send({ "data": data });
     }
 
-    UploadMultiRecord(jsonData: {}) {
-        if (!ServerCtrJSF.GetInstance().isLogin) {
+    _fn_ajz(jsonData: {}) {
+        if (!ServerCtrJSF._fn_hp().isLogin) {
             return;
         }
-        if (!WmSocketJSF.getInstance().isConnected()) {
+        if (!WmSocketJSF._fn_ho()._fn_pt()) {
             director.emit(GEvent.connect_fail)
             return
         }
@@ -168,18 +168,18 @@ export default class CronCtrJSF extends BaseUiComponent {
             "cmd": GNetCmd.SaveUserRecordMulti,
             "lang": "zh",
             "type": "single",
-            "token": ServerCtrJSF.GetInstance().token,
+            "token": ServerCtrJSF._fn_hp().token,
             "multiData": JSON.stringify(jsonData),
             "ops": "upd"
         }
-        WmSocketJSF.getInstance().send({ "data": data });
+        WmSocketJSF._fn_ho().send({ "data": data });
     }
 
-    DelMultiRecord(jsonData: {}) {
-        if (!ServerCtrJSF.GetInstance().isLogin) {
+    _fn_ei(jsonData: {}) {
+        if (!ServerCtrJSF._fn_hp().isLogin) {
             return;
         }
-        if (!WmSocketJSF.getInstance().isConnected()) {
+        if (!WmSocketJSF._fn_ho()._fn_pt()) {
             director.emit(GEvent.connect_fail)
             return
         }
@@ -187,19 +187,19 @@ export default class CronCtrJSF extends BaseUiComponent {
             "cmd": GNetCmd.SaveUserRecordMulti,
             "lang": "zh",
             "type": "single",
-            "token": ServerCtrJSF.GetInstance().token,
+            "token": ServerCtrJSF._fn_hp().token,
             "multiData": JSON.stringify(jsonData),
             "ops": "del"
         }
-        WmSocketJSF.getInstance().send({ "data": data });
+        WmSocketJSF._fn_ho().send({ "data": data });
     }
 
 
-    cloudDeleteManual(key: string) {
-        if (!ServerCtrJSF.GetInstance().isLogin) {
+    _fn_di(key: string) {
+        if (!ServerCtrJSF._fn_hp().isLogin) {
             return;
         }
-        if (!WmSocketJSF.getInstance().isConnected()) {
+        if (!WmSocketJSF._fn_ho()._fn_pt()) {
             director.emit(GEvent.connect_fail)
             return
         }
@@ -208,22 +208,22 @@ export default class CronCtrJSF extends BaseUiComponent {
             "cmd": GNetCmd.SaveUserRecord,
             "lang": "zh",
             "type": "single",
-            "token": ServerCtrJSF.GetInstance().token,
+            "token": ServerCtrJSF._fn_hp().token,
             "key": key,
             "val": "",
             "dml": "del"
         }
 
-        WmSocketJSF.getInstance().send({ "data": data });
+        WmSocketJSF._fn_ho().send({ "data": data });
     }
 
-    heartbeatCheck() {
+    _fn_ni() {
         let data = {
             "cmd": GNetCmd.Heartbeat,
             "lang": "zh",
-            "token": ServerCtrJSF.GetInstance().token,
+            "token": ServerCtrJSF._fn_hp().token,
         }
-        WmSocketJSF.getInstance().send({ "data": data });
+        WmSocketJSF._fn_ho().send({ "data": data });
     }
 
 }

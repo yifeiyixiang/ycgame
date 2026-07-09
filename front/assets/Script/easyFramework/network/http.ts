@@ -5,7 +5,7 @@ export default class HttpTransport {
 
 	private static _instance: HttpTransport;
 
-	public static getInstance(): HttpTransport {
+	public static _fn_ho(): HttpTransport {
 		if (!this._instance) {
 			this._instance = new HttpTransport();
 		}
@@ -18,7 +18,7 @@ export default class HttpTransport {
 
 
 
-	ht1tpPost(url: string, params: any, callback: Function) {
+	_fn_np(url: string, params: any, callback: Function) {
 
 
 	}

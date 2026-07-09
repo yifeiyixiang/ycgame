@@ -50,16 +50,16 @@ export class UiLayerService {
 
     }
 
-    getDialog(panelPath: string) {
+    _fn_gs(panelPath: string) {
         return this.dictSharedPanel[panelPath]
     }
 
-    async loadDialog(panelPath: string) {
+    async _fn_ri(panelPath: string) {
         return new Promise<void>(resolve => {
             let _panelPath = panelPath.split("|")[1]
             let idxSplit = _panelPath.lastIndexOf('/');
             let scriptName = _panelPath.slice(idxSplit + 1);
-            ResourceLoaderService.createUIWithBundle(panelPath, (err, node) => {
+            ResourceLoaderService._fn_ea(panelPath, (err, node) => {
                 this.dictLoading[panelPath] = false;
                 if (err) {
                     console.error(err);
@@ -87,7 +87,7 @@ export class UiLayerService {
 
 
 
-    showDialog(panelPath: string, args?: any, cb?: Function, parent?: Node, active: boolean = true) {
+    _fn_ahg(panelPath: string, args?: any, cb?: Function, parent?: Node, active: boolean = true) {
         this.panelPath = panelPath
         if (this.dictLoading[panelPath]) {
             return;
@@ -132,7 +132,7 @@ export class UiLayerService {
                 script.dialogPath = panelPath
 
 
-                this.setOrder(panel, scriptName)
+                this._fn_afl(panel, scriptName)
 
 
                 panel.active = true;
@@ -144,7 +144,7 @@ export class UiLayerService {
         }
 
         this.dictLoading[panelPath] = true;
-        ResourceLoaderService.createUIWithBundle(panelPath, (err, node) => {
+        ResourceLoaderService._fn_ea(panelPath, (err, node) => {
 
             let isCloseBeforeShow = false;
             if (!this.dictLoading[panelPath]) {
@@ -177,7 +177,7 @@ export class UiLayerService {
 
 
 
-            this.setOrder(node!, scriptName)
+            this._fn_afl(node!, scriptName)
 
             cb && cb(script);
 
@@ -194,12 +194,12 @@ export class UiLayerService {
             if (isCloseBeforeShow) {
 
 
-                this.hideDialog(panelPath);
+                this._fn_nk(panelPath);
             }
         }, parent);
     }
 
-    setOrder(panel: Node, scriptName: string) {
+    _fn_afl(panel: Node, scriptName: string) {
 
 
 
@@ -243,7 +243,7 @@ export class UiLayerService {
 
 
 
-    hideDialog(panelPath: string, callback?: Function) {
+    _fn_nk(panelPath: string, callback?: Function) {
 
         if (this.dictSharedPanel.hasOwnProperty(panelPath)) {
             let panel = this.dictSharedPanel[panelPath];
@@ -281,7 +281,7 @@ export class UiLayerService {
         this.dictLoading[panelPath] = false;
     }
 
-    pushShowDialog(panelPath: string, args?: any, cb?: Function, parent?: Node, active: boolean = true) {
+    _fn_xw(panelPath: string, args?: any, cb?: Function, parent?: Node, active: boolean = true) {
         let callBack = (script: BaseView) => {
             cb && cb(script)
             this.dialogList.push(script.node.name)
@@ -294,10 +294,10 @@ export class UiLayerService {
                 dialog.active = false
             }
         }
-        this.showDialog(panelPath, args, callBack, parent, active)
+        this._fn_ahg(panelPath, args, callBack, parent, active)
     }
 
-    popHideDialog(panelPath: string, cb?: Function) {
+    _fn_xf(panelPath: string, cb?: Function) {
 
         let callBack = (script: BaseView) => {
             cb && cb(script)
@@ -313,10 +313,10 @@ export class UiLayerService {
         if (this.dialogList.length > 0) {
             this.dialogList.pop()
         }
-        this.hideDialog(panelPath, callBack)
+        this._fn_nk(panelPath, callBack)
     }
 
-    destroyDialog(panelPath: string) {
+    _fn_ej(panelPath: string) {
         if (this.dictSharedPanel.hasOwnProperty(panelPath)) {
             let panel = this.dictSharedPanel[panelPath];
             delete this.dictSharedPanel[panelPath]
@@ -330,7 +330,7 @@ export class UiLayerService {
 
 
 
-    pushToPopupSeq(panelPath: string, scriptName: string, param: any) {
+    _fn_xx(panelPath: string, scriptName: string, param: any) {
         let popupDialog = {
             panelPath: panelPath,
             scriptName: scriptName,
@@ -340,7 +340,7 @@ export class UiLayerService {
 
         this.arrPopupDialog.push(popupDialog);
 
-        this.checkPopupSeq();
+        this._fn_cf();
     }
 
 
@@ -350,7 +350,7 @@ export class UiLayerService {
 
 
 
-    insertToPopupSeq(index: number, panelPath: string, param: any) {
+    _fn_pn(index: number, panelPath: string, param: any) {
         let popupDialog = {
             panelPath: panelPath,
             param: param,
@@ -365,11 +365,11 @@ export class UiLayerService {
 
 
 
-    shiftFromPopupSeq(panelPath: string) {
-        this.hideDialog(panelPath, () => {
+    _fn_agx(panelPath: string) {
+        this._fn_nk(panelPath, () => {
             if (this.arrPopupDialog[0] && this.arrPopupDialog[0].panelPath === panelPath) {
                 this.arrPopupDialog.shift();
-                this.checkPopupSeq();
+                this._fn_cf();
             }
         })
     }
@@ -377,12 +377,12 @@ export class UiLayerService {
 
 
 
-    checkPopupSeq() {
+    _fn_cf() {
         if (this.arrPopupDialog.length > 0) {
             let first = this.arrPopupDialog[0];
 
             if (!first.isShow) {
-                this.showDialog(first.panelPath, first.param);
+                this._fn_ahg(first.panelPath, first.param);
                 this.arrPopupDialog[0].isShow = true;
             }
         }

@@ -40,23 +40,23 @@ export class GameCanvasController extends BaseUiComponent {
     calGameTime: number = 0
 
     onLoad() {
-        director.off(GNetCmd.GetRegionData.toString(), this.onMessageEvent, this);
-        director.off(GNetCmd.UniqueLogin.toString(), this.onMessageEvent, this);
-        director.off(GNetCmd.ReqWxSession.toString(), this.onMessageEvent, this);
+        director.off(GNetCmd.GetRegionData.toString(), this._fn_uw, this);
+        director.off(GNetCmd.UniqueLogin.toString(), this._fn_uw, this);
+        director.off(GNetCmd.ReqWxSession.toString(), this._fn_uw, this);
 
-        director.on(GNetCmd.GetRegionData.toString(), this.onMessageEvent, this);
-        director.on(GNetCmd.UniqueLogin.toString(), this.onMessageEvent, this);
-        director.on(GNetCmd.ReqWxSession.toString(), this.onMessageEvent, this);
+        director.on(GNetCmd.GetRegionData.toString(), this._fn_uw, this);
+        director.on(GNetCmd.UniqueLogin.toString(), this._fn_uw, this);
+        director.on(GNetCmd.ReqWxSession.toString(), this._fn_uw, this);
         Const.UICanvas = this.node
         this.prefabsArr = Object.keys(Const.Prefabs)
     }
 
-    onMessageEvent(value: any) {
-        ServerCtrJSF.GetInstance().loginHandler(value)
+    _fn_uw(value: any) {
+        ServerCtrJSF._fn_hp()._fn_rz(value)
     }
 
     start() {
-        Const.isLow = UtilPub.checkIsLowPhone()
+        Const.isLow = UtilPub._fn_bx()
         if (Const.isLow) {
             game.frameRate = 30;
         } else {
@@ -65,20 +65,20 @@ export class GameCanvasController extends BaseUiComponent {
 
         UtilPub.log("---------展示主页-0-----")
         seasonProgressStore.initData();
-        UiLayerService.instance.showDialog(Const.Dialogs.main)
+        UiLayerService.instance._fn_ahg(Const.Dialogs.main)
 
-        AudioPlaybackService.instance.initMusic()
-        AudioPlaybackService.instance.playMusic(true, Const.Audio.bgm);
+        AudioPlaybackService.instance._fn_oj()
+        AudioPlaybackService.instance._fn_wz(true, Const.Audio.bgm);
 
         game.on(Game.EVENT_HIDE, () => {
             // @ts-ignore
 
         });
 
-        playerDataStore.showGodWealthOther()
+        playerDataStore._fn_ahi()
         game.on(Game.EVENT_SHOW, () => {
             UtilPub.log("---------展示主页-1-----")
-            playerDataStore.showGodWealthOther()
+            playerDataStore._fn_ahi()
         });
 
 
@@ -87,30 +87,30 @@ export class GameCanvasController extends BaseUiComponent {
     onEnable() {
         UtilPub.log("---------展示主页-onEnable-----")
 
-        this.on(GD.event.showToast, this.showToastRet, this);
+        this.on(GD.event.showToast, this._fn_ahw, this);
 
     }
 
     onDisable() {
-        this.off(GD.event.showToast, this.showToastRet);
+        this.off(GD.event.showToast, this._fn_ahw);
     }
 
-    showToastRet(info: string) {
-        this.toast(info);
+    _fn_ahw(info: string) {
+        this._fn_aiu(info);
     }
 
     update(dt: number) {
-        TimeCtrJSF.GetInstance().serverTime += (dt * 1000);
+        TimeCtrJSF._fn_hp().serverTime += (dt * 1000);
 
         this.calGameTime += dt
         if (this.calGameTime > 1) {
             this.calGameTime -= 1
-            ServerCtrJSF.GetInstance().addGameTime(1)
+            ServerCtrJSF._fn_hp()._fn_d(1)
         }
 
 
         this.calTime += dt
-        if (this.calTime > 0.1 && ServerCtrJSF.GetInstance().isOkToDownload() == true) {
+        if (this.calTime > 0.1 && ServerCtrJSF._fn_hp()._fn_qe() == true) {
             this.calTime = 0
             if (this.isDownloading == false) {
                 if (this.curDownLoadIdx >= Const.bundles.length) {
@@ -138,7 +138,7 @@ export class GameCanvasController extends BaseUiComponent {
 
                     //@ts-ignore
                     let prefab = Const.Prefabs[prefabName]
-                    ResourceLoaderService.preloadPrefab(prefab).then(() => {
+                    ResourceLoaderService._fn_xl(prefab).then(() => {
                         this.curPrefabIdx++
                         this.isLoadingPrefab = false
 

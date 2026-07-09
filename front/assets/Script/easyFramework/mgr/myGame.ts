@@ -36,14 +36,14 @@ module mygame {
 		recu_exclude_as?: cc.Node[];
 	}
 
-	function recu_node_list(node_: cc.Node, result_as: cc.Node[] = []): cc.Node[] {
+	function _fn_yp(node_: cc.Node, result_as: cc.Node[] = []): cc.Node[] {
 		if (!node_) {
 			return result_as;
 		}
 		result_as.push(node_);
 		node_.children.forEach(v1 => {
 			result_as.push(v1);
-			recu_node_list(v1);
+			_fn_yp(v1);
 		});
 		return result_as;
 	}
@@ -128,9 +128,9 @@ module mygame {
 
 
 
-	export function pause_node(node_: cc.Node): void;
-	export function pause_node(node_as_: cc.Node[]): void;
-	export function pause_node(args1_: cc.Node | cc.Node[]): void {
+	export function _fn_wr(node_: cc.Node): void;
+	export function _fn_wr(node_as_: cc.Node[]): void;
+	export function _fn_wr(args1_: cc.Node | cc.Node[]): void {
 		let node_as: cc.Node[];
 		if (Array.isArray(args1_)) {
 			node_as = args1_;
@@ -151,9 +151,9 @@ module mygame {
 		});
 	}
 
-	export function resume_node(node_: cc.Node): void;
-	export function resume_node(node_as_: cc.Node[]): void;
-	export function resume_node(args1_: cc.Node | cc.Node[]): void {
+	export function _fn_aby(node_: cc.Node): void;
+	export function _fn_aby(node_as_: cc.Node[]): void;
+	export function _fn_aby(args1_: cc.Node | cc.Node[]): void {
 		let node_as: cc.Node[];
 		if (Array.isArray(args1_)) {
 			node_as = args1_;

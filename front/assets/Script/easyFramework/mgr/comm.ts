@@ -79,8 +79,8 @@ export class BaseUiComponent extends Component {
             btnComp.transition = Button.Transition.SCALE
         }
         btnComp.zoomScale = 0.9;
-        let btnCb = (event: any) => {
-            AudioPlaybackService.instance.playSound(Const.Audio.btn)
+        let _fn_at = (event: any) => {
+            AudioPlaybackService.instance._fn_xc(Const.Audio.btn)
             this.emit(GD.event.canvasTouchEvent)
             if (!this._clickEnable) return;
             this._clickEnable = false;
@@ -89,7 +89,7 @@ export class BaseUiComponent extends Component {
             }, 0.3);
             callback.call(this, event);
         };
-        node.on("click", btnCb, this);
+        node.on("click", _fn_at, this);
     }
 
 
@@ -98,14 +98,14 @@ export class BaseUiComponent extends Component {
 
 
 
-    protected bindButtonNoAudio(node: Node, callback: (event?: any) => void, opname?: string): void {
+    protected _fn_ag(node: Node, callback: (event?: any) => void, opname?: string): void {
         let btnComp = node.getComponent(Button);
         if (!btnComp) {
             btnComp = node.addComponent(Button);
             btnComp.transition = Button.Transition.SCALE
         }
         btnComp.zoomScale = 0.9;
-        let btnCb = (event: any) => {
+        let _fn_at = (event: any) => {
 
             this.emit(GD.event.canvasTouchEvent)
             if (!this._clickEnable) return;
@@ -115,7 +115,7 @@ export class BaseUiComponent extends Component {
             }, 0.3);
             callback.call(this, event);
         };
-        node.on("click", btnCb, this);
+        node.on("click", _fn_at, this);
     }
 
 
@@ -124,14 +124,14 @@ export class BaseUiComponent extends Component {
 
 
 
-    protected bindButtonOce(node: Node, callback: (event?: any) => void, opname?: string): void {
+    protected _fn_ah(node: Node, callback: (event?: any) => void, opname?: string): void {
         let btnComp = node.getComponent(Button);
         if (!btnComp) {
             btnComp = node.addComponent(Button);
             btnComp.transition = Button.Transition.SCALE
         }
         btnComp.zoomScale = 0.9;
-        let btnCb = (event: any) => {
+        let _fn_at = (event: any) => {
             if (!this._clickEnable) return;
             this._clickEnable = false;
             this.emit(GD.event.canvasTouchEvent)
@@ -140,7 +140,7 @@ export class BaseUiComponent extends Component {
             }, 0.3);
             callback.call(this, event);
         };
-        node.once("click", btnCb, this);
+        node.once("click", _fn_at, this);
     }
 
 
@@ -179,7 +179,7 @@ export class BaseUiComponent extends Component {
 
 
     onDestroy() {
-        Notifications.offTarget(this);
+        Notifications._fn_sk(this);
     }
 
 
@@ -188,7 +188,7 @@ export class BaseUiComponent extends Component {
 
 
 
-    showUI(cPrefab: Prefab, cNode: Node, next?: { (comp: any): void; (arg0: Node | Component | null): any; }) {
+    _fn_ahx(cPrefab: Prefab, cNode: Node, next?: { (comp: any): void; (arg0: Node | Component | null): any; }) {
         let node: Node = instantiate(cPrefab);
         node.parent = cNode;
         next && next(node.getComponent(node.name) ? node.getComponent(node.name) : node);
@@ -198,8 +198,8 @@ export class BaseUiComponent extends Component {
 
 
 
-    addSpine(resPath: string, parentNode: Node, cb?: (err: any, aniCtrl: AnimationCtrl) => void) {
-        UtilPub.loadSpineSkeletonData(resPath, (err: any, skeletonData: sp.SkeletonData) => {
+    _fn_q(resPath: string, parentNode: Node, cb?: (err: any, aniCtrl: AnimationCtrl) => void) {
+        UtilPub._fn_rr(resPath, (err: any, skeletonData: sp.SkeletonData) => {
             if (err) {
                 if (cb) {
                     // @ts-ignore
@@ -220,36 +220,36 @@ export class BaseUiComponent extends Component {
         });
     }
 
-    setSpriteFrame(node: Sprite, framePath: string, cb: Function | undefined = null!, customSize: number = 0) {
+    _fn_agk(node: Sprite, framePath: string, cb: Function | undefined = null!, customSize: number = 0) {
         if(!framePath){
             return;
         }
-        UtilPub.getPic(framePath, (sf: SpriteFrame) => {
+        UtilPub._fn_je(framePath, (sf: SpriteFrame) => {
             node.spriteFrame = sf
             if (customSize > 0) {
-                this.setImageCustomSize(node.node, customSize)
+                this._fn_aex(node.node, customSize)
             }
             cb && cb(node)
         })
     }
 
-    setSpriteFrame2(node: Sprite, framePath: string, cb: Function = null!, customSize: number = 0) {
-        UtilPub.getPic2(framePath, (sf: SpriteFrame) => {
+    _fn_agl(node: Sprite, framePath: string, cb: Function = null!, customSize: number = 0) {
+        UtilPub._fn_jf(framePath, (sf: SpriteFrame) => {
             if (sf) {
                 node.spriteFrame = sf
                 cb && cb(node)
 
                 if (customSize > 0) {
-                    this.setImageCustomSize(node.node, customSize)
+                    this._fn_aex(node.node, customSize)
                 }
                 return;
             }
 
-            this.setSpriteFrame(node, Const.resPath.icon + "prop_star", cb, customSize);
+            this._fn_agk(node, Const.resPath.icon + "prop_star", cb, customSize);
         })
     }
 
-    setImageCustomSize(node: Node, size: number) {
+    _fn_aex(node: Node, size: number) {
         if (node && node.getComponent(UITransform)) {
             let width = node?.getComponent(UITransform)?.width
             let height = node?.getComponent(UITransform)?.height
@@ -261,7 +261,7 @@ export class BaseUiComponent extends Component {
         }
     }
 
-    scrollViewSetData(scrollViewNode: Node, arr: any, refreshItemFunc?: Function, data?: any, notResetPos?: boolean) {
+    _fn_adc(scrollViewNode: Node, arr: any, refreshItemFunc?: Function, data?: any, notResetPos?: boolean) {
         let scrollViewUtil = scrollViewNode.getComponent(ScrollViewUtil);
         if (!scrollViewUtil) {
             return;
@@ -273,14 +273,14 @@ export class BaseUiComponent extends Component {
 
         });
     }
-    scrollViewRefreshList(scrollViewNode: Node) {
+    _fn_acz(scrollViewNode: Node) {
         let scrollViewUtil = scrollViewNode.getComponent(ScrollViewUtil);
         if (!scrollViewUtil) {
             return;
         }
         scrollViewUtil.refreshList();
     }
-    scrollViewRefreshItemUI(scrollViewNode: Node, itemUI: Node, item?: any) {
+    _fn_acx(scrollViewNode: Node, itemUI: Node, item?: any) {
         let scrollViewUtil = scrollViewNode.getComponent(ScrollViewUtil);
         if (!scrollViewUtil) {
             return;
@@ -288,18 +288,18 @@ export class BaseUiComponent extends Component {
         // @ts-ignore
         scrollViewUtil.refreshIndex(itemUI.index, item);
     }
-    scrollViewRefreshItemUIByIndex(scrollViewNode: Node, index: number, item?: any) {
+    _fn_acy(scrollViewNode: Node, index: number, item?: any) {
         let scrollViewUtil = scrollViewNode.getComponent(ScrollViewUtil);
         if (!scrollViewUtil) {
             return;
         }
         scrollViewUtil.refreshIndex(index, item);
     }
-    scrollViewScrollToItemUI(scrollViewNode: Node, itemUI: Node, time?: number) {
+    _fn_adb(scrollViewNode: Node, itemUI: Node, time?: number) {
         // @ts-ignore
-        this.scrollViewScrollToIndex(scrollViewNode, itemUI.index, time);
+        this._fn_ada(scrollViewNode, itemUI.index, time);
     }
-    scrollViewScrollToIndex(scrollViewNode: Node, index: number, time?: number) {
+    _fn_ada(scrollViewNode: Node, index: number, time?: number) {
         let scrollViewUtil = scrollViewNode.getComponent(ScrollViewUtil);
         if (!scrollViewUtil || index == undefined) {
             return;
@@ -307,7 +307,7 @@ export class BaseUiComponent extends Component {
         scrollViewUtil.scrollToIndex(index, time);
     }
 
-    setScrollViewData(scrollViewNode: Node, arr: any, temp: Node, refreshItemFunc?: Function, data?: any) {
+    _fn_agd(scrollViewNode: Node, arr: any, temp: Node, refreshItemFunc?: Function, data?: any) {
         scrollViewNode.removeAllChildren()
         arr.forEach((element: any, index: number) => {
             let item = instantiate(temp)
@@ -319,7 +319,7 @@ export class BaseUiComponent extends Component {
         });
     }
 
-    setString(node: Node | null, str: string | number) {
+    _fn_ago(node: Node | null, str: string | number) {
         if (!node) {
             UtilPub.error("setString error:" + str);
             return;
@@ -331,7 +331,7 @@ export class BaseUiComponent extends Component {
         label.string = str + "";
     }
 
-    setProgressBar(progressBar: Node | ProgressBar, percent: number) {
+    _fn_afm(progressBar: Node | ProgressBar, percent: number) {
         if (progressBar instanceof Node) {
             progressBar = progressBar.getComponent(ProgressBar)!;
         }
@@ -347,7 +347,7 @@ export class BaseUiComponent extends Component {
     }
 
     addPrefab(prefabPath: string, parent: Node, callback: Function | undefined = null!, args: any = null!) {
-        UtilPub.getPrefab(prefabPath, (p: Prefab) => {
+        UtilPub._fn_jj(prefabPath, (p: Prefab) => {
             let node = NodePoolService.instance.getNode(p, parent!)!
             let script = node.getComponent(node.name) as BaseUiComponent
             if (script && args) {
@@ -358,7 +358,7 @@ export class BaseUiComponent extends Component {
         })
     }
 
-    fitNodeWidgetY(node: Node, type: number, posy: number) {
+    _fn_ev(node: Node, type: number, posy: number) {
         let windowSize = view.getVisibleSize();
         let resolute = view.getDesignResolutionSize()
         let scale = windowSize.width / resolute.width
@@ -406,7 +406,7 @@ export class BaseUiComponent extends Component {
         btnComponent.clickEvents = [eventHander];
     }
 
-    clearButtonHander(btnComponent: Node | Button) {
+    _fn_ct(btnComponent: Node | Button) {
         if (btnComponent instanceof Button) {
             btnComponent.clickEvents = [];
         } else {
@@ -419,12 +419,12 @@ export class BaseUiComponent extends Component {
     createSprite(imgPath: string) {
         let node = new Node()
         let sprite = node.addComponent(Sprite)
-        this.setSpriteFrame(sprite, imgPath)
+        this._fn_agk(sprite, imgPath)
         return node
     }
 
 
-    toast(str: string) {
+    _fn_aiu(str: string) {
         this.emit(GD.event.showTip, { msg: str })
     }
 }

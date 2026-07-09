@@ -22,20 +22,20 @@ export class GrowUpDialog extends BaseView {
     _isVip = false
 
     start() {
-        this.bindButton(find("root/btnClose", this.node)!, this.popClose)
-        director.off(GNetCmd.GetUserDataByKey.toString(), this.onMessageEvent, this);
-        director.on(GNetCmd.GetUserDataByKey.toString(), this.onMessageEvent, this);
+        this.bindButton(find("root/btnClose", this.node)!, this._fn_xe)
+        director.off(GNetCmd.GetUserDataByKey.toString(), this._fn_uw, this);
+        director.on(GNetCmd.GetUserDataByKey.toString(), this._fn_uw, this);
     }
 
     onEnable() {
 
-        director.off(GNetCmd.GetUserDataByKey.toString(), this.onMessageEvent, this);
-        director.on(GNetCmd.GetUserDataByKey.toString(), this.onMessageEvent, this);
+        director.off(GNetCmd.GetUserDataByKey.toString(), this._fn_uw, this);
+        director.on(GNetCmd.GetUserDataByKey.toString(), this._fn_uw, this);
     }
 
     onDisable() {
 
-        director.off(GNetCmd.GetUserDataByKey.toString(), this.onMessageEvent, this);
+        director.off(GNetCmd.GetUserDataByKey.toString(), this._fn_uw, this);
     }
 
     show(args: any) {
@@ -45,14 +45,14 @@ export class GrowUpDialog extends BaseView {
     }
 
     initData() {
-        let giftData = TableDataService.ins().getTable(Const.Tables.task_growUp)
+        let giftData = TableDataService.ins()._fn_lt(Const.Tables.task_growUp)
         let arr2 = [...giftData]
         let arr = []
         while (arr2.length > 0) {
             arr.push(arr2.pop())
         }
         this._giftData = arr
-        this.scrollViewSetData(this.giftScroll, arr, this.initItem, this)
+        this._fn_adc(this.giftScroll, arr, this._fn_oc, this)
         this.giftScroll.getComponent(ScrollViewUtil)!.scrollToEnd()
 
         this.scheduleOnce(() => {
@@ -62,17 +62,17 @@ export class GrowUpDialog extends BaseView {
             this.giftScroll.getComponent(ScrollViewUtil)?.updateItemZindex()
         }, 0.7)
 
-        if (GameStorage.getInt(Const.MoneyKeys.MoneyVip, 0) == 1) {
+        if (GameStorage._fn_hr(Const.MoneyKeys.MoneyVip, 0) == 1) {
             find("root/btnBuyVip/Label", this.node)!.getComponent(Label)!.string = "尊贵Vip"
         } else {
             find("root/btnBuyVip/Label", this.node)!.getComponent(Label)!.string = "购买Vip"
         }
 
-        ServerCtrJSF.GetInstance().reqGetUserDataByKey(GameStorage.Key(Const.MoneyKeys.MoneyVip))
+        ServerCtrJSF._fn_hp()._fn_aat(GameStorage._fn_rb(Const.MoneyKeys.MoneyVip))
     }
 
-    onMessageEvent(value: any) {
-        let data = ServerCtrJSF.GetInstance().getUserDataByKey(value, Const.MoneyKeys.MoneyVip)
+    _fn_uw(value: any) {
+        let data = ServerCtrJSF._fn_hp()._fn_mu(value, Const.MoneyKeys.MoneyVip)
         if (data) {
             this._isVip = data.val == "1" || data.val == 1
             this.giftScroll.getComponent(ScrollViewUtil)?.refreshList()
@@ -81,11 +81,11 @@ export class GrowUpDialog extends BaseView {
 
     }
 
-    initItem(itemUI: Node, item: any, index: number, self: any) {
+    _fn_oc(itemUI: Node, item: any, index: number, self: any) {
         let lockLabel = itemUI.getChildByName("lockLabel")!.getComponent(Label)!
         itemUI.setSiblingIndex(1000 - index)
         console.log("self._isVip = ", self._isVip)
-        if (playerDataStore.isGrowUpunLock(item.lv) == TujianState.unGet) {
+        if (playerDataStore._fn_pw(item.lv) == TujianState.unGet) {
             itemUI.getChildByName("btnReceive")!.active = false
             lockLabel.node.active = true
             lockLabel.string = "未解锁"
@@ -93,10 +93,10 @@ export class GrowUpDialog extends BaseView {
             itemUI.getChildByName("btnReceive")!.active = false
             lockLabel.node.active = true
             lockLabel.string = "已解锁"
-        } else if (self._isVip && playerDataStore.isGrowUpunLock(item.lv) == TujianState.geted) {
+        } else if (self._isVip && playerDataStore._fn_pw(item.lv) == TujianState.geted) {
             itemUI.getChildByName("btnReceive")!.active = true
             lockLabel.node.active = false
-        } else if (self._isVip && playerDataStore.isGrowUpunLock(item.lv) == TujianState.received) {
+        } else if (self._isVip && playerDataStore._fn_pw(item.lv) == TujianState.received) {
             itemUI.getChildByName("btnReceive")!.active = false
             lockLabel.node.active = true
             lockLabel.string = "已领取"
@@ -130,18 +130,18 @@ export class GrowUpDialog extends BaseView {
     }
 
     onClickGet(event: any, item: any) {
-        this.onVideoBack(item)
+        this._fn_wc(item)
     }
 
-    onVideoBack(item: any) {
-        playerDataStore.setGrowUpState(item.lv, TujianState.received)
-        playerDataStore.getProp(item.price, v3(0, 0, 0), v3(0, 0, 0))
+    _fn_wc(item: any) {
+        playerDataStore._fn_aet(item.lv, TujianState.received)
+        playerDataStore._fn_jk(item.price, v3(0, 0, 0), v3(0, 0, 0))
         this.giftScroll.getComponent(ScrollViewUtil)?.refreshList()
         this.giftScroll.getComponent(ScrollViewUtil)?.updateItemZindex()
     }
 
     onClickBuyVip() {
-        GameStorage.setInt(Const.MoneyKeys.MoneyVip, 1)
+        GameStorage._fn_aey(Const.MoneyKeys.MoneyVip, 1)
         this.initData()
     }
 }

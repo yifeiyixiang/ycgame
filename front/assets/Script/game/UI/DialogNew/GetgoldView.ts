@@ -26,12 +26,12 @@ export class GetgoldView extends BaseView {
     type: number = 0;
 
     start() {
-        this.bindButton(find("root/btnClose", this.node)!, this.popClose)
+        this.bindButton(find("root/btnClose", this.node)!, this._fn_xe)
 
         this.bindButton(find("root/btnGet", this.node)!, ()=>{
 
-            RewardVideoManager.showVideo("广告获取金币", () => {
-                GameHttpClient.getInstance().sendADWatch(this.type, ()=>{
+            RewardVideoManager._fn_ahy("广告获取金币", () => {
+                GameHttpClient._fn_ho()._fn_adm(this.type, ()=>{
                     this.close();
                 })
             })

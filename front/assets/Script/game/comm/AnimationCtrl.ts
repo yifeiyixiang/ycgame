@@ -27,31 +27,31 @@ export class AnimationCtrl extends Component {
             this.animationComponent = this.getComponentInChildren(Animation)!;
         }
         if (this.animationComponent) {
-            this.animationComponent.on(Animation.EventType.FINISHED, this.animationFinished, this);
+            this.animationComponent.on(Animation.EventType.FINISHED, this._fn_v, this);
         }
     }
 
-    setSpineSkeletonNode(node: Node) {
+    _fn_agj(node: Node) {
         this.spineSkeleton = node.getComponent(sp.Skeleton)!;
     }
-    setAnimationNode(node: Node) {
+    _fn_aeh(node: Node) {
         this.animationComponent = node.getComponent(Animation)!;
     }
 
-    pauseAnimation() {
+    _fn_ws() {
         if (!this.spineSkeleton) {
             return;
         }
         this.spineSkeleton.paused = true;
     }
-    resumeAnimation() {
+    _fn_abz() {
         if (!this.spineSkeleton) {
             return;
         }
         this.spineSkeleton.paused = false;
     }
 
-    animationFinished(eventName: string, animationState: AnimationState) {
+    _fn_v(eventName: string, animationState: AnimationState) {
         if (eventName == Animation.EventType.FINISHED) {
             if (this.animationEndCallback) {
                 this.animationEndCallback(animationState.name);

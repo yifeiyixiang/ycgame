@@ -12,45 +12,45 @@ export class RewardVideoManager {
     private static videoCallBack: Function | null = null;
     private static failCallBack: Function | null = null;
 
-    public static initManager() {
-        GamePlatform.initNativeRewardCallbacks(() => {
+    public static _fn_oh() {
+        GamePlatform._fn_ol(() => {
             this.videoCallBack && this.videoCallBack();
-            this.clearVideoCallbacks();
+            this._fn_db();
         }, () => {
             this.failCallBack && this.failCallBack();
-            this.clearVideoCallbacks();
+            this._fn_db();
             Notifications.emit(GD.event.showToast, "看完广告才能获得奖励");
         });
     }
 
-    public static LoginGoole() {
-        GamePlatform.loginGoogle();
+    public static _fn_ry() {
+        GamePlatform._fn_rx();
     }
 
-    public static LoginFacebook() {
-        GamePlatform.loginFacebook();
+    public static _fn_rw() {
+        GamePlatform._fn_rv();
     }
 
-    public static RechargeTest() {
+    public static _fn_yo() {
         if (NATIVE) {
             native.reflection.callStaticMethod("com/cocos/game/BillingClientClass", "onClickGooglePlay", "(Ljava/lang/String;)V", "---recharge");
         }
     }
 
-    public static showVideo(event: string, callBack: Function, failCb: Function | null = null) {
+    public static _fn_ahy(event: string, callBack: Function, failCb: Function | null = null) {
         this.videoCallBack = callBack;
         this.failCallBack = failCb;
 
         if (Const.isTest) {
             callBack && callBack();
-            this.clearVideoCallbacks();
+            this._fn_db();
             return;
         }
 
-        GamePlatform.showRewardVideo(event, (st: number) => {
+        GamePlatform._fn_ahr(event, (st: number) => {
             if (st == 1) {
                 callBack && callBack();
-                this.clearVideoCallbacks();
+                this._fn_db();
                 return;
             }
 
@@ -61,11 +61,11 @@ export class RewardVideoManager {
             }
 
             failCb && failCb();
-            this.clearVideoCallbacks();
+            this._fn_db();
         });
     }
 
-    private static clearVideoCallbacks() {
+    private static _fn_db() {
         this.videoCallBack = null;
         this.failCallBack = null;
     }

@@ -38,16 +38,16 @@ export class ItemCodexLayer extends BaseView {
         super.show(selectedPropId);
 
         UtilPub.log("show propId:" + selectedPropId);
-        this.initUI(selectedPropId);
+        this._fn_ph(selectedPropId);
     }
 
-    initUI(selectedPropId: number) {
-        let selectedPropConfig = TableDataService.ins().getTableValueByID(Const.Tables.prop, selectedPropId);
+    _fn_ph(selectedPropId: number) {
+        let selectedPropConfig = TableDataService.ins()._fn_ly(Const.Tables.prop, selectedPropId);
         this.propId = selectedPropId;
-        this.setString(this.nameNode, selectedPropConfig.sonname);
+        this._fn_ago(this.nameNode, selectedPropConfig.sonname);
 
         this.propLayer.removeAllChildren();
-        let sameTypePropList = this.getPropRowArr();
+        let sameTypePropList = this._fn_jq();
         for (let propIndex = 0; propIndex < sameTypePropList.length; propIndex++) {
             let propCellNode = instantiate(this.propItem);
             propCellNode.active = true;
@@ -63,47 +63,47 @@ export class ItemCodexLayer extends BaseView {
 
             let iconNode = find("icon", propCellNode)!;
             iconNode.active = true;
-            this.setSpriteFrame2(iconNode.getComponent(Sprite)!, Const.resPath.icon + propConfig.icon);
-            this.setString(find("lv", propCellNode), propConfig.luna);
+            this._fn_agl(iconNode.getComponent(Sprite)!, Const.resPath.icon + propConfig.icon);
+            this._fn_ago(find("lv", propCellNode), propConfig.luna);
             let bgName = "grid_normal";
             if (propConfig.id == selectedPropId) {
                 bgName = "grid_chose";
             } else {
-                if (playerDataStore.isGetPropTujian(propConfig.id) == TujianState.unGet) {
+                if (playerDataStore._fn_pv(propConfig.id) == TujianState.unGet) {
                     wenhaoNode.active = true;
                     iconNode.active = false;
                     createIcon.active = false;
                 }
             }
 
-            this.setSpriteFrame2(find("bg", propCellNode)!.getComponent(Sprite)!, Const.resPath.mergeIcon + "item_codex/" + bgName);
-            this.bindButton(propCellNode, this.onClickPropItem);
+            this._fn_agl(find("bg", propCellNode)!.getComponent(Sprite)!, Const.resPath.mergeIcon + "item_codex/" + bgName);
+            this.bindButton(propCellNode, this._fn_ue);
             // @ts-ignore
             propCellNode.propRow = propConfig;
         }
 
-        let sourcePropList = this.getPropFromArr();
+        let sourcePropList = this._fn_jl();
         if (sourcePropList.length > 0) {
             this.bottomLayer.active = true;
-            this.scrollViewSetData(this.fromList, sourcePropList, this.refreshFromItemUI.bind(this));
+            this._fn_adc(this.fromList, sourcePropList, this._fn_zb.bind(this));
         } else {
             this.bottomLayer.active = false;
         }
 
-        this.bindButton(this.btnClose, this.onClickBtnClose);
+        this.bindButton(this.btnClose, this._fn_sz);
     }
 
-    refreshFromItemUI(sourceCellNode: Node, propConfig: any) {
+    _fn_zb(sourceCellNode: Node, propConfig: any) {
         // @ts-ignore
         sourceCellNode.propRow = propConfig;
-        this.setSpriteFrame2(find("icon", sourceCellNode)!.getComponent(Sprite)!, Const.resPath.icon + propConfig.icon);
-        this.bindButton(sourceCellNode, this.onClickBtnFromItem);
+        this._fn_agl(find("icon", sourceCellNode)!.getComponent(Sprite)!, Const.resPath.icon + propConfig.icon);
+        this.bindButton(sourceCellNode, this._fn_td);
     }
 
-    getPropRowArr() {
+    _fn_jq() {
         let sameTypePropList: any = [];
-        let selectedPropConfig = TableDataService.ins().getTableValueByID(Const.Tables.prop, this.propId);
-        let propTable = TableDataService.ins().getTable(Const.Tables.prop);
+        let selectedPropConfig = TableDataService.ins()._fn_ly(Const.Tables.prop, this.propId);
+        let propTable = TableDataService.ins()._fn_lt(Const.Tables.prop);
         for (let tableKey in propTable) {
             let propConfig = propTable[tableKey];
             if (selectedPropConfig.type == propConfig.type && selectedPropConfig.typeson == propConfig.typeson) {
@@ -113,14 +113,14 @@ export class ItemCodexLayer extends BaseView {
         return sameTypePropList;
     }
 
-    getPropFromArr() {
+    _fn_jl() {
         let sourcePropList: any = [];
-        let propTable = TableDataService.ins().getTable(Const.Tables.prop);
-        let selectedPropConfig = TableDataService.ins().getTableValueByID(Const.Tables.prop, this.propId);
+        let propTable = TableDataService.ins()._fn_lt(Const.Tables.prop);
+        let selectedPropConfig = TableDataService.ins()._fn_ly(Const.Tables.prop, this.propId);
         let basePropId = this.propId - selectedPropConfig.luna + 1;
 
         let firstPropId = -1;
-        let firstPropConfig = TableDataService.ins().getTableValueByID(Const.Tables.prop, basePropId);
+        let firstPropConfig = TableDataService.ins()._fn_ly(Const.Tables.prop, basePropId);
         if (basePropId != this.propId && firstPropConfig && firstPropConfig.type == selectedPropConfig.type && firstPropConfig.typeson == selectedPropConfig.typeson) {
             firstPropId = basePropId;
         }
@@ -157,27 +157,27 @@ export class ItemCodexLayer extends BaseView {
         return sourcePropList;
     }
 
-    onClickPropItem(btn: Button) {
+    _fn_ue(btn: Button) {
         // @ts-ignore
         let propConfig = btn.node.propRow;
 
 
 
 
-        UiLayerService.instance.showDialog(Const.Dialogs.PropMinInfo, { propdata: propConfig });
+        UiLayerService.instance._fn_ahg(Const.Dialogs.PropMinInfo, { propdata: propConfig });
     }
 
-    onClickBtnFromItem(btn: Button) {
+    _fn_td(btn: Button) {
         // @ts-ignore
         let propConfig = btn.node.propRow;
         if (propConfig.tan) {
-            UiLayerService.instance.showDialog(Const.Dialogs.PropItemInfo, { propdata: propConfig });
+            UiLayerService.instance._fn_ahg(Const.Dialogs.PropItemInfo, { propdata: propConfig });
         } else {
             this.show(propConfig.id);
         }
     }
 
-    onClickBtnClose() {
+    _fn_sz() {
         this.close();
     }
 

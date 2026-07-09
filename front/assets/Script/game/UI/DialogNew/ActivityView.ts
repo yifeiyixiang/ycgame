@@ -53,7 +53,7 @@ export class ActivityView extends BaseView {
     private type = 0;
 
     onLoad() {
-        this.bindButton(this.btnStart, (this.startTurn));
+        this.bindButton(this.btnStart, (this._fn_aik));
 
         this.bindButton(this.btnClose, this.close);
 
@@ -61,10 +61,10 @@ export class ActivityView extends BaseView {
     }
 
     onEnable(){
-        this.refresh();
+        this._fn_ys();
     }
 
-    refresh(){
+    _fn_ys(){
 
         this.bg.spriteFrame = this.bgArr[this.type];
         this.btnStart.getComponent(Sprite).spriteFrame = this.btnArr[this.type];
@@ -92,15 +92,15 @@ export class ActivityView extends BaseView {
             this.tipNode.setPosition(-103, -502);
         }
 
-        let activityProgressConfig = TableDataService.ins().getTableValueByID(Const.Tables.new_activityPrpgress, playerDataStore.userInfodata.activity_progress);
+        let activityProgressConfig = TableDataService.ins()._fn_ly(Const.Tables.new_activityPrpgress, playerDataStore.userInfodata.activity_progress);
         if (activityProgressConfig){
             this.rewardIcon.node.active = true;
             if (activityProgressConfig.task_gift.length > 0){
                 let rewardPropId = activityProgressConfig.task_gift[0][0];
                 let rewardCount = activityProgressConfig.task_gift[0][1];
-                let rewardPropConfig = TableDataService.ins().getTableValueByID(Const.Tables.new_prop, rewardPropId)
+                let rewardPropConfig = TableDataService.ins()._fn_ly(Const.Tables.new_prop, rewardPropId)
 
-                this.setSpriteFrame(this.rewardIcon.getComponent(Sprite)!, Const.resPath.icon + rewardPropConfig.icon, () => { }, 60)
+                this._fn_agk(this.rewardIcon.getComponent(Sprite)!, Const.resPath.icon + rewardPropConfig.icon, () => { }, 60)
                 this.rewardNumLab.string = "x" + rewardCount + "";
             }
 
@@ -124,7 +124,7 @@ export class ActivityView extends BaseView {
     }
 
 
-    startTurn() {
+    _fn_aik() {
 
         this.btnStart.active = false;
         this.btnClose.active = false;
@@ -134,26 +134,26 @@ export class ActivityView extends BaseView {
         for (let stepIndex = 0; stepIndex < highlightSteps; stepIndex++){
             let selectedRewardIndex = stepIndex % this.rewardNode.children.length;
             this.scheduleOnce(()=>{
-                this.setSelectInde(selectedRewardIndex);
+                this._fn_agf(selectedRewardIndex);
             }, stepIndex * 0.2);
         }
 
         this.scheduleOnce(()=>{
             this.btnStart.active = true;
             this.btnClose.active = true;
-            GameHttpClient.getInstance().sendactivity(()=>{
-                this.refresh();
+            GameHttpClient._fn_ho()._fn_adk(()=>{
+                this._fn_ys();
             });
         }, highlightSteps * 0.2);
     }
 
     receiveClick(){
-        GameHttpClient.getInstance().sendProgressaward(playerDataStore.userInfodata.activity_progress, (res:any)=>{
-            this.refresh();
+        GameHttpClient._fn_ho()._fn_adu(playerDataStore.userInfodata.activity_progress, (res:any)=>{
+            this._fn_ys();
         })
     }
 
-    setSelectInde(index:number = -1){
+    _fn_agf(index:number = -1){
         for (let rewardIndex = 0; rewardIndex < this.rewardNode.children.length; rewardIndex++){
             let rewardCell = this.rewardNode.children[rewardIndex];
             if(index == rewardIndex){

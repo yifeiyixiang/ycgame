@@ -20,7 +20,7 @@ export class ModifyDailog extends BaseView {
     _isEditState = false
 
     start() {
-        this.bindButton(find("root/btnClose", this.node)!, this.popClose)
+        this.bindButton(find("root/btnClose", this.node)!, this._fn_xe)
     }
 
     show(args: any) {
@@ -29,22 +29,22 @@ export class ModifyDailog extends BaseView {
     }
 
     onClickModifyBtn() {
-        AudioPlaybackService.instance.playSound(Const.Audio.btn)
+        AudioPlaybackService.instance._fn_xc(Const.Audio.btn)
 
         let str = this.nameEditBox.getComponent(EditBox)!.string
         if (str == "") {
-            this.toast("名字不能为空")
+            this._fn_aiu("名字不能为空")
             return
         }
         if(str.length > 7){
-            this.toast("名字不能超过7个字")
+            this._fn_aiu("名字不能超过7个字")
             return
         }
 
-        GameHttpClient.getInstance().sendChangeInfo(1, str, ()=>{
+        GameHttpClient._fn_ho()._fn_adp(1, str, ()=>{
             playerDataStore.roleName = str
         })
-        this.popClose()
+        this._fn_xe()
 
     }
 

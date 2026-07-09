@@ -23,10 +23,10 @@ export default class TableDataService {
 
 	public config: any = {};
 
-	public async loadTable() {
+	public async _fn_rs() {
 		return new Promise<void>(resolve => {
 			console.log("表格数据处理")
-			ResourceLoaderService.loadResDirWithBundle('json', "./", (err, assets) => {
+			ResourceLoaderService._fn_rp('json', "./", (err, assets) => {
 
 				console.log("table err----------", err)
 				console.log("table data----------", assets.length)
@@ -58,11 +58,11 @@ export default class TableDataService {
 		})
 	}
 
-	public getTable(name: string) {
+	public _fn_lt(name: string) {
 		return this.TableDataService[name];
 	}
-	public getTableValueByID(name: string, id: number) {
-		let table = this.getTable(name);
+	public _fn_ly(name: string, id: number) {
+		let table = this._fn_lt(name);
 		for (let i = 0; i < table.length; i++) {
 			const t = table[i];
 			if (t.id == id) {
@@ -91,12 +91,12 @@ export default class TableDataService {
 
 
 
-	public getTableLastOne(name: string) {
-		let table = this.getTable(name);
+	public _fn_lw(name: string) {
+		let table = this._fn_lt(name);
 		return JSON.parse(JSON.stringify(table[table.length - 1]));
 	}
-	public getTableValueByKey(name: string, key: string, value: any) {
-		let table = this.getTable(name);
+	public _fn_lz(name: string, key: string, value: any) {
+		let table = this._fn_lt(name);
 		for (let i = 0; i < table.length; i++) {
 			const t = table[i];
 			if (t[key] == value) {
@@ -105,8 +105,8 @@ export default class TableDataService {
 		}
 	}
 
-	public getTableValuesByType(tableName: string, colName: string, colVal: string | number) {
-		let table = this.getTable(tableName);
+	public _fn_mb(tableName: string, colName: string, colVal: string | number) {
+		let table = this._fn_lt(tableName);
 		let res = []
 		for (let i = 0; i < table.length; i++) {
 			const row = table[i];
@@ -117,8 +117,8 @@ export default class TableDataService {
 		return res
 	}
 
-	public getTableValuesNumberByType(tableName: string, colName: string, colVal: string | number, colName2: string) {
-		let table = this.getTable(tableName);
+	public _fn_mf(tableName: string, colName: string, colVal: string | number, colName2: string) {
+		let table = this._fn_lt(tableName);
 		let res: any = []
 		let num = 0
 		for (let i = 0; i < table.length; i++) {
@@ -131,8 +131,8 @@ export default class TableDataService {
 		return num
 	}
 
-	public getTableValuesByType2(tableName: string, colName: string, colVal: string, colName2: string, colVal2: string) {
-		let table = this.getTable(tableName);
+	public _fn_mc(tableName: string, colName: string, colVal: string, colName2: string, colVal2: string) {
+		let table = this._fn_lt(tableName);
 		let res = []
 		for (let i = 0; i < table.length; i++) {
 			const row = table[i];
@@ -143,8 +143,8 @@ export default class TableDataService {
 		return res
 	}
 
-	public getTableValuesByType2ByOne(tableName: string, colName: string, colVal: string, colName2: string, colVal2: string) {
-		let table = this.getTable(tableName);
+	public _fn_md(tableName: string, colName: string, colVal: string, colName2: string, colVal2: string) {
+		let table = this._fn_lt(tableName);
 		let res = []
 		for (let i = 0; i < table.length; i++) {
 			const row = table[i];
@@ -157,8 +157,8 @@ export default class TableDataService {
 		return null
 	}
 
-	public getTableValuesByType3(tableName: string, colName: string, colVal: string, colName2: string, colVal2: string, colName3: string, colVal3: string) {
-		let table = this.getTable(tableName);
+	public _fn_me(tableName: string, colName: string, colVal: string, colName2: string, colVal2: string, colName3: string, colVal3: string) {
+		let table = this._fn_lt(tableName);
 		let res = []
 		for (let i = 0; i < table.length; i++) {
 			const row = table[i];
@@ -169,8 +169,8 @@ export default class TableDataService {
 		return res
 	}
 
-	public getTableValueByLevel(name: string, id: number) {
-		let table = this.getTable(name);
+	public _fn_ma(name: string, id: number) {
+		let table = this._fn_lt(name);
 		for (let i = 0; i < table.length; i++) {
 			const t = table[i];
 			if (t.level == id) {
@@ -179,10 +179,10 @@ export default class TableDataService {
 		}
 	}
 
-	public getTableMaxValueByLevel(name: string) {
+	public _fn_lx(name: string) {
 		let level = 1;
 		let tab = null;
-		let table = this.getTable(name);
+		let table = this._fn_lt(name);
 		for (let i = 0; i < table.length; i++) {
 			const t = table[i];
 			if (t.level > level) {

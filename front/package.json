@@ -5,7 +5,14 @@
   "name": "maorongrong-party",
   "uuid": "8ca9ef4b-8821-47f5-a1ee-8ca346f8e8e3",
   "version": "3.8.3",
+  "scripts": {
+    "obfuscate:functions:dry": "node ../tools/obfuscate-ts-functions.js --root . --dry-run",
+    "obfuscate:functions:apply": "node ../tools/obfuscate-ts-functions.js --root . --apply --map function-obfuscation-map.json"
+  },
   "dependencies": {
     "compressing": "^1.9.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.5.4"
   }
 }

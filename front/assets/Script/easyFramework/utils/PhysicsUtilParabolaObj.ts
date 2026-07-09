@@ -45,19 +45,19 @@ export class PhysicsUtilParabolaObj extends Component {
         this.pointPrefab=pointPrefab
         this.segmentCount=segmentCount
         this.isLookAtTarget=isLookAtTarget
-        this.SetStart(cb)
+        this._fn_agn(cb)
     }
 
 
-    SetStart(cb:Function)
+    _fn_agn(cb:Function)
     {
         this.cb = cb
-        this.CreateLinePos()
+        this._fn_dt()
         this._Physics = new PhysicsUtil();
-        this.DrawLine()
+        this._fn_el()
 
         this.isStart=true
-        this.StartMove()
+        this._fn_aij()
     }
 
     update (deltaTime: number) {
@@ -65,13 +65,13 @@ export class PhysicsUtilParabolaObj extends Component {
 
         this.calTime+=deltaTime
         if(this.isStart){
-            this.StartMove()
+            this._fn_aij()
         }
 
     }
 
 
-    CreateLinePos()
+    _fn_dt()
     {
         this.lineList=[]
         for(let i=0;i<this.segmentCount;i++){
@@ -80,7 +80,7 @@ export class PhysicsUtilParabolaObj extends Component {
     }
 
 
-    DrawLine()
+    _fn_el()
     {
         this.playPos=this.flyNode.worldPosition.clone()
         this.targetPos=this.targetFinalPos.clone()
@@ -92,14 +92,14 @@ export class PhysicsUtilParabolaObj extends Component {
         {
             for(let i=0;i<this.segmentCount;i++)
             {
-                let pos = this._Physics.GetPosition(timeStep*i)
+                let pos = this._Physics._fn_ji(timeStep*i)
                 this.lineList[i] = pos
             }
         }
     }
 
 
-    StartMove()
+    _fn_aij()
     {
 
         this._Physics.time=this._Physics.time+this._deltaTime
@@ -107,7 +107,7 @@ export class PhysicsUtilParabolaObj extends Component {
         this.playPos=this.flyNode.worldPosition.clone()
 
         if(this.isLookAtTarget){
-            this.flyNode.lookAt(this._Physics.GetPosition(this._Physics.time + this._deltaTime));
+            this.flyNode.lookAt(this._Physics._fn_ji(this._Physics.time + this._deltaTime));
         }
 
         if (this._Physics.time >= this._Physics.totalTime)

@@ -17,7 +17,7 @@ export class GetAnimalLayer extends BaseView {
 
     @property({ type: Sprite, displayName: "icon" }) icon: Sprite = null!
 
-    get main_top() { return main_top.getTopNode() || find("Canvas/main/root/main_top")! }
+    get main_top() { return main_top._fn_mo() || find("Canvas/main/root/main_top")! }
 
     _propdata: any = null
     start() {
@@ -27,11 +27,11 @@ export class GetAnimalLayer extends BaseView {
 
     show(args: any) {
         super.show(args)
-        this.showAni()
+        this._fn_aha()
     }
 
-    showAni() {
-        this._propdata = TableDataService.ins().getTableValueByID(Const.Tables.prop, this._layerData.propId)
+    _fn_aha() {
+        this._propdata = TableDataService.ins()._fn_ly(Const.Tables.prop, this._layerData.propId)
 
         let target = null
         if (this._propdata.type == GoodsType.Coin) {
@@ -50,17 +50,17 @@ export class GetAnimalLayer extends BaseView {
         let delay = this._propdata.type < 100 ? this.node.children.length * 0.1 : 0
 
         let cb = (sprite: any) => {
-            this.setImageCustomSize(this.icon.node, this._propdata.type > 100 ? 70 : 120)
-            this.playCoinFlyAnim(this._layerData.num, startPos, endPos, 50, delay)
+            this._fn_aex(this.icon.node, this._propdata.type > 100 ? 70 : 120)
+            this._fn_wx(this._layerData.num, startPos, endPos, 50, delay)
 
         }
 
-        this.setSpriteFrame(this.icon, Const.resPath.icon + this._propdata.icon, cb)
+        this._fn_agk(this.icon, Const.resPath.icon + this._propdata.icon, cb)
         this.icon.node.active = false
-        this.scheduleOnce(this.checkClose, 2)
+        this.scheduleOnce(this._fn_bp, 2)
     }
 
-    checkClose() {
+    _fn_bp() {
 
         if (this.node.children.length <= 1) {
             this.close()
@@ -68,7 +68,7 @@ export class GetAnimalLayer extends BaseView {
     }
 
 
-    protected playCoinFlyAnim(count: number, startPos: any, endPos: any, r: number = 50, delay = 0) {
+    protected _fn_wx(count: number, startPos: any, endPos: any, r: number = 50, delay = 0) {
 
         let dir = this._dir == 0 ? (Math.random() > 0.5 ? 1 : -1) : this._dir
         this._dir = dir
@@ -81,7 +81,7 @@ export class GetAnimalLayer extends BaseView {
             let endCb = () => {
                 Notifications.emit(GD.event.updateMoneyAction);
                 coin.removeFromParent()
-                this.scheduleOnce(this.checkClose, 1)
+                this.scheduleOnce(this._fn_bp, 1)
             }
 
             tween(coin).delay(index * 0.05 + delay).call(() => {
@@ -95,7 +95,7 @@ export class GetAnimalLayer extends BaseView {
         return
 
 
-        let points = this.getCirclePoints(r, startPos, count);
+        let points = this._fn_gd(r, startPos, count);
         let coinNodeList = points.map(pos => {
             var coin = instantiate(this.icon.node);
             coin.active = true
@@ -109,7 +109,7 @@ export class GetAnimalLayer extends BaseView {
                 startPos: startPos,
                 midPos: pos,
                 endPos: endPos,
-                dis: this.calcDistance(pos, endPos)
+                dis: this._fn_au(pos, endPos)
             }
         })
 
@@ -129,7 +129,7 @@ export class GetAnimalLayer extends BaseView {
         });
     }
 
-    protected getCirclePoints(r: number, pos: any, count: number, randomScope: number = 50) {
+    protected _fn_gd(r: number, pos: any, count: number, randomScope: number = 50) {
         let points = []
         for (let i = 0; i < count; i++) {
             let radians = (Math.PI / 180) * Math.round(360 / count)
@@ -145,7 +145,7 @@ export class GetAnimalLayer extends BaseView {
 
 
 
-    public calcDistance(pos1: any, pos2: any) {
+    public _fn_au(pos1: any, pos2: any) {
         let xdiff = pos1.x - pos2.x;
         let ydiff = pos1.y - pos2.y;
         let dis = Math.pow((xdiff * xdiff + ydiff * ydiff), 0.5);

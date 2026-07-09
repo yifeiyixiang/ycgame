@@ -26,13 +26,13 @@ export class ConfirmPromptDialogController extends BaseView {
     isStartReconnect:boolean = false
 
     start() {
-        director.off(GEvent.ws_open, this.onWsOpen, this);
-        director.on(GEvent.ws_open, this.onWsOpen, this);
+        director.off(GEvent.ws_open, this._fn_wd, this);
+        director.on(GEvent.ws_open, this._fn_wd, this);
         this.bindButton(this.btnGreenBg, () => {
             if(this.type==GPromptType.reconnect){
                 this.isStartReconnect = true
                 this.emit(GD.event.showTip, {msg: "尝试连接服务器！"})
-                this.tryConnect()
+                this._fn_aje()
 
             }else if(this.type==GPromptType.blockAccount ||
                 this.type==GPromptType.loginOccupy ||
@@ -47,8 +47,8 @@ export class ConfirmPromptDialogController extends BaseView {
         })
     }
 
-    restartGame(){
-       UtilScene.restartGame()
+    _fn_abw(){
+       UtilScene._fn_abw()
     }
 
     show(args: any) {
@@ -68,9 +68,9 @@ export class ConfirmPromptDialogController extends BaseView {
     }
 
 
-    onWsOpen(){
+    _fn_wd(){
         console.warn("socket成功后----------自动重新登录")
-        this.restartGame()
+        this._fn_abw()
 
 
 
@@ -78,7 +78,7 @@ export class ConfirmPromptDialogController extends BaseView {
 
     }
 
-    tryConnect(){
+    _fn_aje(){
 
 
 
@@ -95,7 +95,7 @@ export class ConfirmPromptDialogController extends BaseView {
             if(this.calTime>2){
                 UtilPub.log("开始尝试重新链接")
                 this.calTime=0
-                this.tryConnect()
+                this._fn_aje()
             }
         }
     }

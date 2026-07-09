@@ -94,11 +94,11 @@ export class pet extends Component {
     onLoad() {
         if (this.isScene){
 
-            this.statusBg.on(Node.EventType.TOUCH_START, this.onPetClicked, this);
+            this.statusBg.on(Node.EventType.TOUCH_START, this._fn_ve, this);
 
-            this.nodeSke.node.on(Node.EventType.TOUCH_START, this.onPetClicked, this);
+            this.nodeSke.node.on(Node.EventType.TOUCH_START, this._fn_ve, this);
 
-            this.showStatusTip(0)
+            this._fn_ahu(0)
 
 
 
@@ -116,7 +116,7 @@ export class pet extends Component {
 
         this.petId = petData.id
 
-        ResourceLoaderService.setSkeEffect([this.nodeSke, this.skeMao, this.skeYifu, this.skeLingdai, this.skeXiu], this.petData, this);
+        ResourceLoaderService._fn_agg([this.nodeSke, this.skeMao, this.skeYifu, this.skeLingdai, this.skeXiu], this.petData, this);
 
         if(this.isScene){
 
@@ -132,7 +132,7 @@ export class pet extends Component {
     }
 
     refreshData(){
-        this.petData = GameRuntimeData.getPetDataById(this.petId);
+        this.petData = GameRuntimeData._fn_jb(this.petId);
 
         if (!this.petData){
             this.node.active = false;
@@ -140,17 +140,17 @@ export class pet extends Component {
         }
         if (this.isScene){
 
-            this.updateStatusLabel();
+            this._fn_ajt();
 
             this.node.active = this.petData.is_active;
         }
-        ResourceLoaderService.setSkeEffect([this.nodeSke, this.skeMao, this.skeYifu, this.skeLingdai, this.skeXiu], this.petData);
+        ResourceLoaderService._fn_agg([this.nodeSke, this.skeMao, this.skeYifu, this.skeLingdai, this.skeXiu], this.petData);
 
 
     }
 
 
-    private updateStatusLabel() {
+    private _fn_ajt() {
 
         if (!this.petData){
             return;
@@ -161,10 +161,10 @@ export class pet extends Component {
         }
 
         if(false){
-            this.showStatusTip(7);
+            this._fn_ahu(7);
         }
         else if (this.lastSatiety - this.petData.hunger_value/Const.CLEAN_FULL >= 0.1){
-            this.showStatusTip(1)
+            this._fn_ahu(1)
             this.lastSatiety = this.petData.hunger_value/Const.CLEAN_FULL;
         }
 
@@ -174,7 +174,7 @@ export class pet extends Component {
 
         else if (this.lastCleanliness - this.petData.clean_value/Const.CLEAN_FULL >= 0.1)
         {
-            this.showStatusTip(3)
+            this._fn_ahu(3)
             this.lastCleanliness = this.petData.clean_value/Const.CLEAN_FULL;
         }else{
 
@@ -182,13 +182,13 @@ export class pet extends Component {
     }
 
 
-    private onPetClicked(event: Event) {
+    private _fn_ve(event: Event) {
 
         console.log('宠物被点击了！');
 
-        UiLayerService.instance.pushShowDialog(Const.Dialogs.PetDetialsView, this.petData);
+        UiLayerService.instance._fn_xw(Const.Dialogs.PetDetialsView, this.petData);
 
-        GameHttpClient.getInstance().sendPetAction(7, this.petData.id, 0);
+        GameHttpClient._fn_ho()._fn_adt(7, this.petData.id, 0);
 
         if (this.state == 4 || this.state == 5){
 
@@ -217,13 +217,13 @@ export class pet extends Component {
 
         }
         else{
-            GameHttpClient.getInstance().getPetList();
+            GameHttpClient._fn_ho()._fn_jc();
 
 
         }
         this.timeSta = 0;
         this.timeAiChat = 0;
-        this.showStatusTip(0)
+        this._fn_ahu(0)
     }
 
 
@@ -260,7 +260,7 @@ export class pet extends Component {
 
         if (actionIndex == 5){
             this.nodeSke.setAnimation(actionIndex,this.actions[actionIndex], true);
-            this.randomWalk();
+            this._fn_yi();
         }else{
 
             this.nodeSke.setAnimation(actionIndex,this.actions[actionIndex], true);
@@ -282,12 +282,12 @@ export class pet extends Component {
 
 
 
-        this.updateStatusLabel();
+        this._fn_ajt();
     }
 
 
 
-    private randomWalk() {
+    private _fn_yi() {
         if(this.isDaiji){
             return;
         }
@@ -360,7 +360,7 @@ export class pet extends Component {
 
             if (this.timeSta > 30){
                 this.timeSta = 0;
-                this.showStatusTip(randomRangeInt(4,6));
+                this._fn_ahu(randomRangeInt(4,6));
             }
 
             this.timeRefresh+=dt;
@@ -375,14 +375,14 @@ export class pet extends Component {
                 this.timeAiChat = 0;
                 let isChat = randomRangeInt(0,100) < 5;
                 if (isChat){
-                    this.showStatusTip(6)
+                    this._fn_ahu(6)
                 }
             }
         }
     }
 
 
-    public showStatusTip(newState:number = 0) {
+    public _fn_ahu(newState:number = 0) {
         if (newState == 0){
             this.state = 0;
             this.statusBg.scale = new Vec3(0,0,0);

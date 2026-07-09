@@ -39,17 +39,17 @@ export class NativeSdkBridge  {
         if (NativeSdkBridge.isAndroid && NativeSdkBridge.isAd){
             native.bridge.sendToNative("playAd", "defaultAdUrl");
         }else{
-            this.wxLoginResult("playAd", null);
+            this._fn_akd("playAd", null);
         }
     }
 
-    public static playAdAddItem(index:number){
+    public static _fn_ww(index:number){
 
 
 
     }
 
-    public static outToWx(type:number){
+    public static _fn_wo(type:number){
 
     }
 
@@ -58,20 +58,20 @@ export class NativeSdkBridge  {
         console.log("wxLogin");
         if (NativeSdkBridge.isAndroid){
             native.bridge.onNative = (animationName: string, code: string | null):void=>{
-                this.wxLoginResult(animationName, code);
+                this._fn_akd(animationName, code);
                 return;
             }
             native.bridge.sendToNative("login", "defaultAdUrl");
         }else{
-            GameHttpClient.getInstance().sendLogin();
+            GameHttpClient._fn_ho()._fn_adq();
         }
     }
 
-    public static wxLoginResult(usrName:string, errCode:string) {
+    public static _fn_akd(usrName:string, errCode:string) {
         return;
         if (usrName == "login"){
             console.log("wxLoginResultcode=" + errCode)
-            GameHttpClient.getInstance().sendLogin()
+            GameHttpClient._fn_ho()._fn_adq()
         }
 
         else if (usrName == "playAd"){

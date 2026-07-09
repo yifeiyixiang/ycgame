@@ -79,7 +79,7 @@ class MergeBoardStateStore {
 
     private static instance: MergeBoardStateStore;
     private constructor() { }
-    public static getInstane(): MergeBoardStateStore {
+    public static _fn_hq(): MergeBoardStateStore {
         if (this.instance == null) {
             this.instance = new MergeBoardStateStore();
         }
@@ -121,7 +121,7 @@ class MergeBoardStateStore {
     initData() {
 
         this.cardArr = [];
-        let ret = GameStorage.getObject(Const.DataKeys.boardCardArr);
+        let ret = GameStorage._fn_io(Const.DataKeys.boardCardArr);
         if (ret) {
 
             this.cardArr = ret;
@@ -131,7 +131,7 @@ class MergeBoardStateStore {
         this.roomArr = [];
         this.roomDataKey = Const.DataKeys.boardRoomData;
 
-        ret = GameStorage.getObjectArrayByKey(this.roomDataKey);
+        ret = GameStorage._fn_ip(this.roomDataKey);
         UtilPub.log("读取服务端棋盘数据：", ret);
         if (!ret.values || ret.values.length <= 0) {
 
@@ -161,25 +161,25 @@ class MergeBoardStateStore {
 
 
 
-            let tb = TableDataService.ins().getTable(Const.Tables.boardSeed);
+            let tb = TableDataService.ins()._fn_lt(Const.Tables.boardSeed);
             if (aiRobot.isRobot()) {
-                tb = TableDataService.ins().getTable(Const.Tables.botBoardSeed);
+                tb = TableDataService.ins()._fn_lt(Const.Tables.botBoardSeed);
             }
             for (let i = 0; i < tb.length; i++) {
                 let roomRow = tb[i];
                 let row = roomRow.row - 1;
                 let col = roomRow.col - 1;
-                let roomData = this.initRoomData(roomRow.propId, undefined, roomRow.status, roomRow.clickPropId);
+                let roomData = this._fn_ou(roomRow.propId, undefined, roomRow.status, roomRow.clickPropId);
                 if (!this.roomArr[row]) {
                     this.roomArr[row] = [];
                 }
                 this.roomArr[row][col] = roomData;
-                let key = this.getRoomDataKey(row, col);
+                let key = this._fn_kh(row, col);
                 tmpObj[key] = roomData;
             }
 
 
-            GameStorage.setObjectMulti(tmpObj);
+            GameStorage._fn_afj(tmpObj);
             UtilPub.log("本地初始化棋盘数据：", this.roomArr);
         } else {
 
@@ -199,7 +199,7 @@ class MergeBoardStateStore {
 
     }
 
-    loadData() {
+    _fn_rh() {
         console.log("loadData 1")
         this.taskArr = [];
         this.roomDataKey = Const.DataKeys.boardRoomData;
@@ -210,20 +210,20 @@ class MergeBoardStateStore {
             this.taskDataKey = Const.DataKeys.boardOrderQueue;
             console.log("loadData 3")
 
-            let ret = GameStorage.getObject(this.taskDataKey);
+            let ret = GameStorage._fn_io(this.taskDataKey);
             console.log("loadData 4")
 
             if (!ret) {
 
                 if (aiRobot.isRobot()) {
-                    let retTask = aiRobot.createTask();
+                    let retTask = aiRobot._fn_dw();
                     this.taskArr = [retTask];
                 } else {
-                    let retTask = this.createHandTask(1);
+                    let retTask = this._fn_ds(1);
                     this.taskArr = [retTask];
                 }
 
-                this.sendTaskArrToServer();
+                this._fn_aeb();
                 UtilPub.log("本地初始化任务列表：", this.taskArr);
 
             } else {
@@ -231,7 +231,7 @@ class MergeBoardStateStore {
 
                 console.log("loadData 5 a")
 
-                this.taskArr = this.createTask()
+                this.taskArr = this._fn_dw()
                 UtilPub.log("从服务端加载任务列表", this.taskArr);
                 console.log("loadData 5")
 
@@ -241,11 +241,11 @@ class MergeBoardStateStore {
 
 
         this.managerArr = [];
-        let ret = GameStorage.getObjectArrayByKey(this.roomDataKey);
-        ret = GameStorage.getObjectArrayByKey(Const.DataKeys.boardMilestoneArr);
+        let ret = GameStorage._fn_ip(this.roomDataKey);
+        ret = GameStorage._fn_ip(Const.DataKeys.boardMilestoneArr);
         if (!ret.values || ret.values.length <= 0) {
 
-            this.createNextManager();
+            this._fn_du();
             UtilPub.log("本地初始化店长值班日：", this.managerArr);
         } else {
 
@@ -270,12 +270,12 @@ class MergeBoardStateStore {
     }
 
 
-    markMergeBoardReady() {
-        UtilPub.for2Arr(this.roomArr, (roomData: any, row: number, col: number) => {
+    _fn_sc() {
+        UtilPub._fn_ex(this.roomArr, (roomData: any, row: number, col: number) => {
             if (!roomData.id) {
                 return;
             }
-            this.refreshRoomAutoNew(row, col);
+            this._fn_zl(row, col);
         });
     }
 
@@ -288,19 +288,19 @@ class MergeBoardStateStore {
     }
 
     update() {
-        let timestamp = this.getCurrentTimestamp();
+        let timestamp = this._fn_gm();
         let tempArr: any = [];
-        UtilPub.for2Arr(this.roomArr, (roomData: any, row: number, col: number) => {
+        UtilPub._fn_ex(this.roomArr, (roomData: any, row: number, col: number) => {
             if (!roomData.id) {
                 return;
             }
-            let propRow = TableDataService.ins().getTableValueByID(Const.Tables.prop, roomData.id);
+            let propRow = TableDataService.ins()._fn_ly(Const.Tables.prop, roomData.id);
 
 
             if (roomData.cd && timestamp >= roomData.cd) {
                 if (propRow.mdt == 11) {
 
-                    this.setRoomData(row, col, {});
+                    this._fn_afu(row, col, {});
                     let info = {
                         row: row,
                         col: col
@@ -311,28 +311,28 @@ class MergeBoardStateStore {
                     delete roomData.cdSum;
 
                     roomData.times = propRow.times;
-                    this.sendRoomDataToServer(row, col);
+                    this._fn_adw(row, col);
                 }
             }
 
 
             if (propRow.fair && roomData.timesAuto > 0) {
-                this.refreshRoomAutoNew(row, col);
+                this._fn_zl(row, col);
             }
 
-            if (roomData.cdAuto && timestamp >= roomData.cdAuto && !this.isRoomBubble(row, col)) {
+            if (roomData.cdAuto && timestamp >= roomData.cdAuto && !this._fn_qk(row, col)) {
 
                 delete roomData.cdAuto;
                 roomData.timesAuto = propRow.kishu;
-                this.sendRoomDataToServer(row, col);
-                this.refreshRoomAutoNew(row, col);
+                this._fn_adw(row, col);
+                this._fn_zl(row, col);
             }
 
 
             if (roomData.cdBubble > 0 && timestamp >= roomData.cdBubble) {
-                roomData = this.initRoomData(designConfig.bubbleBombPropId);
-                this.setRoomData(row, col, roomData);
-                this.sendToUIRoomBubbleBurst(row, col);
+                roomData = this._fn_ou(designConfig.bubbleBombPropId);
+                this._fn_afu(row, col, roomData);
+                this._fn_aed(row, col);
             }
 
             if (propRow.mdt == 11 && roomData.startTime) {
@@ -344,11 +344,11 @@ class MergeBoardStateStore {
                     let posArr = nineAroundArr[i];
                     let r = row + posArr[0];
                     let c = col + posArr[1];
-                    if (!this.isRoomNormal(r, c)) {
+                    if (!this._fn_qn(r, c)) {
                         continue;
                     }
                     let pData = this.roomArr[r][c];
-                    if (this.propCanSpeedUp(pData.id)) {
+                    if (this._fn_xp(pData.id)) {
                         if (!pData.speedTime || pData.speedTime < speedTime) {
                             pData.speedTime = speedTime;
                         }
@@ -371,20 +371,20 @@ class MergeBoardStateStore {
             let col = roomData.col;
             delete roomData.row;
             delete roomData.col;
-            this.setRoomData(row, col);
+            this._fn_afu(row, col);
         });
     }
 
-    getRoomDataKey(row: number, col: number) {
+    _fn_kh(row: number, col: number) {
         return this.roomDataKey + "_" + row + "_" + col;
     }
-    getManagerDataKey(index: number) {
+    _fn_ih(index: number) {
         return Const.DataKeys.boardMilestoneArr + "_" + index;
     }
 
-    initRoomData(id: number, data: any = {}, st?: number, clickPropId?: any) {
+    _fn_ou(id: number, data: any = {}, st?: number, clickPropId?: any) {
         data.id = id;
-        let propRow = TableDataService.ins().getTableValueByID(Const.Tables.prop, id);
+        let propRow = TableDataService.ins()._fn_ly(Const.Tables.prop, id);
         if (!propRow) {
             UtilPub.error("道具数据找不到，id:" + id);
         }
@@ -396,14 +396,14 @@ class MergeBoardStateStore {
 
 
         if (propRow.clickPropId) {
-            let propCount = this.getComposePropCount(id);
+            let propCount = this._fn_gi(id);
             if (propCount == 0) {
                 if (!clickPropId) {
                     clickPropId = [];
                 }
                 clickPropId = clickPropId.concat(propRow.clickPropId);
                 data.clickPropId = clickPropId;
-                this.setComposePropCount(id, propCount + 1);
+                this._fn_aeq(id, propCount + 1);
 
             }
         }
@@ -432,7 +432,7 @@ class MergeBoardStateStore {
                 let roomArr = [];
                 while (true) {
                     let id = roomArr.length + 1;
-                    let bagRow = TableDataService.ins().getTableValueByID(Const.Tables.bagGrid, id);
+                    let bagRow = TableDataService.ins()._fn_ly(Const.Tables.bagGrid, id);
                     if (bagRow.coin != 0) {
                         break;
                     }
@@ -444,7 +444,7 @@ class MergeBoardStateStore {
 
             if (propRow.lock) {
 
-                data.cd = this.getCurrentTimestamp() + propRow.milo * 1000;
+                data.cd = this._fn_gm() + propRow.milo * 1000;
                 data.cdSum = propRow.milo * 1000;
                 UtilPub.log("init cd state", data);
             }
@@ -452,7 +452,7 @@ class MergeBoardStateStore {
 
         if (!st) {
 
-            playerDataStore.setGetPropTujian(id, TujianState.geted);
+            playerDataStore._fn_aes(id, TujianState.geted);
         }
 
         return data;
@@ -464,16 +464,16 @@ class MergeBoardStateStore {
 
 
 
-    getRoomPropIdByIdLvUp(id: number, lvAdd: number) {
+    _fn_km(id: number, lvAdd: number) {
         if (!lvAdd) {
             return id;
         }
-        let propRow = TableDataService.ins().getTableValueByID(Const.Tables.prop, id);
-        UtilPub.for2Arr(this.roomArr, (roomData: any, row: number, col: number) => {
-            if (!roomData.id || this.isRoomBubble(row, col)) {
+        let propRow = TableDataService.ins()._fn_ly(Const.Tables.prop, id);
+        UtilPub._fn_ex(this.roomArr, (roomData: any, row: number, col: number) => {
+            if (!roomData.id || this._fn_qk(row, col)) {
                 return;
             }
-            let tmpRow = TableDataService.ins().getTableValueByID(Const.Tables.prop, roomData.id);
+            let tmpRow = TableDataService.ins()._fn_ly(Const.Tables.prop, roomData.id);
             if (propRow.type != tmpRow.type || propRow.typeson != tmpRow.typeson) {
 
                 return;
@@ -486,7 +486,7 @@ class MergeBoardStateStore {
 
         id = propRow.id;
 
-        id = this.getPropIdByIdLvUp(id, lvAdd);
+        id = this._fn_jm(id, lvAdd);
 
         return id;
     }
@@ -495,11 +495,11 @@ class MergeBoardStateStore {
 
 
 
-    getPropMaxLvId(id: number) {
-        let propRow = TableDataService.ins().getTableValueByID(Const.Tables.prop, id);
+    _fn_jn(id: number) {
+        let propRow = TableDataService.ins()._fn_ly(Const.Tables.prop, id);
         while (true) {
             id++;
-            let nextRow = TableDataService.ins().getTableValueByID(Const.Tables.prop, id);
+            let nextRow = TableDataService.ins()._fn_ly(Const.Tables.prop, id);
             if (!nextRow || propRow.type != nextRow.type || propRow.typeson != nextRow.typeson) {
                 id--;
                 break;
@@ -513,15 +513,15 @@ class MergeBoardStateStore {
 
 
 
-    getPropIdByIdLvUp(id: number, lvAdd: number) {
+    _fn_jm(id: number, lvAdd: number) {
         if (!lvAdd) {
             return id;
         }
 
-        let propRow = TableDataService.ins().getTableValueByID(Const.Tables.prop, id);
+        let propRow = TableDataService.ins()._fn_ly(Const.Tables.prop, id);
         for (let i = 0; i < lvAdd; i++) {
             id++;
-            let nextRow = TableDataService.ins().getTableValueByID(Const.Tables.prop, id);
+            let nextRow = TableDataService.ins()._fn_ly(Const.Tables.prop, id);
             if (!nextRow || propRow.type != nextRow.type || propRow.typeson != nextRow.typeson) {
                 id--;
                 break;
@@ -536,13 +536,13 @@ class MergeBoardStateStore {
 
 
 
-    hasUnlockPropType(id: number) {
-        let propRow = TableDataService.ins().getTableValueByID(Const.Tables.prop, id);
-        let tb = TableDataService.ins().getTable(Const.Tables.prop);
+    _fn_nh(id: number) {
+        let propRow = TableDataService.ins()._fn_ly(Const.Tables.prop, id);
+        let tb = TableDataService.ins()._fn_lt(Const.Tables.prop);
         for (let i = 0; i < tb.length; i++) {
             let tmpRow = tb[i];
             if (propRow.type == tmpRow.type && propRow.typeson == tmpRow.typeson) {
-                if (playerDataStore.isGetPropTujian(tmpRow.id) != TujianState.unGet) {
+                if (playerDataStore._fn_pv(tmpRow.id) != TujianState.unGet) {
                     return true;
                 }
             }
@@ -551,16 +551,16 @@ class MergeBoardStateStore {
     }
 
 
-    createNextManager() {
+    _fn_du() {
         let tmpObj: any = {};
         let id = this.managerArr.length;
-        if (id >= TableDataService.ins().getTableLastOne(Const.Tables.manager).id) {
+        if (id >= TableDataService.ins()._fn_lw(Const.Tables.manager).id) {
 
             return;
         }
         let row = null;
         while (true) {
-            row = TableDataService.ins().getTableValueByID(Const.Tables.manager, id + 1);
+            row = TableDataService.ins()._fn_ly(Const.Tables.manager, id + 1);
             if (!row) {
                 break;
             }
@@ -571,20 +571,20 @@ class MergeBoardStateStore {
             };
             let index = row.id - 1;
             this.managerArr[index] = manager;
-            let key = this.getManagerDataKey(index);
+            let key = this._fn_ih(index);
             tmpObj[key] = manager;
             if (row.kadian) {
                 break;
             }
             id++;
         }
-        GameStorage.setObjectMulti(tmpObj);
+        GameStorage._fn_afj(tmpObj);
         UtilPub.log("unlock new task", tmpObj);
         Notifications.emit(GD.event.managerCreateTask);
     }
 
-    createHandTask(id: number) {
-        let row = TableDataService.ins().getTableValueByID(Const.Tables.handTask, id);
+    _fn_ds(id: number) {
+        let row = TableDataService.ins()._fn_ly(Const.Tables.handTask, id);
         if (!row) {
             return;
         }
@@ -602,8 +602,8 @@ class MergeBoardStateStore {
         };
     }
 
-    getCurTaskLineStep(taskId: number = 1, line: number, ischeck: boolean = false) {
-        let lineTaskData = TableDataService.ins().getTableValuesByType2(Const.Tables.taskMainType, "taskId", taskId + "", "firstLine", line + "")
+    _fn_go(taskId: number = 1, line: number, ischeck: boolean = false) {
+        let lineTaskData = TableDataService.ins()._fn_mc(Const.Tables.taskMainType, "taskId", taskId + "", "firstLine", line + "")
         if (lineTaskData.length <= 0) {
             return [0, 0]
         }
@@ -615,7 +615,7 @@ class MergeBoardStateStore {
         }
         let start = lineTaskData[0].secondLine
         let endIndex = start + lineTaskData.length - 1
-        let curStep = GameStorage.getInt(Const.DataKeys.TaskLineStep + taskId + "_" + line, start)
+        let curStep = GameStorage._fn_hr(Const.DataKeys.TaskLineStep + taskId + "_" + line, start)
         if (line == 1) {
             this.curTaskLineState[taskId * 1000 + line] = [curStep, endIndex]
             return [curStep, endIndex]
@@ -623,7 +623,7 @@ class MergeBoardStateStore {
 
         let isPass = true
         for (let stepLine = 1; stepLine <= line - 1; stepLine++) {
-            let step = this.getCurTaskLineStep(taskId, stepLine, true)!
+            let step = this._fn_go(taskId, stepLine, true)!
             if (step[0] < start && step[1] >= start) {
 
 
@@ -645,49 +645,49 @@ class MergeBoardStateStore {
 
     }
 
-    submitLineTask(taskId: number, line: number) {
-        let curStep = this.getCurTaskLineStep(taskId, line)[0]
+    _fn_aio(taskId: number, line: number) {
+        let curStep = this._fn_go(taskId, line)[0]
         curStep++
-        GameStorage.setInt(Const.DataKeys.TaskLineStep + taskId + "_" + line, curStep)
-        let arr = this.createTaskLine(taskId)
+        GameStorage._fn_aey(Const.DataKeys.TaskLineStep + taskId + "_" + line, curStep)
+        let arr = this._fn_dy(taskId)
         if (this.curTaskLineState[taskId * 1000 + line]) {
             this.curTaskLineState[taskId * 1000 + line][0] = curStep
         }
 
         if (arr.length <= 0) {
-            GameStorage.setInt(Const.DataKeys.TaskLineFinsh + taskId, 1)
+            GameStorage._fn_aey(Const.DataKeys.TaskLineFinsh + taskId, 1)
         }
     }
 
-    isTaskFish(taskId: number) {
-        let isstate = GameStorage.getInt(Const.DataKeys.TaskLineFinsh + taskId, 0)
+    _fn_qx(taskId: number) {
+        let isstate = GameStorage._fn_hr(Const.DataKeys.TaskLineFinsh + taskId, 0)
         return isstate == 1
     }
 
-    isTaskGetReward(taskId: number) {
+    _fn_qy(taskId: number) {
 
 
 
 
-        let isstate = GameStorage.getInt(Const.DataKeys.TaskLineFinshReward + taskId, 0)
+        let isstate = GameStorage._fn_hr(Const.DataKeys.TaskLineFinshReward + taskId, 0)
         return isstate == 1
     }
 
-    setTaskGetReward(taskId: number) {
-        GameStorage.setInt(Const.DataKeys.TaskLineFinshReward + taskId, 1)
+    _fn_ags(taskId: number) {
+        GameStorage._fn_aey(Const.DataKeys.TaskLineFinshReward + taskId, 1)
     }
 
-    createTask2() {
+    _fn_dx() {
         let taskArr: any = {};
 
-        let taskUnLockData = TableDataService.ins().getTable(Const.Tables.taskUnlock)
+        let taskUnLockData = TableDataService.ins()._fn_lt(Const.Tables.taskUnlock)
         this.curTaskLineState = {}
         for (let index = 0; index < taskUnLockData.length; index++) {
             const element = taskUnLockData[index];
             if (playerDataStore.roleLv >= element.level) {
-                if (element.tid == 0 || this.isTaskFish(element.tid)) {
-                    let arr = this.createTaskLine(element.taskId)
-                    if (arr.length > 0 || !this.isTaskGetReward(element.taskId))
+                if (element.tid == 0 || this._fn_qx(element.tid)) {
+                    let arr = this._fn_dy(element.taskId)
+                    if (arr.length > 0 || !this._fn_qy(element.taskId))
                         taskArr[element.taskId] = arr
                 }
             }
@@ -696,15 +696,15 @@ class MergeBoardStateStore {
     }
 
 
-    getTaskProgress(taskId: number) {
-        let firstLinenum = TableDataService.ins().getTableValuesNumberByType(Const.Tables.taskMainType, "taskId", taskId + "", "firstLine")
-        let taskData = TableDataService.ins().getTableValuesByType(Const.Tables.taskMainType, "taskId", taskId + "")
+    _fn_mk(taskId: number) {
+        let firstLinenum = TableDataService.ins()._fn_mf(Const.Tables.taskMainType, "taskId", taskId + "", "firstLine")
+        let taskData = TableDataService.ins()._fn_mb(Const.Tables.taskMainType, "taskId", taskId + "")
         let finishNum = 0
         for (let index = 1; index <= firstLinenum; index++) {
-            let lineTaskData = TableDataService.ins().getTableValuesByType2(Const.Tables.taskMainType, "taskId", taskId + "", "firstLine", index + "")
+            let lineTaskData = TableDataService.ins()._fn_mc(Const.Tables.taskMainType, "taskId", taskId + "", "firstLine", index + "")
             if (lineTaskData.length > 0) {
                 let start = lineTaskData[0].secondLine
-                let taskMain1 = this.getCurTaskLineStep(taskId, index)[0]
+                let taskMain1 = this._fn_go(taskId, index)[0]
                 if (taskMain1 > 0) {
                     finishNum += taskMain1 - start
                 }
@@ -713,10 +713,10 @@ class MergeBoardStateStore {
         return finishNum / taskData.length
     }
 
-    createTask() {
+    _fn_dw() {
         let taskArr: any = [];
 
-        let taskUnLockData = TableDataService.ins().getTable(Const.Tables.taskUnlock)
+        let taskUnLockData = TableDataService.ins()._fn_lt(Const.Tables.taskUnlock)
         this.curTaskLineState = {}
 
         for (let index = 0; index < taskUnLockData.length; index++) {
@@ -724,8 +724,8 @@ class MergeBoardStateStore {
 
             if (playerDataStore.roleLv >= element.level) {
 
-                if (element.tid == 0 || this.isTaskFish(element.tid)) {
-                    let arr = this.createTaskLine(element.taskId)
+                if (element.tid == 0 || this._fn_qx(element.tid)) {
+                    let arr = this._fn_dy(element.taskId)
 
                     Array.prototype.push.apply(taskArr, arr);
 
@@ -737,15 +737,15 @@ class MergeBoardStateStore {
         return taskArr
     }
 
-    createTaskLine(taskId: number = 1, num: number = 1) {
+    _fn_dy(taskId: number = 1, num: number = 1) {
         let taskArr: any = [];
-        let firstLinenum = TableDataService.ins().getTableValuesNumberByType(Const.Tables.taskMainType, "taskId", taskId + "", "firstLine")
+        let firstLinenum = TableDataService.ins()._fn_mf(Const.Tables.taskMainType, "taskId", taskId + "", "firstLine")
         for (let index = 1; index <= firstLinenum; index++) {
 
-            let taskMain1 = this.getCurTaskLineStep(taskId, index)[0]
+            let taskMain1 = this._fn_go(taskId, index)[0]
 
             if (taskMain1 > 0) {
-                let taskData = TableDataService.ins().getTableValuesByType3(Const.Tables.taskMainType, "taskId", taskId + "", "firstLine", index + "", "secondLine", taskMain1 + "")[0]
+                let taskData = TableDataService.ins()._fn_me(Const.Tables.taskMainType, "taskId", taskId + "", "firstLine", index + "", "secondLine", taskMain1 + "")[0]
                 if (taskData) {
 
                     let task: any = {};
@@ -775,14 +775,14 @@ class MergeBoardStateStore {
 
 
 
-    createTaskMain(num: number = 1, funcType: number = 0) {
+    _fn_dz(num: number = 1, funcType: number = 0) {
         let taskArr: any = [];
 
         for (let i = 0; i < num; i++) {
             let task: any = {};
 
             let arr = [];
-            let tb = TableDataService.ins().getTable(Const.Tables.taskType);
+            let tb = TableDataService.ins()._fn_lt(Const.Tables.taskType);
             for (let row of tb) {
                 if (funcType > 0 && row.res1 != funcType) {
 
@@ -794,19 +794,19 @@ class MergeBoardStateStore {
                     arr.push(row);
                 }
             }
-            let retRow = UtilPub.getRowByWeight(arr);
+            let retRow = UtilPub._fn_ko(arr);
 
 
 
 
             let idArr: any = [];
-            let propTb = TableDataService.ins().getTable(Const.Tables.prop);
+            let propTb = TableDataService.ins()._fn_lt(Const.Tables.prop);
             let unlockInfo: any = {};
 
             switch (retRow.res1) {
                 case 2:
 
-                    UtilPub.for2Arr(this.roomArr, (roomData: any, pRow: number, pCol: number) => {
+                    UtilPub._fn_ex(this.roomArr, (roomData: any, pRow: number, pCol: number) => {
                         let id = roomData.id;
                         if (!id || id == propIds.bag) {
                             return;
@@ -814,11 +814,11 @@ class MergeBoardStateStore {
                         if (idArr.indexOf(id) != -1) {
                             return;
                         }
-                        if (this.isRoomCarton(pRow, pCol) || this.isRoomSpider(pRow, pCol) || this.isRoomBubble(pRow, pCol)) {
+                        if (this._fn_ql(pRow, pCol) || this._fn_qo(pRow, pCol) || this._fn_qk(pRow, pCol)) {
                             return;
                         }
 
-                        let propRow = TableDataService.ins().getTableValueByID(Const.Tables.prop, id);
+                        let propRow = TableDataService.ins()._fn_ly(Const.Tables.prop, id);
                         if (propRow.lunc > retRow.quality) {
 
                             return;
@@ -829,17 +829,17 @@ class MergeBoardStateStore {
                 case 3:
 
                     let tmpInfo: any = {};
-                    UtilPub.forArr(propTb, (propRow: any) => {
+                    UtilPub._fn_ey(propTb, (propRow: any) => {
                         if (propRow.lunc > retRow.quality) {
 
                             return;
                         }
 
-                        if (playerDataStore.isGetPropTujian(propRow.id) == TujianState.unGet) {
+                        if (playerDataStore._fn_pv(propRow.id) == TujianState.unGet) {
                             return;
                         }
 
-                        let hasInfo = this.getRoomDataHasInfoById(propRow.id);
+                        let hasInfo = this._fn_kg(propRow.id);
                         if (hasInfo.num > 0) {
                             return;
                         }
@@ -864,20 +864,20 @@ class MergeBoardStateStore {
                     break;
                 case 4:
 
-                    UtilPub.forArr(propTb, (propRow: any) => {
+                    UtilPub._fn_ey(propTb, (propRow: any) => {
                         if (propRow.lunc > retRow.quality) {
 
                             return;
                         }
 
-                        if (playerDataStore.isGetPropTujian(propRow.id) != TujianState.unGet) {
+                        if (playerDataStore._fn_pv(propRow.id) != TujianState.unGet) {
                             return;
                         }
 
                         let unlockKey = propRow.type * 1000 + propRow.typeson;
                         let hasUnlock = unlockInfo[unlockKey];
                         if (hasUnlock == undefined) {
-                            hasUnlock = this.hasUnlockPropType(propRow.id);
+                            hasUnlock = this._fn_nh(propRow.id);
                         }
                         unlockInfo[unlockKey] = hasUnlock;
                         if (!hasUnlock) {
@@ -888,20 +888,20 @@ class MergeBoardStateStore {
                     break;
                 case 5:
 
-                    UtilPub.forArr(propTb, (propRow: any) => {
+                    UtilPub._fn_ey(propTb, (propRow: any) => {
                         if (propRow.lunc > retRow.quality) {
 
                             return;
                         }
 
-                        if (playerDataStore.isGetPropTujian(propRow.id) != TujianState.unGet) {
+                        if (playerDataStore._fn_pv(propRow.id) != TujianState.unGet) {
                             return;
                         }
 
                         let unlockKey = propRow.type * 1000 + propRow.typeson;
                         let hasUnlock = unlockInfo[unlockKey];
                         if (hasUnlock == undefined) {
-                            hasUnlock = this.hasUnlockPropType(propRow.id);
+                            hasUnlock = this._fn_nh(propRow.id);
                         }
                         unlockInfo[unlockKey] = hasUnlock;
                         if (hasUnlock) {
@@ -912,13 +912,13 @@ class MergeBoardStateStore {
                     break;
                 case 6:
 
-                    UtilPub.forArr(propTb, (propRow: any) => {
+                    UtilPub._fn_ey(propTb, (propRow: any) => {
                         if (propRow.lunc > retRow.quality) {
 
                             return;
                         }
 
-                        if (playerDataStore.isGetPropTujian(propRow.id) != TujianState.unGet) {
+                        if (playerDataStore._fn_pv(propRow.id) != TujianState.unGet) {
                             idArr.push(propRow.id);
                         }
                     });
@@ -938,16 +938,16 @@ class MergeBoardStateStore {
             let res1 = retRow.res1;
             for (let tmp = 0; tmp < needTypeNum; tmp++) {
                 while (true) {
-                    let retId = UtilPub.getRandomItemByArr(idArr, true);
+                    let retId = UtilPub._fn_jv(idArr, true);
                     if (retId > 0) {
 
                         switch (res1) {
                             case 2:
-                                retId = this.getRoomPropIdByIdLvUp(retId, lvUp);
+                                retId = this._fn_km(retId, lvUp);
                                 break;
                             case 3:
                             case 6:
-                                retId = this.getPropIdByIdLvUp(retId, lvUp);
+                                retId = this._fn_jm(retId, lvUp);
                                 break;
                             default:
                                 break;
@@ -958,7 +958,7 @@ class MergeBoardStateStore {
                             UtilPub.log("任务道具重复�?" + retId);
                             continue;
                         }
-                        let num = this.getValByDesignWeight("1,2,3", retRow.num);
+                        let num = this._fn_mv("1,2,3", retRow.num);
                         propArr.push({
                             id: retId,
                             num: num
@@ -971,7 +971,7 @@ class MergeBoardStateStore {
 
                 task.propArr = propArr;
 
-                task.starNum = UtilPub.getRandomItemByArr(retRow.taskReward);
+                task.starNum = UtilPub._fn_jv(retRow.taskReward);
                 taskArr.push(task);
             }
 
@@ -980,8 +980,8 @@ class MergeBoardStateStore {
 
         if (taskArr.length <= 0) {
 
-            let leastTaskArr = TableDataService.ins().getTable(Const.Tables.leastTask);
-            let leastTaskRow = UtilPub.getRandomItemByArr(leastTaskArr);
+            let leastTaskArr = TableDataService.ins()._fn_lt(Const.Tables.leastTask);
+            let leastTaskRow = UtilPub._fn_jv(leastTaskArr);
             let propArr = [{
                 id: leastTaskRow.prop,
                 num: leastTaskRow.num
@@ -1000,12 +1000,12 @@ class MergeBoardStateStore {
     }
 
 
-    refreshRoomAutoNew(row: number, col: number) {
+    _fn_zl(row: number, col: number) {
         let roomData = this.roomArr[row][col];
         if (!roomData.id || !roomData.timesAuto || roomData.timesAuto <= 0) {
             return;
         }
-        if (this.isRoomBubble(row, col)) {
+        if (this._fn_qk(row, col)) {
             return;
         }
 
@@ -1014,7 +1014,7 @@ class MergeBoardStateStore {
         nineAroundArr.forEach((posArr: any) => {
             let r = row + posArr[0];
             let c = col + posArr[1];
-            if (this.isCellInsideMergeBoard(r, c)) {
+            if (this._fn_ps(r, c)) {
                 let rData = this.roomArr[r][c];
                 if (!rData.id) {
                     emptyArr.push([r, c]);
@@ -1026,26 +1026,26 @@ class MergeBoardStateStore {
         if (emptyArr.length > 0) {
             let tmpObj: any = {};
             let newPosArr: any = [];
-            let propRow = TableDataService.ins().getTableValueByID(Const.Tables.prop, roomData.id);
+            let propRow = TableDataService.ins()._fn_ly(Const.Tables.prop, roomData.id);
             while (roomData.timesAuto > 0 && emptyArr.length > 0 && propRow.fair > 0) {
-                let roomDataNew = this.initRoomData(propRow.fair);
+                let roomDataNew = this._fn_ou(propRow.fair);
                 let posArr = emptyArr.shift();
                 let r = posArr[0];
                 let c = posArr[1];
                 this.roomArr[r][c] = roomDataNew;
-                tmpObj[this.getRoomDataKey(r, c)] = roomDataNew;
+                tmpObj[this._fn_kh(r, c)] = roomDataNew;
                 newPosArr.push(posArr);
                 roomData.timesAuto--;
                 if (roomData.timesAuto <= 0) {
-                    roomData.cdAuto = this.getCurrentTimestamp() + propRow.faircd * 1000;
+                    roomData.cdAuto = this._fn_gm() + propRow.faircd * 1000;
                 }
             }
 
 
-            GameStorage.setObjectMulti(tmpObj);
+            GameStorage._fn_afj(tmpObj);
 
 
-            this.sendToUIComposeRoomNew(row, col, newPosArr, true);
+            this._fn_aec(row, col, newPosArr, true);
 
         }
     }
@@ -1056,7 +1056,7 @@ class MergeBoardStateStore {
 
 
 
-    sendToUIComposeRoomNew(row: number, col: number, newPosArr: any, isAuto: boolean = false) {
+    _fn_aec(row: number, col: number, newPosArr: any, isAuto: boolean = false) {
         let data: any = {};
         data.row = row;
         data.col = col;
@@ -1065,7 +1065,7 @@ class MergeBoardStateStore {
         Notifications.emit(GD.event.boardSlotSpawn, data);
     }
 
-    sendToUIRoomBubbleBurst(row: number, col: number) {
+    _fn_aed(row: number, col: number) {
         let data: any = {};
         data.row = row;
         data.col = col;
@@ -1073,29 +1073,29 @@ class MergeBoardStateStore {
     }
 
 
-    roomDataExchange(srcRow: number, srcCol: number, targetRow: number, targetCol: number) {
+    _fn_ach(srcRow: number, srcCol: number, targetRow: number, targetCol: number) {
         let srcData = this.roomArr[srcRow][srcCol];
         let targetData = this.roomArr[targetRow][targetCol];
-        this.setRoomData(srcRow, srcCol, targetData);
-        this.setRoomData(targetRow, targetCol, srcData);
+        this._fn_afu(srcRow, srcCol, targetData);
+        this._fn_afu(targetRow, targetCol, srcData);
     }
 
 
-    mergeRoomData(srcRow: number, srcCol: number, targetRow: number, targetCol: number) {
+    _fn_sd(srcRow: number, srcCol: number, targetRow: number, targetCol: number) {
         let srcData = this.roomArr[srcRow][srcCol];
         let targetData = this.roomArr[targetRow][targetCol];
-        let propRow = TableDataService.ins().getTableValueByID(Const.Tables.prop, srcData.id);
+        let propRow = TableDataService.ins()._fn_ly(Const.Tables.prop, srcData.id);
 
-        this.setRoomData(srcRow, srcCol, {});
+        this._fn_afu(srcRow, srcCol, {});
 
-        if (playerDataStore.isGetPropTujian(propRow.blessId) == TujianState.unGet) {
+        if (playerDataStore._fn_pv(propRow.blessId) == TujianState.unGet) {
 
-            let blessRow = TableDataService.ins().getTableValueByID(Const.Tables.prop, propRow.blessId);
+            let blessRow = TableDataService.ins()._fn_ly(Const.Tables.prop, propRow.blessId);
             if (blessRow.anc) {
                 Notifications.emit(GD.event.boardDiscovery, propRow.blessId);
             }
         }
-        let roomData = this.initRoomData(propRow.blessId);
+        let roomData = this._fn_ou(propRow.blessId);
         let clickPropId: any = [];
         if (srcData.clickPropId) {
             clickPropId = clickPropId.concat(srcData.clickPropId);
@@ -1106,7 +1106,7 @@ class MergeBoardStateStore {
         if (clickPropId.length > 0) {
             roomData.clickPropId = clickPropId;
         }
-        this.setRoomData(targetRow, targetCol, roomData);
+        this._fn_afu(targetRow, targetCol, roomData);
 
 
         let retObj: any = {};
@@ -1115,38 +1115,38 @@ class MergeBoardStateStore {
             let posArr = tenAroundArr[i];
             let r = targetRow + posArr[0];
             let c = targetCol + posArr[1];
-            if (this.isCellInsideMergeBoard(r, c)) {
+            if (this._fn_ps(r, c)) {
                 let rData = this.roomArr[r][c];
                 if (rData.st == roomStatus.carton) {
-                    rData = this.initRoomData(rData.id, rData, roomStatus.spider);
-                    this.setRoomData(r, c, rData);
+                    rData = this._fn_ou(rData.id, rData, roomStatus.spider);
+                    this._fn_afu(r, c, rData);
                     retObj.cartonArr.push({ row: r, col: c });
                 }
             }
         }
 
-        this.addManagerVal(Const.ManagerTypes.mergeActionCount);
+        this._fn_h(Const.ManagerTypes.mergeActionCount);
         if (roomData.id == propIds.coinMaxLv) {
-            this.addManagerVal(Const.ManagerTypes.coinPeakMergeCount);
+            this._fn_h(Const.ManagerTypes.coinPeakMergeCount);
         }
         if (roomData.id == propIds.powerMaxLv) {
-            this.addManagerVal(Const.ManagerTypes.energyPeakMergeCount);
+            this._fn_h(Const.ManagerTypes.energyPeakMergeCount);
         }
 
         return retObj;
     }
 
-    afterRoomMerge(targetRow: number, targetCol: number) {
+    _fn_u(targetRow: number, targetCol: number) {
 
-        if (!this.isHandDone() || aiRobot.isRobot()) {
+        if (!this._fn_px() || aiRobot.isRobot()) {
             return;
         }
 
         let roomData = this.roomArr[targetRow][targetCol];
-        let arr = TableDataService.ins().getTable(Const.Tables.mergeReward);
+        let arr = TableDataService.ins()._fn_lt(Const.Tables.mergeReward);
 
 
-        let retRow = TableDataService.ins().getTableValueByID(Const.Tables.mergeReward, 1)
+        let retRow = TableDataService.ins()._fn_ly(Const.Tables.mergeReward, 1)
 
 
 
@@ -1165,20 +1165,20 @@ class MergeBoardStateStore {
 
 
         if (retRow.propId != 0) {
-            let emptyPos = this.getEmptyRoomPos();
+            let emptyPos = this._fn_gz();
             if (emptyPos) {
                 let newRoom = null;
                 if (retRow.propId == -1) {
 
-                    newRoom = this.initRoomData(roomData.id);
-                    newRoom.cdBubble = this.getCurrentTimestamp() + designConfig.bubbleTime;
+                    newRoom = this._fn_ou(roomData.id);
+                    newRoom.cdBubble = this._fn_gm() + designConfig.bubbleTime;
                 } else if (retRow.propId > 0) {
 
-                    newRoom = this.initRoomData(retRow.propId);
+                    newRoom = this._fn_ou(retRow.propId);
                 }
                 if (newRoom) {
-                    this.setRoomData(emptyPos.row, emptyPos.col, newRoom);
-                    this.sendToUIComposeRoomNew(targetRow, targetCol, [[emptyPos.row, emptyPos.col]]);
+                    this._fn_afu(emptyPos.row, emptyPos.col, newRoom);
+                    this._fn_aec(targetRow, targetCol, [[emptyPos.row, emptyPos.col]]);
                 }
             }
         }
@@ -1192,8 +1192,8 @@ class MergeBoardStateStore {
 
 
 
-    putDataInRoomBag(row: number, col: number, bagRow: number, bagCol: number) {
-        if (this.isRoomBubble(row, col)) {
+    _fn_xy(row: number, col: number, bagRow: number, bagCol: number) {
+        if (this._fn_qk(row, col)) {
 
             this.showToast(localText.notInBag);
             return;
@@ -1218,12 +1218,12 @@ class MergeBoardStateStore {
             return false;
         }
         let roomData = this.roomArr[row][col];
-        this.setRoomData(row, col, {});
+        this._fn_afu(row, col, {});
 
-        roomData.putTime = this.getCurrentTimestamp();
+        roomData.putTime = this._fn_gm();
         bagRoomData.roomArr[index] = roomData;
 
-        UtilPub.sortArr(bagRoomData.roomArr, (r1: any, r2: any) => {
+        UtilPub._fn_aid(bagRoomData.roomArr, (r1: any, r2: any) => {
             let id1 = r1.id;
             let id2 = r2.id;
             if (!id1) {
@@ -1238,7 +1238,7 @@ class MergeBoardStateStore {
             return false;
         });
 
-        this.sendRoomDataToServer(bagRow, bagCol);
+        this._fn_adw(bagRow, bagCol);
         return true;
     }
 
@@ -1248,8 +1248,8 @@ class MergeBoardStateStore {
 
 
 
-    getOutDataFromRoomBag(index: number, bagRow: number, bagCol: number) {
-        let emptyPos = mergeBoardStateStore.getEmptyRoomPos();
+    _fn_is(index: number, bagRow: number, bagCol: number) {
+        let emptyPos = mergeBoardStateStore._fn_gz();
         if (!emptyPos) {
 
             return;
@@ -1258,7 +1258,7 @@ class MergeBoardStateStore {
         let roomData = bagRoomData.roomArr[index];
 
 
-        let dt = this.getCurrentTimestamp() - roomData.putTime;
+        let dt = this._fn_gm() - roomData.putTime;
         if (roomData.cd > 0) {
             roomData.cd += dt;
         }
@@ -1267,15 +1267,15 @@ class MergeBoardStateStore {
         }
         delete roomData.putTime;
 
-        this.setRoomData(emptyPos.row, emptyPos.col, roomData);
+        this._fn_afu(emptyPos.row, emptyPos.col, roomData);
 
         bagRoomData.roomArr[index] = {};
-        this.sortBagRoomArr(bagRow, bagCol);
+        this._fn_aie(bagRow, bagCol);
 
         return emptyPos;
     }
 
-    sortBagRoomArr(row: number, col: number) {
+    _fn_aie(row: number, col: number) {
         let bagRoomData = this.roomArr[row][col];
         let arr = [];
         let emptyArr = [];
@@ -1286,40 +1286,40 @@ class MergeBoardStateStore {
                 emptyArr.push(roomData);
             }
         }
-        UtilPub.sortArr(arr, (r1: any, r2: any) => {
+        UtilPub._fn_aid(arr, (r1: any, r2: any) => {
             if (r1.id > r2.id) {
                 return true;
             }
             return false;
         });
         bagRoomData.roomArr = arr.concat(emptyArr);
-        this.sendRoomDataToServer(row, col);
+        this._fn_adw(row, col);
     }
 
-    bagRoomAddGrid(row: number, col: number) {
+    _fn_x(row: number, col: number) {
         let bagRoomData = this.roomArr[row][col];
         bagRoomData.roomArr.push({});
-        this.sendRoomDataToServer(row, col);
+        this._fn_adw(row, col);
     }
 
 
-    onClickRoomNew(row: number, col: number, emptyRow: number, emptyCol: number) {
+    _fn_uh(row: number, col: number, emptyRow: number, emptyCol: number) {
 
         let roomData = this.roomArr[row][col];
-        let propRow = TableDataService.ins().getTableValueByID(Const.Tables.prop, roomData.id);
+        let propRow = TableDataService.ins()._fn_ly(Const.Tables.prop, roomData.id);
         roomData.times--;
 
-        if (!propRow.noPower && mergeBoardStateStore.getBoardEnergyCooldown() <= 0) {
+        if (!propRow.noPower && mergeBoardStateStore._fn_fs() <= 0) {
 
-            this.subPropNum(propIds.power);
-            if (aiRobot.isRobot() && this.getPropNumById(propIds.power) <= 1) {
-                this.addPropNum(propIds.power, 100);
+            this._fn_aip(propIds.power);
+            if (aiRobot.isRobot() && this._fn_jp(propIds.power) <= 1) {
+                this._fn_m(propIds.power, 100);
             }
         }
 
         if (propRow.milo > 0) {
             if (!roomData.cd) {
-                roomData.cd = this.getCurrentTimestamp();
+                roomData.cd = this._fn_gm();
             }
             roomData.cd += (propRow.milo * 1000);
         }
@@ -1330,14 +1330,14 @@ class MergeBoardStateStore {
                 this.roomArr[row][col] = {};
             } else if (propRow.doge > 0) {
 
-                let roomData2 = this.initRoomData(propRow.doge);
+                let roomData2 = this._fn_ou(propRow.doge);
                 this.roomArr[row][col] = roomData2;
             } else {
 
-                roomData.cdSum = roomData.cd - this.getCurrentTimestamp();
+                roomData.cdSum = roomData.cd - this._fn_gm();
             }
         }
-        this.sendRoomDataToServer(row, col);
+        this._fn_adw(row, col);
         UtilPub.log("remaining times " + roomData.times);
 
         let propId = 0;
@@ -1349,37 +1349,37 @@ class MergeBoardStateStore {
             }
         } else {
 
-            propId = this.getValByDesignWeight(propRow.atom, propRow.matic);
+            propId = this._fn_mv(propRow.atom, propRow.matic);
         }
 
-        let newRoomData = this.initRoomData(propId);
-        this.setRoomData(emptyRow, emptyCol, newRoomData);
+        let newRoomData = this._fn_ou(propId);
+        this._fn_afu(emptyRow, emptyCol, newRoomData);
 
 
-        this.addManagerVal(Const.ManagerTypes.roomClickAdd);
-        let newPropRow = TableDataService.ins().getTableValueByID(Const.Tables.prop, propId);
+        this._fn_h(Const.ManagerTypes.roomClickAdd);
+        let newPropRow = TableDataService.ins()._fn_ly(Const.Tables.prop, propId);
         UtilPub.log("生成新物�?id:%d,name:%s".format(propId, newPropRow.name));
 
     }
 
 
-    onClickRoomAward(row: number, col: number, roomPos: Vec3) {
+    _fn_uf(row: number, col: number, roomPos: Vec3) {
         let roomData = this.roomArr[row][col];
-        let propRow = TableDataService.ins().getTableValueByID(Const.Tables.prop, roomData.id);
+        let propRow = TableDataService.ins()._fn_ly(Const.Tables.prop, roomData.id);
 
-        this.addPropNum(propRow.clickAwardId, propRow.clickAwardNum, roomPos);
+        this._fn_m(propRow.clickAwardId, propRow.clickAwardNum, roomPos);
 
-        this.setRoomData(row, col, {});
+        this._fn_afu(row, col, {});
     }
 
 
-    onClickUnlockRoom(row: number, col: number) {
+    _fn_um(row: number, col: number) {
         let unlocking = false;
-        UtilPub.for2Arr(mergeBoardStateStore.roomArr, (pData: any, pRow: number, pCol: number) => {
-            if (!pData || !pData.id || mergeBoardStateStore.isRoomBubble(pRow, pCol)) {
+        UtilPub._fn_ex(mergeBoardStateStore.roomArr, (pData: any, pRow: number, pCol: number) => {
+            if (!pData || !pData.id || mergeBoardStateStore._fn_qk(pRow, pCol)) {
                 return;
             }
-            let propRow2 = TableDataService.ins().getTableValueByID(Const.Tables.prop, pData.id);
+            let propRow2 = TableDataService.ins()._fn_ly(Const.Tables.prop, pData.id);
             if (propRow2.mdt == 1 && pData.unlock && pData.cdSum > 0) {
                 unlocking = true;
                 return true;
@@ -1392,36 +1392,36 @@ class MergeBoardStateStore {
         }
 
         let roomData = this.roomArr[row][col];
-        let propRow = TableDataService.ins().getTableValueByID(Const.Tables.prop, roomData.id);
+        let propRow = TableDataService.ins()._fn_ly(Const.Tables.prop, roomData.id);
         roomData.unlock = 1;
-        roomData.cd = this.getCurrentTimestamp() + propRow.p1 * 1000;
+        roomData.cd = this._fn_gm() + propRow.p1 * 1000;
         roomData.cdSum = propRow.p1 * 1000;
-        this.sendRoomDataToServer(row, col);
+        this._fn_adw(row, col);
 
         if (roomData.id == propIds.pinkBag || roomData.id == propIds.pinkBag2) {
-            this.addManagerVal(Const.ManagerTypes.unlockPinkBag);
+            this._fn_h(Const.ManagerTypes.unlockPinkBag);
         }
     }
 
-    onClickEspRoom(row: number, col: number) {
+    _fn_ty(row: number, col: number) {
         let ret: any = {};
         let roomData = this.roomArr[row][col];
-        let propRow = TableDataService.ins().getTableValueByID(Const.Tables.prop, roomData.id);
+        let propRow = TableDataService.ins()._fn_ly(Const.Tables.prop, roomData.id);
         switch (propRow.mdt) {
             case 2:
 
-                GameStorage.setInt(Const.DataKeys.boardEnergyReadyAt, this.getCurrentTimestamp() + propRow.p1 * 1000);
-                this.setRoomData(row, col, {});
+                GameStorage._fn_aey(Const.DataKeys.boardEnergyReadyAt, this._fn_gm() + propRow.p1 * 1000);
+                this._fn_afu(row, col, {});
                 break;
             case 5:
 
-                let timestamp = this.getCurrentTimestamp();
+                let timestamp = this._fn_gm();
                 ret.arr = [];
-                UtilPub.for2Arr(this.roomArr, (rData: any, r: number, c: number) => {
-                    if (this.isRoomBubble(r, c)) {
+                UtilPub._fn_ex(this.roomArr, (rData: any, r: number, c: number) => {
+                    if (this._fn_qk(r, c)) {
                         return;
                     }
-                    if (!this.isRoomNormal(r, c)) {
+                    if (!this._fn_qn(r, c)) {
                         return;
                     }
                     if (rData.notSubCd) {
@@ -1447,7 +1447,7 @@ class MergeBoardStateStore {
                                 rData.times = propRow.times;
                             }
                         }
-                        this.setRoomData(r, c);
+                        this._fn_afu(r, c);
                     }
 
                     if (rData.cdAuto) {
@@ -1462,7 +1462,7 @@ class MergeBoardStateStore {
                     }
 
                 });
-                this.setRoomData(row, col, {});
+                this._fn_afu(row, col, {});
                 return ret;
                 break;
             case 11:
@@ -1471,12 +1471,12 @@ class MergeBoardStateStore {
                     let duration = propRow.p1 * 60 * 60 * 1000;
 
 
-                    let timestamp = this.getCurrentTimestamp();
+                    let timestamp = this._fn_gm();
                     roomData.startTime = timestamp;
                     roomData.cd = timestamp + duration;
                     roomData.cdSum = duration;
                     roomData.notSubCd = true;
-                    this.setRoomData(row, col);
+                    this._fn_afu(row, col);
                 }
                 break;
             default:
@@ -1485,9 +1485,9 @@ class MergeBoardStateStore {
     }
 
 
-    getBoardEnergyCooldown() {
-        let time = GameStorage.getInt(Const.DataKeys.boardEnergyReadyAt, 0);
-        let dt = time - this.getCurrentTimestamp();
+    _fn_fs() {
+        let time = GameStorage._fn_hr(Const.DataKeys.boardEnergyReadyAt, 0);
+        let dt = time - this._fn_gm();
         if (dt < 0) {
             dt = 0;
         }
@@ -1495,18 +1495,18 @@ class MergeBoardStateStore {
     }
 
 
-    sellRoomData(row: number, col: number, startPos: Vec3) {
+    _fn_adj(row: number, col: number, startPos: Vec3) {
         let roomData = this.roomArr[row][col];
-        let propRow = TableDataService.ins().getTableValueByID(Const.Tables.prop, roomData.id);
+        let propRow = TableDataService.ins()._fn_ly(Const.Tables.prop, roomData.id);
         let coin = propRow.levelGold;
         if (!coin) {
             return;
         }
-        mergeBoardStateStore.addPropNum(propIds.coin, coin, startPos);
+        mergeBoardStateStore._fn_m(propIds.coin, coin, startPos);
 
-        this.setRoomData(row, col, {});
+        this._fn_afu(row, col, {});
 
-        this.addManagerVal(Const.ManagerTypes.roomSell);
+        this._fn_h(Const.ManagerTypes.roomSell);
 
         return { roomData: roomData, coin: coin, row: row, col: col };
     }
@@ -1514,21 +1514,21 @@ class MergeBoardStateStore {
     sellBack(sellData: any) {
         let roomData = this.roomArr[sellData.row][sellData.col];
 
-        this.subPropNum(propIds.coin, sellData.coin);
+        this._fn_aip(propIds.coin, sellData.coin);
         if (roomData.id) {
 
-            let emptyPos = this.getEmptyRoomPos();
+            let emptyPos = this._fn_gz();
             if (emptyPos) {
-                this.setRoomData(emptyPos.row, emptyPos.col, sellData.roomData);
+                this._fn_afu(emptyPos.row, emptyPos.col, sellData.roomData);
             } else {
 
-                this.addPropNum(sellData.id);
+                this._fn_m(sellData.id);
             }
             return emptyPos;
         }
 
 
-        this.setRoomData(sellData.row, sellData.col, sellData.roomData);
+        this._fn_afu(sellData.row, sellData.col, sellData.roomData);
 
         return { row: sellData.row, col: sellData.col };
 
@@ -1541,19 +1541,19 @@ class MergeBoardStateStore {
 
 
 
-    roomDataCdOver(row: number, col: number, dt: number, cdType: number) {
+    _fn_acg(row: number, col: number, dt: number, cdType: number) {
         let roomData = this.roomArr[row][col];
-        let num = this.getOverCdCostDiamond(dt);
-        if (this.getPropNumById(propIds.diamond) < num) {
+        let num = this._fn_it(dt);
+        if (this._fn_jp(propIds.diamond) < num) {
 
             this.showToast(localText.lackDiamond);
             return;
         }
-        this.subPropNum(propIds.diamond, num);
+        this._fn_aip(propIds.diamond, num);
         if (cdType == 1) {
-            roomData.cd = this.getCurrentTimestamp();
+            roomData.cd = this._fn_gm();
         } else if (cdType == 2) {
-            roomData.cdAuto = this.getCurrentTimestamp();
+            roomData.cdAuto = this._fn_gm();
         }
         this.update();
 
@@ -1561,39 +1561,39 @@ class MergeBoardStateStore {
     }
 
 
-    roomDataBubbleGet(row: number, col: number) {
+    _fn_acf(row: number, col: number) {
         let roomData = this.roomArr[row][col];
         if (!roomData.cdBubble) {
             return;
         }
-        let propRow = TableDataService.ins().getTableValueByID(Const.Tables.prop, roomData.id);
-        if (this.getPropNumById(propIds.diamond) < propRow.bubble) {
+        let propRow = TableDataService.ins()._fn_ly(Const.Tables.prop, roomData.id);
+        if (this._fn_jp(propIds.diamond) < propRow.bubble) {
 
             return;
         }
-        this.subPropNum(propIds.diamond, propRow.bubble);
+        this._fn_aip(propIds.diamond, propRow.bubble);
         delete roomData.cdBubble;
-        this.sendRoomDataToServer(row, col);
+        this._fn_adw(row, col);
 
         return true;
     }
 
-    rommDataCdBubbleOver(row: number, col: number) {
+    _fn_acd(row: number, col: number) {
         let roomData = this.roomArr[row][col];
-        roomData.cdBubble = this.getCurrentTimestamp();
+        roomData.cdBubble = this._fn_gm();
         this.update();
     }
 
-    setRoomData(row: number, col: number, roomData?: any) {
+    _fn_afu(row: number, col: number, roomData?: any) {
         if (roomData) {
             this.roomArr[row][col] = roomData;
         }
-        this.sendRoomDataToServer(row, col);
+        this._fn_adw(row, col);
     }
 
-    getRoomDataBagInfo() {
+    _fn_ke() {
         let ret: any = null;
-        UtilPub.for2Arr(this.roomArr, (roomData: any, row: number, col: number) => {
+        UtilPub._fn_ex(this.roomArr, (roomData: any, row: number, col: number) => {
             if (roomData.id == propIds.bag) {
                 ret = {};
                 ret.roomData = roomData;
@@ -1606,11 +1606,11 @@ class MergeBoardStateStore {
         return ret;
     }
 
-    consumeProp(propId: number, num: number) {
-        let bagInfo = this.getRoomDataBagInfo();
+    _fn_dn(propId: number, num: number) {
+        let bagInfo = this._fn_ke();
         let hasBagProp = false;
 
-        let hasInfo = this.getRoomDataHasInfoById(propId);
+        let hasInfo = this._fn_kg(propId);
         let info = hasInfo.arr[0];
         if (info.isBag) {
 
@@ -1618,23 +1618,23 @@ class MergeBoardStateStore {
             hasBagProp = true;
         } else {
 
-            this.setRoomData(info.row, info.col, {});
+            this._fn_afu(info.row, info.col, {});
         }
         if (hasBagProp) {
-            this.sortBagRoomArr(bagInfo.row, bagInfo.col);
+            this._fn_aie(bagInfo.row, bagInfo.col);
         }
 
     }
 
     onClickTaskDone(task: any, startPos?: Vec3) {
         let index = mergeBoardStateStore.taskArr.indexOf(task);
-        let bagInfo = this.getRoomDataBagInfo();
+        let bagInfo = this._fn_ke();
         let hasBagProp = false;
         let subPropArr: any = [];
 
         for (let i in task.propArr) {
             let prop = task.propArr[i];
-            let hasInfo = this.getRoomDataHasInfoById(prop.id);
+            let hasInfo = this._fn_kg(prop.id);
             for (let j = 0; j < prop.num; j++) {
                 let info = hasInfo.arr[j];
                 if (info.isBag) {
@@ -1643,32 +1643,32 @@ class MergeBoardStateStore {
                     hasBagProp = true;
                 } else {
 
-                    this.setRoomData(info.row, info.col, {});
+                    this._fn_afu(info.row, info.col, {});
                 }
                 info.id = prop.id;
                 subPropArr.push(info);
             }
         }
         if (hasBagProp) {
-            this.sortBagRoomArr(bagInfo.row, bagInfo.col);
+            this._fn_aie(bagInfo.row, bagInfo.col);
         }
 
 
-        this.addPropNum(propIds.star, task.starNum, startPos);
+        this._fn_m(propIds.star, task.starNum, startPos);
 
         let line = task.line
         if (line > 0)
-            this.submitLineTask(task.taskId, line)
+            this._fn_aio(task.taskId, line)
 
         mergeBoardStateStore.taskArr.splice(index, 1);
 
 
         if (aiRobot.isRobot()) {
-            mergeBoardStateStore.taskArr.push(aiRobot.createTask());
+            mergeBoardStateStore.taskArr.push(aiRobot._fn_dw());
         } else {
             let nextHandTask = null;
             if (task.hand) {
-                nextHandTask = this.createHandTask(task.id + 1);
+                nextHandTask = this._fn_ds(task.id + 1);
             }
             if (nextHandTask) {
 
@@ -1692,15 +1692,15 @@ class MergeBoardStateStore {
                     num = 1;
                 }
                 if (num > 0) {
-                    let retArr = this.createTask();
+                    let retArr = this._fn_dw();
                     mergeBoardStateStore.taskArr = retArr
                 }
             }
-            GamePlatform.track("玩家完成任务");
+            GamePlatform._fn_aja("玩家完成任务");
         }
 
-        this.sendTaskArrToServer();
-        this.addManagerVal(Const.ManagerTypes.taskDone);
+        this._fn_aeb();
+        this._fn_h(Const.ManagerTypes.taskDone);
 
         return subPropArr;
     }
@@ -1708,7 +1708,7 @@ class MergeBoardStateStore {
 
     refreshTask(task: any) {
         let index = mergeBoardStateStore.taskArr.indexOf(task);
-        let newTask = this.createTask()[0];
+        let newTask = this._fn_dw()[0];
         if (newTask) {
             newTask.id = task.id;
             newTask.hand = task.hand;
@@ -1724,25 +1724,25 @@ class MergeBoardStateStore {
 
 
 
-    getValByDesignWeight(valStr: string, weightStr: string) {
+    _fn_mv(valStr: string, weightStr: string) {
         let valArr = ("" + valStr).split(",");
         let weightArr = ("" + weightStr).split(",");
         let arr: any = [];
-        UtilPub.forArr(valArr, (val: any, index: number) => {
+        UtilPub._fn_ey(valArr, (val: any, index: number) => {
             let info: any = {};
             info.val = parseInt(val);
             info.weight = parseInt(weightArr[index]);
             arr.push(info);
         });
-        let ret = UtilPub.getRowByWeight(arr);
+        let ret = UtilPub._fn_ko(arr);
 
         return ret.val;
     }
 
 
-    getEmptyRoomPos() {
+    _fn_gz() {
         let emptyPos: any = null;
-        UtilPub.for2Arr(this.roomArr, (data: any, r: number, c: number) => {
+        UtilPub._fn_ex(this.roomArr, (data: any, r: number, c: number) => {
             if (!data.id) {
                 emptyPos = {};
                 emptyPos.row = r;
@@ -1755,7 +1755,7 @@ class MergeBoardStateStore {
     }
 
 
-    isRoomCarton(row: number, col: number) {
+    _fn_ql(row: number, col: number) {
         let roomData = this.roomArr[row][col];
         if (roomData.st == roomStatus.carton) {
             return true;
@@ -1763,7 +1763,7 @@ class MergeBoardStateStore {
         return false;
     }
 
-    isRoomSpider(row: number, col: number) {
+    _fn_qo(row: number, col: number) {
         let roomData = this.roomArr[row][col];
         if (roomData.st == roomStatus.spider) {
             return true;
@@ -1771,18 +1771,18 @@ class MergeBoardStateStore {
         return false;
     }
 
-    isRoomBubble(row: number, col: number) {
+    _fn_qk(row: number, col: number) {
         let roomData = this.roomArr[row][col];
         if (!roomData.cdBubble) {
             return false;
         }
-        if (this.getCurrentTimestamp() <= roomData.cdBubble) {
+        if (this._fn_gm() <= roomData.cdBubble) {
             return true;
         }
         return false;
     }
 
-    isRoomCd(row: number, col: number) {
+    _fn_qm(row: number, col: number) {
         let roomData = this.roomArr[row][col];
         if (roomData.cdSum > 0) {
             return true;
@@ -1791,7 +1791,7 @@ class MergeBoardStateStore {
     }
 
 
-    getOverCdCostDiamond(dt: number) {
+    _fn_it(dt: number) {
         let num = Math.ceil(dt / 1000 / 60 / TableDataService.ins().config.minuteCost);
 
         return num;
@@ -1802,12 +1802,12 @@ class MergeBoardStateStore {
 
 
 
-    getRoomDataHasInfoById(id: number) {
+    _fn_kg(id: number) {
         let num = 0;
         let arr: any = [];
         let roomDataBag: any = null;
-        UtilPub.for2Arr(this.roomArr, (roomData: any, row: number, col: number) => {
-            if (!roomData.id || this.isRoomBubble(row, col) || this.isRoomCarton(row, col) || this.isRoomSpider(row, col)) {
+        UtilPub._fn_ex(this.roomArr, (roomData: any, row: number, col: number) => {
+            if (!roomData.id || this._fn_qk(row, col) || this._fn_ql(row, col) || this._fn_qo(row, col)) {
                 return;
             }
             if (roomData.id == id) {
@@ -1840,13 +1840,13 @@ class MergeBoardStateStore {
 
 
 
-    addManagerVal(type: number, val: number = 1) {
-        if (this.isManagerAllGet() || !this.managerArr) {
+    _fn_h(type: number, val: number = 1) {
+        if (this._fn_qa() || !this.managerArr) {
             return;
         }
 
-        UtilPub.forArr(this.managerArr, (manager: any, index: number) => {
-            let row = TableDataService.ins().getTableValueByID(Const.Tables.manager, manager.id);
+        UtilPub._fn_ey(this.managerArr, (manager: any, index: number) => {
+            let row = TableDataService.ins()._fn_ly(Const.Tables.manager, manager.id);
             if (row.taskType != type) {
                 return;
             }
@@ -1858,12 +1858,12 @@ class MergeBoardStateStore {
             } else {
                 manager.val += val;
             }
-            this.sendManagerToServer(index);
+            this._fn_adr(index);
             Notifications.emit(GD.event.boardMilestoneRefresh);
         });
     }
-    getManagerVal(manager: any) {
-        let row = TableDataService.ins().getTableValueByID(Const.Tables.manager, manager.id);
+    _fn_ii(manager: any) {
+        let row = TableDataService.ins()._fn_ly(Const.Tables.manager, manager.id);
         let val = manager.val;
         if (row.taskType == Const.ManagerTypes.roleLv) {
             val = playerDataStore.roleLv;
@@ -1878,17 +1878,17 @@ class MergeBoardStateStore {
 
 
 
-    managerGetAward(index: number, startPos: Vec3) {
+    _fn_sb(index: number, startPos: Vec3) {
         let manager = this.managerArr[index];
         if (manager.get) {
             return;
         }
         manager.get = true;
-        this.sendManagerToServer(index);
-        let row = TableDataService.ins().getTableValueByID(Const.Tables.manager, manager.id);
-        this.addPropNum(row.price[0], row.price[1], startPos);
+        this._fn_adr(index);
+        let row = TableDataService.ins()._fn_ly(Const.Tables.manager, manager.id);
+        this._fn_m(row.price[0], row.price[1], startPos);
 
-        GamePlatform.track("finish manager daily task " + manager.id);
+        GamePlatform._fn_aja("finish manager daily task " + manager.id);
 
         let allGet = true;
         for (let i = 0; i < this.managerArr.length; i++) {
@@ -1901,12 +1901,12 @@ class MergeBoardStateStore {
         }
         if (allGet) {
 
-            this.createNextManager();
+            this._fn_du();
         }
 
 
         allGet = true;
-        let tb = TableDataService.ins().getTable(Const.Tables.manager);
+        let tb = TableDataService.ins()._fn_lt(Const.Tables.manager);
         for (let i = 0; i < tb.length; i++) {
             let pManager = this.managerArr[i];
             if (!pManager || !pManager.get) {
@@ -1915,13 +1915,13 @@ class MergeBoardStateStore {
             }
         }
         if (allGet) {
-            GameStorage.setInt(Const.DataKeys.boardMilestoneAllClaimed, 1);
+            GameStorage._fn_aey(Const.DataKeys.boardMilestoneAllClaimed, 1);
         }
 
         Notifications.emit(GD.event.boardMilestoneRefresh);
     }
-    isManagerAllGet() {
-        return GameStorage.getInt(Const.DataKeys.boardMilestoneAllClaimed);
+    _fn_qa() {
+        return GameStorage._fn_hr(Const.DataKeys.boardMilestoneAllClaimed);
     }
 
 
@@ -1929,7 +1929,7 @@ class MergeBoardStateStore {
 
 
 
-    isCellInsideMergeBoard(row: number, col: number) {
+    _fn_ps(row: number, col: number) {
         if (row >= 0 && row <= this.rowNum - 1 && col >= 0 && col <= this.colNum - 1) {
             return true;
         }
@@ -1937,19 +1937,19 @@ class MergeBoardStateStore {
     }
 
 
-    onClickCardLayer() {
+    _fn_tu() {
         if (this.cardArr.length <= 0) {
             return;
         }
-        let emptyPos = this.getEmptyRoomPos();
+        let emptyPos = this._fn_gz();
         if (!emptyPos) {
             return;
         }
         let id = this.cardArr.shift();
-        let roomData = this.initRoomData(id);
-        this.setRoomData(emptyPos.row, emptyPos.col, roomData);
+        let roomData = this._fn_ou(id);
+        this._fn_afu(emptyPos.row, emptyPos.col, roomData);
 
-        this.sendCardArrToServer();
+        this._fn_ado();
 
         return emptyPos;
     }
@@ -1960,9 +1960,9 @@ class MergeBoardStateStore {
 
 
 
-    propCanCreateNewProp(id: number) {
-        if (this.propIsPutInCardList(id)) {
-            let propRow = TableDataService.ins().getTableValueByID(Const.Tables.prop, id);
+    _fn_xo(id: number) {
+        if (this._fn_xr(id)) {
+            let propRow = TableDataService.ins()._fn_ly(Const.Tables.prop, id);
             if (propRow.anc || propRow.fair) {
                 return true;
             }
@@ -1974,8 +1974,8 @@ class MergeBoardStateStore {
 
 
 
-    propIsPutInCardList(id: number) {
-        let propRow = TableDataService.ins().getTableValueByID(Const.Tables.prop, id);
+    _fn_xr(id: number) {
+        let propRow = TableDataService.ins()._fn_ly(Const.Tables.prop, id);
         if ((propRow.type >= 100 && propRow.type < 200) || propRow.type == 27) {
 
             return false;
@@ -1987,36 +1987,36 @@ class MergeBoardStateStore {
 
 
 
-    addPropNum(propId: number, propNum: number = 1, startPos?: Vec3, endPos?: Vec3, notFlay = false) {
-        let propRow = TableDataService.ins().getTableValueByID(Const.Tables.prop, propId);
+    _fn_m(propId: number, propNum: number = 1, startPos?: Vec3, endPos?: Vec3, notFlay = false) {
+        let propRow = TableDataService.ins()._fn_ly(Const.Tables.prop, propId);
         UtilPub.log("获得道具 %s id:%d,num:%d".format(propRow.name, propId, propNum));
-        if (this.propIsPutInCardList(propId)) {
+        if (this._fn_xr(propId)) {
 
             for (let i = 0; i < propNum; i++) {
                 this.cardArr.push(propId);
             }
-            this.sendCardArrToServer();
+            this._fn_ado();
             Notifications.emit(GD.event.boardCardRefresh);
             if (notFlay) {
                 return;
             }
-            let mergeBoardLayer = this.findMergeBoardLayer();
+            let mergeBoardLayer = this._fn_es();
             if (!startPos) {
-                startPos = this.getScreenMidPos();
+                startPos = this._fn_kz();
             }
             if (mergeBoardLayer) {
-                playerDataStore.showResFly(propId, propNum, startPos, mergeBoardLayer.getCardLayerPos());
+                playerDataStore._fn_aho(propId, propNum, startPos, mergeBoardLayer._fn_gc());
             } else {
-                playerDataStore.showResFly(propId, propNum, startPos, this.btnMergeBoardPos);
+                playerDataStore._fn_aho(propId, propNum, startPos, this.btnMergeBoardPos);
             }
         } else {
             if (propId == propIds.star) {
                 if (!startPos) {
-                    startPos = this.getScreenMidPos();
+                    startPos = this._fn_kz();
                 }
-                let mergeBoardLayer = this.findMergeBoardLayer();
+                let mergeBoardLayer = this._fn_es();
                 if (mergeBoardLayer) {
-                    endPos = mergeBoardLayer.getBtnBuildStarPos();
+                    endPos = mergeBoardLayer._fn_fy();
                 } else {
                     endPos = this.btnMergeBoardPos;
                 }
@@ -2025,14 +2025,14 @@ class MergeBoardStateStore {
                 if (!endPos) {
                     endPos = Vec3.ZERO;
                 }
-                playerDataStore.getProp([propId, propNum], startPos, endPos);
+                playerDataStore._fn_jk([propId, propNum], startPos, endPos);
             } else if (endPos) {
                 if (!startPos) {
-                    startPos = this.getScreenMidPos();
+                    startPos = this._fn_kz();
                 }
-                playerDataStore.getProp([propId, propNum], startPos, endPos);
+                playerDataStore._fn_jk([propId, propNum], startPos, endPos);
             } else {
-                playerDataStore.getProp([propId, propNum], null, null);
+                playerDataStore._fn_jk([propId, propNum], null, null);
             }
         }
     }
@@ -2041,44 +2041,44 @@ class MergeBoardStateStore {
 
 
 
-    subPropNum(propId: number, propNum: number = 1) {
-        let propRow = TableDataService.ins().getTableValueByID(Const.Tables.prop, propId);
+    _fn_aip(propId: number, propNum: number = 1) {
+        let propRow = TableDataService.ins()._fn_ly(Const.Tables.prop, propId);
         UtilPub.log("扣减道具 %s id:%d,num:%d".format(propRow.name, propId, propNum));
 
         if (propId == propIds.coin) {
-            this.addManagerVal(Const.ManagerTypes.coinCost, propNum);
+            this._fn_h(Const.ManagerTypes.coinCost, propNum);
         } else if (propId == propIds.power) {
-            this.addManagerVal(Const.ManagerTypes.powerCost, propNum);
-            seasonProgressStore.addSeasonScore(propNum);
+            this._fn_h(Const.ManagerTypes.powerCost, propNum);
+            seasonProgressStore._fn_p(propNum);
         }
-        playerDataStore.checkAndUseProp([propId, propNum]);
+        playerDataStore._fn_bk([propId, propNum]);
         Notifications.emit(GD.event.updateMoney);
     }
 
-    getPropNumById(propId: number) {
-        return playerDataStore.curPropNum(propId);
+    _fn_jp(propId: number) {
+        return playerDataStore._fn_ec(propId);
     }
 
 
 
 
-    deleteAllRoomData() {
+    _fn_eg() {
 
         let keyArr: string[] = [];
-        UtilPub.for2Arr(this.roomArr, (roomData: any, row: number, col: number) => {
-            keyArr.push(this.getRoomDataKey(row, col));
+        UtilPub._fn_ex(this.roomArr, (roomData: any, row: number, col: number) => {
+            keyArr.push(this._fn_kh(row, col));
         });
-        GameStorage.removeMulti(keyArr);
+        GameStorage._fn_aai(keyArr);
 
 
         GameStorage.removeItem(this.taskDataKey);
 
 
         keyArr = [];
-        UtilPub.forArr(this.managerArr, (manager: any, index: number) => {
-            keyArr.push(this.getManagerDataKey(index));
+        UtilPub._fn_ey(this.managerArr, (manager: any, index: number) => {
+            keyArr.push(this._fn_ih(index));
         });
-        GameStorage.removeMulti(keyArr);
+        GameStorage._fn_aai(keyArr);
         GameStorage.removeItem(Const.DataKeys.boardMilestoneAllClaimed);
 
 
@@ -2089,20 +2089,20 @@ class MergeBoardStateStore {
     }
 
 
-    sendTaskArrToServer() {
-        GameStorage.setObject(this.taskDataKey, this.taskArr);
+    _fn_aeb() {
+        GameStorage._fn_afh(this.taskDataKey, this.taskArr);
     }
 
 
-    sendManagerToServer(index: number) {
+    _fn_adr(index: number) {
         let manager = this.managerArr[index];
-        let key = this.getManagerDataKey(index);
-        GameStorage.setObject(key, manager);
+        let key = this._fn_ih(index);
+        GameStorage._fn_afh(key, manager);
     }
 
 
-    sendCardArrToServer() {
-        GameStorage.setObject(Const.DataKeys.boardCardArr, this.cardArr);
+    _fn_ado() {
+        GameStorage._fn_afh(Const.DataKeys.boardCardArr, this.cardArr);
     }
 
 
@@ -2111,22 +2111,22 @@ class MergeBoardStateStore {
 
 
 
-    sendRoomDataToServer(row: number, col: number, roomData?: any) {
+    _fn_adw(row: number, col: number, roomData?: any) {
         if (!roomData) {
             roomData = this.roomArr[row][col];
         }
-        GameStorage.setObject(this.getRoomDataKey(row, col), roomData);
+        GameStorage._fn_afh(this._fn_kh(row, col), roomData);
     }
 
 
-    getCurrentTimestamp() {
+    _fn_gm() {
 
-        let timestamp = TimeCtrJSF.GetInstance().ServerTime;
+        let timestamp = TimeCtrJSF._fn_hp().ServerTime;
 
         return timestamp;
     }
 
-    getTaskArrSort() {
+    _fn_mh() {
 
 
         let arr = [];
@@ -2137,12 +2137,12 @@ class MergeBoardStateStore {
 
 
 
-        UtilPub.sortArr(arr, (t1: any, t2: any) => {
+        UtilPub._fn_aid(arr, (t1: any, t2: any) => {
             let t1Percent = 0;
             let onePercent = 1 / t1.propArr.length;
             for (let i in t1.propArr) {
                 let prop = t1.propArr[i];
-                let hasInfo = mergeBoardStateStore.getRoomDataHasInfoById(prop.id);
+                let hasInfo = mergeBoardStateStore._fn_kg(prop.id);
                 let hasPercent = hasInfo.num / prop.num;
                 if (hasPercent > 1) {
                     hasPercent = 1;
@@ -2153,7 +2153,7 @@ class MergeBoardStateStore {
             onePercent = 1 / t2.propArr.length;
             for (let i in t2.propArr) {
                 let prop = t2.propArr[i];
-                let hasInfo = mergeBoardStateStore.getRoomDataHasInfoById(prop.id);
+                let hasInfo = mergeBoardStateStore._fn_kg(prop.id);
                 let hasPercent = hasInfo.num / prop.num;
                 if (hasPercent > 1) {
                     hasPercent = 1;
@@ -2170,57 +2170,57 @@ class MergeBoardStateStore {
         return arr;
     }
 
-    getComposePropCount(propId: number) {
-        return GameStorage.getInt(Const.DataKeys.boardItemCount + propId, 0);
+    _fn_gi(propId: number) {
+        return GameStorage._fn_hr(Const.DataKeys.boardItemCount + propId, 0);
     }
-    setComposePropCount(propId: number, val: number) {
-        return GameStorage.setInt(Const.DataKeys.boardItemCount + propId, val);
+    _fn_aeq(propId: number, val: number) {
+        return GameStorage._fn_aey(Const.DataKeys.boardItemCount + propId, val);
     }
 
-    getHandIndex() {
-        let handIndex = GameStorage.getInt(Const.DataKeys.handIndex, 1);
+    _fn_hj() {
+        let handIndex = GameStorage._fn_hr(Const.DataKeys.handIndex, 1);
         if (aiRobot.isRobot()) {
             handIndex = handData.length;
-            mergeBoardStateStore.setHandIndex(handIndex);
+            mergeBoardStateStore._fn_aev(handIndex);
         }
         return handIndex;
     }
-    addHandIndex() {
-        let index = this.getHandIndex();
-        GamePlatform.track("完成新手教程" + index);
+    _fn_e() {
+        let index = this._fn_hj();
+        GamePlatform._fn_aja("完成新手教程" + index);
         index++;
-        this.setHandIndex(index);
+        this._fn_aev(index);
     }
-    setHandIndex(handIndex: number) {
-        GameStorage.setInt(Const.DataKeys.handIndex, handIndex);
+    _fn_aev(handIndex: number) {
+        GameStorage._fn_aey(Const.DataKeys.handIndex, handIndex);
     }
-    closeHandLayer() {
+    _fn_df() {
         let handLayer = find("Canvas/HandLayer");
         if (handLayer) {
             handLayer.getComponent(HandLayer)!.close();
         }
     }
-    handLayerHideHand() {
+    _fn_ne() {
         let handLayer = find("Canvas/HandLayer");
         if (handLayer) {
             handLayer.getComponent(HandLayer)!.hideHand();
         }
     }
-    isHandDone() {
-        let handIndex = this.getHandIndex();
+    _fn_px() {
+        let handIndex = this._fn_hj();
         if (handData[handIndex]) {
             return false;
         }
         return true;
     }
-    getHandLayer(): any {
+    _fn_hk(): any {
         let handLayer = find("Canvas/HandLayer");
         if (handLayer) {
             return handLayer.getComponent(HandLayer);
         }
         return {};
     }
-    findMergeBoardLayer(): MergeBoardLayer | null {
+    _fn_es(): MergeBoardLayer | null {
         let mergeBoardLayer = find("Canvas/MergeBoardLayer");
         if (mergeBoardLayer) {
             return mergeBoardLayer.getComponent(MergeBoardLayer);
@@ -2228,7 +2228,7 @@ class MergeBoardStateStore {
         return null;
     }
 
-    isTaskNeedWithId(id: number) {
+    _fn_qz(id: number) {
         for (let i in this.taskArr) {
             let task = this.taskArr[i];
             for (let j in task.propArr) {
@@ -2241,14 +2241,14 @@ class MergeBoardStateStore {
     }
 
 
-    openAd(info: string, cb?: Function) {
+    _fn_we(info: string, cb?: Function) {
         if (Const.isDebug) {
             if (cb) {
                 cb(true);
             }
             return;
         }
-        GamePlatform.showRewardVideo(info, (st) => {
+        GamePlatform._fn_ahr(info, (st) => {
             if (st == 1) {
                 if (cb) {
                     cb(true);
@@ -2267,32 +2267,32 @@ class MergeBoardStateStore {
         Notifications.emit(GD.event.showToast, info);
     }
 
-    openPropInfoLayer(propId: number) {
-        let propRow = TableDataService.ins().getTableValueByID(Const.Tables.prop, propId);
+    _fn_wh(propId: number) {
+        let propRow = TableDataService.ins()._fn_ly(Const.Tables.prop, propId);
         if (propRow.tan) {
-            UiLayerService.instance.showDialog(Const.Dialogs.PropItemInfo, { propdata: propRow });
+            UiLayerService.instance._fn_ahg(Const.Dialogs.PropItemInfo, { propdata: propRow });
         } else {
-            UiLayerService.instance.showDialog(Const.Dialogs.ItemCodexLayer, propId);
+            UiLayerService.instance._fn_ahg(Const.Dialogs.ItemCodexLayer, propId);
         }
     }
 
-    getScreenMidPos() {
+    _fn_kz() {
         let width = view.getVisibleSize().width;
         let height = view.getVisibleSize().height;
 
         return v3(width * 0.5, height * 0.5, 0);
     }
 
-    isRoomNormal(row: number, col: number) {
+    _fn_qn(row: number, col: number) {
         let roomData = this.roomArr[row][col];
-        if (!roomData.id || roomData.st == roomStatus.spider || roomData.st == roomStatus.carton || this.isRoomBubble(row, col)) {
+        if (!roomData.id || roomData.st == roomStatus.spider || roomData.st == roomStatus.carton || this._fn_qk(row, col)) {
             return false;
         }
         return true;
     }
 
-    canAddTimes(id: number) {
-        let propRow = TableDataService.ins().getTableValueByID(Const.Tables.prop, id);
+    _fn_ax(id: number) {
+        let propRow = TableDataService.ins()._fn_ly(Const.Tables.prop, id);
         if (propRow && propRow.chongneng && propRow.anc) {
             return true;
         }
@@ -2300,18 +2300,18 @@ class MergeBoardStateStore {
     }
 
 
-    roomAddTimes(row: number, col: number, targetRow: number, targetCol: number, val: number) {
-        this.setRoomData(row, col, {});
+    _fn_ace(row: number, col: number, targetRow: number, targetCol: number, val: number) {
+        this._fn_afu(row, col, {});
         let roomData = this.roomArr[targetRow][targetCol];
         delete roomData.cdSum;
         roomData.times += val;
         UtilPub.log("add times " + val, roomData.times);
-        this.setRoomData(targetRow, targetRow);
+        this._fn_afu(targetRow, targetRow);
     }
 
-    canSplitProp(id: number, targetId: number) {
-        let propRow = TableDataService.ins().getTableValueByID(Const.Tables.prop, id);
-        let targetPropRow = TableDataService.ins().getTableValueByID(Const.Tables.prop, targetId);
+    _fn_ba(id: number, targetId: number) {
+        let propRow = TableDataService.ins()._fn_ly(Const.Tables.prop, id);
+        let targetPropRow = TableDataService.ins()._fn_ly(Const.Tables.prop, targetId);
         if (targetPropRow && targetPropRow.jiandao && targetPropRow.luna > 1 && targetPropRow.luna <= propRow.p1) {
             return true;
         }
@@ -2320,23 +2320,23 @@ class MergeBoardStateStore {
     }
 
 
-    roomPropSplit(row: number, col: number, targetRow: number, targetCol: number) {
-        this.setRoomData(row, col, {});
+    _fn_acj(row: number, col: number, targetRow: number, targetCol: number) {
+        this._fn_afu(row, col, {});
         let roomData = this.roomArr[targetRow][targetCol];
-        let splitRoomData = this.initRoomData(roomData.id - 1);
-        this.setRoomData(targetRow, targetCol, splitRoomData);
-        let emptyPos = this.getEmptyRoomPos();
+        let splitRoomData = this._fn_ou(roomData.id - 1);
+        this._fn_afu(targetRow, targetCol, splitRoomData);
+        let emptyPos = this._fn_gz();
         if (emptyPos) {
-            this.setRoomData(emptyPos.row, emptyPos.col, JSON.parse(JSON.stringify(splitRoomData)));
+            this._fn_afu(emptyPos.row, emptyPos.col, JSON.parse(JSON.stringify(splitRoomData)));
         }
 
         return { emptyPos: emptyPos };
     }
 
-    canLvUpProp(id: number, targetId: number) {
-        let propRow = TableDataService.ins().getTableValueByID(Const.Tables.prop, id);
-        let targetPropRow = TableDataService.ins().getTableValueByID(Const.Tables.prop, targetId);
-        if (!targetPropRow || this.propIsMaxLv(targetId)) {
+    _fn_az(id: number, targetId: number) {
+        let propRow = TableDataService.ins()._fn_ly(Const.Tables.prop, id);
+        let targetPropRow = TableDataService.ins()._fn_ly(Const.Tables.prop, targetId);
+        if (!targetPropRow || this._fn_xq(targetId)) {
             return false;
         }
         switch (propRow.mdt) {
@@ -2372,9 +2372,9 @@ class MergeBoardStateStore {
         return false;
     }
 
-    propIsMaxLv(id: number) {
-        let propRow = TableDataService.ins().getTableValueByID(Const.Tables.prop, id);
-        let nextPropRow = TableDataService.ins().getTableValueByID(Const.Tables.prop, id + 1);
+    _fn_xq(id: number) {
+        let propRow = TableDataService.ins()._fn_ly(Const.Tables.prop, id);
+        let nextPropRow = TableDataService.ins()._fn_ly(Const.Tables.prop, id + 1);
         let isMaxLv = false;
         if (!nextPropRow || nextPropRow.type != propRow.type || nextPropRow.typeson != propRow.typeson) {
             isMaxLv = true;
@@ -2382,15 +2382,15 @@ class MergeBoardStateStore {
         return isMaxLv;
     }
 
-    roomPropLvUp(row: number, col: number, targetRow: number, targetCol: number) {
-        this.setRoomData(row, col, {});
+    _fn_aci(row: number, col: number, targetRow: number, targetCol: number) {
+        this._fn_afu(row, col, {});
         let targetRoomData = this.roomArr[targetRow][targetCol];
-        let roomData = this.initRoomData(targetRoomData.id + 1);
-        this.setRoomData(targetRow, targetCol, roomData);
+        let roomData = this._fn_ou(targetRoomData.id + 1);
+        this._fn_afu(targetRow, targetCol, roomData);
     }
 
-    propCanSpeedUp(id: number) {
-        let row = TableDataService.ins().getTableValueByID(Const.Tables.prop, id);
+    _fn_xp(id: number) {
+        let row = TableDataService.ins()._fn_ly(Const.Tables.prop, id);
         if ((row.anc && row.milo) || row.faircd) {
             return true;
         }
@@ -2398,14 +2398,14 @@ class MergeBoardStateStore {
     }
 
 
-    getRoomDataByItemUI(itemUI: Node) {
+    _fn_kf(itemUI: Node) {
         // @ts-ignore
         return this.roomArr[itemUI.row][itemUI.col];
     }
 
 }
 
-const mergeBoardStateStore = MergeBoardStateStore.getInstane();
+const mergeBoardStateStore = MergeBoardStateStore._fn_hq();
 
 export { mergeBoardStateStore };
 

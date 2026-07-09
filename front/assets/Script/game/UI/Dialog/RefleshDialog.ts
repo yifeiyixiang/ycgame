@@ -20,41 +20,41 @@ export class RefleshDialog extends BaseView {
     _cdData: any = null
 
     start() {
-        this.bindButton(find("root/btnClose", this.node)!, this.popClose)
+        this.bindButton(find("root/btnClose", this.node)!, this._fn_xe)
     }
 
     show(args: any) {
         super.show(args)
         let itemData = this._layerData.itemData
-        let cdData = TableDataService.ins().getTableValueByKey(Const.Tables.privilege, "key", itemData.cdKey)
+        let cdData = TableDataService.ins()._fn_lz(Const.Tables.privilege, "key", itemData.cdKey)
         this._cdData = cdData
-        let time = playerDataStore.getReceiveTime(cdData.dataKey + "auto", 1440)
+        let time = playerDataStore._fn_jz(cdData.dataKey + "auto", 1440)
         this.timeLabel.getComponent(Label)!.string = (itemData.autoReflesh - time) + "/" + itemData.autoReflesh
         this._isCanFlesh = time < itemData.autoReflesh
     }
 
 
     onClickBtnVideoReflesh() {
-        AudioPlaybackService.instance.playSound(Const.Audio.btn)
+        AudioPlaybackService.instance._fn_xc(Const.Audio.btn)
         if (this._isCanFlesh) {
-            RewardVideoManager.showVideo("刷新商店限时商品", () => {
-                playerDataStore.setReceiveTime(this._cdData.dataKey + "auto", 1440)
+            RewardVideoManager._fn_ahy("刷新商店限时商品", () => {
+                playerDataStore._fn_afo(this._cdData.dataKey + "auto", 1440)
                 this.emit(GD.event.updateShopItem)
                 this.close()
             })
         } else {
-            this.toast("今日刷新次数已用完")
+            this._fn_aiu("今日刷新次数已用完")
         }
     }
 
     onClickDiamonsReflesh() {
-        AudioPlaybackService.instance.playSound(Const.Audio.btn)
-        if (playerDataStore.checkAndUseDiamonds(Const.LimitShopRefleshPrice)) {
+        AudioPlaybackService.instance._fn_xc(Const.Audio.btn)
+        if (playerDataStore._fn_bg(Const.LimitShopRefleshPrice)) {
             this.emit(GD.event.updateShopItem)
             this.emit(GD.event.updateMoney)
             this.close()
         } else {
-            this.toast("钻石不足")
+            this._fn_aiu("钻石不足")
         }
     }
 

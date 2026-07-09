@@ -15,28 +15,28 @@ export class UtilGame extends BaseUiComponent {
 
 
     public static const(code: string) {
-        return TableDataService.ins().getTableValueByKey(Const.Tables.const, "code", code).val
+        return TableDataService.ins()._fn_lz(Const.Tables.const, "code", code).val
     }
 
 
     public static ui(code: string): string {
-        return TableDataService.ins().getTableValueByKey(Const.Tables.ui, "code", code).name
+        return TableDataService.ins()._fn_lz(Const.Tables.ui, "code", code).name
     }
 
 
     public static language(code: string): string {
-        return TableDataService.ins().getTableValueByKey(Const.Tables.language, "key", code).chinese
+        return TableDataService.ins()._fn_lz(Const.Tables.language, "key", code).chinese
     }
 
 
-    public static getNearestNode(centerNode: Node, nodes: GTypeStrNode): Node {
+    public static _fn_ij(centerNode: Node, nodes: GTypeStrNode): Node {
         let min = 10000
         let minNode: Node = null!
 
         for (let strkey in nodes) {
             if (nodes.hasOwnProperty(strkey)) {
                 let n = nodes[strkey]
-                let dis = UtilPub.getDis(centerNode.worldPosition, n.worldPosition)
+                let dis = UtilPub._fn_gu(centerNode.worldPosition, n.worldPosition)
                 if (dis < min) {
                     min = dis
                     minNode = n
@@ -47,13 +47,13 @@ export class UtilGame extends BaseUiComponent {
     }
 
 
-    public static sceneClose() {
-        UiLayerService.instance.hideDialog(Const.Dialogs.main)
+    public static _fn_acu() {
+        UiLayerService.instance._fn_nk(Const.Dialogs.main)
         Const.SceneNode.active = false
     }
 
-    public static sceneOpen() {
-        UiLayerService.instance.showDialog(Const.Dialogs.main)
+    public static _fn_acv() {
+        UiLayerService.instance._fn_ahg(Const.Dialogs.main)
         Const.SceneNode.active = true
     }
 

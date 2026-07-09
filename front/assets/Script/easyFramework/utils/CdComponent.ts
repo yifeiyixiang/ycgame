@@ -42,16 +42,16 @@ export class CdComponent extends BaseUiComponent {
         this._interval = interval
         this._cb = cb
         this._startTime = 0
-        this.checkTime()
+        this._fn_cj()
     }
 
-    setCDByStart(key: string, startTime: number, endTime: number, cb: Function = null!) {
+    _fn_aen(key: string, startTime: number, endTime: number, cb: Function = null!) {
         this._cdType = CDType.CDFixTime
         this._key = key
         this._endTime = endTime
         this._cb = cb
         this._startTime = startTime
-        this.checkTime()
+        this._fn_cj()
     }
 
     setIgnoreSec(isIgnore: boolean) {
@@ -59,33 +59,33 @@ export class CdComponent extends BaseUiComponent {
         return this
     }
 
-    checkTime() {
+    _fn_cj() {
         if (this._cdType == CDType.CDIneterVal) {
-            this._cdTime = playerDataStore.getIntervalCD(this._key, this._interval)
+            this._cdTime = playerDataStore._fn_ht(this._key, this._interval)
             if (this._ignoreSec) {
-                this.node.getComponent(Label)!.string = UtilPub.getDurationStr2(this._cdTime * 1000) + ""
+                this.node.getComponent(Label)!.string = UtilPub._fn_gx(this._cdTime * 1000) + ""
             } else {
-                this.node.getComponent(Label)!.string = UtilPub.getDurationStr(this._cdTime * 1000) + ""
+                this.node.getComponent(Label)!.string = UtilPub._fn_gw(this._cdTime * 1000) + ""
             }
         } else if (this._cdType == CDType.CDCountdown) {
-            let num = playerDataStore.checkCDTime(this._key, this._interval, this._startTime)
+            let num = playerDataStore._fn_bo(this._key, this._interval, this._startTime)
             if (num[0] > 0) {
                 if (this._cb) {
                     this._cb(num[0])
                 }
             }
             this._cdTime = num[1]
-            this.node.getComponent(Label)!.string = UtilPub.timerFormat(this._cdTime)
+            this.node.getComponent(Label)!.string = UtilPub._fn_air(this._cdTime)
         } else if (this._cdType == CDType.CDCondition) {
-            let num = playerDataStore.checkLimitTime(this._key, this._interval * 60 * 1000)
+            let num = playerDataStore._fn_bz(this._key, this._interval * 60 * 1000)
             this._cdTime = num
             if (this._ignoreSec) {
-                this.node.getComponent(Label)!.string = UtilPub.getDurationStr2(this._cdTime)
+                this.node.getComponent(Label)!.string = UtilPub._fn_gx(this._cdTime)
             } else {
-                this.node.getComponent(Label)!.string = UtilPub.getDurationStr(this._cdTime)
+                this.node.getComponent(Label)!.string = UtilPub._fn_gw(this._cdTime)
             }
         } else {
-            let num = playerDataStore.checkEndTime(this._key, this._endTime)
+            let num = playerDataStore._fn_br(this._key, this._endTime)
             if (num <= 0) {
                 if (this._cb) {
                     this._cb()
@@ -94,9 +94,9 @@ export class CdComponent extends BaseUiComponent {
             }
             this._cdTime = num
             if (this._ignoreSec) {
-                this.node.getComponent(Label)!.string = UtilPub.getDurationStr2(this._cdTime * 1000)
+                this.node.getComponent(Label)!.string = UtilPub._fn_gx(this._cdTime * 1000)
             } else {
-                this.node.getComponent(Label)!.string = UtilPub.getDurationStr(this._cdTime * 1000)
+                this.node.getComponent(Label)!.string = UtilPub._fn_gw(this._cdTime * 1000)
             }
         }
     }
@@ -104,7 +104,7 @@ export class CdComponent extends BaseUiComponent {
     clearCD() {
         this._cdTime = 0
         this.node.getComponent(Label)!.string = ""
-        playerDataStore.clearCDTime(this._key)
+        playerDataStore._fn_cv(this._key)
         this._cb = null!
     }
 
@@ -116,7 +116,7 @@ export class CdComponent extends BaseUiComponent {
                 return
             }
             this._step = 13
-            this.checkTime()
+            this._fn_cj()
         } else {
             if (this._cb) {
                 this._cb(1)

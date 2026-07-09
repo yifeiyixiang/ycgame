@@ -10,7 +10,7 @@ import { playerDataStore } from "./UserData";
 
 class SeasonProgressStore {
     private static instance: SeasonProgressStore = null!;
-    public static getInstance(): SeasonProgressStore {
+    public static _fn_ho(): SeasonProgressStore {
         if (this.instance == null) {
             this.instance = new SeasonProgressStore();
         }
@@ -25,20 +25,20 @@ class SeasonProgressStore {
     seasonOpen = 0;
 
     public initData() {
-        this.seasonScore = GameStorage.getInt(Const.DataKeys.seasonScore, 0);
-        this.seasonId = GameStorage.getInt(Const.DataKeys.seasonId, 1);
-        this.seasonOpen = GameStorage.getInt(Const.DataKeys.seasonOpen, 0);
+        this.seasonScore = GameStorage._fn_hr(Const.DataKeys.seasonScore, 0);
+        this.seasonId = GameStorage._fn_hr(Const.DataKeys.seasonId, 1);
+        this.seasonOpen = GameStorage._fn_hr(Const.DataKeys.seasonOpen, 0);
 
-        let saveDayTime = GameStorage.getInt(Const.DataKeys.saveDayTime, 0);
+        let saveDayTime = GameStorage._fn_hr(Const.DataKeys.saveDayTime, 0);
         if (saveDayTime) {
             this.saveDayTime = new Date(saveDayTime);
         } else {
-            this.saveDayTime = new Date(mergeBoardStateStore.getCurrentTimestamp());
+            this.saveDayTime = new Date(mergeBoardStateStore._fn_gm());
         }
 
         mergeBoardStateStore.initData();
 
-        this.openUpdateSecond();
+        this._fn_wj();
 
 
 
@@ -48,7 +48,7 @@ class SeasonProgressStore {
         window.seasonProgressStore = this;
     }
 
-    openUpdateSecond() {
+    _fn_wj() {
         if (this.updateInterval) {
             clearInterval(this.updateInterval);
         }
@@ -56,12 +56,12 @@ class SeasonProgressStore {
         this.update();
     }
 
-    public roleLvUp() {
+    public _fn_acc() {
         if (playerDataStore.roleLv >= TableDataService.ins().config.seasonPassUnlock) {
 
             if (!this.seasonOpen) {
                 this.seasonOpen = 1;
-                GameStorage.setInt(Const.DataKeys.seasonOpen, this.seasonOpen);
+                GameStorage._fn_aey(Const.DataKeys.seasonOpen, this.seasonOpen);
                 UtilPub.log("战令解锁了");
                 Notifications.emit(GD.event.unlockSystem);
             }
@@ -69,23 +69,23 @@ class SeasonProgressStore {
 
     }
 
-    public getSeasonPassOpen() {
+    public _fn_lc() {
         return false;
     }
-    public addSeasonScore(score: number = 1) {
+    public _fn_p(score: number = 1) {
         if (!this.seasonOpen) {
             return;
         }
         this.seasonScore += score;
-        let nextRow = TableDataService.ins().getTableValueByID(Const.Tables.seasonPass, this.seasonId + 1);
+        let nextRow = TableDataService.ins()._fn_ly(Const.Tables.seasonPass, this.seasonId + 1);
         if (nextRow && this.seasonScore >= nextRow.num) {
 
             this.seasonId++;
-            GameStorage.setInt(Const.DataKeys.seasonId, this.seasonId);
+            GameStorage._fn_aey(Const.DataKeys.seasonId, this.seasonId);
             this.seasonScore -= nextRow.num;
             UtilPub.log("升级了");
         }
-        GameStorage.setInt(Const.DataKeys.seasonScore, this.seasonScore);
+        GameStorage._fn_aey(Const.DataKeys.seasonScore, this.seasonScore);
         UtilPub.log("id:" + this.seasonId, "lv:" + (this.seasonId - 1), "score:" + this.seasonScore);
     }
 
@@ -93,8 +93,8 @@ class SeasonProgressStore {
 
 
 
-    public getSeasonPassInfoById(id: number) {
-        let info = GameStorage.getObject(Const.DataKeys.seasonPassInfo + id);
+    public _fn_lb(id: number) {
+        let info = GameStorage._fn_io(Const.DataKeys.seasonPassInfo + id);
         if (!info && id <= this.seasonId) {
             info = {
                 a1: 0,
@@ -108,45 +108,45 @@ class SeasonProgressStore {
 
 
 
-    public seasonGetAward1(id: number,startPos:Vec3) {
-        let info = this.getSeasonPassInfoById(id);
+    public _fn_ade(id: number,startPos:Vec3) {
+        let info = this._fn_lb(id);
         if (!info || info.a1) {
             return;
         }
-        let row = TableDataService.ins().getTableValueByID(Const.Tables.seasonPass, id);
-        mergeBoardStateStore.addPropNum(row.award1[0], row.award1[1],startPos);
+        let row = TableDataService.ins()._fn_ly(Const.Tables.seasonPass, id);
+        mergeBoardStateStore._fn_m(row.award1[0], row.award1[1],startPos);
         info.a1 = 1;
-        GameStorage.setObject(Const.DataKeys.seasonPassInfo + id, info);
+        GameStorage._fn_afh(Const.DataKeys.seasonPassInfo + id, info);
     }
 
 
 
 
 
-    public seasonGetAward2(id: number,startPos:Vec3) {
-        let info = this.getSeasonPassInfoById(id);
+    public _fn_adf(id: number,startPos:Vec3) {
+        let info = this._fn_lb(id);
         if (!info || info.a2) {
             return;
         }
-        let row = TableDataService.ins().getTableValueByID(Const.Tables.seasonPass, id);
-        mergeBoardStateStore.addPropNum(row.award2[0], row.award2[1],startPos);
+        let row = TableDataService.ins()._fn_ly(Const.Tables.seasonPass, id);
+        mergeBoardStateStore._fn_m(row.award2[0], row.award2[1],startPos);
         info.a2 = 1;
-        GameStorage.setObject(Const.DataKeys.seasonPassInfo + id, info);
+        GameStorage._fn_afh(Const.DataKeys.seasonPassInfo + id, info);
     }
 
-    public resetSeasonPass() {
+    public _fn_abr() {
         this.seasonId = 1;
         this.seasonScore = 0;
-        GameStorage.setInt(Const.DataKeys.seasonScore, this.seasonScore);
-        GameStorage.setInt(Const.DataKeys.seasonId, this.seasonId);
+        GameStorage._fn_aey(Const.DataKeys.seasonScore, this.seasonScore);
+        GameStorage._fn_aey(Const.DataKeys.seasonId, this.seasonId);
 
         let keyArr: any = [];
-        let tb = TableDataService.ins().getTable(Const.Tables.seasonPass);
+        let tb = TableDataService.ins()._fn_lt(Const.Tables.seasonPass);
         for (let i in tb) {
             let key = Const.DataKeys.seasonPassInfo + tb[i].id;
             keyArr.push(key);
         }
-        GameStorage.removeMulti(keyArr);
+        GameStorage._fn_aai(keyArr);
     }
 
     public overDay() {
@@ -164,7 +164,7 @@ class SeasonProgressStore {
         }
 
 
-        let now = new Date(mergeBoardStateStore.getCurrentTimestamp());
+        let now = new Date(mergeBoardStateStore._fn_gm());
         let overDay = false;
         if (this.saveDayTime.getDate() == now.getDate()) {
             if (now.getTime() - this.saveDayTime.getTime() >= 24 * 60 * 60 * 1000) {
@@ -195,7 +195,7 @@ class SeasonProgressStore {
 
 }
 
-const seasonProgressStore = SeasonProgressStore.getInstance();
+const seasonProgressStore = SeasonProgressStore._fn_ho();
 
 export { seasonProgressStore };
 

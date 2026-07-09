@@ -19,7 +19,7 @@ export class FloatingStarController extends BaseUiComponent {
     onLoad() {
         this.aniTween.stop()
         this.root.position = v3(0, 110, 0)
-        this.aniTween = UtilPub.breathFloat(this.root, 110)
+        this.aniTween = UtilPub._fn_aq(this.root, 110)
 
         this.bindButton(this.root, this.onClickBtnPrompt);
     }
@@ -34,8 +34,8 @@ export class FloatingStarController extends BaseUiComponent {
 
     onClickBtnPrompt() {
 
-        mergeBoardStateStore.closeHandLayer();
-        UiLayerService.instance.showDialog(Const.Dialogs.BuildPromptDialogController, { id: this.id, type: this.type })
+        mergeBoardStateStore._fn_df();
+        UiLayerService.instance._fn_ahg(Const.Dialogs.BuildPromptDialogController, { id: this.id, type: this.type })
     }
 
 }

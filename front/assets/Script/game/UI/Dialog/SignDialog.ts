@@ -25,7 +25,7 @@ export class SignDialog extends BaseView {
 
     _curSignDay = 0
     start() {
-        this.bindButton(find("root/btnClose", this.node)!, this.popClose)
+        this.bindButton(find("root/btnClose", this.node)!, this._fn_xe)
 
         this.bindButton(this.btnReceive!, this.onClickResign)
     }
@@ -33,22 +33,22 @@ export class SignDialog extends BaseView {
     show(args: any) {
         super.show(args)
 
-       this.refresh();
+       this._fn_ys();
 
     }
 
     onEnable() {
-        this.on(GD.event.updateGame, this.refresh)
+        this.on(GD.event.updateGame, this._fn_ys)
     }
 
     onDisable() {
         this.off(GD.event.updateGame, this)
     }
 
-    refresh(){
-        this._curSignDay = SignUtil.getInstance().getCurSignDay()
+    _fn_ys(){
+        this._curSignDay = SignUtil._fn_ho()._fn_gn()
         for (let i = 1; i <= 7; i++) {
-            this.initDayItem(find("day" + i, this.dayRoot)!, i)
+            this._fn_nv(find("day" + i, this.dayRoot)!, i)
         }
 
         find("Layout/Label", this.btnReceive)!.getComponent(Label).string = playerDataStore.userInfodata.user_sign.sign_status==1?"已签到":"签到";
@@ -56,8 +56,8 @@ export class SignDialog extends BaseView {
         this.btnReceive.getComponent(Button)!.interactable = playerDataStore.userInfodata.user_sign.sign_status==0
     }
 
-    initDayItem(dayParent: Node, day: number) {
-        let data = TableDataService.ins().getTableValueByID(Const.Tables.new_sign, day)
+    _fn_nv(dayParent: Node, day: number) {
+        let data = TableDataService.ins()._fn_ly(Const.Tables.new_sign, day)
         let dayNode = dayParent.getChildByName("dayItem")
         if (dayNode == null) {
             dayNode = instantiate(this.dayItem)
@@ -75,10 +75,10 @@ export class SignDialog extends BaseView {
         let propId = data.sign_in_rewards[0][0]
         let num = data.sign_in_rewards[0][1]
 
-        let propData = TableDataService.ins().getTableValueByID(Const.Tables.new_prop, propId)
+        let propData = TableDataService.ins()._fn_ly(Const.Tables.new_prop, propId)
 
         numLabel!.string = "x" + num
-        this.setSpriteFrame(icon.getComponent(Sprite)!, Const.resPath.icon + propData.icon, () => { }, 100)
+        this._fn_agk(icon.getComponent(Sprite)!, Const.resPath.icon + propData.icon, () => { }, 100)
 
 
 
@@ -92,7 +92,7 @@ export class SignDialog extends BaseView {
 
 
         find("qdbk", dayNode)!.active = false
-        let signState = SignUtil.getInstance().getSignDay(day)
+        let signState = SignUtil._fn_ho()._fn_li(day)
 
         if (playerDataStore.userInfodata.user_sign.sign_in_days >= day){
             signState =  SignState.receiced
@@ -121,7 +121,7 @@ export class SignDialog extends BaseView {
 
     }
 
-    initBtn(event: any, data: any) {
+    _fn_nt(event: any, data: any) {
         let iconVideo = find("Layout/icon_video", this.btnReceive)!
         let btnLabel = find("Layout/Label", this.btnReceive)!.getComponent(Label)!
 
@@ -147,14 +147,14 @@ export class SignDialog extends BaseView {
             btnLabel.string = "已领取"
             btnLabel.node.getComponent(LabelOutline)!.color = color(86, 90, 74);
             this.btnReceive.getComponent(Button)!.interactable = false
-            this.clearButtonHander(this.btnReceive)
+            this._fn_ct(this.btnReceive)
         } else {
             this.btnReceive.getComponent(Sprite)!.grayscale = true
             iconVideo.active = false
             btnLabel.string = "明日可领取"
             btnLabel.node.getComponent(LabelOutline)!.color = color(86, 90, 74);
             this.btnReceive.getComponent(Button)!.interactable = false
-            this.clearButtonHander(this.btnReceive)
+            this._fn_ct(this.btnReceive)
         }
     }
 
@@ -169,7 +169,7 @@ export class SignDialog extends BaseView {
 
 
 
-        GameHttpClient.getInstance().sendSign();
+        GameHttpClient._fn_ho()._fn_ady();
 
     }
 
@@ -178,7 +178,7 @@ export class SignDialog extends BaseView {
 
 
 
-        GameHttpClient.getInstance().sendSign();
+        GameHttpClient._fn_ho()._fn_ady();
     }
 }
 

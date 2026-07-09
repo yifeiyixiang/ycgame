@@ -32,25 +32,25 @@ export class PetNameView extends BaseView {
 
         this.bindButton(find("root/btnSave", this.node)!, ()=>{
 
-             AudioPlaybackService.instance.playSound(Const.Audio.btn)
+             AudioPlaybackService.instance._fn_xc(Const.Audio.btn)
 
             let str = this.nameEdit.getComponent(EditBox)!.string
             if (str == "") {
-                this.toast("名字不能为空")
+                this._fn_aiu("名字不能为空")
                 return
             }
             if(str.length > 7){
-                this.toast("名字不能超过7个字")
+                this._fn_aiu("名字不能超过7个字")
                 return
             }
 
             if (playerDataStore.coin < Const.PET_NAME_CHANGE_GOLD_COST){
-                this.toast("金币不足")
+                this._fn_aiu("金币不足")
                 return
             }
 
-            GameHttpClient.getInstance().sendPetAction(8, this.curPetData.id, 0, 0, str, ()=>{
-                this.toast("修改成功")
+            GameHttpClient._fn_ho()._fn_adt(8, this.curPetData.id, 0, 0, str, ()=>{
+                this._fn_aiu("修改成功")
                 this.close();
             })
         })

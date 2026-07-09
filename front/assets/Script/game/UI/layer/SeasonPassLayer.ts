@@ -42,51 +42,51 @@ export class SeasonPassLayer extends BaseView {
 
         this.addPrefab(Const.Prefabs.Main_top, this.node, null!, { parentNode: this.node, flag: main_top.ShowLevel | main_top.ShowCoin | main_top.ShowPower | main_top.ShowDiamond });
 
-        this.bindButton(this.btnClose, this.onClickBtnClose);
+        this.bindButton(this.btnClose, this._fn_sz);
     }
 
     onEnable() {
-        this.on(GD.event.overMonth, this.overMonthRet);
+        this.on(GD.event.overMonth, this._fn_wp);
 
     }
 
     onDisable() {
-        this.off(GD.event.overMonth, this.overMonthRet);
+        this.off(GD.event.overMonth, this._fn_wp);
 
     }
 
     show() {
-        this.initUI();
+        this._fn_ph();
     }
 
-    initUI() {
-        this.refreshTopLayer();
-        this.refreshListLayer();
-        this.refreshProgressBar();
+    _fn_ph() {
+        this._fn_zy();
+        this._fn_zh();
+        this._fn_zj();
     }
 
-    refreshTopLayer() {
-        let nextRow = TableDataService.ins().getTableValueByID(Const.Tables.seasonPass, seasonProgressStore.seasonId + 1);
+    _fn_zy() {
+        let nextRow = TableDataService.ins()._fn_ly(Const.Tables.seasonPass, seasonProgressStore.seasonId + 1);
         if (nextRow) {
-            this.setString(this.scoreNode, seasonProgressStore.seasonScore + "/" + nextRow.num);
-            this.setProgressBar(this.nextProgress, seasonProgressStore.seasonScore / nextRow.num);
-            this.setString(this.lvNode, nextRow.lv);
+            this._fn_ago(this.scoreNode, seasonProgressStore.seasonScore + "/" + nextRow.num);
+            this._fn_afm(this.nextProgress, seasonProgressStore.seasonScore / nextRow.num);
+            this._fn_ago(this.lvNode, nextRow.lv);
         } else {
-            this.setString(this.lvNode, seasonProgressStore.seasonId - 1);
-            this.setString(this.scoreNode, localText.lvMax);
-            this.setProgressBar(this.nextProgress, 1);
+            this._fn_ago(this.lvNode, seasonProgressStore.seasonId - 1);
+            this._fn_ago(this.scoreNode, localText.lvMax);
+            this._fn_afm(this.nextProgress, 1);
         }
     }
 
-    refreshListLayer() {
+    _fn_zh() {
         this.itemLayer.removeAllChildren();
-        let tb = TableDataService.ins().getTable(Const.Tables.seasonPass);
+        let tb = TableDataService.ins()._fn_lt(Const.Tables.seasonPass);
         for (let i = tb.length - 1; i >= 0; i--) {
             let row = tb[i];
             let itemUI = instantiate(this.awardItem);
             itemUI.active = true;
             itemUI.parent = this.itemLayer;
-            this.refreshAwardItem(itemUI, row);
+            this._fn_yt(itemUI, row);
         }
 
         let itemLayout = this.itemLayer.getComponent(Layout)!;
@@ -111,20 +111,20 @@ export class SeasonPassLayer extends BaseView {
         });
     }
 
-    refreshProgressBar() {
-        let tb = TableDataService.ins().getTable(Const.Tables.seasonPass);
-        let nextRow = TableDataService.ins().getTableValueByID(Const.Tables.seasonPass, seasonProgressStore.seasonId + 1);
+    _fn_zj() {
+        let tb = TableDataService.ins()._fn_lt(Const.Tables.seasonPass);
+        let nextRow = TableDataService.ins()._fn_ly(Const.Tables.seasonPass, seasonProgressStore.seasonId + 1);
         if (nextRow) {
             let oneP = 1 / (tb.length - 1);
             let p = oneP * (seasonProgressStore.seasonId - 1) + seasonProgressStore.seasonScore / nextRow.num * oneP;
-            this.setProgressBar(this.progressNode, p);
+            this._fn_afm(this.progressNode, p);
         } else {
-            this.setProgressBar(this.progressNode, 1);
+            this._fn_afm(this.progressNode, 1);
         }
     }
 
-    refreshAwardItem(itemUI: Node, row: any) {
-        let info = seasonProgressStore.getSeasonPassInfoById(row.id);
+    _fn_yt(itemUI: Node, row: any) {
+        let info = seasonProgressStore._fn_lb(row.id);
 
         let lvNode = find("rank/lv", itemUI)!;
         let rankBg1Node = find("rank/bg1", itemUI)!;
@@ -144,28 +144,28 @@ export class SeasonPassLayer extends BaseView {
                 rankBg2Node.active = true;
             }
         }
-        this.setString(lvNode, row.lv);
+        this._fn_ago(lvNode, row.lv);
 
         let award1 = row.award1;
-        let propRow = TableDataService.ins().getTableValueByID(Const.Tables.prop, award1[0]);
+        let propRow = TableDataService.ins()._fn_ly(Const.Tables.prop, award1[0]);
         let award1Node = find("award1", itemUI)!;
         // @ts-ignore
         award1Node.row = row;
-        this.bindButton(award1Node, this.onClickAward1);
+        this.bindButton(award1Node, this._fn_sr);
         let btnInfo1 = find("btnInfo", award1Node)!;
         btnInfo1.active = false;
-        if (mergeBoardStateStore.propIsPutInCardList(propRow.id)) {
+        if (mergeBoardStateStore._fn_xr(propRow.id)) {
             btnInfo1.active = true;
             // @ts-ignore
             btnInfo1.propRow = propRow;
             let propRowid = propRow.id
             this.bindButton(btnInfo1, () => {
-                mergeBoardStateStore.openPropInfoLayer(propRowid);
+                mergeBoardStateStore._fn_wh(propRowid);
             });
         }
 
-        this.setSpriteFrame2(find("icon", award1Node)!.getComponent(Sprite)!, Const.resPath.icon + propRow.icon);
-        this.setString(find("num", award1Node)!, "x" + award1[1]);
+        this._fn_agl(find("icon", award1Node)!.getComponent(Sprite)!, Const.resPath.icon + propRow.icon);
+        this._fn_ago(find("num", award1Node)!, "x" + award1[1]);
         let get1Node = find("get", award1Node)!;
         let gou1Node = find("gou", award1Node)!;
         get1Node.active = false;
@@ -186,27 +186,27 @@ export class SeasonPassLayer extends BaseView {
         }
 
         let award2 = row.award2;
-        propRow = TableDataService.ins().getTableValueByID(Const.Tables.prop, award2[0]);
+        propRow = TableDataService.ins()._fn_ly(Const.Tables.prop, award2[0]);
         let award2Node = find("award2", itemUI)!;
         // @ts-ignore
         award2Node.row = row;
-        this.bindButton(award2Node, this.onClickAward2);
+        this.bindButton(award2Node, this._fn_ss);
 
         let btnInfo2 = find("btnInfo", award2Node)!;
         btnInfo2.active = false;
-        if (mergeBoardStateStore.propIsPutInCardList(propRow.id)) {
+        if (mergeBoardStateStore._fn_xr(propRow.id)) {
             btnInfo2.active = true;
             // @ts-ignore
             btnInfo2.propRow = propRow;
             let propRowid = propRow.id
 
             this.bindButton(btnInfo2, () => {
-                mergeBoardStateStore.openPropInfoLayer(propRowid);
+                mergeBoardStateStore._fn_wh(propRowid);
             });
         }
 
-        this.setSpriteFrame2(find("icon", award2Node)?.getComponent(Sprite)!, Const.resPath.icon + propRow.icon);
-        this.setString(find("num", award2Node)!, "x" + award2[1]);
+        this._fn_agl(find("icon", award2Node)?.getComponent(Sprite)!, Const.resPath.icon + propRow.icon);
+        this._fn_ago(find("num", award2Node)!, "x" + award2[1]);
         let get2Node = find("get", award2Node)!;
         let gou2Node = find("gou", award2Node)!;
         let lock2Node = find("lock", award2Node)!;
@@ -232,37 +232,37 @@ export class SeasonPassLayer extends BaseView {
 
     }
 
-    overMonthRet() {
-        this.initUI();
+    _fn_wp() {
+        this._fn_ph();
     }
 
-    onClickAward1(btn: Button) {
+    _fn_sr(btn: Button) {
         // @ts-ignore
         let row = btn.node.row;
-        let info = seasonProgressStore.getSeasonPassInfoById(row.id);
+        let info = seasonProgressStore._fn_lb(row.id);
         if (!info || info.a1) {
             return;
         }
-        seasonProgressStore.seasonGetAward1(row.id, UtilPub.convertToWorldSpace(btn.node));
-        this.refreshAwardItem(btn.node.parent!, row);
+        seasonProgressStore._fn_ade(row.id, UtilPub._fn_dp(btn.node));
+        this._fn_yt(btn.node.parent!, row);
     }
 
-    onClickAward2(btn: Button) {
+    _fn_ss(btn: Button) {
         // @ts-ignore
         let row = btn.node.row;
-        let info = seasonProgressStore.getSeasonPassInfoById(row.id);
+        let info = seasonProgressStore._fn_lb(row.id);
         if (!info || !info.a1 || info.a2) {
             return;
         }
-        mergeBoardStateStore.openAd("战令超级会员奖励", (isAward: any) => {
+        mergeBoardStateStore._fn_we("战令超级会员奖励", (isAward: any) => {
             if (isAward) {
-                seasonProgressStore.seasonGetAward2(row.id, UtilPub.convertToWorldSpace(btn.node));
-                this.refreshAwardItem(btn.node.parent!, row);
+                seasonProgressStore._fn_adf(row.id, UtilPub._fn_dp(btn.node));
+                this._fn_yt(btn.node.parent!, row);
             }
         });
     }
 
-    onClickBtnClose() {
+    _fn_sz() {
         this.close();
 
 

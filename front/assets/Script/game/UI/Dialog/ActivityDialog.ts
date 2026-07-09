@@ -30,20 +30,20 @@ export class ActivityDialog extends BaseView {
 
     onEnable() {
 
-        director.off(GNetCmd.GetUserDataByKey.toString(), this.onMessageEvent, this);
-        director.on(GNetCmd.GetUserDataByKey.toString(), this.onMessageEvent, this);
+        director.off(GNetCmd.GetUserDataByKey.toString(), this._fn_uw, this);
+        director.on(GNetCmd.GetUserDataByKey.toString(), this._fn_uw, this);
     }
 
     onDisable() {
 
-        director.off(GNetCmd.GetUserDataByKey.toString(), this.onMessageEvent, this);
+        director.off(GNetCmd.GetUserDataByKey.toString(), this._fn_uw, this);
     }
 
-    onMessageEvent(userDataPayload: any) {
-        let monthCardRecord = ServerCtrJSF.GetInstance().getUserDataByKey(userDataPayload, Const.MoneyKeys.MonthCharge)
+    _fn_uw(userDataPayload: any) {
+        let monthCardRecord = ServerCtrJSF._fn_hp()._fn_mu(userDataPayload, Const.MoneyKeys.MonthCharge)
         if (monthCardRecord) {
             this._monthCardState = {}
-            this._monthCardState.have = MonthCard.checkMonthCard(userDataPayload) ? 1 : 0
+            this._monthCardState.have = MonthCard._fn_ca(userDataPayload) ? 1 : 0
             if (this._clickItem) {
 
             }
@@ -52,17 +52,17 @@ export class ActivityDialog extends BaseView {
 
     show(args: any) {
         super.show(args)
-        let freeGiftList = TableDataService.ins().getTableValuesByType(Const.Tables.giftFree, "type", "1")
-        this.scrollViewSetData(this.giftScroll, freeGiftList, this.initItem, this)
+        let freeGiftList = TableDataService.ins()._fn_mb(Const.Tables.giftFree, "type", "1")
+        this._fn_adc(this.giftScroll, freeGiftList, this._fn_oc, this)
         if (!WECHAT) {
-            ServerCtrJSF.GetInstance().reqGetUserDataByKey(GameStorage.Key(Const.MoneyKeys.MonthCharge))
+            ServerCtrJSF._fn_hp()._fn_aat(GameStorage._fn_rb(Const.MoneyKeys.MonthCharge))
         }
-        GamePlatform.track("查看免费礼物")
+        GamePlatform._fn_aja("查看免费礼物")
     }
 
-    initItem(giftCellNode: Node, giftConfig: any, giftIndex: number, self: BaseUiComponent) {
+    _fn_oc(giftCellNode: Node, giftConfig: any, giftIndex: number, self: BaseUiComponent) {
         giftCellNode.getChildByName("infoLabel")!.getComponent(Label)!.string = giftConfig.info
-        let receiveTime = playerDataStore.getReceiveTime(giftConfig.dataKey, giftConfig.cdTime)
+        let receiveTime = playerDataStore._fn_jz(giftConfig.dataKey, giftConfig.cdTime)
         find("numLabel", giftCellNode)!.getComponent(Label)!.string = "Received: " + receiveTime
         find("titleLabel", giftCellNode)!.getComponent(Label)!.string = giftConfig.typename
         find("titleLabel", giftCellNode)!.getComponent(LabelOutline)!.color = giftConfig.fontColor.parseColor()
@@ -70,7 +70,7 @@ export class ActivityDialog extends BaseView {
 
         self.addButtonHander(giftCellNode.getChildByName("btnbg")!, self.node, "ActivityDialog", "onClickGet", giftConfig)
 
-        self.setSpriteFrame(find("icon", giftCellNode)!.getComponent(Sprite)!, Const.resPath.freeGiftIcon + giftConfig.icon)
+        self._fn_agk(find("icon", giftCellNode)!.getComponent(Sprite)!, Const.resPath.freeGiftIcon + giftConfig.icon)
 
         if (giftConfig.typeson == 3) {
             find("numNode", giftCellNode)!.active = true
@@ -93,10 +93,10 @@ export class ActivityDialog extends BaseView {
     }
 
     onClickGet(event: any, giftConfig: any) {
-        AudioPlaybackService.instance.playSound(Const.Audio.btn)
-        let receiveTime = playerDataStore.getReceiveTime(giftConfig.dataKey, giftConfig.cdTime)
+        AudioPlaybackService.instance._fn_xc(Const.Audio.btn)
+        let receiveTime = playerDataStore._fn_jz(giftConfig.dataKey, giftConfig.cdTime)
         if (receiveTime >= giftConfig.receiveTime) {
-            this.toast("请等待次数恢复哦~")
+            this._fn_aiu("请等待次数恢复哦~")
             return
         }
         if (giftConfig.type == 1) {
@@ -108,34 +108,34 @@ export class ActivityDialog extends BaseView {
             this._clickItem = giftConfig
             let startNode = find("numNode", event.target.parent)!
             let rewardStartPos = startNode ? startNode.getComponent(UITransform)!.convertToWorldSpaceAR(v3(0, 0, 0)) : this.node.getComponent(UITransform)!.convertToWorldSpaceAR(v3(0, 0, 0))
-            this.dealClickItem(rewardStartPos)
+            this._fn_ed(rewardStartPos)
         }
     }
 
-    dealClickItem(rewardStartPos: Vec3) {
-        let receiveTime = playerDataStore.getReceiveTime(this._clickItem.dataKey, this._clickItem.cdTime)
-        RewardVideoManager.showVideo(this._clickItem!.info + "" + receiveTime + " times", () => {
-            this.onVideoBack(this._clickItem, rewardStartPos)
+    _fn_ed(rewardStartPos: Vec3) {
+        let receiveTime = playerDataStore._fn_jz(this._clickItem.dataKey, this._clickItem.cdTime)
+        RewardVideoManager._fn_ahy(this._clickItem!.info + "" + receiveTime + " times", () => {
+            this._fn_wc(this._clickItem, rewardStartPos)
         })
         return
         if (this._monthCardState.have == 1 && !NATIVE) {
 
-            this.onVideoBack(this._clickItem, rewardStartPos)
+            this._fn_wc(this._clickItem, rewardStartPos)
         } else {
 
-            let receiveTime = playerDataStore.getReceiveTime(this._clickItem.dataKey, this._clickItem.cdTime)
-            RewardVideoManager.showVideo(this._clickItem!.info + "" + receiveTime + " times", () => {
-                this.onVideoBack(this._clickItem, rewardStartPos)
+            let receiveTime = playerDataStore._fn_jz(this._clickItem.dataKey, this._clickItem.cdTime)
+            RewardVideoManager._fn_ahy(this._clickItem!.info + "" + receiveTime + " times", () => {
+                this._fn_wc(this._clickItem, rewardStartPos)
             })
 
         }
     }
 
-    onVideoBack(giftConfig: any, rewardStartPos: Vec3) {
-        playerDataStore.getProp(giftConfig.price3, rewardStartPos, v3(0, 0, 0))
-        playerDataStore.setReceiveTime(giftConfig.dataKey, giftConfig.cdTime)
-        let freeGiftList = TableDataService.ins().getTableValuesByType(Const.Tables.giftFree, "type", "1")
-        this.scrollViewSetData(this.giftScroll, freeGiftList, this.initItem, this)
+    _fn_wc(giftConfig: any, rewardStartPos: Vec3) {
+        playerDataStore._fn_jk(giftConfig.price3, rewardStartPos, v3(0, 0, 0))
+        playerDataStore._fn_afo(giftConfig.dataKey, giftConfig.cdTime)
+        let freeGiftList = TableDataService.ins()._fn_mb(Const.Tables.giftFree, "type", "1")
+        this._fn_adc(this.giftScroll, freeGiftList, this._fn_oc, this)
         this._clickItem = null
     }
 

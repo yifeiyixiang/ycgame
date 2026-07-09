@@ -26,13 +26,13 @@ export class ShineColor extends Component {
         }
     }
 
-    ctlVal(val:number){
+    _fn_eb(val:number){
         let max= 1
         let min = 0.5
         return min+(max-min)*val
     }
 
-    setMaterialProperty(val: number) {
+    _fn_afd(val: number) {
         if (this.isSpine) {
             // @ts-ignore
             let cache: any = this.uiRenderer._materialCache;
@@ -49,7 +49,7 @@ export class ShineColor extends Component {
         let material = this.uiRenderer.getMaterialInstance(0)!;
         let uRate = material.passes[0].getHandle("u_rate");
 
-        val = this.ctlVal(val)
+        val = this._fn_eb(val)
 
         material.passes[0].setUniform(uRate, val);
         if (this.vColor) {
@@ -66,17 +66,17 @@ export class ShineColor extends Component {
             this._time -= dt;
             this._time = this._time < 0 ? 0 : this._time;
             let rate = Math.abs(this._time - this._median) * 2 / this.duration ;
-            this.setMaterialProperty(rate);
+            this._fn_afd(rate);
         } else {
             if(this.isCycle){
                 this.setWhiteCycle(this.materialPath, this.rate)
             }else{
-                this.removeShineColorMaterial();
+                this._fn_aal();
             }
         }
     }
 
-    removeShineColorMaterial() {
+    _fn_aal() {
         this.uiRenderer.customMaterial = this.orignMaterial;
         if (this.isSpine) {
 
@@ -102,10 +102,10 @@ export class ShineColor extends Component {
 
             this.vColor = v4(1, 1, 1, 1);
         }
-        ResourceLoaderService.loadResWithBundle(materialPath, Material, (err, material) => {
+        ResourceLoaderService._fn_rq(materialPath, Material, (err, material) => {
             this._time = this.duration;
             this.uiRenderer.customMaterial = material;
-            this.setMaterialProperty(rate);
+            this._fn_afd(rate);
         })
     }
 
@@ -121,11 +121,11 @@ export class ShineColor extends Component {
 
             this.vColor = v4(1, 1, 1, 1);
         }
-        ResourceLoaderService.loadResWithBundle(materialPath, Material, (err, material) => {
+        ResourceLoaderService._fn_rq(materialPath, Material, (err, material) => {
 
             this._time = this.duration;
             this.uiRenderer.customMaterial = material;
-            this.setMaterialProperty(rate);
+            this._fn_afd(rate);
         })
     }
 

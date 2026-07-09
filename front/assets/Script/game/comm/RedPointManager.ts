@@ -29,7 +29,7 @@ class RedPointManager {
     private static _instance: RedPointManager = null!
     private eventManger = { RPM_Email: false }
 
-    public static getInstance() {
+    public static _fn_ho() {
         if (this._instance == null) {
             this._instance = new RedPointManager()
 
@@ -37,12 +37,12 @@ class RedPointManager {
         return this._instance
     }
 
-    public setRedpoint(parent: Node, event: RPointEvent, forece: boolean, scale: number = 1, offsetX: number = 0, offsetY: number = 0) {
+    public _fn_afp(parent: Node, event: RPointEvent, forece: boolean, scale: number = 1, offsetX: number = 0, offsetY: number = 0) {
         let redPointComm = parent.getComponent(RedPointComm) || parent.addComponent(RedPointComm)
         redPointComm.setRedPointFlag(event, forece)
         let redPointNode = parent.getChildByName("RedPoint")
         if (redPointNode == null) {
-            UtilPub.getPrefab(Const.Prefabs.RedPoint, (p: Prefab) => {
+            UtilPub._fn_jj(Const.Prefabs.RedPoint, (p: Prefab) => {
                 let node = NodePoolService.instance.getNode(p, parent!)!
                 node.name = "RedPoint"
                 let uiTransform = node.getComponent(UITransform) || node.addComponent(UITransform)
@@ -59,14 +59,14 @@ class RedPointManager {
         }
     }
 
-    public setRedpointFix(parent: Node, event: RPointEvent, forece: boolean) {
+    public _fn_afq(parent: Node, event: RPointEvent, forece: boolean) {
 
         let redPointNode = parent.getChildByName("RedPoint")
         if (redPointNode == null) {
             if (!forece) {
                 return
             }
-            UtilPub.getPrefab(Const.Prefabs.RedPoint, (p: Prefab) => {
+            UtilPub._fn_jj(Const.Prefabs.RedPoint, (p: Prefab) => {
                 let node = NodePoolService.instance.getNode(p, parent!)!
                 node.name = "RedPoint"
                 let uiTransform = node.getComponent(UITransform) || node.addComponent(UITransform)
@@ -82,11 +82,11 @@ class RedPointManager {
         }
     }
 
-    public checkIsShowRedPoint(flag: RPointEvent) {
+    public _fn_by(flag: RPointEvent) {
         let value = false
         switch (flag) {
             case RPointEvent.RPM_Email:
-                value = EmailManager.getInstance().isShowNewEmailRedPoint()
+                value = EmailManager._fn_ho()._fn_qv()
                 break;
             case RPointEvent.RPM_Tujian:
                 value = playerDataStore._showPropTujianRed || playerDataStore._showSceneTujianRed
@@ -99,7 +99,7 @@ class RedPointManager {
                 value = playerDataStore._showSceneTujianRed
                 break;
             case RPointEvent.boardBuildHint:
-                value = UtilScene.isSceneItemCouldBeBuild();
+                value = UtilScene._fn_qt();
                 break;
             default:
                 break;
@@ -109,4 +109,4 @@ class RedPointManager {
 
 }
 
-export const redPointManager = RedPointManager.getInstance()
+export const redPointManager = RedPointManager._fn_ho()

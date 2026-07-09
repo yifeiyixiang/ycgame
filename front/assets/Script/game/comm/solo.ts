@@ -29,20 +29,20 @@ export class solo extends BaseUiComponent {
         macro.ENABLE_MULTI_TOUCH = true;
         this.camera = this.camera3D.getChildByName("Camera")!
         this.oriPos = this.camera.getPosition().clone()
-        this.onTouchEvent()
+        this._fn_vy()
         Const.SoloCameraParent = this.camera3D.parent!
 
 
     }
 
-    onTouchEvent() {
+    _fn_vy() {
         this.node.on(Node.EventType.TOUCH_START, (event: EventTouch) => {
             let touches = event.getTouches();
             UtilPub.log("--------touches start", touches.length)
             if (touches.length == 1) {
                 let touchPos = event.getUILocation()
 
-                if (UtilPub.IsPointInNodeArea2D(this.opsPoint, touchPos)) {
+                if (UtilPub._fn_qi(this.opsPoint, touchPos)) {
                     this.isTouch = true
 
                 }
@@ -119,7 +119,7 @@ export class solo extends BaseUiComponent {
 
     }
 
-    offTouchEvent() {
+    _fn_sl() {
         this.node.off(Node.EventType.TOUCH_START);
         this.node.off(Node.EventType.TOUCH_MOVE);
         this.node.off(Node.EventType.TOUCH_END);

@@ -17,15 +17,15 @@ export class ManagerLayer extends BaseView {
     taskList: Node = null!;
 
     start() {
-        this.bindButton(this.btnClose, this.onClickBtnClose);
+        this.bindButton(this.btnClose, this._fn_sz);
     }
 
     show(args: any) {
         super.show(args);
 
-        this.initUI();
+        this._fn_ph();
 
-        this.on(GD.event.managerCreateTask, this.managerCreateTaskRet, this);
+        this.on(GD.event.managerCreateTask, this._fn_sa, this);
 
     }
 
@@ -35,13 +35,13 @@ export class ManagerLayer extends BaseView {
         this.off(GD.event.managerCreateTask, this);
     }
 
-    managerCreateTaskRet() {
-        this.scrollViewRefreshList(this.taskList);
+    _fn_sa() {
+        this._fn_acz(this.taskList);
     }
 
-    initUI() {
-        let managerTableRows = TableDataService.ins().getTable(Const.Tables.manager);
-        this.scrollViewSetData(this.taskList, managerTableRows, this.refreshTaskItem.bind(this));
+    _fn_ph() {
+        let managerTableRows = TableDataService.ins()._fn_lt(Const.Tables.manager);
+        this._fn_adc(this.taskList, managerTableRows, this._fn_zv.bind(this));
         let firstUnclaimedIndex = -1;
         for (let managerIndex = 0; managerIndex < mergeBoardStateStore.managerArr.length; managerIndex++) {
             let managerState = mergeBoardStateStore.managerArr[managerIndex];
@@ -50,21 +50,21 @@ export class ManagerLayer extends BaseView {
                 break;
             }
         }
-        this.scrollViewScrollToIndex(this.taskList, firstUnclaimedIndex + 4, 0.6);
+        this._fn_ada(this.taskList, firstUnclaimedIndex + 4, 0.6);
     }
 
-    refreshTaskItem(managerCellNode: Node, managerConfig: any) {
+    _fn_zv(managerCellNode: Node, managerConfig: any) {
         // @ts-ignore
         managerCellNode.index = managerConfig.id - 1;
-        this.bindButton(managerCellNode, this.onClickTaskItem);
-        this.setString(find("id", managerCellNode), managerConfig.id);
-        this.setString(find("info", managerCellNode), managerInfoTypeArr[managerConfig.taskType - 1].format(managerConfig.p1));
+        this.bindButton(managerCellNode, this._fn_ui);
+        this._fn_ago(find("id", managerCellNode), managerConfig.id);
+        this._fn_ago(find("info", managerCellNode), managerInfoTypeArr[managerConfig.taskType - 1].format(managerConfig.p1));
         let costPropId = managerConfig.price[0];
         let costPropCount = managerConfig.price[1];
-        let costPropConfig = TableDataService.ins().getTableValueByID(Const.Tables.prop, costPropId);
-        this.setSpriteFrame2(find("prop/icon", managerCellNode)?.getComponent(Sprite)!, Const.resPath.icon + costPropConfig.icon);
+        let costPropConfig = TableDataService.ins()._fn_ly(Const.Tables.prop, costPropId);
+        this._fn_agl(find("prop/icon", managerCellNode)?.getComponent(Sprite)!, Const.resPath.icon + costPropConfig.icon);
 
-        this.setString(find("prop/num", managerCellNode), "x" + costPropCount);
+        this._fn_ago(find("prop/num", managerCellNode), "x" + costPropCount);
 
         let lockNode = find("lock", managerCellNode)!;
         let doneNode = find("done", managerCellNode)!;
@@ -76,9 +76,9 @@ export class ManagerLayer extends BaseView {
 
         if (managerState) {
             lockNode.active = false;
-            let progressValue = mergeBoardStateStore.getManagerVal(managerState);
-            this.setProgressBar(find("progress", managerCellNode)!, progressValue / managerConfig.p1);
-            this.setString(find("progress/num", managerCellNode), progressValue + "/" + managerConfig.p1);
+            let progressValue = mergeBoardStateStore._fn_ii(managerState);
+            this._fn_afm(find("progress", managerCellNode)!, progressValue / managerConfig.p1);
+            this._fn_ago(find("progress/num", managerCellNode), progressValue + "/" + managerConfig.p1);
             if (progressValue >= managerConfig.p1) {
                 if (managerState.get) {
                     doneNode.active = true;
@@ -92,21 +92,21 @@ export class ManagerLayer extends BaseView {
         }
     }
 
-    onClickTaskItem(btn: Button) {
+    _fn_ui(btn: Button) {
         // @ts-ignore
         let managerIndex = btn.node.index;
         let managerState = mergeBoardStateStore.managerArr[managerIndex];
         if (!managerState) {
             return;
         }
-        let managerConfig = TableDataService.ins().getTableValueByID(Const.Tables.manager, managerState.id);
-        if (mergeBoardStateStore.getManagerVal(managerState) >= managerConfig.p1 && !managerState.get) {
-            mergeBoardStateStore.managerGetAward(managerIndex,UtilPub.convertToWorldSpace(find("prop/icon",btn.node!)!));
-            this.scrollViewRefreshItemUIByIndex(this.taskList, managerIndex);
+        let managerConfig = TableDataService.ins()._fn_ly(Const.Tables.manager, managerState.id);
+        if (mergeBoardStateStore._fn_ii(managerState) >= managerConfig.p1 && !managerState.get) {
+            mergeBoardStateStore._fn_sb(managerIndex,UtilPub._fn_dp(find("prop/icon",btn.node!)!));
+            this._fn_acy(this.taskList, managerIndex);
         }
     }
 
-    onClickBtnClose() {
+    _fn_sz() {
         this.close();
     }
 

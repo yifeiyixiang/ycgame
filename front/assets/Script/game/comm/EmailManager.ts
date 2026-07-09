@@ -13,74 +13,74 @@ export class EmailManager {
 
     private _newEmailIDs: number[] = []
 
-    public static getInstance() {
+    public static _fn_ho() {
         if (this._instance == null) {
             this._instance = new EmailManager()
             this._instance._newEmailIDs = []
-            this._instance.checkTimeOutEmail()
-            director.off(GNetCmd.ToClientNewMail.toString(), this._instance.onNewMailEvent, this);
-            director.off(GNetCmd.GetUserDataByKey.toString(), this._instance.onMessageEvent, this);
-            director.on(GNetCmd.ToClientNewMail.toString(), this._instance.onNewMailEvent, this);
-            director.on(GNetCmd.GetUserDataByKey.toString(), this._instance.onMessageEvent, this);
+            this._instance._fn_ck()
+            director.off(GNetCmd.ToClientNewMail.toString(), this._instance._fn_vb, this);
+            director.off(GNetCmd.GetUserDataByKey.toString(), this._instance._fn_uw, this);
+            director.on(GNetCmd.ToClientNewMail.toString(), this._instance._fn_vb, this);
+            director.on(GNetCmd.GetUserDataByKey.toString(), this._instance._fn_uw, this);
         }
         return this._instance
     }
 
 
     public get EmailList() {
-        this.checkNumOutEmail()
-        return GameStorage.getObjectArrayByKey(Const.DataKeys.emailList).values
+        this._fn_cc()
+        return GameStorage._fn_ip(Const.DataKeys.emailList).values
     }
 
-    public checkTimeOutEmail() {
+    public _fn_ck() {
         for (let emailIndex = 0; emailIndex < this.EmailList.length; emailIndex++) {
             const email: Email = this.EmailList[emailIndex];
-            if (TimeCtrJSF.GetInstance().ServerTime - email.time > 50 * 24 * 60 * 60000) {
-                this.removeEmail(email.id)
+            if (TimeCtrJSF._fn_hp().ServerTime - email.time > 50 * 24 * 60 * 60000) {
+                this._fn_aah(email.id)
             }
         }
     }
 
-    public checkNumOutEmail() {
-        let emailRows = GameStorage.getObjectArrayByKey(Const.DataKeys.emailList).values
+    public _fn_cc() {
+        let emailRows = GameStorage._fn_ip(Const.DataKeys.emailList).values
         if (emailRows.length > 50) {
-            let sortByReceiveTime = (a: Email, b: Email) => {
+            let _fn_aif = (a: Email, b: Email) => {
                 return b.time - a.time
             }
-            emailRows.sort(sortByReceiveTime)
+            emailRows.sort(_fn_aif)
             for (let emailIndex = 50; emailIndex < emailRows.length; emailIndex++) {
                 if (emailRows[emailIndex]) {
-                    this.removeEmail(emailRows[emailIndex].id)
+                    this._fn_aah(emailRows[emailIndex].id)
                 }
             }
         }
     }
 
-    onNewMailEvent(value: any) {
+    _fn_vb(value: any) {
 
-       EmailManager.getInstance().pushNewEmailIDs(parseInt(value.id + ""))
+       EmailManager._fn_ho()._fn_xu(parseInt(value.id + ""))
     }
 
-    public pushNewEmailIDs(id: number) {
+    public _fn_xu(id: number) {
         if (!this._newEmailIDs) {
             this._newEmailIDs = []
         }
         this._newEmailIDs.push(id)
     }
 
-    public popNewEmails() {
+    public _fn_xg() {
         if (this._newEmailIDs.length <= 0) {
             return true
         }
         for (let emailIdIndex = 0; emailIdIndex < this._newEmailIDs.length; emailIdIndex++) {
             const emailId = this._newEmailIDs[emailIdIndex];
-            this.reqServerEmailById(emailId)
+            this._fn_abd(emailId)
         }
         this._newEmailIDs = []
         return false
     }
 
-    public isShowNewEmailRedPoint() {
+    public _fn_qv() {
         if (this._newEmailIDs.length > 0) {
             return true
         }
@@ -94,20 +94,20 @@ export class EmailManager {
         return false
     }
 
-    public reqServerEmailById(id: number) {
-        ServerCtrJSF.GetInstance().reqGetUserDataObjByKey(GameStorage.Key(Const.DataKeys.emailList + "_" + id))
+    public _fn_abd(id: number) {
+        ServerCtrJSF._fn_hp()._fn_aau(GameStorage._fn_rb(Const.DataKeys.emailList + "_" + id))
     }
 
-    onMessageEvent(value: any) {
+    _fn_uw(value: any) {
         if (value == null) {
             return
         }
-        if (value.key.indexOf(GameStorage.Key(Const.DataKeys.emailList)) >= 0) {
-            EmailManager.getInstance().saveEmail(value.val)
+        if (value.key.indexOf(GameStorage._fn_rb(Const.DataKeys.emailList)) >= 0) {
+            EmailManager._fn_ho()._fn_acp(value.val)
         }
     }
 
-    public addEmail() {
+    public _fn_c() {
         let email: Email = {
             id: 10003,
             type: EmailType.type_sys,
@@ -115,10 +115,10 @@ export class EmailManager {
             readState: EmailState.unRead,
             receicedState: EmailRewardState.unReceive,
             reward: [{ propId: 101, cnt: 100 }],
-            time: TimeCtrJSF.GetInstance().ServerTime,
+            time: TimeCtrJSF._fn_hp().ServerTime,
             title: "运营补偿",
         }
-        this.saveEmail(email)
+        this._fn_acp(email)
 
         let email1: Email = {
             id: 10015,
@@ -127,26 +127,26 @@ export class EmailManager {
             readState: EmailState.unRead,
             receicedState: EmailRewardState.unReceive,
             reward: [],
-            time: TimeCtrJSF.GetInstance().ServerTime,
+            time: TimeCtrJSF._fn_hp().ServerTime,
             title: "系统公告2",
         }
-        this.saveEmail(email1)
+        this._fn_acp(email1)
     }
 
-    public saveEmail(email: Email) {
-        GameStorage.setObject(Const.DataKeys.emailList + "_" + email.id, email)
+    public _fn_acp(email: Email) {
+        GameStorage._fn_afh(Const.DataKeys.emailList + "_" + email.id, email)
     }
 
-    public getEmailById(id: number) {
-        return GameStorage.getObject(Const.DataKeys.emailList + "_" + id, null)
+    public _fn_gy(id: number) {
+        return GameStorage._fn_io(Const.DataKeys.emailList + "_" + id, null)
     }
 
-    public removeEmail(id: number) {
+    public _fn_aah(id: number) {
         GameStorage.removeItem(Const.DataKeys.emailList + "_" + id)
     }
 
-    public removeAllEmail() {
-        GameStorage.removeMulti(GameStorage.getObjectArrayByKey(Const.DataKeys.emailList).keys)
+    public _fn_aae() {
+        GameStorage._fn_aai(GameStorage._fn_ip(Const.DataKeys.emailList).keys)
     }
 
 }

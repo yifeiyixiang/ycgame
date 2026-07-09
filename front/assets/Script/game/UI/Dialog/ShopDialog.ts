@@ -16,13 +16,13 @@ export class ShopDialog extends BaseView {
 
     show(args: any) {
         super.show(args)
-        this.bindButton(find("root/btnClose", this.node)!, this.popClose)
+        this.bindButton(find("root/btnClose", this.node)!, this._fn_xe)
 
-        this.showList()
+        this._fn_ahn()
     }
 
-    showList() {
-        let propData = TableDataService.ins().getTableValuesByType(Const.Tables.shopTable, "type", "1")
+    _fn_ahn() {
+        let propData = TableDataService.ins()._fn_mb(Const.Tables.shopTable, "type", "1")
         let dataArr: any = []
         propData.forEach(element => {
             if (!dataArr[element.typeson - 1]) {
@@ -32,17 +32,17 @@ export class ShopDialog extends BaseView {
         });
         let content = find("view/content", this.shopScroll)
         content!.removeAllChildren()
-        this.setScrollViewData(content!, dataArr, find("root/Layout", this.node)!, this.initItemInfo, this)
+        this._fn_agd(content!, dataArr, find("root/Layout", this.node)!, this._fn_od, this)
     }
 
-    initItemInfo(itemUI: Node, itemData: any, index: number, self: any) {
+    _fn_od(itemUI: Node, itemData: any, index: number, self: any) {
 
         if (itemData.length > 0) {
             itemUI.getChildByName("titl2")!.getChildByName("title")!.getComponent(Label)!.string = itemData[0].typename + ""
             let layer = itemUI.getChildByName("Layout")
             layer!.removeAllChildren()
             if (itemData[0].cdKey > 0) {
-                let timeData = TableDataService.ins().getTableValueByKey(Const.Tables.privilege, "key", itemData[0].cdKey)
+                let timeData = TableDataService.ins()._fn_lz(Const.Tables.privilege, "key", itemData[0].cdKey)
                 find("titl2/cdtime", itemUI)!.active = true
                 find("titl2/cdtime", itemUI)!.getComponent(CdComponent)!.setCD(CDType.CDIneterVal, timeData.dataKey, timeData.cdTime)
             } else {

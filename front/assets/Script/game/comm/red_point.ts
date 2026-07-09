@@ -37,11 +37,11 @@ export class RedPointIndicatorController extends BaseUiComponent {
 
     onEnable(){
         this.sp = this.node.getComponent(Sprite)!
-        this.sp.enabled = this.isShowRedPointPos(this.redPointPos)
+        this.sp.enabled = this._fn_qw(this.redPointPos)
     }
 
 
-    isShowRedPointPos(pos:number){
+    _fn_qw(pos:number){
         return false
     }
 
@@ -51,7 +51,7 @@ export class RedPointIndicatorController extends BaseUiComponent {
         this.calTime+=deltaTime
         if(this.calTime>1.2){
             this.calTime=0
-            this.sp.enabled = this.isShowRedPointPos(this.redPointPos)
+            this.sp.enabled = this._fn_qw(this.redPointPos)
             if(this.sp.enabled==true){
                 this.ani()
             }else{

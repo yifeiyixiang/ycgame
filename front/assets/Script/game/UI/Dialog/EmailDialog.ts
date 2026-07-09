@@ -18,12 +18,12 @@ export class EmailDialog extends BaseView {
     @property({ type: SpriteFrame }) iconClose: SpriteFrame = null!;
 
     start() {
-        this.bindButton(find("root/btnClose", this.node)!, this.popClose)
+        this.bindButton(find("root/btnClose", this.node)!, this._fn_xe)
     }
 
     show(args: any) {
         super.show(args)
-        if (EmailManager.getInstance().popNewEmails()) {
+        if (EmailManager._fn_ho()._fn_xg()) {
             this.updateInfo()
         } else {
             this.scheduleOnce(() => {
@@ -33,16 +33,16 @@ export class EmailDialog extends BaseView {
     }
 
     updateInfo() {
-        let emailList = EmailManager.getInstance().EmailList
-        let compareNewestEmail = (leftEmail: Email, rightEmail: Email) => {
+        let emailList = EmailManager._fn_ho().EmailList
+        let _fn_dl = (leftEmail: Email, rightEmail: Email) => {
             return rightEmail.time - leftEmail.time
         }
-        emailList.sort(compareNewestEmail)
-        this.scrollViewSetData(this.emailScroll, emailList, this.initItem, this)
+        emailList.sort(_fn_dl)
+        this._fn_adc(this.emailScroll, emailList, this._fn_oc, this)
         this.emailIcon.active = emailList.length <= 0
     }
 
-    initItem(emailCellNode: Node, emailRecord: Email, emailIndex: number, self: EmailDialog) {
+    _fn_oc(emailCellNode: Node, emailRecord: Email, emailIndex: number, self: EmailDialog) {
         find("title", emailCellNode)!.getComponent(Label)!.string = emailRecord.title
         find("info", emailCellNode)!.getComponent(Label)!.string = emailRecord.content
         let sendDate = new Date(emailRecord.time)
@@ -68,36 +68,36 @@ export class EmailDialog extends BaseView {
     }
 
     onTouchEmail(event: any, emailRecord: Email) {
-        UiLayerService.instance.pushShowDialog(Const.Dialogs.EmailInfoDialog, { email: emailRecord })
+        UiLayerService.instance._fn_xw(Const.Dialogs.EmailInfoDialog, { email: emailRecord })
     }
 
     onClickRemove() {
-        EmailManager.getInstance().removeAllEmail()
+        EmailManager._fn_ho()._fn_aae()
         this.updateInfo()
     }
 
     onClickReceive() {
         let receivableRewards = []
-        let emailList = EmailManager.getInstance().EmailList
+        let emailList = EmailManager._fn_ho().EmailList
         for (let emailIndex = 0; emailIndex < emailList.length; emailIndex++) {
             let email: Email = emailList[emailIndex];
             if (email.reward.length > 0 && email.receicedState == EmailRewardState.unReceive) {
                 receivableRewards.push(...email.reward)
                 email.receicedState = EmailRewardState.received
                 email.readState = EmailState.readFinish
-                EmailManager.getInstance().saveEmail(email)
+                EmailManager._fn_ho()._fn_acp(email)
             }
         }
 
         if (receivableRewards.length > 0) {
-            UiLayerService.instance.pushShowDialog(Const.Dialogs.RewardDialog, { reward: receivableRewards })
+            UiLayerService.instance._fn_xw(Const.Dialogs.RewardDialog, { reward: receivableRewards })
         } else {
-            this.toast("没有可领取的奖励")
+            this._fn_aiu("没有可领取的奖励")
         }
     }
 
     addEmailTest() {
-        EmailManager.getInstance().addEmail()
+        EmailManager._fn_ho()._fn_c()
     }
 }
 

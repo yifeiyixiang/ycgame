@@ -24,7 +24,7 @@ export class FloatingTipPanelController extends BaseView {
     showTip(msg:string){
 
         this.msgQueue.push(msg)
-        UiLayerService.instance.showDialog(Const.Dialogs.FloatingTipPanelController)
+        UiLayerService.instance._fn_ahg(Const.Dialogs.FloatingTipPanelController)
     }
 
     update(deltaTime: number) {
@@ -35,7 +35,7 @@ export class FloatingTipPanelController extends BaseView {
                 let m = this.msgQueue.shift()!
 
 
-                UtilPub.getPrefab(Const.Prefabs.FloatingTipItemController, (p:Prefab)=>{
+                UtilPub._fn_jj(Const.Prefabs.FloatingTipItemController, (p:Prefab)=>{
                     let item = NodePoolService.instance.getNode(p, this.layout)
                     item.getComponent(FloatingTipItemController)!.init(m)
                 })

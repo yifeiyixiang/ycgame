@@ -10,14 +10,14 @@ export class RenderChildBatch extends UIRenderer {
     private rootNodeArr: Node[] = [];
 
 
-    public addRootItemNode(node: Node) {
+    public _fn_o(node: Node) {
         if (this.rootNodeArr.indexOf(node) == -1) {
-            this.pauseRender(node, "");
+            this._fn_wu(node, "");
             this.rootNodeArr.push(node);
         }
     }
 
-    private pauseRender(node: Node, rootPath: string) {
+    private _fn_wu(node: Node, rootPath: string) {
         if (!node || !isValid(node)) {
             return ;
         }
@@ -43,20 +43,20 @@ export class RenderChildBatch extends UIRenderer {
         }
 
         node.children.forEach((child: Node) => {
-            this.pauseRender(child, path + "/");
+            this._fn_wu(child, path + "/");
         });
     }
 
 
-    public removeRootItemNode(node: Node) {
-        this.removeRender(node, "");
+    public _fn_aak(node: Node) {
+        this._fn_aaj(node, "");
         let index = this.rootNodeArr.indexOf(node);
         if (index >= 0) {
             this.rootNodeArr.splice(index, 1);
         }
     }
 
-    private removeRender(node: Node, rootPath: string) {
+    private _fn_aaj(node: Node, rootPath: string) {
         if (!node || !isValid(node)) {
             return ;
         }
@@ -76,17 +76,17 @@ export class RenderChildBatch extends UIRenderer {
             }
         }
         node.children.forEach((child: Node) => {
-            this.removeRender(child, path + "/");
+            this._fn_aaj(child, path + "/");
         });
     }
 
 
-    updateAssembler(batch: any) {
+    _fn_ajk(batch: any) {
 
     }
 
 
-    postUpdateAssembler(batch: any) {
+    _fn_xk(batch: any) {
         this.pathArr.forEach((path: string) => {
             let arr = this.path2RenderArr.get(path);
             let tmpArr = [];

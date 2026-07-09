@@ -45,15 +45,15 @@ export class main extends BaseView {
 
 
         this.bindButton(find("root/top/btnTurntable", this.node)!, () => {
-            UiLayerService.instance.showDialog(Const.Dialogs.TurnTableView)
+            UiLayerService.instance._fn_ahg(Const.Dialogs.TurnTableView)
         })
 
         this.bindButton(find("root/top/btnActivity", this.node)!, () => {
-            UiLayerService.instance.showDialog(Const.Dialogs.ActivityView)
+            UiLayerService.instance._fn_ahg(Const.Dialogs.ActivityView)
         })
 
         this.bindButton(find("root/top/btnTask", this.node)!, () => {
-            UiLayerService.instance.showDialog(Const.Dialogs.TaskView)
+            UiLayerService.instance._fn_ahg(Const.Dialogs.TaskView)
 
 
         })
@@ -61,38 +61,38 @@ export class main extends BaseView {
 
         this.bindButton(find("root/bottom/btnFriend", this.node)!, () => {
 
-            UiLayerService.instance.showDialog(Const.Dialogs.FriendListView)
+            UiLayerService.instance._fn_ahg(Const.Dialogs.FriendListView)
         })
 
         this.bindButton(find("root/bottom/btnBag", this.node)!, () => {
 
-            UiLayerService.instance.showDialog(Const.Dialogs.BagNewLayer)
+            UiLayerService.instance._fn_ahg(Const.Dialogs.BagNewLayer)
         })
 
         this.bindButton(find("root/bottom/btnShop", this.node)!, () => {
 
-            UiLayerService.instance.showDialog(Const.Dialogs.ShopNewView)
+            UiLayerService.instance._fn_ahg(Const.Dialogs.ShopNewView)
         })
 
         this.bindButton(find("root/bottom/btnSkin", this.node)!, () => {
 
-            UiLayerService.instance.showDialog(Const.Dialogs.ZhuanshiView)
+            UiLayerService.instance._fn_ahg(Const.Dialogs.ZhuanshiView)
         })
 
 
 
 
         this.bindButton(this.buildListNode, () => {
-            UiLayerService.instance.showDialog(Const.Dialogs.BuildListPanelController)
+            UiLayerService.instance._fn_ahg(Const.Dialogs.BuildListPanelController)
         })
-        this.bindButtonNoAudio(this.menuBtnForMergeBoard, this.openMergeBoard);
+        this._fn_ag(this.menuBtnForMergeBoard, this.openMergeBoard);
 
         this.bindButton(find("root/LayoutRight/btnTujian", this.node)!, () => {
-            UiLayerService.instance.showDialog(Const.Dialogs.Tujian)
+            UiLayerService.instance._fn_ahg(Const.Dialogs.Tujian)
         })
 
         this.bindButton(find("root/LayoutRight/btndebug", this.node)!, () => {
-            UiLayerService.instance.showDialog(Const.Dialogs.DebugDialog)
+            UiLayerService.instance._fn_ahg(Const.Dialogs.DebugDialog)
         })
 
         find("root/LayoutRight/btndebug", this.node)!.active = Const.isOpenCheat
@@ -102,35 +102,35 @@ export class main extends BaseView {
 
 
         this.bindButton(find("root/LayoutRight/btnEmail", this.node)!, () => {
-            UiLayerService.instance.pushShowDialog(Const.Dialogs.EmailDialog)
+            UiLayerService.instance._fn_xw(Const.Dialogs.EmailDialog)
         })
 
         this.bindButton(find("root/LayoutLeft/btnFree", this.node)!, () => {
-            UiLayerService.instance.showDialog(Const.Dialogs.ActivityDialog)
+            UiLayerService.instance._fn_ahg(Const.Dialogs.ActivityDialog)
 
         })
 
         this.bindButton(find("root/LayoutLeft/btnfirstRecharge", this.node)!, () => {
-            UiLayerService.instance.showDialog(Const.Dialogs.FirstRechargeDialogController)
+            UiLayerService.instance._fn_ahg(Const.Dialogs.FirstRechargeDialogController)
         })
 
         this.bindButton(find("root/LayoutLeft/btnMonthCard", this.node)!, () => {
-            UiLayerService.instance.showDialog(Const.Dialogs.MonthCard)
+            UiLayerService.instance._fn_ahg(Const.Dialogs.MonthCard)
         })
 
         this.bindButton(find("root/LayoutRight/btnRoleInfo", this.node)!, () => {
-            UiLayerService.instance.showDialog(Const.Dialogs.FeijiuDialog)
+            UiLayerService.instance._fn_ahg(Const.Dialogs.FeijiuDialog)
         })
 
         this.bindButton(find("root/LayoutLeft/btnSale", this.node)!, () => {
-            UiLayerService.instance.showDialog(Const.Dialogs.RewardActivityDialog)
+            UiLayerService.instance._fn_ahg(Const.Dialogs.RewardActivityDialog)
         })
 
         this.bindButton(find("root/btnsRight/btnTreasure", this.node)!, () => {
             if (TreasureModel.receiveNum >= 6) {
-                UiLayerService.instance.showDialog(Const.Dialogs.TreasureFinishDialog)
+                UiLayerService.instance._fn_ahg(Const.Dialogs.TreasureFinishDialog)
             } else {
-                UiLayerService.instance.showDialog(Const.Dialogs.TreasureDialog)
+                UiLayerService.instance._fn_ahg(Const.Dialogs.TreasureDialog)
             }
 
         })
@@ -145,51 +145,51 @@ export class main extends BaseView {
 
 
 
-            UiLayerService.instance.showDialog(Const.Dialogs.SignDialog)
+            UiLayerService.instance._fn_ahg(Const.Dialogs.SignDialog)
 
 
         })
 
-        find("root/top/btnSign", this.node)!.active = SignUtil.getInstance().getCurSignDay() > 0
+        find("root/top/btnSign", this.node)!.active = SignUtil._fn_ho()._fn_gn() > 0
 
         this.bindButton(find("root/btnsRight/btnSeasonPass", this.node)!, () => {
 
-            UiLayerService.instance.showDialog(Const.Dialogs.SeasonPassLayer);
+            UiLayerService.instance._fn_ahg(Const.Dialogs.SeasonPassLayer);
         });
 
         this.addPrefab(Const.Prefabs.Main_top, find("root", this.node)!, null!, { flag: main_top.ShowLevel | main_top.ShowCoin | main_top.ShowPower | main_top.ShowDiamond });
 
-        UiLayerService.instance.showDialog(Const.Dialogs.FloatingTipPanelController)
+        UiLayerService.instance._fn_ahg(Const.Dialogs.FloatingTipPanelController)
 
-        UtilPub.breathScale(this.starNode, 1.1)
-        aiRobot.initRobot();
+        UtilPub._fn_as(this.starNode, 1.1)
+        aiRobot._fn_or();
     }
 
     onEnable() {
         this.chgGreenStar()
         console.log("onMessageEvent --- start listen")
-        director.off(GNetCmd.GetUserDataByKey.toString(), this.onMessageEvent, this);
-        director.on(GNetCmd.GetUserDataByKey.toString(), this.onMessageEvent, this);
+        director.off(GNetCmd.GetUserDataByKey.toString(), this._fn_uw, this);
+        director.on(GNetCmd.GetUserDataByKey.toString(), this._fn_uw, this);
 
-        this.on(GD.event.refreshHandLayer, this.refreshHandLayerRet, this)
-        this.on(GD.event.unlockSystem, this.unlockSystemRet, this);
+        this.on(GD.event.refreshHandLayer, this._fn_ze, this)
+        this.on(GD.event.unlockSystem, this._fn_ajj, this);
         this.on(GD.event.updateTreasure, this.updateTreasure, this);
 
 
-        this.refreshUnlockLayer();
+        this._fn_zz();
         this.refreshHandLayer();
-        this.initBtns()
+        this._fn_nu()
         this.updateTreasure()
 
-        playerDataStore._showPropTujianRed = playerDataStore.checkTujianRedPoint()
-        playerDataStore._showSceneTujianRed = playerDataStore.checkTujianSceneRedPoint()
+        playerDataStore._showPropTujianRed = playerDataStore._fn_cm()
+        playerDataStore._showSceneTujianRed = playerDataStore._fn_cn()
 
-        redPointManager.setRedpoint(find("root/LayoutRight/btnEmail", this.node)!, RPointEvent.RPM_Email, false)
-        redPointManager.setRedpoint(find("root/LayoutRight/btnTujian", this.node)!, RPointEvent.RPM_Tujian, false)
-        GamePlatform.track("enter main scene")
+        redPointManager._fn_afp(find("root/LayoutRight/btnEmail", this.node)!, RPointEvent.RPM_Email, false)
+        redPointManager._fn_afp(find("root/LayoutRight/btnTujian", this.node)!, RPointEvent.RPM_Tujian, false)
+        GamePlatform._fn_aja("enter main scene")
 
         this.scheduleOnce(() => {
-            mergeBoardStateStore.btnMergeBoardPos = UtilPub.convertToWorldSpace(find("root/bottom/mergeBoard", this.node)!);
+            mergeBoardStateStore.btnMergeBoardPos = UtilPub._fn_dp(find("root/bottom/mergeBoard", this.node)!);
         });
 
     }
@@ -212,7 +212,7 @@ export class main extends BaseView {
         }
     }
 
-    initBtns() {
+    _fn_nu() {
 
         find("root/LayoutLeft/btnMonthCard", this.node)!.active = false
         find("root/LayoutLeft/btnfirstRecharge", this.node)!.active = false
@@ -220,11 +220,11 @@ export class main extends BaseView {
 
     }
 
-    unlockSystemRet() {
-        this.refreshUnlockLayer();
+    _fn_ajj() {
+        this._fn_zz();
     }
 
-    refreshUnlockLayer() {
+    _fn_zz() {
         let btnSeasonPass = find("root/btnsRight/btnSeasonPass", this.node)!;
 
 
@@ -237,7 +237,7 @@ export class main extends BaseView {
     }
 
     refreshHandLayer() {
-        let handIndex = mergeBoardStateStore.getHandIndex();
+        let handIndex = mergeBoardStateStore._fn_hj();
         if (handIndex >= handIndexs.firstCompose && handIndex <= handIndexs.goBuildScene) {
             handIndex = handIndexs.enterMergeBoard;
         } else if (handIndex == handIndexs.boardCardPanel) {
@@ -247,25 +247,25 @@ export class main extends BaseView {
             let obj: any = {};
             obj.id = handIndex;
             obj.node = this.menuBtnForMergeBoard;
-            UiLayerService.instance.showDialog(Const.Dialogs.HandLayer, obj);
+            UiLayerService.instance._fn_ahg(Const.Dialogs.HandLayer, obj);
         }
     }
 
-    refreshHandLayerRet() {
+    _fn_ze() {
         this.refreshHandLayer();
     }
 
     onDisable() {
         console.log("onMessageEvent --- 取消监听")
-        director.off(GNetCmd.GetUserDataByKey.toString(), this.onMessageEvent, this);
-        this.off(GD.event.refreshHandLayer, this.refreshHandLayerRet)
+        director.off(GNetCmd.GetUserDataByKey.toString(), this._fn_uw, this);
+        this.off(GD.event.refreshHandLayer, this._fn_ze)
         this.off(GD.event.updateTreasure, this.updateTreasure);
 
     }
 
-    onMessageEvent(value: any) {
+    _fn_uw(value: any) {
         console.log("onMessageEvent:", value);
-        let data = ServerCtrJSF.GetInstance().getUserDataByKey(value, Const.MoneyKeys.FirstCharge)
+        let data = ServerCtrJSF._fn_hp()._fn_mu(value, Const.MoneyKeys.FirstCharge)
         if (data) {
             if (parseInt(data.val + "") == 2) {
                 find("root/LayoutLeft/btnfirstRecharge", this.node)!.active = false
@@ -295,15 +295,15 @@ export class main extends BaseView {
     }
 
     openMergeBoard() {
-        if (mergeBoardStateStore.getHandIndex() == handIndexs.enterMergeBoard
-            || mergeBoardStateStore.getHandIndex() == handIndexs.returnMergeBoardLayer
+        if (mergeBoardStateStore._fn_hj() == handIndexs.enterMergeBoard
+            || mergeBoardStateStore._fn_hj() == handIndexs.returnMergeBoardLayer
         ) {
-            mergeBoardStateStore.addHandIndex();
-            mergeBoardStateStore.closeHandLayer();
+            mergeBoardStateStore._fn_e();
+            mergeBoardStateStore._fn_df();
         }
-        UtilPub.log("------------handIndex Main0", mergeBoardStateStore.getHandIndex())
-        AudioPlaybackService.instance.playSound(Const.Audio.sceneChange);
-        UiLayerService.instance.showDialog(Const.Dialogs.MergeBoardLayer);
+        UtilPub.log("------------handIndex Main0", mergeBoardStateStore._fn_hj())
+        AudioPlaybackService.instance._fn_xc(Const.Audio.sceneChange);
+        UiLayerService.instance._fn_ahg(Const.Dialogs.MergeBoardLayer);
     }
 
 

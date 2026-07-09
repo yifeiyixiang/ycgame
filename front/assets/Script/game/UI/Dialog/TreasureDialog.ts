@@ -26,28 +26,28 @@ export class TreasureDialog extends BaseView {
 
     start() {
         this.bindButton(find("root/node/btnClose", this.node)!, this.close)
-        this.bindButton(find("root/node/Node/btnReflesh", this.node)!, this.onClickBtnReflesh)
+        this.bindButton(find("root/node/Node/btnReflesh", this.node)!, this._fn_ti)
     }
 
     show(args: any) {
         super.show(args)
-        GamePlatform.track("查看阿宝的货车")
+        GamePlatform._fn_aja("查看阿宝的货车")
         this.timeLabel.getComponent(CdComponent)!.setCD(CDType.CDIneterVal, TreasureModel.timeData.key, TreasureModel.timeData.cdTime)
-        TreasureModel.initLimitData(false)
+        TreasureModel._fn_of(false)
 
-        this.initProgress()
+        this._fn_om()
         this.giftScroll.removeAllChildren()
         for (let index = 0; index < 6; index++) {
             let itemNode = instantiate(this.item)
             itemNode.parent = this.giftScroll
             itemNode.position = Vec3.ZERO
-            this.initItem(itemNode, index)
+            this._fn_oc(itemNode, index)
         }
 
         this.giftScrollView.getComponent(ScrollView)!.scrollToTop(0)
     }
 
-    initProgress() {
+    _fn_om() {
         let receicedNum = TreasureModel.receiveNum
 
         let labelPro = find("root/node/Node/labelPro", this.node)!.getComponent(Label)!
@@ -81,7 +81,7 @@ export class TreasureDialog extends BaseView {
         }
     }
 
-    initItem(itemUI: Node, index: number) {
+    _fn_oc(itemUI: Node, index: number) {
         let prop1 = find("PropItem1", itemUI)!.getComponent(PropItem)!
         prop1.setData(TreasureModel.treasureData.bao1[index].id, PropItemFlag.ShowNum | PropItemFlag.HideName | PropItemFlag.TouchInfo, 1)
         let prop2 = find("PropItem2", itemUI)!.getComponent(PropItem)!
@@ -96,7 +96,7 @@ export class TreasureDialog extends BaseView {
         } else {
             labelReceive.active = false
             btnReceive.active = true
-            let hasInfo = mergeBoardStateStore.getRoomDataHasInfoById(TreasureModel.treasureData.bao1[index].id);
+            let hasInfo = mergeBoardStateStore._fn_kg(TreasureModel.treasureData.bao1[index].id);
             let showNum = hasInfo.num;
             if (showNum > 0) {
                 btnReceive.getComponent(Sprite)!.grayscale = false
@@ -115,47 +115,47 @@ export class TreasureDialog extends BaseView {
     }
 
     onClickGet(event: any, index: any) {
-        mergeBoardStateStore.consumeProp(TreasureModel.treasureData.bao1[index].id, 1)
-        mergeBoardStateStore.addPropNum(TreasureModel.treasureData.bao2[index].id, 1)
+        mergeBoardStateStore._fn_dn(TreasureModel.treasureData.bao1[index].id, 1)
+        mergeBoardStateStore._fn_m(TreasureModel.treasureData.bao2[index].id, 1)
         TreasureModel.treasureData.receive[index] = 1
-        TreasureModel.saveTreasureData()
-        this.initItem(event.target.parent, index)
-        this.initProgress()
+        TreasureModel._fn_act()
+        this._fn_oc(event.target.parent, index)
+        this._fn_om()
         this.emit(GD.event.updateTreasure)
     }
 
-    onClickBtnReflesh() {
+    _fn_ti() {
         let reflesh = () => {
-            TreasureModel.initLimitData(true)
+            TreasureModel._fn_of(true)
             this.giftScroll.removeAllChildren()
             for (let index = 0; index < 6; index++) {
                 let itemNode = instantiate(this.item)
                 itemNode.parent = this.giftScroll
                 itemNode.position = Vec3.ZERO
-                this.initItem(itemNode, index)
+                this._fn_oc(itemNode, index)
             }
         }
         if (TreasureModel.treasureData.freeReflesh < 1) {
             reflesh()
             TreasureModel.treasureData.freeReflesh++
-            TreasureModel.saveTreasureData()
+            TreasureModel._fn_act()
         } else {
-            RewardVideoManager.showVideo("刷新阿宝的货车", reflesh)
+            RewardVideoManager._fn_ahy("刷新阿宝的货车", reflesh)
         }
 
     }
 
     onClickBtnAllReceive() {
         TreasureModel.receiveGift = 1
-        mergeBoardStateStore.addPropNum(901, 1)
-        this.initProgress()
+        mergeBoardStateStore._fn_m(901, 1)
+        this._fn_om()
     }
 
-    dealClickItem() {
+    _fn_ed() {
 
     }
 
-    onVideoBack(item: any) {
+    _fn_wc(item: any) {
 
     }
 

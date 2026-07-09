@@ -49,7 +49,7 @@ export class SceneItemBaseController extends BaseUiComponent {
 
    }
 
-   private hideElements(){
+   private _fn_nl(){
       if (this.points1) {
          this.points1.active = false
       }
@@ -101,7 +101,7 @@ export class SceneItemBaseController extends BaseUiComponent {
 
    public setFace(curFace:GCurFace){
       this.curFace = curFace
-      this.hideElements()
+      this._fn_nl()
       if(this.row.type==GSceneItemType.item || this.row.type==GSceneItemType.carpet){
          if(this.curFace == GCurFace.face1){
 
@@ -154,7 +154,7 @@ export class SceneItemBaseController extends BaseUiComponent {
 
 
       if(this.type==GSceneItemType.wall){
-         let isUnlock = SceneData.ins.getRoomLockInfoById(this.row.room)
+         let isUnlock = SceneData.ins._fn_kk(this.row.room)
 
          if(isUnlock==GSceneRoomState.unlock){
             this.node.active = true
@@ -216,7 +216,7 @@ export class SceneItemBaseController extends BaseUiComponent {
 
 
       if(this.type==GSceneItemType.floor){
-         if(SceneData.ins.getRoomLockInfoById(this.row.room)==GSceneRoomState.locked){
+         if(SceneData.ins._fn_kk(this.row.room)==GSceneRoomState.locked){
             this.skin = this.row.workSkin
          }
       }
@@ -225,7 +225,7 @@ export class SceneItemBaseController extends BaseUiComponent {
 
 
 
-      let data = SceneData.ins.getSceneItemById(this.id, this.type)
+      let data = SceneData.ins._fn_ku(this.id, this.type)
       if(data!=null){
          if(data.lockState){
             this.lockState = data.lockState
@@ -241,12 +241,12 @@ export class SceneItemBaseController extends BaseUiComponent {
          }
 
       }else{
-         let data = UtilScene.getSceneData(this as unknown as GISceneItemParent)
+         let data = UtilScene._fn_kq(this as unknown as GISceneItemParent)
          UtilPub.log("-----初始化数据1111----", data)
-         SceneData.ins.setSceneItem(data)
+         SceneData.ins._fn_afx(data)
       }
       this.setFace(this.curFace)
-      this.setIcon()
+      this._fn_aew()
    }
 
 
@@ -275,20 +275,20 @@ export class SceneItemBaseController extends BaseUiComponent {
 
 
 
-   setIcon(){
-      let skinData = TableDataService.ins().getTableValueByID(Const.Tables.scene_skin, this.skin)
+   _fn_aew(){
+      let skinData = TableDataService.ins()._fn_ly(Const.Tables.scene_skin, this.skin)
 
       if(this.icon1!=null){
-         this.setSpriteFrame(this.icon1.getComponent(Sprite)!, UtilScene.getResSceneIcon(skinData.icon1))
+         this._fn_agk(this.icon1.getComponent(Sprite)!, UtilScene._fn_kb(skinData.icon1))
       }
       if(this.icon2!=null){
-         this.setSpriteFrame(this.icon2.getComponent(Sprite)!, UtilScene.getResSceneIcon(skinData.icon1))
+         this._fn_agk(this.icon2.getComponent(Sprite)!, UtilScene._fn_kb(skinData.icon1))
       }
       if(this.icon3!=null){
-         this.setSpriteFrame(this.icon3.getComponent(Sprite)!, UtilScene.getResSceneIcon(skinData.icon2))
+         this._fn_agk(this.icon3.getComponent(Sprite)!, UtilScene._fn_kb(skinData.icon2))
       }
       if(this.icon4!=null){
-         this.setSpriteFrame(this.icon4.getComponent(Sprite)!, UtilScene.getResSceneIcon(skinData.icon2))
+         this._fn_agk(this.icon4.getComponent(Sprite)!, UtilScene._fn_kb(skinData.icon2))
       }
    }
 
@@ -296,7 +296,7 @@ export class SceneItemBaseController extends BaseUiComponent {
       this.skin=skinId
       UtilPub.log("-----切换皮肤----", skinId)
       this.setFace(this.curFace)
-      this.setIcon()
+      this._fn_aew()
    }
 
 
@@ -369,7 +369,7 @@ export class SceneItemBaseController extends BaseUiComponent {
       }
    }
 
-   isNodeOutView(){
+   _fn_qc(){
       let size = view.getVisibleSize();
       let cPos = Const.CameraScene.node.worldPosition
       let nPos = this.node.worldPosition
@@ -378,9 +378,9 @@ export class SceneItemBaseController extends BaseUiComponent {
          rate = Const.CameraScene.orthoHeight/150
       }
 
-      let isInView = UtilPub.IsPointInArea2D(nPos, cPos, size.width*rate, size.height*rate)
+      let isInView = UtilPub._fn_qh(nPos, cPos, size.width*rate, size.height*rate)
       if(!isInView){
-         this.hideElements()
+         this._fn_nl()
       } else{
          this.setFace(this.curFace)
       }

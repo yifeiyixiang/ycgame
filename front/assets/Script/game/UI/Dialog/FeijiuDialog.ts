@@ -23,14 +23,14 @@ export class FeijiuDialog extends BaseView {
 
     show(args: any) {
         super.show(args)
-        this.bindButton(find("root/btnClose", this.node)!, this.popClose)
+        this.bindButton(find("root/btnClose", this.node)!, this._fn_xe)
         this.openTujianArr()
-        GamePlatform.track("查看肥啾图鉴")
+        GamePlatform._fn_aja("查看肥啾图鉴")
     }
 
     openTujianArr() {
 
-        let guestTable = TableDataService.ins().getTable(Const.Tables.scene_guest)
+        let guestTable = TableDataService.ins()._fn_lt(Const.Tables.scene_guest)
         let groupedGuestList: any = []
 
         guestTable.forEach((guestConfig: any) => {
@@ -43,12 +43,12 @@ export class FeijiuDialog extends BaseView {
         });
         let content = find("view/content", this.roleInfoScroll)
         content!.removeAllChildren()
-        this.setScrollViewData(content!, groupedGuestList, find("root/Layout", this.node)!, this.initItemInfo, this)
+        this._fn_agd(content!, groupedGuestList, find("root/Layout", this.node)!, this._fn_od, this)
 
         find("root/xk/totalLabel", this.node)!.getComponent(Label)!.string = "肥啾(" + this._unlockNum + "/" + this._totalNum + ")"
     }
 
-    initItemInfo(groupCellNode: Node, guestGroup: any, groupIndex: number, self: FeijiuDialog) {
+    _fn_od(groupCellNode: Node, guestGroup: any, groupIndex: number, self: FeijiuDialog) {
         if (guestGroup.length > 0) {
             groupCellNode.getChildByName("titl2")!.getChildByName("title")!.getComponent(Label)!.string = guestGroup[0].typename + ""
             let guestLayout = groupCellNode.getChildByName("Layout")
@@ -56,7 +56,7 @@ export class FeijiuDialog extends BaseView {
             guestLayout!.getComponent(UITransform)!.height = 120 * Math.ceil(guestGroup.length / 4)
             for (let guestIndex = 0; guestIndex < guestGroup.length; guestIndex++) {
                 const guestConfig = guestGroup[guestIndex];
-                if (SceneData.ins.getSceneSkinById(guestConfig.skin) == GSceneSkinState.gotted) {
+                if (SceneData.ins._fn_ky(guestConfig.skin) == GSceneSkinState.gotted) {
                     self._unlockNum++
                 }
                 self._totalNum++

@@ -44,7 +44,7 @@ export class PropMinInfo extends BaseView {
     }
 
     setData(id: any) {
-        let data = TableDataService.ins().getTableValueByID(Const.Tables.prop, id)
+        let data = TableDataService.ins()._fn_ly(Const.Tables.prop, id)
     }
 
 }

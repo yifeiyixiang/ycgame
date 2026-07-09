@@ -19,22 +19,22 @@ export class EmailInfoDialog extends BaseView {
 
 
     start() {
-        this.bindButton(find("root/btnClose", this.node)!, this.popClose)
+        this.bindButton(find("root/btnClose", this.node)!, this._fn_xe)
     }
 
     show(args: any) {
         super.show(args)
-        this._email = EmailManager.getInstance().getEmailById(this._layerData.email.id);
+        this._email = EmailManager._fn_ho()._fn_gy(this._layerData.email.id);
         this._email.readState = EmailState.readFinish
-        EmailManager.getInstance().saveEmail(this._email)
-        this.initItem(find("root/Email", this.node)!, this._layerData.email)
-        this.initBtns()
+        EmailManager._fn_ho()._fn_acp(this._email)
+        this._fn_oc(find("root/Email", this.node)!, this._layerData.email)
+        this._fn_nu()
 
-        GamePlatform.track("查看邮件")
+        GamePlatform._fn_aja("查看邮件")
 
     }
 
-    initItem(itemUI: Node, email: Email) {
+    _fn_oc(itemUI: Node, email: Email) {
         find("title", itemUI)!.getComponent(Label)!.string = "主题：" + email.title
         find("info", itemUI)!.getComponent(Label)!.string = email.content
         let sendDate = new Date(email.time)
@@ -50,7 +50,7 @@ export class EmailInfoDialog extends BaseView {
         }
     }
 
-    initBtns() {
+    _fn_nu() {
         if (this._email.receicedState == EmailRewardState.unReceive) {
             this.btnReceive.active = true
             this.btnRemove.active = false
@@ -66,18 +66,18 @@ export class EmailInfoDialog extends BaseView {
 
 
 
-        UiLayerService.instance.pushShowDialog(Const.Dialogs.RewardDialog, { reward: this._layerData.email.reward })
+        UiLayerService.instance._fn_xw(Const.Dialogs.RewardDialog, { reward: this._layerData.email.reward })
 
         this._email.receicedState = EmailRewardState.received
-        this.initBtns()
-        EmailManager.getInstance().saveEmail(this._email)
+        this._fn_nu()
+        EmailManager._fn_ho()._fn_acp(this._email)
 
     }
 
 
     onClickRemove() {
-        EmailManager.getInstance().removeEmail(this._email.id)
-        this.popClose()
+        EmailManager._fn_ho()._fn_aah(this._email.id)
+        this._fn_xe()
     }
 }
 

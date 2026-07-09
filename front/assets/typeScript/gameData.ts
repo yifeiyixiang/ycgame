@@ -69,17 +69,17 @@ export class GameRuntimeData extends Component {
 
     public static happyHpNum:number = 0;
 
-    public static saveDataClick(type:number = 2){
+    public static _fn_aco(type:number = 2){
 
         GameRuntimeData.saveData.addGold = 0;
         GameRuntimeData.saveData.addMoney = 0;
     }
 
-    public static resetLevelData(){
+    public static _fn_abq(){
         GameRuntimeData.saveData.isOpen100Panel = [];
     }
 
-    public static getShowLevel(level:number = -1):string{
+    public static _fn_lg(level:number = -1):string{
         if (level == -1){
             level = GameRuntimeData.saveData.curLevel;
         }
@@ -88,15 +88,15 @@ export class GameRuntimeData extends Component {
     }
 
 
-    public static getInitNum(num:number, num2:number = 100):number{
+    public static _fn_hn(num:number, num2:number = 100):number{
         return Math.round(num*num2)/num2;
     }
 
-    public static getCurTime(){
+    public static _fn_gp(){
         return this.date.getTime()/1000;
     }
 
-    public static getArrivalTime(time:number){
+    public static _fn_fm(time:number){
         let remainingSeconds = time - Math.floor(Date.now()/1000);
         if (remainingSeconds < 0){
             remainingSeconds = 0;
@@ -104,7 +104,7 @@ export class GameRuntimeData extends Component {
         return remainingSeconds;
     }
 
-    public static getZeroTime():number{
+    public static _fn_nb():number{
         let now = new Date();
 
         let utcNow = new Date(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(), now.getUTCHours(), now.getUTCMinutes(), now.getUTCSeconds());
@@ -124,7 +124,7 @@ export class GameRuntimeData extends Component {
         return seconds;
     }
 
-    public static getLeftTime(diffSeconds:number, type:number = 1): string{
+    public static _fn_if(diffSeconds:number, type:number = 1): string{
         let hours = Math.floor( diffSeconds / 3600);
         let minutes = Math.floor(( diffSeconds % 3600) / 60);
         let secs =  diffSeconds % 60;
@@ -145,7 +145,7 @@ export class GameRuntimeData extends Component {
         return  `${hourText}:${minuteText}:${secondText}`;
     }
 
-    public static getShowTime(type:number = 1):string{
+    public static _fn_lh(type:number = 1):string{
         let date = new Date();
 
         let month = (date.getMonth() + 1)
@@ -165,13 +165,13 @@ export class GameRuntimeData extends Component {
     private static headLoadList:{} = {};
 
 
-    public static getExpSum(): number{
+    public static _fn_hd(): number{
         let level = GameRuntimeData.saveData.userLevel;
         let requiredExp = Math.pow((level+1), 1.2)*100
         return requiredExp;
     }
 
-    public static isNull(str:string):boolean{
+    public static _fn_qd(str:string):boolean{
         if (str == "" || str == null || str == undefined){
             return true;
         }
@@ -183,13 +183,13 @@ export class GameRuntimeData extends Component {
     }
 
 
-    getItemType(level:number){
+    _fn_ib(level:number){
         var typeNum = 2;
-        var stageNum = this.getStageNum(level);
+        var stageNum = this._fn_lm(level);
 
         typeNum = typeNum + stageNum * 3;
 
-        var isBoss = this.getIsBoss(level);
+        var isBoss = this._fn_hv(level);
 
         if (GameRuntimeData.isChanllenge){
             typeNum = GameRuntimeData.numBlockSum;
@@ -202,12 +202,12 @@ export class GameRuntimeData extends Component {
     }
 
 
-    getStageNum(level:number){
+    _fn_lm(level:number){
         var stageNum = Math.floor((level-1)/5);
         return stageNum;
     }
 
-    getIsBoss(level:number){
+    _fn_hv(level:number){
         var isBoss = (level)%5 == 0;
         return isBoss;
     }
@@ -228,7 +228,7 @@ export class GameRuntimeData extends Component {
 
 
 
-    public static getToggleCheckIndex(togNode:Node){
+    public static _fn_mn(togNode:Node){
         for (let toggleIndex = 0; toggleIndex < togNode.children.length; toggleIndex++) {
             const toggleComponent = togNode.children[toggleIndex].getComponent(Toggle);
             if (toggleComponent && toggleComponent.isChecked){
@@ -239,7 +239,7 @@ export class GameRuntimeData extends Component {
 
 
 
-    public static getCoinNumByType(type:ItemEnumType){
+    public static _fn_gg(type:ItemEnumType){
         let coinAmount:number = 0
         if (type == ItemEnumType.petCoin){
             coinAmount = GameRuntimeData.severData.userInfo.petCoin;
@@ -257,8 +257,8 @@ export class GameRuntimeData extends Component {
     }
 
 
-    public static getIsEnoughCoinByType(type:ItemEnumType, cost:number, isShopTip:boolean = true){
-        let ownedCoinAmount:number = GameRuntimeData.getCoinNumByType(type);
+    public static _fn_hw(type:ItemEnumType, cost:number, isShopTip:boolean = true){
+        let ownedCoinAmount:number = GameRuntimeData._fn_gg(type);
         if (ownedCoinAmount >= cost){
             return true;
         }
@@ -270,7 +270,7 @@ export class GameRuntimeData extends Component {
 
 
 
-    public static getPetDataById(_id:number):PetProfileRecord{
+    public static _fn_jb(_id:number):PetProfileRecord{
         for (let petIndex = 0; petIndex < playerDataStore.pets.length; petIndex++) {
             const petRecord:PetProfileRecord = playerDataStore.pets[petIndex];
             if (petRecord && petRecord.id == _id){
@@ -281,7 +281,7 @@ export class GameRuntimeData extends Component {
     }
 
 
-    public static getBagDataById(_id:number):BagPropRecord{
+    public static _fn_fp(_id:number):BagPropRecord{
         for (let bagIndex = 0; bagIndex < playerDataStore.bagProps.length; bagIndex++) {
             const bagRecord:BagPropRecord = playerDataStore.bagProps[bagIndex];
             if (bagRecord && bagRecord.id == _id){

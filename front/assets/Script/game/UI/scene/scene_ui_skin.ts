@@ -43,11 +43,11 @@ export class SceneSkinPanelController extends BaseView {
     }
 
     close(){
-        UiLayerService.instance.hideDialog(this.dialogPath)
+        UiLayerService.instance._fn_nk(this.dialogPath)
     }
 
     show(args:any){
-        NodePoolService.instance.putNodeArr(this.items)
+        NodePoolService.instance._fn_ya(this.items)
         this.items = []
         this.skinList.removeAllChildren()
 
@@ -57,44 +57,44 @@ export class SceneSkinPanelController extends BaseView {
 
 
 
-        let skinObj = SceneData.ins.getSceneSkinAll()
+        let skinObj = SceneData.ins._fn_kx()
         let totalDress =0
         for(let i=0;i<skinObj.keys.length; i++){
             let val = skinObj.values[i]
             let key = skinObj.keys[i].split("_")[1]
 
             if(val==GSceneSkinState.gotted){
-                let skinData = TableDataService.ins().getTableValueByID(Const.Tables.scene_skin, key)
+                let skinData = TableDataService.ins()._fn_ly(Const.Tables.scene_skin, key)
                 totalDress += parseInt(skinData.zb.split(",")[1])
             }
         }
         this.dressVal.string = ''+totalDress
 
-        this.reloadList()
+        this._fn_aad()
     }
 
     clickDressItem(selSkinId:number){
         this.selSkinId=selSkinId
-        this.reloadList()
+        this._fn_aad()
     }
 
-    reloadList(){
-        let skinData = TableDataService.ins().getTableValueByID(Const.Tables.scene_skin, this.selScript.skin)
+    _fn_aad(){
+        let skinData = TableDataService.ins()._fn_ly(Const.Tables.scene_skin, this.selScript.skin)
         this.sceneItemName.string = skinData.name
 
         if(this.items.length==0){
 
-            let skinRows = TableDataService.ins().getTableValuesByType(Const.Tables.scene_skin, "scene", this.selScript.id+"")
+            let skinRows = TableDataService.ins()._fn_mb(Const.Tables.scene_skin, "scene", this.selScript.id+"")
             UtilPub.log("--------装扮信息列表=-====", skinRows, this.selSkinId)
 
 
-            let serverData = SceneData.ins.getSceneItemById(this.selScript.id, this.selScript.type)
+            let serverData = SceneData.ins._fn_ku(this.selScript.id, this.selScript.type)
             if(serverData==null){
                 this.selSkinId = skinRows[0].id
             }else{
                 this.selSkinId = serverData.skin
             }
-            UtilPub.getPrefab(Const.Prefabs.StoreSkinItemController, (p:Prefab)=>{
+            UtilPub._fn_jj(Const.Prefabs.StoreSkinItemController, (p:Prefab)=>{
                 skinRows.forEach((val:any, key:number)=>{
 
                     let isGray = (val.id+"").substring((val.id+"").length-2)=="00"

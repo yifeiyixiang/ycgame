@@ -26,7 +26,7 @@ export class ShopSynthesisDialog extends BaseView {
         super.show(args)
         this.bindButton(find("root/btnClose", this.node)!, this.close)
 
-        this.showList()
+        this._fn_ahn()
 
 
     }
@@ -54,10 +54,10 @@ export class ShopSynthesisDialog extends BaseView {
         this.off(GD.event.updateShopItem, this.updateShopItem)
     }
 
-    showList() {
-        let propData = TableDataService.ins().getTableValuesByType(Const.Tables.shopTable, "type", shopType.ToolBox)
-        let propData2 = TableDataService.ins().getTableValuesByType(Const.Tables.shopTable, "type", shopType.ResourceBox)
-        let propData3 = TableDataService.ins().getTableValuesByType(Const.Tables.shopTable, "type", shopType.LimitProp)
+    _fn_ahn() {
+        let propData = TableDataService.ins()._fn_mb(Const.Tables.shopTable, "type", shopType.ToolBox)
+        let propData2 = TableDataService.ins()._fn_mb(Const.Tables.shopTable, "type", shopType.ResourceBox)
+        let propData3 = TableDataService.ins()._fn_mb(Const.Tables.shopTable, "type", shopType.LimitProp)
 
         let dataArr: any = []
         if (propData2.length > 0) {
@@ -65,12 +65,12 @@ export class ShopSynthesisDialog extends BaseView {
             if (!dataArr[element.typeson - 1]) {
                 dataArr[element.typeson - 1] = []
             }
-            let timeData = TableDataService.ins().getTableValueByKey(Const.Tables.privilege, "key", "10007")
-            dataArr[element.typeson - 1].push(playerDataStore.getLimitTimeData(timeData.dataKey, timeData.cdTime, element))
+            let timeData = TableDataService.ins()._fn_lz(Const.Tables.privilege, "key", "10007")
+            dataArr[element.typeson - 1].push(playerDataStore._fn_ig(timeData.dataKey, timeData.cdTime, element))
         }
         if (propData3.length > 0) {
             let element = propData3[0]
-            dataArr[element.typeson - 1] = this.initLimitData()
+            dataArr[element.typeson - 1] = this._fn_of()
         }
 
         propData.forEach(element => {
@@ -88,20 +88,20 @@ export class ShopSynthesisDialog extends BaseView {
                 let item = instantiate(element[0].type == 5 ? find("Layout2", this.node)! : find("Layout", this.node)!)!
                 item.position = v3(0, 0, 0)
                 content.addChild(item)
-                this.initItemInfo(item, element);
+                this._fn_od(item, element);
             }
         });
     }
 
-    initLimitData(force: boolean = false) {
-        let propData3 = TableDataService.ins().getTableValuesByType(Const.Tables.shopTable, "type", shopType.LimitProp)
+    _fn_of(force: boolean = false) {
+        let propData3 = TableDataService.ins()._fn_mb(Const.Tables.shopTable, "type", shopType.LimitProp)
 
         if (propData3.length > 0) {
             let element = propData3[0]
 
 
 
-            let propArr = TableDataService.ins().getTableValuesByType(Const.Tables.prop, "xian", "1")
+            let propArr = TableDataService.ins()._fn_mb(Const.Tables.prop, "xian", "1")
             let limitProp = []
             let isHave: any = {}
             for (let index = 0; index < 6;) {
@@ -122,18 +122,18 @@ export class ShopSynthesisDialog extends BaseView {
                     index++
                 }
             }
-            let timeData = TableDataService.ins().getTableValueByKey(Const.Tables.privilege, "key", "10009")
+            let timeData = TableDataService.ins()._fn_lz(Const.Tables.privilege, "key", "10009")
 
-            return playerDataStore.getLimitTimeData(timeData.dataKey, timeData.cdTime, limitProp, force)
+            return playerDataStore._fn_ig(timeData.dataKey, timeData.cdTime, limitProp, force)
         }
     }
 
-    initItemInfo(itemUI: Node, itemData: any) {
+    _fn_od(itemUI: Node, itemData: any) {
 
         if (itemData.length > 0) {
             itemUI.getChildByName("titl2")!.getChildByName("title")!.getComponent(Label)!.string = itemData[0].typename + ""
             if (itemData[0].cdKey > 0) {
-                let timeData = TableDataService.ins().getTableValueByKey(Const.Tables.privilege, "key", itemData[0].cdKey)
+                let timeData = TableDataService.ins()._fn_lz(Const.Tables.privilege, "key", itemData[0].cdKey)
                 find("titl2/cdtime", itemUI)!.active = true
                 find("titl2/cdtime", itemUI)!.getComponent(CdComponent)!.setCD(CDType.CDIneterVal, timeData.dataKey, timeData.cdTime)
             } else {
@@ -167,21 +167,21 @@ export class ShopSynthesisDialog extends BaseView {
             } else {
                 itemUI.getChildByName("btnlayer")!.active = false
                 let btnReflesh = find("btnlayer/btnReflesh", itemUI)!
-                this.clearButtonHander(btnReflesh)
+                this._fn_ct(btnReflesh)
             }
         }
     }
 
     reflashItemData(event: any, data: any) {
 
-        UiLayerService.instance.showDialog(Const.Dialogs.RefleshDialog, { itemData: data })
+        UiLayerService.instance._fn_ahg(Const.Dialogs.RefleshDialog, { itemData: data })
 
     }
 
 
     updateShopItem() {
         if (this._itemUI)
-            this.initItemInfo(this._itemUI, this.initLimitData(true))
+            this._fn_od(this._itemUI, this._fn_of(true))
     }
 }
 

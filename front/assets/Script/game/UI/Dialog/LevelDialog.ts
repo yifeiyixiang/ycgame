@@ -27,9 +27,9 @@ export class LevelDialog extends BaseView {
     _leveldata: any = null
 
     start() {
-        this.bindButton(find("root/btnClose", this.node)!, this.popClose)
+        this.bindButton(find("root/btnClose", this.node)!, this._fn_xe)
         this.bindButton(find("root/btnGrowup", this.node)!, () => {
-            UiLayerService.instance.showDialog(Const.Dialogs.GrowUpDialog)
+            UiLayerService.instance._fn_ahg(Const.Dialogs.GrowUpDialog)
         })
         if (WECHAT) {
             find("root/btnGrowup", this.node)!.active = false
@@ -40,19 +40,19 @@ export class LevelDialog extends BaseView {
         super.show(args)
         this.initData()
 
-        let hadnIdnex = mergeBoardStateStore.getHandIndex();
+        let hadnIdnex = mergeBoardStateStore._fn_hj();
         if (hadnIdnex == handIndexs.btnLvUp || hadnIdnex == handIndexs.btnLvUp3) {
             let obj: any = {};
             obj.id = hadnIdnex + 1;
             obj.node = find("root/btnbg", this.node);
             obj.delayTime = 0.5;
-            UiLayerService.instance.showDialog(Const.Dialogs.HandLayer, obj);
+            UiLayerService.instance._fn_ahg(Const.Dialogs.HandLayer, obj);
         }
     }
     initData() {
 
         find("root/lvicon/Label", this.node)!.getComponent(Label)!.string = "" + playerDataStore.roleLv
-        this._leveldata = TableDataService.ins().getTableValueByID(Const.Tables.herolevel, playerDataStore.roleLv)
+        this._leveldata = TableDataService.ins()._fn_ly(Const.Tables.herolevel, playerDataStore.roleLv)
 
         this.itemLayer.node.removeAllChildren()
         this._leveldata.reward.forEach((element: any, index: number) => {
@@ -77,31 +77,31 @@ export class LevelDialog extends BaseView {
     }
 
     onClickBtnUpgrade() {
-        if (playerDataStore.checkAndUseExp(this._leveldata.exp)) {
+        if (playerDataStore._fn_bh(this._leveldata.exp)) {
             this._leveldata.reward.forEach((element: any, index: number) => {
-                mergeBoardStateStore.addPropNum(element[0], element[1])
+                mergeBoardStateStore._fn_m(element[0], element[1])
             });
-            let handIndex = mergeBoardStateStore.getHandIndex();
+            let handIndex = mergeBoardStateStore._fn_hj();
             if (handIndex == handIndexs.btnLvUp || handIndex == handIndexs.btnLvUp3) {
                 if (handIndex == handIndexs.btnLvUp3) {
-                    mergeBoardStateStore.closeHandLayer()
-                    mergeBoardStateStore.addHandIndex();
-                    mergeBoardStateStore.addHandIndex();
+                    mergeBoardStateStore._fn_df()
+                    mergeBoardStateStore._fn_e();
+                    mergeBoardStateStore._fn_e();
 
-                    this.popClose();
+                    this._fn_xe();
                     this.emit(GD.event.refreshHandLayer);
-                    AudioPlaybackService.instance.playSound(Const.Audio.sceneChange);
-                    UiLayerService.instance.showDialog(Const.Dialogs.MergeBoardLayer);
+                    AudioPlaybackService.instance._fn_xc(Const.Audio.sceneChange);
+                    UiLayerService.instance._fn_ahg(Const.Dialogs.MergeBoardLayer);
                 } else {
-                    mergeBoardStateStore.addHandIndex();
-                    mergeBoardStateStore.addHandIndex();
-                    this.popClose();
+                    mergeBoardStateStore._fn_e();
+                    mergeBoardStateStore._fn_e();
+                    this._fn_xe();
                     this.emit(GD.event.refreshHandLayer);
                 }
             }
 
             playerDataStore.roleLv++
-            GamePlatform.track(playerDataStore.roleLv + "等级的玩家");
+            GamePlatform._fn_aja(playerDataStore.roleLv + "等级的玩家");
 
             this.initData()
             this.emit(GD.event.updateMoney)

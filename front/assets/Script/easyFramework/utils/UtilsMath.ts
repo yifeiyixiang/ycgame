@@ -14,7 +14,7 @@ export default class UtilsMath {
 
 
 
-    public textNumString(num: number, len: number = 2) {
+    public _fn_aiq(num: number, len: number = 2) {
         let need = len - String(num).length;
         let str = "";
         for (let i = 0; i < need; i++) {
@@ -29,7 +29,7 @@ export default class UtilsMath {
 
 
 
-    public calcDistance(pos1: Vec2 | Vec3, pos2: Vec2 | Vec3) {
+    public _fn_au(pos1: Vec2 | Vec3, pos2: Vec2 | Vec3) {
         let xdiff = pos1.x - pos2.x;
         let ydiff = pos1.y - pos2.y;
         let dis = Math.pow((xdiff * xdiff + ydiff * ydiff), 0.5);
@@ -41,7 +41,7 @@ export default class UtilsMath {
 
 
 
-    public fixAngle(angle: number): number {
+    public _fn_ew(angle: number): number {
         angle = -angle % 360;
         if (angle > 180)
             angle = -180 + angle % 180;
@@ -55,19 +55,19 @@ export default class UtilsMath {
 
 
 
-    public getRandom(maxNum: number, minNum: number): number {
-        return MathRandom.getInstance().randomRange(minNum, maxNum);
+    public _fn_js(maxNum: number, minNum: number): number {
+        return MathRandom._fn_ho()._fn_yg(minNum, maxNum);
     };
-    public getRandom2(maxNum: number, minNum: number, floatLen: number = 0): number {
+    public _fn_jt(maxNum: number, minNum: number, floatLen: number = 0): number {
         let ranNum = 0;
-        ranNum = MathRandom.getInstance().random() * (maxNum - minNum + 1) + minNum;
+        ranNum = MathRandom._fn_ho().random() * (maxNum - minNum + 1) + minNum;
         if (floatLen > 0) {
             ranNum = parseFloat(ranNum.toFixed(floatLen));
         } else
             ranNum = parseInt(ranNum + '');
         return ranNum;
     };
-    public getRandom3(maxNum: number, minNum: number, floatLen: number = 0): number {
+    public _fn_ju(maxNum: number, minNum: number, floatLen: number = 0): number {
         let ranNum = 0;
         ranNum = Math.random() * (maxNum - minNum + 1) + minNum;
         if (floatLen > 0) {
@@ -77,8 +77,8 @@ export default class UtilsMath {
         return ranNum;
     };
 
-    public setRandomSeed(value: number): void {
-        MathRandom.getInstance().setSeed(value);
+    public _fn_afn(value: number): void {
+        MathRandom._fn_ho()._fn_age(value);
     };
 
 
@@ -87,7 +87,7 @@ export default class UtilsMath {
 
 
 
-    public toFixedUnRound(nOriginalNum: number, nFixed: number, bCeil: boolean = false) {
+    public _fn_aiv(nOriginalNum: number, nFixed: number, bCeil: boolean = false) {
         let nNewValue = 0
         let nEqualPower = Math.pow(10, nFixed)
         if (bCeil) {
@@ -119,7 +119,7 @@ export default class UtilsMath {
 
 
 
-    public getDirection(x: number, y: number, z: number, node: Node): Vec3 {
+    public _fn_gt(x: number, y: number, z: number, node: Node): Vec3 {
         const result = new Vec3(x, y, z);
         math.Vec3.transformQuat(result, result, node.getRotation());
         return result;
@@ -133,7 +133,7 @@ export default class UtilsMath {
 
 export class MathRandom {
     private static _instance: MathRandom = null;
-    public static getInstance(): MathRandom {
+    public static _fn_ho(): MathRandom {
         if (!MathRandom._instance) {
             MathRandom._instance = new MathRandom();
         }
@@ -145,7 +145,7 @@ export class MathRandom {
 
 
 
-    public setSeed(value: number): void {
+    public _fn_age(value: number): void {
         this._seed = value;
     };
 
@@ -165,7 +165,7 @@ export class MathRandom {
 
 
 
-    public randomRange(min: number, max: number): number {
+    public _fn_yg(min: number, max: number): number {
 
 
 
@@ -182,7 +182,7 @@ export class MathRandom {
 
 
 
-    public RandomNumBoth(Min: number, Max: number): number {
+    public _fn_yf(Min: number, Max: number): number {
 
         var Range = Max - Min;
 
@@ -198,7 +198,7 @@ export class MathRandom {
 
 export class MathUtil {
     private static _instance: MathUtil = null;
-    public static getInstance(): MathUtil {
+    public static _fn_ho(): MathUtil {
         if (!MathUtil._instance) {
             MathUtil._instance = new MathUtil();
         }
@@ -213,9 +213,9 @@ export class MathUtil {
 
 
 
-    public getPointB(x: number, y: number, radius: number, angle): Vec2 {
-        let newX: number = x + radius * Math.cos(this.getEulerAngle(angle));
-        let newY: number = y + radius * Math.sin(this.getEulerAngle(angle));
+    public _fn_jg(x: number, y: number, radius: number, angle): Vec2 {
+        let newX: number = x + radius * Math.cos(this._fn_hc(angle));
+        let newY: number = y + radius * Math.sin(this._fn_hc(angle));
         return cc.v2(newX, newY);
     }
 
@@ -223,7 +223,7 @@ export class MathUtil {
 
 
 
-    public getEulerAngle(angle: number): number {
+    public _fn_hc(angle: number): number {
         return angle * Math.PI / 180;
     };
 
@@ -232,7 +232,7 @@ export class MathUtil {
 
 
 
-    public getAngle2(pos1: Vec2, pos2: Vec2, is360: boolean = false): number {
+    public _fn_fl(pos1: Vec2, pos2: Vec2, is360: boolean = false): number {
         let x: number = pos2.x - pos1.x;
         let y: number = pos2.y - pos1.y;
         let xrad = Math.atan2(y, x)
@@ -248,8 +248,8 @@ export class MathUtil {
 
 
 
-    public getAngle(x1: number, y1: number, x2: number, y2: number): number {
-        let radian: number = this.getRadian(x1, y1, x2, y2);
+    public _fn_fk(x1: number, y1: number, x2: number, y2: number): number {
+        let radian: number = this._fn_jr(x1, y1, x2, y2);
         let angle: number = 180 / (Math.PI / radian);
         let x: number = x2 - x1;
         let y: number = y2 - y1;
@@ -267,7 +267,7 @@ export class MathUtil {
 
 
 
-    public getRadian(x1: number, y1: number, x2: number, y2: number): number {
+    public _fn_jr(x1: number, y1: number, x2: number, y2: number): number {
 
         let x: number = x2 - x1;
         let y: number = y2 - y1;
@@ -284,7 +284,7 @@ export class MathUtil {
 
 
 
-    public calcDistance3D(pos1: Vec3, pos2: Vec3) {
+    public _fn_av(pos1: Vec3, pos2: Vec3) {
         let xdiff = pos1.x - pos2.x;
         let ydiff = pos1.y - pos2.y;
         let zdiff = pos1.z - pos2.z
@@ -297,7 +297,7 @@ export class MathUtil {
 
 
 
-    public calcDistance(pos1: Vec2 | Vec3, pos2: Vec2 | Vec3) {
+    public _fn_au(pos1: Vec2 | Vec3, pos2: Vec2 | Vec3) {
         let xdiff = pos1.x - pos2.x;
         let ydiff = pos1.y - pos2.y;
         let dis = Math.pow((xdiff * xdiff + ydiff * ydiff), 0.5);

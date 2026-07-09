@@ -38,7 +38,7 @@ export class RedPointComm extends BaseUiComponent {
             this.calTime = 0
 
             if (this.redFlag && this.redPointNode) {
-                this.redPointNode.active = this._isFore || redPointManager.checkIsShowRedPoint(this.redFlag)
+                this.redPointNode.active = this._isFore || redPointManager._fn_by(this.redFlag)
             }
         }
     }

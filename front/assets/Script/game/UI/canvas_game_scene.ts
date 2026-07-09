@@ -88,9 +88,9 @@ export class SceneCanvasController extends BaseUiComponent {
         this.on(GD.event.clickDressItem, this.clickDressItem, this)
         this.on(GD.event.popOpsWindow, this.popOpsWindow, this)
 
-        NodePoolService.instance.putNodeArr(Const.AllItems)
+        NodePoolService.instance._fn_ya(Const.AllItems)
         Const.AllItems = []
-        NodePoolService.instance.putNodeArr(Const.Guests)
+        NodePoolService.instance._fn_ya(Const.Guests)
         Const.Guests = []
 
         Const.CameraScene = this.SceneCameraNode
@@ -119,8 +119,8 @@ export class SceneCanvasController extends BaseUiComponent {
         this.ShadowGridParent.position = this.gridParentOriPos
 
 
-        UtilScene.initGridsData(this.GridParent.getComponent(UITransform)!, Const.MaxRoomY, Const.MaxRoomX)
-        UtilScene.initGridsWallData(this.WallGridParent.getComponent(UITransform)!, Math.abs(Const.MaxWallXLeft), Math.abs(Const.MaxWallXRight))
+        UtilScene._fn_nz(this.GridParent.getComponent(UITransform)!, Const.MaxRoomY, Const.MaxRoomX)
+        UtilScene._fn_oa(this.WallGridParent.getComponent(UITransform)!, Math.abs(Const.MaxWallXLeft), Math.abs(Const.MaxWallXRight))
 
 
         UtilPub.log("触摸事件绑定-------------")
@@ -144,7 +144,7 @@ export class SceneCanvasController extends BaseUiComponent {
 
 
 
-        UtilScene.initRoom()
+        UtilScene._fn_os()
     }
 
     goToBuildScene(buildId: number, buildType: GBuildType) {
@@ -153,13 +153,13 @@ export class SceneCanvasController extends BaseUiComponent {
         if (buildType == GBuildType.room) {
 
 
-            let itemData = TableDataService.ins().getTableValuesByType2(Const.Tables.scene_item, "room", buildId + "", "type", GSceneItemType.floor + "")[0]
+            let itemData = TableDataService.ins()._fn_mc(Const.Tables.scene_item, "room", buildId + "", "type", GSceneItemType.floor + "")[0]
             target = Const.FloorFixedNode.getChildByName("floor_" + itemData.id)!
 
         } else if (buildType == GBuildType.item) {
 
             for (let i = 0; i < Const.AllItems.length; i++) {
-                let script = UtilScene.getSceneNodeScript(Const.AllItems[i])
+                let script = UtilScene._fn_kw(Const.AllItems[i])
                 if (script.id == buildId) {
                     target = Const.AllItems[i]
                     break
@@ -174,23 +174,23 @@ export class SceneCanvasController extends BaseUiComponent {
             let targtPos = v3(target.worldPosition.x, target.worldPosition.y, Const.CameraScene.node.worldPosition.z)
 
             this.aniTween = tween(Const.CameraScene.node).to(0.3, { worldPosition: targtPos }).call(() => {
-                let handIndex = mergeBoardStateStore.getHandIndex();
+                let handIndex = mergeBoardStateStore._fn_hj();
                 if (handIndex == handIndexs.buildCashDesk) {
                     let obj: any = {};
                     obj.id = handIndex;
                     obj.node = find("root", Const.FloatStarParent.children[0]);
                     obj.isScene = 1;
                     obj.delayTime = 0.2;
-                    UiLayerService.instance.showDialog(Const.Dialogs.HandLayer, obj);
+                    UiLayerService.instance._fn_ahg(Const.Dialogs.HandLayer, obj);
                 } else if (handIndex == handIndexs.putCashDesk) {
-                    this.popOpsWindow(UtilScene.getSceneItemNodeById(sceneBuildIds.cashDesk)!.node);
+                    this.popOpsWindow(UtilScene._fn_kv(sceneBuildIds.cashDesk)!.node);
                 }
             }).start()
         }
 
     }
 
-    getBorderX() {
+    _fn_fu() {
         const sceneCanvas = view.getVisibleSize();
         let gameWidthX = sceneCanvas.width;
         let gameHeightX = sceneCanvas.height;
@@ -200,42 +200,42 @@ export class SceneCanvasController extends BaseUiComponent {
         return this.borderRrthoHeightMinX - delta + rate * (this.borderRrthoHeightMaxX - this.borderRrthoHeightMinX)
     }
 
-    getBorderY() {
+    _fn_fv() {
         let rate = (Const.CameraScene.orthoHeight - UtilScene.minVal) / (UtilScene.maxVal - UtilScene.minVal)
         return this.borderRrthoHeightMinY + rate * (this.borderRrthoHeightMaxY - this.borderRrthoHeightMinY)
     }
 
 
 
-    checkOutBorder(pos: Vec3) {
+    _fn_ce(pos: Vec3) {
 
-        if (pos.x >= this.getBorderX()) {
-            pos.x = this.getBorderX()
+        if (pos.x >= this._fn_fu()) {
+            pos.x = this._fn_fu()
         }
-        if (pos.x <= -this.getBorderX()) {
-            pos.x = -this.getBorderX()
+        if (pos.x <= -this._fn_fu()) {
+            pos.x = -this._fn_fu()
         }
-        if (pos.y >= this.getBorderY()) {
-            pos.y = this.getBorderY()
+        if (pos.y >= this._fn_fv()) {
+            pos.y = this._fn_fv()
         }
-        if (pos.y <= -this.getBorderY()) {
-            pos.y = -this.getBorderY()
+        if (pos.y <= -this._fn_fv()) {
+            pos.y = -this._fn_fv()
         }
         this.SceneCameraNode.node.setPosition(pos)
     }
 
-    isTouchBuilding(pos: Vec2) {
+    _fn_ra(pos: Vec2) {
         if (this.isActiveTouchMove) {
-            let script = UtilScene.getSceneNodeScript(this.selItemNode)
-            if (UtilPub.insidePolygon(script.getPointsArr(), [pos.x, pos.y]) == true) {
+            let script = UtilScene._fn_kw(this.selItemNode)
+            if (UtilPub._fn_po(script.getPointsArr(), [pos.x, pos.y]) == true) {
                 return { res: true, item: this.selItemNode }
             }
 
         } else {
             for (let i = 0; i < Const.AllItems.length; i++) {
                 let item = Const.AllItems[i]
-                let script = UtilScene.getSceneNodeScript(item)
-                if (UtilPub.insidePolygon(script.getPointsArr(), [pos.x, pos.y]) == true) {
+                let script = UtilScene._fn_kw(item)
+                if (UtilPub._fn_po(script.getPointsArr(), [pos.x, pos.y]) == true) {
                     return { res: true, item: item }
                 }
             }
@@ -246,44 +246,44 @@ export class SceneCanvasController extends BaseUiComponent {
 
     clickDressItem(skinId: number) {
 
-        UtilScene.getSceneNodeScript(this.selItemNode).switchIcon(skinId)
+        UtilScene._fn_kw(this.selItemNode).switchIcon(skinId)
     }
 
     cancelOps() {
         this.isActiveTouchMove = false
         this.touchState = GTouchState.noYet
-        NodePoolService.instance.putNode(this.ops)
-        UtilScene.orderAllItems()
-        UtilScene.orderSceneItemNodeChildren(Const.ItemParent)
+        NodePoolService.instance._fn_xz(this.ops)
+        UtilScene._fn_wk()
+        UtilScene._fn_wm(Const.ItemParent)
     }
 
     sureOps() {
         this.isActiveTouchMove = false
         this.touchState = GTouchState.noYet
-        let sceneItemScript = UtilScene.getSceneNodeScript(this.selItemNode)
-        NodePoolService.instance.putNode(this.ops)
+        let sceneItemScript = UtilScene._fn_kw(this.selItemNode)
+        NodePoolService.instance._fn_xz(this.ops)
 
         if (sceneItemScript.type == GSceneItemType.pendant) {
-            this.selItemNode.position = UtilScene.getWallGridPos(
+            this.selItemNode.position = UtilScene._fn_mx(
                 sceneItemScript.curGridPoint.x,
                 sceneItemScript.curGridPoint.y
             )
         } else {
-            this.selItemNode.position = UtilScene.getBottomGridPos(
+            this.selItemNode.position = UtilScene._fn_fw(
                 sceneItemScript.curGridPoint.x + Const.OriOffset.x,
                 sceneItemScript.curGridPoint.y + Const.OriOffset.y
             )
         }
         if (sceneItemScript.type == GSceneItemType.carpet || sceneItemScript.type == GSceneItemType.item || sceneItemScript.type == GSceneItemType.pendant) {
-            UtilScene.orderAllItems()
-            UtilScene.orderSceneItemNodeChildren(Const.ItemParent)
-            UtilScene.initAStarObstacles()
+            UtilScene._fn_wk()
+            UtilScene._fn_wm(Const.ItemParent)
+            UtilScene._fn_nq()
             UtilPub.log("--------确定按钮---", sceneItemScript.curGridPoint, this.selItemNode.parent)
         }
-        SceneData.ins.setSceneItem(UtilScene.getSceneData(sceneItemScript))
+        SceneData.ins._fn_afx(UtilScene._fn_kq(sceneItemScript))
     }
 
-    touchStart(event: EventTouch) {
+    _fn_aiz(event: EventTouch) {
 
 
 
@@ -297,7 +297,7 @@ export class SceneCanvasController extends BaseUiComponent {
             this.touchState = GTouchState.noYet
 
 
-            let touchRes = this.isTouchBuilding(v2(this.touchWorldPos.x, this.touchWorldPos.y))
+            let touchRes = this._fn_ra(v2(this.touchWorldPos.x, this.touchWorldPos.y))
 
 
 
@@ -334,7 +334,7 @@ export class SceneCanvasController extends BaseUiComponent {
         }
     }
 
-    touchMove(event: EventTouch) {
+    _fn_aiy(event: EventTouch) {
         let touches = event.getTouches();
 
         if (touches.length == 1) {
@@ -354,12 +354,12 @@ export class SceneCanvasController extends BaseUiComponent {
 
                 let rate = Const.CameraScene.orthoHeight / UtilScene.initVal
                 this.SceneCameraNode.node.setPosition(v3(pos.x - ePos.x * rate, pos.y - ePos.y * rate, pos.z))
-                this.checkOutBorder(this.SceneCameraNode.node.position)
+                this._fn_ce(this.SceneCameraNode.node.position)
 
 
             } else if (this.touchState == GTouchState.touchOpsArea) {
 
-                let sceneItemScript = UtilScene.getSceneNodeScript(this.selItemNode)
+                let sceneItemScript = UtilScene._fn_kw(this.selItemNode)
                 if (sceneItemScript.type == GSceneItemType.item || sceneItemScript.type == GSceneItemType.carpet) {
 
                     let touchPos = event.getLocation()
@@ -372,7 +372,7 @@ export class SceneCanvasController extends BaseUiComponent {
                     UtilScene.gridData.forEach(item => {
                         if (item.wps.x - touchWorldPos.x < 60 && item.wps.y - touchWorldPos.y < 60) {
                             idx++
-                            let dis = UtilPub.getDis2D(item.wps, touchWorldPos)
+                            let dis = UtilPub._fn_gv(item.wps, touchWorldPos)
                             if (dis < mindis) {
                                 mindis = dis
                                 min = item
@@ -399,7 +399,7 @@ export class SceneCanvasController extends BaseUiComponent {
 
 
                         if (realX != sceneItemScript.curGridPoint.x || realY != sceneItemScript.curGridPoint.y) {
-                            let gridPos = UtilScene.getBottomGridPos(realX, realY)
+                            let gridPos = UtilScene._fn_fw(realX, realY)
                             let worldPos = this.GridParent.getComponent(UITransform)!.convertToWorldSpaceAR(gridPos)
 
 
@@ -421,7 +421,7 @@ export class SceneCanvasController extends BaseUiComponent {
                     UtilScene.gridWallData.forEach(item => {
                         if (item.wps.x - touchWorldPos.x < 60 && item.wps.y - touchWorldPos.y < 60) {
                             idx++
-                            let dis = UtilPub.getDis2D(item.wps, touchWorldPos)
+                            let dis = UtilPub._fn_gv(item.wps, touchWorldPos)
                             if (dis < mindis) {
                                 mindis = dis
                                 min = item
@@ -462,7 +462,7 @@ export class SceneCanvasController extends BaseUiComponent {
 
                         UtilPub.log("---取消操作?--", realX, realY, sceneItemScript.curGridPoint)
                         if (realX != sceneItemScript.curGridPoint.x || realY != sceneItemScript.curGridPoint.y) {
-                            let gridPos = UtilScene.getWallGridPos(realX, realY)
+                            let gridPos = UtilScene._fn_mx(realX, realY)
                             let worldPos = Const.ShadowWallParent.getComponent(UITransform)!.convertToWorldSpaceAR(gridPos)
 
                             UtilPub.log("@#########---UIDelta3-- 最新坐标", realX, realY, " --之前的坐标--", sceneItemScript.curGridPoint)
@@ -479,7 +479,7 @@ export class SceneCanvasController extends BaseUiComponent {
 
                     let rate = Const.CameraScene.orthoHeight / UtilScene.initVal
                     this.SceneCameraNode.node.setPosition(v3(pos.x - ePos.x * rate, pos.y - ePos.y * rate, pos.z))
-                    this.checkOutBorder(this.SceneCameraNode.node.position)
+                    this._fn_ce(this.SceneCameraNode.node.position)
                 }
 
             }
@@ -504,7 +504,7 @@ export class SceneCanvasController extends BaseUiComponent {
                 if (Const.CameraScene.orthoHeight >= UtilScene.maxVal) {
                     Const.CameraScene.orthoHeight = UtilScene.maxVal
                 }
-                this.checkOutBorder(this.SceneCameraNode.node.position)
+                this._fn_ce(this.SceneCameraNode.node.position)
 
             } else if (newPointsDis > this.pointsDis) {
 
@@ -515,7 +515,7 @@ export class SceneCanvasController extends BaseUiComponent {
                 if (Const.CameraScene.orthoHeight <= UtilScene.minVal) {
                     Const.CameraScene.orthoHeight = UtilScene.minVal
                 }
-                this.checkOutBorder(this.SceneCameraNode.node.position)
+                this._fn_ce(this.SceneCameraNode.node.position)
             }
 
 
@@ -523,17 +523,17 @@ export class SceneCanvasController extends BaseUiComponent {
     }
 
 
-    touchEnd(event: EventTouch) {
+    _fn_aix(event: EventTouch) {
         UtilPub.log("------touchEnd----")
         this.touchState = GTouchState.noYet
     }
 
-    touchCancel(event: EventTouch) {
+    _fn_aiw(event: EventTouch) {
         UtilPub.log("------touchCancel----")
         this.touchState = GTouchState.noYet
     }
 
-    onMouseWheel(event: EventMouse) {
+    _fn_va(event: EventMouse) {
         let scrollY = event.getScrollY();
 
         if (scrollY > 0) {
@@ -549,44 +549,44 @@ export class SceneCanvasController extends BaseUiComponent {
         }
 
 
-        this.checkOutBorder(this.SceneCameraNode.node.position)
+        this._fn_ce(this.SceneCameraNode.node.position)
     }
 
-    onMouseDown(event: EventMouse) {
+    _fn_uy(event: EventMouse) {
 
     }
 
-    onMouseUp(event: EventMouse) {
+    _fn_uz(event: EventMouse) {
 
     }
 
     public touchEvent() {
-        this.offTouchEvent()
-        this.SceneBottom.on(Input.EventType.TOUCH_START, this.touchStart, this)
-        this.SceneBottom.on(Input.EventType.TOUCH_MOVE, this.touchMove, this)
-        this.SceneBottom.on(Input.EventType.TOUCH_END, this.touchEnd, this)
-        this.SceneBottom.on(Input.EventType.TOUCH_CANCEL, this.touchCancel, this)
+        this._fn_sl()
+        this.SceneBottom.on(Input.EventType.TOUCH_START, this._fn_aiz, this)
+        this.SceneBottom.on(Input.EventType.TOUCH_MOVE, this._fn_aiy, this)
+        this.SceneBottom.on(Input.EventType.TOUCH_END, this._fn_aix, this)
+        this.SceneBottom.on(Input.EventType.TOUCH_CANCEL, this._fn_aiw, this)
 
 
-        this.SceneBottom.on(Input.EventType.MOUSE_DOWN, this.onMouseDown, this);
-        this.SceneBottom.on(Input.EventType.MOUSE_UP, this.onMouseUp, this);
-        this.SceneBottom.on(Input.EventType.MOUSE_WHEEL, this.onMouseWheel, this);
+        this.SceneBottom.on(Input.EventType.MOUSE_DOWN, this._fn_uy, this);
+        this.SceneBottom.on(Input.EventType.MOUSE_UP, this._fn_uz, this);
+        this.SceneBottom.on(Input.EventType.MOUSE_WHEEL, this._fn_va, this);
     }
 
-    public offTouchEvent() {
-        this.SceneBottom.off(Input.EventType.TOUCH_START, this.touchStart, this);
-        this.SceneBottom.off(Input.EventType.TOUCH_MOVE, this.touchMove, this);
-        this.SceneBottom.off(Input.EventType.TOUCH_END, this.touchEnd, this);
-        this.SceneBottom.off(Input.EventType.TOUCH_CANCEL, this.touchCancel, this);
+    public _fn_sl() {
+        this.SceneBottom.off(Input.EventType.TOUCH_START, this._fn_aiz, this);
+        this.SceneBottom.off(Input.EventType.TOUCH_MOVE, this._fn_aiy, this);
+        this.SceneBottom.off(Input.EventType.TOUCH_END, this._fn_aix, this);
+        this.SceneBottom.off(Input.EventType.TOUCH_CANCEL, this._fn_aiw, this);
 
-        this.SceneBottom.off(Input.EventType.MOUSE_DOWN, this.onMouseDown, this);
-        this.SceneBottom.off(Input.EventType.MOUSE_UP, this.onMouseUp, this);
-        this.SceneBottom.off(Input.EventType.MOUSE_WHEEL, this.onMouseWheel, this);
+        this.SceneBottom.off(Input.EventType.MOUSE_DOWN, this._fn_uy, this);
+        this.SceneBottom.off(Input.EventType.MOUSE_UP, this._fn_uz, this);
+        this.SceneBottom.off(Input.EventType.MOUSE_WHEEL, this._fn_va, this);
     }
 
 
-    setStarNode(itemData: any, p: Prefab) {
-        let itemScript = UtilScene.getSceneItemNodeById(itemData.id)
+    _fn_agm(itemData: any, p: Prefab) {
+        let itemScript = UtilScene._fn_kv(itemData.id)
         if (itemScript != null) {
             let starNode = NodePoolService.instance.getNode(p, Const.FloatStarParent)!
             starNode.getComponent(FloatingStarController)!.init(itemScript.id, GBuildType.item, itemScript.row.stars.split(",")[1])
@@ -597,46 +597,46 @@ export class SceneCanvasController extends BaseUiComponent {
 
     chgGreenStar() {
         this.calTimeForFloatStar = -3
-        NodePoolService.instance.putNodeArr(this.starNodes)
+        NodePoolService.instance._fn_ya(this.starNodes)
         Const.FloatStarParent.removeAllChildren()
 
         return;
 
-        let roomRows = UtilScene.getNeedShowStarRooms()
+        let roomRows = UtilScene._fn_ik()
 
-        UtilPub.getPrefab(Const.Prefabs.FloatingStarController, (p: Prefab) => {
+        UtilPub._fn_jj(Const.Prefabs.FloatingStarController, (p: Prefab) => {
             roomRows.forEach((roomData: any) => {
 
 
 
 
-                let floorData = TableDataService.ins().getTableValuesByType2(Const.Tables.scene_item, "type", "5", "room", roomData.id + "")[0]
+                let floorData = TableDataService.ins()._fn_mc(Const.Tables.scene_item, "type", "5", "room", roomData.id + "")[0]
 
                 if (playerDataStore.roleLv >= roomData.lv) {
-                    if (SceneData.ins.getRoomLockInfoById(roomData.id) == GSceneRoomState.locked) {
+                    if (SceneData.ins._fn_kk(roomData.id) == GSceneRoomState.locked) {
 
                         let starNode = NodePoolService.instance.getNode(p, Const.FloatStarParent)!
 
                         starNode.getComponent(FloatingStarController)!.init(floorData.id, GBuildType.room, roomData.stars.split(",")[1])
-                        starNode.worldPosition = UtilScene.getFloorNodePos(floorData.id).worldPosition
+                        starNode.worldPosition = UtilScene._fn_hf(floorData.id).worldPosition
                     } else {
 
-                        let itemsData = UtilScene.getNeedShowStarSceneItems(roomData.id)
+                        let itemsData = UtilScene._fn_il(roomData.id)
                         if (itemsData.length > 0) {
 
-                            this.setStarNode(itemsData[0], p)
+                            this._fn_agm(itemsData[0], p)
                         }
                         if (itemsData.length >= 2 && itemsData.length % 3 == 0) {
 
                             if (itemsData[1].order > 6) {
-                                this.setStarNode(itemsData[1], p)
+                                this._fn_agm(itemsData[1], p)
                             }
                         }
                     }
                 }
             })
 
-            let handIndex = mergeBoardStateStore.getHandIndex();
+            let handIndex = mergeBoardStateStore._fn_hj();
             if (handIndex == handIndexs.buildCashDesk
                 || handIndex == handIndexs.putCashDesk
             ) {
@@ -651,16 +651,16 @@ export class SceneCanvasController extends BaseUiComponent {
         }
         this.touchState = GTouchState.touchNewBuildingNewAlready
         this.isActiveTouchMove = true
-        this.popSelectLayer(selItemNode)
+        this._fn_xh(selItemNode)
     }
 
-    popSelectLayer(selItemNode: Node) {
+    _fn_xh(selItemNode: Node) {
         this.selItemNode = selItemNode;
-        UtilPub.getPrefab(Const.Prefabs.SceneOperationPanelController, (p: Prefab) => {
+        UtilPub._fn_jj(Const.Prefabs.SceneOperationPanelController, (p: Prefab) => {
             this.ops = NodePoolService.instance.getNode(p, this.SelBuildingParent)!
             this.ops.worldPosition = v3(selItemNode.worldPosition.x, selItemNode.worldPosition.y + 100, 0)
 
-            let itemScript = UtilScene.getSceneNodeScript(selItemNode)
+            let itemScript = UtilScene._fn_kw(selItemNode)
             Const.SelSceneNode = selItemNode
 
             this.ops.getComponent(SceneOperationPanelController)!.initParam(itemScript, selItemNode.getComponent(UITransform)!.height, selItemNode)
@@ -676,11 +676,11 @@ export class SceneCanvasController extends BaseUiComponent {
                 this.touchState = GTouchState.touchBuildingArrow
 
 
-                UtilPub.getPrefab(Const.Prefabs.SceneArrowIndicatorController, (p: Prefab) => {
+                UtilPub._fn_jj(Const.Prefabs.SceneArrowIndicatorController, (p: Prefab) => {
                     this.arrow = NodePoolService.instance.getNode(p, this.SelBuildingParent)!
 
 
-                    let script = UtilScene.getSceneNodeScript(this.selItemNode)
+                    let script = UtilScene._fn_kw(this.selItemNode)
                     this.arrow.worldPosition = script.getCurIconNode().worldPosition
                 })
             }
@@ -692,26 +692,26 @@ export class SceneCanvasController extends BaseUiComponent {
 
 
 
-                let script = UtilScene.getSceneNodeScript(this.selItemNode)
-                let sData = SceneData.ins.getSceneItemById(script.id, script.type)!
+                let script = UtilScene._fn_kw(this.selItemNode)
+                let sData = SceneData.ins._fn_ku(script.id, script.type)!
 
                 if (sData.lockState == GLockState.locked) {
                     this.emit(GD.event.showTip, { msg: "该装饰暂未解锁" })
                     this.touchState = GTouchState.noYet
-                    let itemScript = UtilScene.getSceneNodeScript(this.selItemNode)
+                    let itemScript = UtilScene._fn_kw(this.selItemNode)
                     itemScript.flashOnce()
                 } else {
                     this.touchState = GTouchState.touchNewBuildingNewAlready
                     this.isActiveTouchMove = true
 
 
-                    NodePoolService.instance.putNode(this.arrow)
-                    this.popSelectLayer(this.selItemNode);
+                    NodePoolService.instance._fn_xz(this.arrow)
+                    this._fn_xh(this.selItemNode);
                 }
             }
 
         } else if (this.touchState == GTouchState.noYet) {
-            NodePoolService.instance.putNode(this.arrow)
+            NodePoolService.instance._fn_xz(this.arrow)
             this.touchState = GTouchState.touchNewBuildingNewAlready
         }
 

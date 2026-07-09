@@ -4,9 +4,11 @@ build/wechatgame/*
 !build/wechatgame/.wechatignore
 library/
 temp/
+node_modules/
 
 *.log
 *.map
+function-obfuscation-map.json
 .DS_Store
 *.meta~*
 

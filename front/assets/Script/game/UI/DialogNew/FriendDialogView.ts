@@ -52,9 +52,9 @@ export class FriendDialogView extends BaseView {
     listContent: Node = null!;
 
     start() {
-        this.bindButton(this.btnClose, this.onClickBtnClose);
+        this.bindButton(this.btnClose, this._fn_sz);
 
-        GameEventManager.eventTarget.on(GameEventManager.EEventName.REFRESH_FRIEND_DATA, this.refresh, this);
+        GameEventManager.eventTarget.on(GameEventManager.EEventName.REFRESH_FRIEND_DATA, this._fn_ys, this);
 
     }
 
@@ -71,7 +71,7 @@ export class FriendDialogView extends BaseView {
             this.titleLab.string = "推荐好友"
             this.tuijianNode.active = true;
             this.listContent = this.tujianListCont;
-            GameHttpClient.getInstance().getFriendRecommend();
+            GameHttpClient._fn_ho().getFriendRecommend();
         }
         else if (this.viewType == 2){
             this.titleLab.string = "搜索好友"
@@ -82,11 +82,11 @@ export class FriendDialogView extends BaseView {
             this.titleLab.string = "申请列表"
             this.applayNode.active = true;
             this.listContent = this.applayListCont;
-            GameHttpClient.getInstance().getFriendApply();
+            GameHttpClient._fn_ho().getFriendApply();
         }
     }
 
-    refresh(){
+    _fn_ys(){
         if (this.viewType == 2){
             return;
         }
@@ -111,15 +111,15 @@ export class FriendDialogView extends BaseView {
     }
 
     onClickHandler(eve:any, str:string){
-        AudioPlaybackService.instance.playSound(Const.Audio.btn)
+        AudioPlaybackService.instance._fn_xc(Const.Audio.btn)
         let actionName = eve.target._name;
         if (actionName == "btnSearch"){
 
             if (!this.searchEdit.string){
-                this.toast("请输入用户ID进行搜索");
+                this._fn_aiu("请输入用户ID进行搜索");
                 return;
             }
-            GameHttpClient.getInstance().getFriendSearch(this.searchEdit.string, (res:any)=>{
+            GameHttpClient._fn_ho().getFriendSearch(this.searchEdit.string, (res:any)=>{
                 let foundFriend:FriendProfileRecord = res.res.data.user
                 if (foundFriend){
                     this.searchItem.active = true;
@@ -131,11 +131,11 @@ export class FriendDialogView extends BaseView {
         }
         else if (actionName == "btnReset"){
 
-            GameHttpClient.getInstance().getFriendRecommend();
+            GameHttpClient._fn_ho().getFriendRecommend();
         }
     }
 
-    onClickBtnClose() {
+    _fn_sz() {
         this.close();
     }
 

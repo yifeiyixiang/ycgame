@@ -30,16 +30,16 @@ export class RoleInfoDialog extends BaseView {
     _isEditState = false
 
     start() {
-        this.bindButton(find("root/btnClose", this.node)!, this.popClose)
+        this.bindButton(find("root/btnClose", this.node)!, this._fn_xe)
         this.bindButton(find("root/btnDress", this.node)!, () => {
-            UiLayerService.instance.pushShowDialog(Const.Dialogs.AvatarStyleLayer)
+            UiLayerService.instance._fn_xw(Const.Dialogs.AvatarStyleLayer)
         })
     }
 
     updateInfo() {
-        let item = TableDataService.ins().getTableValueByID(Const.Tables.avatarStyle, playerDataStore.avatarLookId)
+        let item = TableDataService.ins()._fn_ly(Const.Tables.avatarStyle, playerDataStore.avatarLookId)
 
-        ResourceLoaderService.loadResWithBundle(Const.resPath.roleSpine + item.spine, sp.SkeletonData, (err, skedata) => {
+        ResourceLoaderService._fn_rq(Const.resPath.roleSpine + item.spine, sp.SkeletonData, (err, skedata) => {
             this.roleSpine.skeletonData = skedata;
             this.roleSpine.setSkin(item.spineSkin)
             this.roleSpine.setAnimation(0, item.spineAni, true);
@@ -74,14 +74,14 @@ export class RoleInfoDialog extends BaseView {
     }
 
     onClickModifyBtn() {
-        AudioPlaybackService.instance.playSound(Const.Audio.btn)
-        UiLayerService.instance.pushShowDialog(Const.Dialogs.ModifyDailog)
+        AudioPlaybackService.instance._fn_xc(Const.Audio.btn)
+        UiLayerService.instance._fn_xw(Const.Dialogs.ModifyDailog)
         return
 
         if (this._isEditState) {
             let str = this.nameEditBox.getComponent(EditBox)!.string
             if (str == "") {
-                this.toast("名字不能为空")
+                this._fn_aiu("名字不能为空")
                 return
             }
             playerDataStore.roleName = str

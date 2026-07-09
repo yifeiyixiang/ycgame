@@ -7,8 +7,8 @@ const { ccclass, property } = _decorator;
 @ccclass('UtilRecharge')
 export class UtilRecharge {
 
-    public static doShopPay(shopid: number) {
-        let curRecharge = TableDataService.ins().getTableValueByID(Const.Tables.recharge, shopid)
+    public static _fn_ek(shopid: number) {
+        let curRecharge = TableDataService.ins()._fn_ly(Const.Tables.recharge, shopid)
 
     }
 }

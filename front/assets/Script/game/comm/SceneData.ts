@@ -20,54 +20,54 @@ export class SceneData extends Component {
         return this._instance;
     }
 
-    public isInitSceneData() {
-        return GameStorage.getBoolean(Const.DataKeys.isInitData, false)
+    public _fn_pz() {
+        return GameStorage._fn_ft(Const.DataKeys.isInitData, false)
     }
-    public finishInitSceneData() {
-        GameStorage.setBoolean(Const.DataKeys.isInitData, true)
+    public _fn_eu() {
+        GameStorage._fn_aej(Const.DataKeys.isInitData, true)
     }
 
-    public getRoomLockInfoById(roomId: number) {
+    public _fn_kk(roomId: number) {
 
         if (roomId == 1001) return GSceneRoomState.unlock
-        return GameStorage.getString(Const.DataKeys.sceneRoomIsUnlock + roomId, GSceneRoomState.locked)
+        return GameStorage._fn_lq(Const.DataKeys.sceneRoomIsUnlock + roomId, GSceneRoomState.locked)
     }
-    public setRoomLockInfoById(roomId: number, state: GSceneRoomState) {
-        GameStorage.setString(Const.DataKeys.sceneRoomIsUnlock + roomId, state)
-    }
-
-
-
-    public getRoomReceiveInfoById(roomId: number) {
-
-        return GameStorage.getString(Const.DataKeys.sceneRoomIsUnReceive + roomId, GSceneRoomReceiveState.unReceive)
-    }
-    public setRoomReceiveInfoById(roomId: number, state: GSceneRoomReceiveState) {
-        GameStorage.setString(Const.DataKeys.sceneRoomIsUnReceive + roomId, state)
+    public _fn_afv(roomId: number, state: GSceneRoomState) {
+        GameStorage._fn_ago(Const.DataKeys.sceneRoomIsUnlock + roomId, state)
     }
 
 
 
-    public getSceneSkinById(skinId: number) {
-        return GameStorage.getString(Const.DataKeys.sceneSkinIsGotted + skinId, GSceneSkinState.noGotted)
+    public _fn_kn(roomId: number) {
+
+        return GameStorage._fn_lq(Const.DataKeys.sceneRoomIsUnReceive + roomId, GSceneRoomReceiveState.unReceive)
     }
-    public setSceneSkinById(skinId: number, state: GSceneSkinState) {
-        GameStorage.setString(Const.DataKeys.sceneSkinIsGotted + skinId, state)
+    public _fn_afw(roomId: number, state: GSceneRoomReceiveState) {
+        GameStorage._fn_ago(Const.DataKeys.sceneRoomIsUnReceive + roomId, state)
+    }
+
+
+
+    public _fn_ky(skinId: number) {
+        return GameStorage._fn_lq(Const.DataKeys.sceneSkinIsGotted + skinId, GSceneSkinState.noGotted)
+    }
+    public _fn_agb(skinId: number, state: GSceneSkinState) {
+        GameStorage._fn_ago(Const.DataKeys.sceneSkinIsGotted + skinId, state)
         if (state == GSceneSkinState.gotted) {
-            playerDataStore.setGetPropTujian(skinId, TujianState.geted, Const.DataKeys.tujianScene)
+            playerDataStore._fn_aes(skinId, TujianState.geted, Const.DataKeys.tujianScene)
         }
     }
-    public getSceneSkinAll() {
-        return GameStorage.getObjectArrayByKey(Const.DataKeys.sceneSkinIsGotted)
+    public _fn_kx() {
+        return GameStorage._fn_ip(Const.DataKeys.sceneSkinIsGotted)
     }
 
 
-    public getSkinListByScene(sceneId: number) {
+    public _fn_lk(sceneId: number) {
 
     }
 
 
-    private getSceneHead(type: GSceneItemType) {
+    private _fn_kr(type: GSceneItemType) {
         if (type == GSceneItemType.wall) {
             return Const.DataKeys.sceneWall
         } else if (type == GSceneItemType.floor) {
@@ -81,10 +81,10 @@ export class SceneData extends Component {
         }
         return null!
     }
-    public setSceneItem(data: GSceneItemData) {
-        let head = this.getSceneHead(data.type)
+    public _fn_afx(data: GSceneItemData) {
+        let head = this._fn_kr(data.type)
         if (head != null) {
-            GameStorage.setObject(head + data.id, data)
+            GameStorage._fn_afh(head + data.id, data)
         } else {
             UtilPub.error("@！！场景的数据存储,未知的类型", data)
             return null!
@@ -95,18 +95,18 @@ export class SceneData extends Component {
 
 
 
-    public setSceneItems(dataObj: { [key: string]: GSceneItemData }) {
-        GameStorage.setObjectMulti(dataObj)
+    public _fn_afz(dataObj: { [key: string]: GSceneItemData }) {
+        GameStorage._fn_afj(dataObj)
     }
 
 
 
 
 
-    public getSceneItemById(id: number, type: GSceneItemType): GSceneItemData | null {
-        let head = this.getSceneHead(type)
+    public _fn_ku(id: number, type: GSceneItemType): GSceneItemData | null {
+        let head = this._fn_kr(type)
         if (head != null) {
-            return GameStorage.getObject(head + id, null!)
+            return GameStorage._fn_io(head + id, null!)
         } else {
             UtilPub.error("@！！场景的数据存储,未知的类型", type, id)
             return null!
@@ -116,8 +116,8 @@ export class SceneData extends Component {
 
 
 
-    public getSceneItemArrAll() {
-        return GameStorage.getObjectArrayByKey(Const.DataKeys.sceneHead)
+    public _fn_ks() {
+        return GameStorage._fn_ip(Const.DataKeys.sceneHead)
     }
 
 
@@ -125,10 +125,10 @@ export class SceneData extends Component {
 
 
 
-    public getSceneItemArrByType(type: GSceneItemType) {
-        let head = this.getSceneHead(type)
+    public _fn_kt(type: GSceneItemType) {
+        let head = this._fn_kr(type)
         if (head != null) {
-            return GameStorage.getObjectArrayByKey(Const.DataKeys.sceneHead)
+            return GameStorage._fn_ip(Const.DataKeys.sceneHead)
         } else {
             UtilPub.error("@！！场景的数据存储,未知的类型", type)
             return null!
@@ -139,7 +139,7 @@ export class SceneData extends Component {
 
 
     init() {
-        if (!this.isInitSceneData()) {
+        if (!this._fn_pz()) {
 
         }
     }

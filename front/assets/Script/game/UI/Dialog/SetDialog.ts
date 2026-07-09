@@ -37,34 +37,34 @@ export class SetDialog extends BaseView {
     clickCount: number = 0;
 
     start() {
-        this.bindButton(find("root/btnClose", this.node)!, this.popClose)
+        this.bindButton(find("root/btnClose", this.node)!, this._fn_xe)
         this.bindButton(find("root/btnduihuan", this.node)!, this.openDuihuanMa)
         this.bindButton(find("root/privacyLabel", this.node)!, ()=>{
-            UiLayerService.instance.showDialog(Const.Dialogs.PrivacyDialog)
+            UiLayerService.instance._fn_ahg(Const.Dialogs.PrivacyDialog)
         })
 
-        this.bindButton(find("root/btnChange", this.node)!, this.onClickChange)
+        this.bindButton(find("root/btnChange", this.node)!, this._fn_tv)
 
 
-        this.bindButton(this.titleNode, this.onClickTitle);
+        this.bindButton(this.titleNode, this._fn_ul);
     }
 
     show(args: any) {
         super.show(args)
-        this.initMusicBtn()
-        this.initSoundBtn()
+        this._fn_ok()
+        this._fn_pd()
         this.nameLabel.getComponent(Label)!.string = playerDataStore.roleName
         this.IDLabel.getComponent(Label)!.string = "ID:" + playerDataStore.roleID
-        GamePlatform.track("查看设置")
+        GamePlatform._fn_aja("查看设置")
 
         this.verLabel.string = "版本号：" + Const.appBuildVersion + "_" + Const.hotupdateVersion
 
         if (playerDataStore.roleAvatar != "") {
 
-            ResourceLoaderService.setRemoteImage(playerDataStore.roleAvatar, this.avatarNode.getComponent(Sprite)!, () => { })
+            ResourceLoaderService._fn_afr(playerDataStore.roleAvatar, this.avatarNode.getComponent(Sprite)!, () => { })
         }
 
-        let item = TableDataService.ins().getTableValueByID(Const.Tables.avatarStyle, playerDataStore.avatarLookId)
+        let item = TableDataService.ins()._fn_ly(Const.Tables.avatarStyle, playerDataStore.avatarLookId)
         if (item.type == RoleSex.men) {
             this.avatarBg.getComponent(Sprite)!.spriteFrame = this.avatarBg1
         } else {
@@ -72,16 +72,16 @@ export class SetDialog extends BaseView {
         }
 
         this.clickCount = 0;
-        this.unschedule(this.resetClickCount);
+        this.unschedule(this._fn_abp);
 
-        aiRobot.stopUpdate();
+        aiRobot._fn_ain();
     }
 
     updateInfo() {
         this.nameLabel.getComponent(Label)!.string = playerDataStore.roleName
         this.IDLabel.getComponent(Label)!.string = "ID:" + playerDataStore.roleID
 
-        let item = TableDataService.ins().getTableValueByID(Const.Tables.avatarStyle, playerDataStore.avatarLookId)
+        let item = TableDataService.ins()._fn_ly(Const.Tables.avatarStyle, playerDataStore.avatarLookId)
         if (item.type == RoleSex.men) {
             this.avatarBg.getComponent(Sprite)!.spriteFrame = this.avatarBg1
         } else {
@@ -90,21 +90,21 @@ export class SetDialog extends BaseView {
     }
 
     onClickMusic() {
-        AudioPlaybackService.instance.clickMusic()
-        this.initMusicBtn()
-        AudioPlaybackService.instance.playSound(Const.Audio.btn)
+        AudioPlaybackService.instance._fn_dd()
+        this._fn_ok()
+        AudioPlaybackService.instance._fn_xc(Const.Audio.btn)
 
     }
 
     onClickSound() {
-        AudioPlaybackService.instance.clickSound()
-        this.initSoundBtn()
-        AudioPlaybackService.instance.playSound(Const.Audio.btn)
+        AudioPlaybackService.instance._fn_de()
+        this._fn_pd()
+        AudioPlaybackService.instance._fn_xc(Const.Audio.btn)
 
     }
 
-    initMusicBtn() {
-        if (!AudioPlaybackService.instance.isOpenMusic()) {
+    _fn_ok() {
+        if (!AudioPlaybackService.instance._fn_qf()) {
             tween(this.musicBtn.getChildByName("seticon")).to(0.2, { position: v3(40, 0, 0) }).to(0.1, { position: v3(36, 0, 0) }).start()
 
         } else {
@@ -113,8 +113,8 @@ export class SetDialog extends BaseView {
         }
     }
 
-    initSoundBtn() {
-        if (!AudioPlaybackService.instance.isOpenSound()) {
+    _fn_pd() {
+        if (!AudioPlaybackService.instance._fn_qg()) {
             tween(this.soundBtn.getChildByName("seticon")).to(0.2, { position: v3(40, 0, 0) }).to(0.1, { position: v3(36, 0, 0) }).start()
 
         } else {
@@ -124,34 +124,34 @@ export class SetDialog extends BaseView {
     }
 
     openDuihuanMa() {
-        AudioPlaybackService.instance.playSound(Const.Audio.btn)
+        AudioPlaybackService.instance._fn_xc(Const.Audio.btn)
 
-        GamePlatform.track("open settings redeem")
-        UiLayerService.instance.pushShowDialog(Const.Dialogs.CodeDialog)
+        GamePlatform._fn_aja("open settings redeem")
+        UiLayerService.instance._fn_xw(Const.Dialogs.CodeDialog)
     }
 
     openRoleInfo() {
-        AudioPlaybackService.instance.playSound(Const.Audio.btn)
-        UiLayerService.instance.pushShowDialog(Const.Dialogs.RoleInfoDialog)
+        AudioPlaybackService.instance._fn_xc(Const.Audio.btn)
+        UiLayerService.instance._fn_xw(Const.Dialogs.RoleInfoDialog)
     }
 
-    onClickTitle() {
+    _fn_ul() {
         this.clickCount++;
-        this.unschedule(this.resetClickCount);
-        this.scheduleOnce(this.resetClickCount, 3);
+        this.unschedule(this._fn_abp);
+        this.scheduleOnce(this._fn_abp, 3);
         if (this.clickCount >= 5) {
             this.close();
-            UiLayerService.instance.showDialog(Const.Dialogs.GMInputLayer);
+            UiLayerService.instance._fn_ahg(Const.Dialogs.GMInputLayer);
             this.clickCount = 0;
-            this.unschedule(this.resetClickCount);
+            this.unschedule(this._fn_abp);
         }
     }
 
-    onClickChange() {
+    _fn_tv() {
         director.loadScene("loading");
     }
 
-    resetClickCount() {
+    _fn_abp() {
         this.clickCount = 0;
     }
 

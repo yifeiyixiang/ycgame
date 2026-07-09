@@ -20,8 +20,8 @@ export class MovePath extends Component {
     p3: Vec3 = v3(0, 0, 0);
 
     startMove(startWorldPos: Vec3, endWorldPos: Vec3, time: number = 0.3, endCb?: Function, dir = 0) {
-        this.startPos = UtilPub.convertToNodeSpace(this.node, startWorldPos);
-        this.endPos = UtilPub.convertToNodeSpace(this.node, endWorldPos);
+        this.startPos = UtilPub._fn_do(this.node, startWorldPos);
+        this.endPos = UtilPub._fn_do(this.node, endWorldPos);
         this.endCb = endCb;
 
         this.speed = 1 / time / 2;

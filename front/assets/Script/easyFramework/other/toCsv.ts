@@ -21,8 +21,8 @@ export class CsvExportTool extends BaseUiComponent {
 
 
 
-    public transformCsvToLevelData(level:number, grids:Node[][], parentNode:Node, objgrids:number[][], cb:Function){
-        let tab = DataManager.getTable("level"+level)
+    public _fn_ajb(level:number, grids:Node[][], parentNode:Node, objgrids:number[][], cb:Function){
+        let tab = DataManager._fn_lt("level"+level)
 
         let keys = Object.keys(tab)
 
@@ -76,7 +76,7 @@ export class CsvExportTool extends BaseUiComponent {
 
             //@ts-ignore
             let pName = Const.Prefabs[row.name]
-            UtilPub.getPrefab(pName, (p:Prefab)=>{
+            UtilPub._fn_jj(pName, (p:Prefab)=>{
                 if(p){
                     UtilPub.log(row.name)
                     let node = NodePoolService.instance.getNode(p, parentNode)
@@ -97,7 +97,7 @@ export class CsvExportTool extends BaseUiComponent {
                         grids[rowIdx][colIdx].active = false
                     }
                     if(node.name == "prefab_box"){
-                        NodePoolService.instance.putNode(node)
+                        NodePoolService.instance._fn_xz(node)
                     }
                 }else{
                     UtilPub.log("---------warn---存在未解析的预制体--", row.name)
@@ -113,7 +113,7 @@ export class CsvExportTool extends BaseUiComponent {
 
     }
 
-    public transformLevelDataToCsv(node:Node):string {
+    public _fn_ajc(node:Node):string {
         var data1 = '';
         var index = 1;
         var da = '索引,' + '节点名字,' + 'posX,' + 'posY,' + 'posZ,' + 'rotX,' + 'rotY,' + 'rotZ,' + 'ScaX,' + 'ScaY,' + 'ScaZ,' + 'row,'+ 'col,' + '\n' +

@@ -20,8 +20,8 @@ export class FuBagLayer extends BaseView {
 
     start() {
 
-        this.bindButton(this.btnSure, this.onClickBtnSure);
-        this.bindButton(this.btnClose, this.onClickBtnClose);
+        this.bindButton(this.btnSure, this._fn_to);
+        this.bindButton(this.btnClose, this._fn_sz);
 
     }
 
@@ -30,44 +30,44 @@ export class FuBagLayer extends BaseView {
 
         this.bagId = args;
 
-        this.initUI();
+        this._fn_ph();
 
     }
 
-    initUI() {
-        let bagConfig = TableDataService.ins().getTableValueByID(Const.Tables.fuBag, this.bagId);
-        this.scrollViewSetData(this.propList, bagConfig.price, this.refreshPropItem.bind(this));
+    _fn_ph() {
+        let bagConfig = TableDataService.ins()._fn_ly(Const.Tables.fuBag, this.bagId);
+        this._fn_adc(this.propList, bagConfig.price, this._fn_zk.bind(this));
     }
 
-    refreshPropItem(itemUI: Node, prop: any) {
+    _fn_zk(itemUI: Node, prop: any) {
         let propId = prop[0];
         let propCount = prop[1];
-        let propConfig = TableDataService.ins().getTableValueByID(Const.Tables.prop, propId);
+        let propConfig = TableDataService.ins()._fn_ly(Const.Tables.prop, propId);
 
-        this.setSpriteFrame2(find("icon", itemUI)!.getComponent(Sprite)!, Const.resPath.icon + propConfig.icon);
-        this.setString(find("num", itemUI), propCount);
+        this._fn_agl(find("icon", itemUI)!.getComponent(Sprite)!, Const.resPath.icon + propConfig.icon);
+        this._fn_ago(find("num", itemUI), propCount);
 
         let infoNode = find("info", itemUI)!;
-        if (mergeBoardStateStore.propCanCreateNewProp(propId)) {
+        if (mergeBoardStateStore._fn_xo(propId)) {
             infoNode.active = true;
-            this.bindButton(itemUI, this.onClickPropItem);
+            this.bindButton(itemUI, this._fn_ue);
         } else {
             infoNode.active = false;
         }
 
     }
 
-    onClickPropItem(btn: Button) {
+    _fn_ue(btn: Button) {
         // @ts-ignore
         let propRow = btn.node.propRow;
-        mergeBoardStateStore.openPropInfoLayer(propRow.id);
+        mergeBoardStateStore._fn_wh(propRow.id);
     }
 
-    onClickBtnSure() {
+    _fn_to() {
         this.close();
     }
 
-    onClickBtnClose() {
+    _fn_sz() {
         this.close();
     }
 

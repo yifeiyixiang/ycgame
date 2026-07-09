@@ -36,32 +36,32 @@ export class BuildListPanelController extends BaseView {
 
     show(args: any) {
         super.show(args)
-        this.reload()
-        GamePlatform.track("查看建造清单")
+        this._fn_aac()
+        GamePlatform._fn_aja("查看建造清单")
     }
 
-    reload() {
+    _fn_aac() {
         this.chgGreenStar()
-        NodePoolService.instance.putNodeArr(this.items)
-        let needShowRooms = UtilScene.getNeedShowStarRooms()
+        NodePoolService.instance._fn_ya(this.items)
+        let needShowRooms = UtilScene._fn_ik()
 
-        UtilPub.getPrefab(Const.Prefabs.BuildListItemController, (p: Prefab) => {
+        UtilPub._fn_jj(Const.Prefabs.BuildListItemController, (p: Prefab) => {
             needShowRooms.forEach((row: any) => {
                 let item = NodePoolService.instance.getNode(p, this.buildListLayout)!
                 item.getComponent(BuildListItemController)!.init(row.id)
                 this.items.push(item)
             })
 
-            let handIndex = mergeBoardStateStore.getHandIndex();
+            let handIndex = mergeBoardStateStore._fn_hj();
             if (handIndex == handIndexs.btnBuild) {
-                mergeBoardStateStore.addHandIndex();
+                mergeBoardStateStore._fn_e();
                 let obj: any = {};
-                obj.id = mergeBoardStateStore.getHandIndex();
+                obj.id = mergeBoardStateStore._fn_hj();
                 let btnGo = find("root/mid/goBtn", this.buildListLayout.children[0]);
                 obj.node = btnGo;
                 obj.delayTime = 0.5;
-                UiLayerService.instance.showDialog(Const.Dialogs.HandLayer, obj);
-                mergeBoardStateStore.addHandIndex();
+                UiLayerService.instance._fn_ahg(Const.Dialogs.HandLayer, obj);
+                mergeBoardStateStore._fn_e();
             }
         })
     }

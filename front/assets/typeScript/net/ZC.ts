@@ -6,7 +6,7 @@ const { ccclass, property } = _decorator;
 export class ZcApiGateway {
     public static instance:ZcApiGateway = null;
 
-    public static getInstance():ZcApiGateway{
+    public static _fn_ho():ZcApiGateway{
         if (this.instance === null) {
             this.instance = new ZcApiGateway();
         }

@@ -41,32 +41,32 @@ export class PetListView extends BaseView {
     selectCfg:ShopConfigRecord = null!;
 
     onLoad() {
-        this.bindButton(this.btnClose, this.onClickBtnClose);
+        this.bindButton(this.btnClose, this._fn_sz);
 
         this.bindButton(find("root/nameBg/btnName", this.node)!, () => {
             if (!this.selectData){
                 return
             }
-            UiLayerService.instance.showDialog(Const.Dialogs.PetNameView, this.selectData)
+            UiLayerService.instance._fn_ahg(Const.Dialogs.PetNameView, this.selectData)
         })
 
         this.bindButton(find("root/btnFangsheng", this.node)!, () => {
-            UiLayerService.instance.showDialog(Const.Dialogs.PetComonTipView, [1,this.selectData])
+            UiLayerService.instance._fn_ahg(Const.Dialogs.PetComonTipView, [1,this.selectData])
         })
 
         this.bindButton(find("root/btnDitials", this.node)!, () => {
-            UiLayerService.instance.showDialog(Const.Dialogs.PetDetialsView, this.selectData);
+            UiLayerService.instance._fn_ahg(Const.Dialogs.PetDetialsView, this.selectData);
         })
 
         this.bindButton(find("root/btnHome", this.node)!, () => {
-            UiLayerService.instance.showDialog(Const.Dialogs.PetComonTipView, [2,this.selectData])
+            UiLayerService.instance._fn_ahg(Const.Dialogs.PetComonTipView, [2,this.selectData])
         })
     }
 
     onEnable() {
-        this.on(GD.event.updateGame, this.refresh)
+        this.on(GD.event.updateGame, this._fn_ys)
 
-        GameHttpClient.getInstance().getPetList();
+        GameHttpClient._fn_ho()._fn_jc();
     }
 
     onDisable() {
@@ -76,10 +76,10 @@ export class PetListView extends BaseView {
     show(args: any) {
         super.show(args);
 
-        this.refresh();
+        this._fn_ys();
     }
 
-     refresh(){
+     _fn_ys(){
         for (let cellIndex = 0; cellIndex < this.listContent.children.length; cellIndex++) {
             const petCellNode = this.listContent.children[cellIndex];
             if (petCellNode){
@@ -89,7 +89,7 @@ export class PetListView extends BaseView {
 
         for (let petIndex = 0; petIndex < playerDataStore.pets.length; petIndex++) {
             const petRecord:PetProfileRecord = playerDataStore.pets[petIndex];
-            let petShopConfig:ShopConfigRecord = TableDataService.ins().getTableValueByID(Const.Tables.new_prop, petRecord.prop_id);
+            let petShopConfig:ShopConfigRecord = TableDataService.ins()._fn_ly(Const.Tables.new_prop, petRecord.prop_id);
 
             let petCellNode = this.listContent.children[petIndex];
             if (!petCellNode){
@@ -99,7 +99,7 @@ export class PetListView extends BaseView {
             petCellNode.active = true;
 
             if (petShopConfig.icon){
-            this.setSpriteFrame(petCellNode.getChildByName("icon").getComponent(Sprite), Const.resPath.icon + petShopConfig.icon, () => { }, 60)
+            this._fn_agk(petCellNode.getChildByName("icon").getComponent(Sprite), Const.resPath.icon + petShopConfig.icon, () => { }, 60)
                 petCellNode.getChildByName("icon").active = true;
             }else{
                 petCellNode.getChildByName("icon").active = false;
@@ -115,7 +115,7 @@ export class PetListView extends BaseView {
             petCellNode.off("click");
             petCellNode.on("click", ()=>{
                 this.selectInd = petIndex;
-                this.refresh();
+                this._fn_ys();
             }, this);
         }
 
@@ -136,7 +136,7 @@ export class PetListView extends BaseView {
 
     }
 
-    onClickBtnClose() {
+    _fn_sz() {
         this.close();
     }
 

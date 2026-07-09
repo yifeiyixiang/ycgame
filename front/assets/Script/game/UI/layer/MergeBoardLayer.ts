@@ -143,13 +143,13 @@ export class MergeBoardLayer extends BaseView {
     addPropID() {
         let id = this.propid.getComponent(EditBox)!.string
         let propnum = this.propnum.getComponent(EditBox)!.string
-        mergeBoardStateStore.addPropNum(parseInt(id), parseInt(propnum))
+        mergeBoardStateStore._fn_m(parseInt(id), parseInt(propnum))
 
     }
 
     onLoad() {
-        UtilPub.loadSpineSkeletonData(this.tbgxSpinePath);
-        UtilPub.loadSpineSkeletonData(this.jsqSpinePath);
+        UtilPub._fn_rr(this.tbgxSpinePath);
+        UtilPub._fn_rr(this.jsqSpinePath);
 
         this.roomListLayer.on(NodeEventType.TOUCH_START, this.roomListTouchStart, this);
         this.roomListLayer.on(NodeEventType.TOUCH_MOVE, this.roomListTouchMove, this);
@@ -173,28 +173,28 @@ export class MergeBoardLayer extends BaseView {
         this.mergeFxItem.active = false;
         this.mergeFxItem.parent = this.node;
 
-        this.initRoomLayer();
-        this.bindButtonNoAudio(this.btnClose, this.onClickBtnClose);
-        this.bindButton(this.btnShop, this.onClickBtnShop);
-        this.bindButton(this.btnDeleteData, this.onClickBtnDeleteData);
+        this._fn_ow();
+        this._fn_ag(this.btnClose, this._fn_sz);
+        this.bindButton(this.btnShop, this._fn_tn);
+        this.bindButton(this.btnDeleteData, this._fn_ta);
 
-        this.bindButton(this.infoUILayer, this.onClickInfoUI);
-        this.bindButton(this.btnUnlock, this.onClickBtnUnlock);
-        this.bindButton(this.btnCdOver, this.onClickBtnCdOver);
-        this.bindButton(this.btnBubbleGet, this.onClickBtnBubbleGet);
-        this.bindButton(this.btnBubbleOver, this.onClickBtnBubbleOver);
+        this.bindButton(this.infoUILayer, this._fn_uc);
+        this.bindButton(this.btnUnlock, this._fn_ts);
+        this.bindButton(this.btnCdOver, this._fn_sx);
+        this.bindButton(this.btnBubbleGet, this._fn_su);
+        this.bindButton(this.btnBubbleOver, this._fn_sv);
 
-        this.bindButtonNoAudio(this.btnSellBack, this.onClickBtnSellBack);
-        this.bindButtonNoAudio(this.btnSell, this.onClickBtnSell);
+        this._fn_ag(this.btnSellBack, this._fn_tl);
+        this._fn_ag(this.btnSell, this._fn_tk);
 
         this.bindButton(this.btnBuild, this.onClickBtnBuild);
-        this.bindButton(this.btnManager, this.onClickBtnManager);
-        this.bindButton(this.cardLayer, this.onClickCardLayer);
-        this.bindButton(this.btnTaskList, this.onClickBtnTaskList);
+        this.bindButton(this.btnManager, this._fn_tg);
+        this.bindButton(this.cardLayer, this._fn_tu);
+        this.bindButton(this.btnTaskList, this._fn_tr);
 
         this.addPrefab(Const.Prefabs.Main_top, this.node, null!, { parentNode: this.node, flag: main_top.ShowLevel | main_top.ShowCoin | main_top.ShowPower | main_top.ShowDiamond });
 
-        redPointManager.setRedpoint(this.btnBuild, RPointEvent.boardBuildHint, false, 1.5, 35, 22);
+        redPointManager._fn_afp(this.btnBuild, RPointEvent.boardBuildHint, false, 1.5, 35, 22);
 
         let uiHeight = this.uiNode.getComponent(UITransform)!.height;
         let topHeight = 110;
@@ -225,11 +225,11 @@ export class MergeBoardLayer extends BaseView {
         super.show(args);
         console.log(" show 1")
 
-        UtilGame.sceneClose();
+        UtilGame._fn_acu();
         console.log(" show 2")
 
 
-        mergeBoardStateStore.loadData();
+        mergeBoardStateStore._fn_rh();
         this.moveItemLayer.destroyAllChildren();
         this.mergeFxLayer.destroyAllChildren();
         this.bubbleLayer.destroyAllChildren();
@@ -242,58 +242,58 @@ export class MergeBoardLayer extends BaseView {
         this.touching = false;
         console.log(" show 3")
 
-        this.initTaskLayer();
-        this.refreshCardLayer();
-        this.refreshManagerLayer();
-        this.refershRoomLayer();
-        this.refreshComposeHint();
-        this.refreshBottomLayer();
-        this.refreshBuildLayer();
-        this.refreshBtnTaskList();
+        this._fn_pf();
+        this._fn_yz();
+        this._fn_zi();
+        this._fn_yr();
+        this._fn_za();
+        this._fn_yv();
+        this._fn_yy();
+        this._fn_yx();
         console.log(" show 4")
 
         this.on(GD.event.boardSlotSpawn, this.boardSlotSpawnRet, this);
         this.on(GD.event.roomBubbleBurst, this.roomBubbleBurstRet, this);
         this.on(GD.event.boardBagWithdraw, this.boardBagWithdrawRet, this);
-        this.on(GD.event.boardMilestoneRefresh, this.boardMilestoneRefreshRet, this);
-        this.on(GD.event.boardCardRefresh, this.boardCardRefreshRet, this);
-        this.on(GD.event.boardDiscovery, this.boardDiscoveryRet, this);
-        this.on(GD.event.refreshHandLayer, this.refreshHandLayerRet, this);
-        this.on(GD.event.goToBuildScene, this.goToBuildSceneRet, this);
-        this.on(GD.event.refreshTask, this.refreshTaskRet, this);
-        this.on(GD.event.boardSpeedupEnded, this.boardSpeedupEndedRet, this);
-        this.on(GD.event.onClickTaskDone, this.onClickBtnTaskDoneEvent, this);
+        this.on(GD.event.boardMilestoneRefresh, this._fn_ak, this);
+        this.on(GD.event.boardCardRefresh, this._fn_ai, this);
+        this.on(GD.event.boardDiscovery, this._fn_aj, this);
+        this.on(GD.event.refreshHandLayer, this._fn_ze, this);
+        this.on(GD.event.goToBuildScene, this._fn_nc, this);
+        this.on(GD.event.refreshTask, this._fn_zx, this);
+        this.on(GD.event.boardSpeedupEnded, this._fn_al, this);
+        this.on(GD.event.onClickTaskDone, this._fn_tq, this);
         console.log(" show 5")
 
 
-        director.off(GNetCmd.GetUserDataByKey.toString(), this.onMessageEvent, this);
-        director.on(GNetCmd.GetUserDataByKey.toString(), this.onMessageEvent, this);
+        director.off(GNetCmd.GetUserDataByKey.toString(), this._fn_uw, this);
+        director.on(GNetCmd.GetUserDataByKey.toString(), this._fn_uw, this);
 
 
         this.scheduleOnce(() => {
-            mergeBoardStateStore.markMergeBoardReady();
+            mergeBoardStateStore._fn_sc();
             this.refreshHandLayer();
         }, 0.5);
         console.log(" show 6")
 
-        this.schedule(this.startBuildBodyAnimation, 6);
-        this.schedule(this.updateLogic, 0.5);
+        this.schedule(this._fn_aig, 6);
+        this.schedule(this._fn_ajm, 0.5);
 
-        UtilPub.for2Arr(mergeBoardStateStore.roomArr, (roomData: any) => {
+        UtilPub._fn_ex(mergeBoardStateStore.roomArr, (roomData: any) => {
             if (roomData.st == roomStatus.carton) {
-                UtilPub.loadSpineSkeletonData(this.cartonSpinePath);
+                UtilPub._fn_rr(this.cartonSpinePath);
                 return true;
             }
         });
         console.log(" show 7")
 
-        let hadnIdnex = mergeBoardStateStore.getHandIndex();
+        let hadnIdnex = mergeBoardStateStore._fn_hj();
         if (hadnIdnex == handIndexs.shopOpen) {
             let obj: any = {};
             obj.id = hadnIdnex;
             obj.node = this.btnShop
             obj.delayTime = 0.5;
-            UiLayerService.instance.showDialog(Const.Dialogs.HandLayer, obj);
+            UiLayerService.instance._fn_ahg(Const.Dialogs.HandLayer, obj);
         }
         console.log(" show 8")
 
@@ -301,34 +301,34 @@ export class MergeBoardLayer extends BaseView {
 
     close() {
         super.close();
-        UtilGame.sceneOpen();
+        UtilGame._fn_acv();
 
-        AudioPlaybackService.instance.playSound(Const.Audio.sceneChange);
+        AudioPlaybackService.instance._fn_xc(Const.Audio.sceneChange);
 
         this.off(GD.event.boardSlotSpawn, this.boardSlotSpawnRet);
         this.off(GD.event.roomBubbleBurst, this.roomBubbleBurstRet);
         this.off(GD.event.boardBagWithdraw, this.boardBagWithdrawRet);
-        this.off(GD.event.boardMilestoneRefresh, this.boardMilestoneRefreshRet);
-        this.off(GD.event.boardCardRefresh, this.boardCardRefreshRet);
-        this.off(GD.event.boardDiscovery, this.boardDiscoveryRet);
-        this.off(GD.event.refreshHandLayer, this.refreshHandLayerRet);
-        this.off(GD.event.goToBuildScene, this.goToBuildSceneRet);
-        this.off(GD.event.refreshTask, this.refreshTaskRet);
-        this.off(GD.event.onClickTaskDone, this.onClickBtnTaskDoneEvent);
+        this.off(GD.event.boardMilestoneRefresh, this._fn_ak);
+        this.off(GD.event.boardCardRefresh, this._fn_ai);
+        this.off(GD.event.boardDiscovery, this._fn_aj);
+        this.off(GD.event.refreshHandLayer, this._fn_ze);
+        this.off(GD.event.goToBuildScene, this._fn_nc);
+        this.off(GD.event.refreshTask, this._fn_zx);
+        this.off(GD.event.onClickTaskDone, this._fn_tq);
 
-        director.off(GNetCmd.GetUserDataByKey.toString(), this.onMessageEvent, this);
+        director.off(GNetCmd.GetUserDataByKey.toString(), this._fn_uw, this);
 
     }
 
     onDisable() {
         mergeBoardStateStore.close();
 
-        this.unschedule(this.scheduleAudioCountReset);
-        this.unschedule(this.startBuildBodyAnimation);
-        this.unschedule(this.updateLogic);
+        this.unschedule(this._fn_acw);
+        this.unschedule(this._fn_aig);
+        this.unschedule(this._fn_ajm);
     }
 
-    refreshBtnTaskList() {
+    _fn_yx() {
 
 
 
@@ -337,16 +337,16 @@ export class MergeBoardLayer extends BaseView {
 
     }
 
-    updateLogic() {
+    _fn_ajm() {
 
-        UtilPub.for2Arr(this.roomItemUIArr, (itemUI: Node, row: number, col: number) => {
-            this.refreshSpeedUpSpine(itemUI);
+        UtilPub._fn_ex(this.roomItemUIArr, (itemUI: Node, row: number, col: number) => {
+            this._fn_zt(itemUI);
         });
 
-        this.showWeakHand()
+        this._fn_ahz()
     }
 
-    startBuildBodyAnimation() {
+    _fn_aig() {
         if (Math.random() > 0.3) {
             return;
         }
@@ -360,7 +360,7 @@ export class MergeBoardLayer extends BaseView {
     }
 
     refreshHandLayer() {
-        let handIndex = mergeBoardStateStore.getHandIndex();
+        let handIndex = mergeBoardStateStore._fn_hj();
 
         let obj: any = {};
         obj.id = handIndex;
@@ -382,7 +382,7 @@ export class MergeBoardLayer extends BaseView {
                 obj.endNode = this.roomItemUIArr[3][4];
                 break;
             case handIndexs.boardItemReveal:
-                mergeBoardStateStore.addHandIndex();
+                mergeBoardStateStore._fn_e();
                 this.refreshHandLayer();
                 break;
             case handIndexs.clickRoomNew:
@@ -417,12 +417,12 @@ export class MergeBoardLayer extends BaseView {
                 break;
         }
         if (isShow) {
-            UiLayerService.instance.showDialog(Const.Dialogs.HandLayer, obj);
+            UiLayerService.instance._fn_ahg(Const.Dialogs.HandLayer, obj);
         }
 
     }
 
-    initRoomLayer() {
+    _fn_ow() {
         let roomListBg = find("ui/roomLayer/roomListBg", this.node)!;
         let roomBgItem = find("bgItem", roomListBg)!;
 
@@ -471,13 +471,13 @@ export class MergeBoardLayer extends BaseView {
         roomBgItem.destroy();
     }
 
-    refershRoomLayer() {
-        UtilPub.for2Arr(this.roomItemUIArr, (itemUI: Node, row: number, col: number) => {
-            this.refreshRoomItemUI(itemUI);
+    _fn_yr() {
+        UtilPub._fn_ex(this.roomItemUIArr, (itemUI: Node, row: number, col: number) => {
+            this._fn_zm(itemUI);
         });
     }
 
-    refreshCardLayer() {
+    _fn_yz() {
         if (mergeBoardStateStore.cardArr.length <= 0) {
             this.cardLayer.active = false;
             return;
@@ -503,16 +503,16 @@ export class MergeBoardLayer extends BaseView {
             itemUI.active = true;
             itemUI.parent = this.cardLayer;
             let id = arr[i];
-            let propRow = TableDataService.ins().getTableValueByID(Const.Tables.prop, id);
+            let propRow = TableDataService.ins()._fn_ly(Const.Tables.prop, id);
 
             let iconNode = find("icon", itemUI)!;
             Tween.stopAllByTarget(iconNode);
             let effectNode = find("spine", itemUI)!;
-            this.setSpriteFrame2(iconNode.getComponent(Sprite)!, Const.resPath.icon + propRow.icon);
+            this._fn_agl(iconNode.getComponent(Sprite)!, Const.resPath.icon + propRow.icon);
             let numNode = find("num", itemUI)!;
             if (i == arr.length - 1 && showNum > 0) {
                 numNode.active = true;
-                this.setString(find("val", numNode), showNum);
+                this._fn_ago(find("val", numNode), showNum);
             } else {
                 numNode.active = false;
             }
@@ -536,8 +536,8 @@ export class MergeBoardLayer extends BaseView {
 
     }
 
-    refreshManagerLayer() {
-        if (mergeBoardStateStore.isManagerAllGet()) {
+    _fn_zi() {
+        if (mergeBoardStateStore._fn_qa()) {
             this.btnManager.active = false;
             return;
         }
@@ -558,8 +558,8 @@ export class MergeBoardLayer extends BaseView {
             if (!manager && !temp.get) {
                 manager = temp;
             }
-            let row = TableDataService.ins().getTableValueByID(Const.Tables.manager, temp.id);
-            if (mergeBoardStateStore.getManagerVal(temp) >= row.p1 && !temp.get) {
+            let row = TableDataService.ins()._fn_ly(Const.Tables.manager, temp.id);
+            if (mergeBoardStateStore._fn_ii(temp) >= row.p1 && !temp.get) {
                 hasCanGetAward = true;
             }
         }
@@ -569,17 +569,17 @@ export class MergeBoardLayer extends BaseView {
         } else {
             if (manager) {
                 infoLayer.active = true;
-                let row = TableDataService.ins().getTableValueByID(Const.Tables.manager, manager.id);
-                this.setString(find("info/id/val", this.btnManager), manager.id);
-                this.setProgressBar(find("info/progress", this.btnManager)!, mergeBoardStateStore.getManagerVal(manager) / row.p1);
+                let row = TableDataService.ins()._fn_ly(Const.Tables.manager, manager.id);
+                this._fn_ago(find("info/id/val", this.btnManager), manager.id);
+                this._fn_afm(find("info/progress", this.btnManager)!, mergeBoardStateStore._fn_ii(manager) / row.p1);
                 let propId = row.price[0];
-                let propRow = TableDataService.ins().getTableValueByID(Const.Tables.prop, propId);
-                this.setSpriteFrame2(find("info/icon", this.btnManager)?.getComponent(Sprite)!, Const.resPath.icon + propRow.icon);
+                let propRow = TableDataService.ins()._fn_ly(Const.Tables.prop, propId);
+                this._fn_agl(find("info/icon", this.btnManager)?.getComponent(Sprite)!, Const.resPath.icon + propRow.icon);
             }
         }
     }
 
-    initTaskLayer() {
+    _fn_pf() {
         this.taskLayer.removeAllChildren();
 
         for (let i = 0; i < mergeBoardStateStore.taskArr.length; i++) {
@@ -588,39 +588,39 @@ export class MergeBoardLayer extends BaseView {
             TaskItemCellController.parent = this.taskLayer;
         }
 
-        this.refreshTaskLayer();
+        this._fn_zw();
     }
 
-    refreshTaskLayer() {
-        let arr = mergeBoardStateStore.getTaskArrSort();
+    _fn_zw() {
+        let arr = mergeBoardStateStore._fn_mh();
         for (let i = 0; i < arr.length; i++) {
             let task = arr[i];
             let TaskItemCellController = this.taskLayer.children[i];
 
-            this.refreshTaskItem(TaskItemCellController, task);
+            this._fn_zv(TaskItemCellController, task);
 
             if (TaskItemCellController == null) {
                 continue
             }
-            if (this.lastTaskArr && !this.checkIsLastTaskArr(task)) {
+            if (this.lastTaskArr && !this._fn_bw(task)) {
 
                 TaskItemCellController.scale = v3(0, 0, 1);
 
                 tween(TaskItemCellController).to(0.3, { scale: v3(1, 1, 1) }, {
                     onUpdate: () => {
-                        this.updateTaskLayerLayout();
+                        this._fn_aju();
                     }
                 }).set({ scale: v3(1, 1, 1) }).start();
             } else {
                 TaskItemCellController.scale = v3(1, 1, 1);
-                this.updateTaskLayerLayout();
+                this._fn_aju();
             }
-            this.bindButton(TaskItemCellController, this.onClickTaskItem);
+            this.bindButton(TaskItemCellController, this._fn_ui);
         }
 
     }
 
-    checkIsLastTaskArr(task: any) {
+    _fn_bw(task: any) {
         if (this.lastTaskArr == null) {
             return
         }
@@ -633,7 +633,7 @@ export class MergeBoardLayer extends BaseView {
         return false
     }
 
-    refreshTaskItem(itemUI: Node, task: any) {
+    _fn_zv(itemUI: Node, task: any) {
 
         if (itemUI == null) {
             itemUI = instantiate(this.taskItem);
@@ -648,18 +648,18 @@ export class MergeBoardLayer extends BaseView {
             let prop = task.propArr[i];
             if (prop) {
                 propItem.active = true;
-                let propRow = TableDataService.ins().getTableValueByID(Const.Tables.prop, prop.id);
+                let propRow = TableDataService.ins()._fn_ly(Const.Tables.prop, prop.id);
                 if (!propRow) {
                     propItem.active = false;
                     return;
                 }
-                this.setSpriteFrame2(find("icon", propItem)?.getComponent(Sprite)!, Const.resPath.icon + propRow.icon);
-                let hasInfo = mergeBoardStateStore.getRoomDataHasInfoById(prop.id);
+                this._fn_agl(find("icon", propItem)?.getComponent(Sprite)!, Const.resPath.icon + propRow.icon);
+                let hasInfo = mergeBoardStateStore._fn_kg(prop.id);
                 let showNum = hasInfo.num;
                 if (showNum >= prop.num) {
                     showNum = prop.num;
                 }
-                this.setString(find("num", propItem), showNum + "/" + prop.num);
+                this._fn_ago(find("num", propItem), showNum + "/" + prop.num);
                 let bgNode = find("bg", propItem)!;
                 let gouNode = find("gou", propItem)!;
                 if (hasInfo.num >= prop.num) {
@@ -672,12 +672,12 @@ export class MergeBoardLayer extends BaseView {
                 }
                 // @ts-ignore
                 propItem.propRow = propRow;
-                this.bindButton(propItem, this.onClickTaskPropItem);
+                this.bindButton(propItem, this._fn_uk);
 
                 let btnPropInfo = find("propInfo", propItem)!;
                 // @ts-ignore
                 btnPropInfo.propRow = propRow;
-                this.bindButton(btnPropInfo, this.onClickTaskPropInfo);
+                this.bindButton(btnPropInfo, this._fn_uj);
 
             } else {
                 propItem.active = false;
@@ -688,7 +688,7 @@ export class MergeBoardLayer extends BaseView {
                 find("gou", propItem)!.active = false;
             });
         }
-        this.setString(find("award/num", itemUI), task.starNum);
+        this._fn_ago(find("award/num", itemUI), task.starNum);
         let btnTaskDone = find("btnTaskDone", itemUI)!;
         let btnTaskDonebug = find("btnTaskDonebug", itemUI)!;
 
@@ -699,13 +699,13 @@ export class MergeBoardLayer extends BaseView {
         // @ts-ignore
         btnTaskDonebug.task = task;
 
-        this.bindButtonNoAudio(btnTaskDone, this.onClickBtnTaskDone.bind(this));
+        this._fn_ag(btnTaskDone, this._fn_tp.bind(this));
 
-        this.bindButtonNoAudio(btnTaskDonebug, this.addTaskProp.bind(this));
+        this._fn_ag(btnTaskDonebug, this._fn_s.bind(this));
 
     }
 
-    addTaskProp(btn: Button) {
+    _fn_s(btn: Button) {
         let node = btn.node;
         // @ts-ignore
         let task = node.task;
@@ -713,18 +713,18 @@ export class MergeBoardLayer extends BaseView {
 
         for (let i in task.propArr) {
             let prop = task.propArr[i];
-            mergeBoardStateStore.addPropNum(prop.id, prop.num)
+            mergeBoardStateStore._fn_m(prop.id, prop.num)
         }
     }
 
-    refreshBuildLayer() {
-        this.setString(find("num", this.btnBuild), mergeBoardStateStore.getPropNumById(propIds.star));
-        this.showWeakHand()
+    _fn_yy() {
+        this._fn_ago(find("num", this.btnBuild), mergeBoardStateStore._fn_jp(propIds.star));
+        this._fn_ahz()
     }
 
 
     _handDelay = 0
-    showWeakHand() {
+    _fn_ahz() {
         if (this._handDelay > 0) {
             this._handDelay--
             return
@@ -732,30 +732,30 @@ export class MergeBoardLayer extends BaseView {
         if (playerDataStore.roleLv > 4) {
             return
         }
-        let handIndex = mergeBoardStateStore.getHandIndex();
+        let handIndex = mergeBoardStateStore._fn_hj();
         if (handIndex >= 19) {
             let children = find("Canvas")!.children
-            if (UtilScene.isSceneItemCouldBeBuild() && children[children.length - 1].name == "MergeBoardLayer") {
+            if (UtilScene._fn_qt() && children[children.length - 1].name == "MergeBoardLayer") {
                 let obj: any = {};
                 obj.id = 20;
                 obj.node = this.btnBuild;
                 obj.delayTime = 0.5;
                 obj.weak = true
-                UiLayerService.instance.showDialog(Const.Dialogs.HandLayer, obj);
+                UiLayerService.instance._fn_ahg(Const.Dialogs.HandLayer, obj);
                 this._handDelay = 10
             }
         }
     }
 
-    refreshBottomLayer() {
+    _fn_yv() {
         this.infoUILayer.active = false;
         this.sellBackLayer.active = false;
         this.infoHintNode.active = false;
 
         if (this.sellData) {
             this.sellBackLayer.active = true;
-            let propRow = TableDataService.ins().getTableValueByID(Const.Tables.prop, this.sellData.roomData.id);
-            this.setString(find("info", this.sellBackLayer), localText.sellBackHint.format(propRow.name, propRow.luna));
+            let propRow = TableDataService.ins()._fn_ly(Const.Tables.prop, this.sellData.roomData.id);
+            this._fn_ago(find("info", this.sellBackLayer), localText.sellBackHint.format(propRow.name, propRow.luna));
             return;
         }
 
@@ -766,7 +766,7 @@ export class MergeBoardLayer extends BaseView {
 
         let row = this.choseRoomItem.row;
         let col = this.choseRoomItem.col;
-        let roomData = this.getRoomDataByItemUI(this.choseRoomItem);
+        let roomData = this._fn_kf(this.choseRoomItem);
         if (!roomData.id) {
 
             this.choseRoomItem = null;
@@ -786,13 +786,13 @@ export class MergeBoardLayer extends BaseView {
             tween(uiOpacity).to(0.5, { opacity: 255 }).start();
         }
 
-        let propRow = TableDataService.ins().getTableValueByID(Const.Tables.prop, roomData.id);
+        let propRow = TableDataService.ins()._fn_ly(Const.Tables.prop, roomData.id);
         let titleLayer = find("titleLayer", this.infoUILayer)!;
-        this.setString(find("name", titleLayer), propRow.name);
-        this.setString(find("lv", titleLayer), propRow.luna + localText.lv);
+        this._fn_ago(find("name", titleLayer), propRow.name);
+        this._fn_ago(find("lv", titleLayer), propRow.luna + localText.lv);
 
         let infoNode = find("info", this.infoUILayer)!;
-        this.setString(infoNode, propRow.mask);
+        this._fn_ago(infoNode, propRow.mask);
 
         this.btnSell.active = false;
         this.btnUnlock.active = false;
@@ -800,10 +800,10 @@ export class MergeBoardLayer extends BaseView {
         this.btnBubbleGet.active = false;
         this.btnBubbleOver.active = false;
 
-        if (propRow.levelGold > 0 && !mergeBoardStateStore.isRoomBubble(row, col)
-            && !mergeBoardStateStore.isRoomCarton(row, col) && !mergeBoardStateStore.isRoomSpider(row, col)) {
+        if (propRow.levelGold > 0 && !mergeBoardStateStore._fn_qk(row, col)
+            && !mergeBoardStateStore._fn_ql(row, col) && !mergeBoardStateStore._fn_qo(row, col)) {
             this.btnSell.active = true;
-            this.setString(find("num", this.btnSell), propRow.levelGold);
+            this._fn_ago(find("num", this.btnSell), propRow.levelGold);
         }
 
         this.btnPropDetail.active = true;
@@ -817,11 +817,11 @@ export class MergeBoardLayer extends BaseView {
             let maxLvCount = 0;
             let maxLv = 0;
             let maxRoomData: any = null;
-            UtilPub.for2Arr(mergeBoardStateStore.roomArr, (pRoom: any, pRow: any, pCol: any) => {
-                if (!pRoom.id || pRoom.st == roomStatus.spider || pRoom.st == roomStatus.carton || mergeBoardStateStore.isRoomBubble(pRow, pCol)) {
+            UtilPub._fn_ex(mergeBoardStateStore.roomArr, (pRoom: any, pRow: any, pCol: any) => {
+                if (!pRoom.id || pRoom.st == roomStatus.spider || pRoom.st == roomStatus.carton || mergeBoardStateStore._fn_qk(pRow, pCol)) {
                     return;
                 }
-                let tmpRow = TableDataService.ins().getTableValueByID(Const.Tables.prop, pRoom.id);
+                let tmpRow = TableDataService.ins()._fn_ly(Const.Tables.prop, pRoom.id);
                 if (propRow.type == tmpRow.type && propRow.typeson == tmpRow.typeson) {
                     if (maxLv < tmpRow.luna) {
                         maxLv = tmpRow.luna;
@@ -838,7 +838,7 @@ export class MergeBoardLayer extends BaseView {
         }
 
 
-        this.refreshBottomLayerUpdate();
+        this._fn_yw();
 
 
         let btnsLayer = find("btnsLayer", this.infoUILayer)!;
@@ -851,18 +851,18 @@ export class MergeBoardLayer extends BaseView {
 
     }
 
-    getRoomDataByItemUI(itemUI: Node) {
-        return mergeBoardStateStore.getRoomDataByItemUI(itemUI)
+    _fn_kf(itemUI: Node) {
+        return mergeBoardStateStore._fn_kf(itemUI)
         // @ts-ignore
         return mergeBoardStateStore.roomArr[itemUI.row][itemUI.col];
     }
 
-    refreshRoomItemUI(itemUI: Node, roomData?: any) {
+    _fn_zm(itemUI: Node, roomData?: any) {
         if (!itemUI) {
             return;
         }
         if (!roomData) {
-            roomData = this.getRoomDataByItemUI(itemUI);
+            roomData = this._fn_kf(itemUI);
         }
         if (!roomData.id) {
             itemUI.active = false;
@@ -880,23 +880,23 @@ export class MergeBoardLayer extends BaseView {
         let choseNode = find("chose", itemUI)!;
         if (itemUI == this.choseRoomItem) {
             let choseIcon = "chose_pink";
-            if (mergeBoardStateStore.isRoomBubble(row, col) || mergeBoardStateStore.getPropMaxLvId(roomData.id) == roomData.id) {
+            if (mergeBoardStateStore._fn_qk(row, col) || mergeBoardStateStore._fn_jn(roomData.id) == roomData.id) {
                 choseIcon = "chose_green";
             }
-            this.setSpriteFrame2(choseNode.getComponent(Sprite)!, Const.resPath.mergeIcon + "board/" + choseIcon, () => {
+            this._fn_agl(choseNode.getComponent(Sprite)!, Const.resPath.mergeIcon + "board/" + choseIcon, () => {
                 choseNode.active = true;
             });
         } else {
             choseNode.active = false;
         }
 
-        this.refreshRoomItemUIBubble(itemUI);
-        this.refreshRoomItemUICd(itemUI);
-        let propRow = TableDataService.ins().getTableValueByID(Const.Tables.prop, roomData.id);
+        this._fn_zn(itemUI);
+        this._fn_zp(itemUI);
+        let propRow = TableDataService.ins()._fn_ly(Const.Tables.prop, roomData.id);
         let iconNode = find("icon", itemUI)!;
         iconNode.active = true;
         iconNode.scale = v3(1, 1, 1);
-        this.setSpriteFrame2(iconNode.getComponent(Sprite)!, Const.resPath.icon + propRow.icon);
+        this._fn_agl(iconNode.getComponent(Sprite)!, Const.resPath.icon + propRow.icon);
 
 
         let bagHint = find("bagHint", itemUI)!;
@@ -908,8 +908,8 @@ export class MergeBoardLayer extends BaseView {
                 bagHint.position = v3(30, 30);
                 tween(bagHint).to(1.2, { scale: v3(1.2, 1.2, 1) }).to(0.7, { scale: v3(1, 1, 1) }).union().repeatForever().start();
             }
-            this.setSpriteFrame2(bagHint.getComponent(Sprite)!, Const.resPath.mergeIcon + "board/bag_hint");
-            if (mergeBoardStateStore.isRoomCarton(row, col) || mergeBoardStateStore.isRoomSpider(row, col)) {
+            this._fn_agl(bagHint.getComponent(Sprite)!, Const.resPath.mergeIcon + "board/bag_hint");
+            if (mergeBoardStateStore._fn_ql(row, col) || mergeBoardStateStore._fn_qo(row, col)) {
                 bagHint.active = false;
             } else {
                 bagHint.active = true;
@@ -924,7 +924,7 @@ export class MergeBoardLayer extends BaseView {
             if (!superCard) {
                 superCard = new Node("superCard");
                 superCard.parent = itemUI;
-                this.addSpine(this.tbgxSpinePath, superCard, (err: any, aniCtrl: AnimationCtrl) => {
+                this._fn_q(this.tbgxSpinePath, superCard, (err: any, aniCtrl: AnimationCtrl) => {
                     aniCtrl.playAnimation("8", true);
                 });
             }
@@ -936,12 +936,12 @@ export class MergeBoardLayer extends BaseView {
         let taskNode = find("taskGou", itemUI)!;
         let taskNodeLan = find("taskGouLan", itemUI)!;
 
-        if (mergeBoardStateStore.isRoomBubble(row, col) || mergeBoardStateStore.isRoomSpider(row, col) || mergeBoardStateStore.isRoomCarton(row, col)) {
+        if (mergeBoardStateStore._fn_qk(row, col) || mergeBoardStateStore._fn_qo(row, col) || mergeBoardStateStore._fn_ql(row, col)) {
             taskNode.active = false;
             taskNodeLan.active = false;
         } else {
-            taskNode.active = mergeBoardStateStore.isTaskNeedWithId(roomData.id);
-            taskNodeLan.active = TreasureModel.checkCompseHasProp(roomData.id)
+            taskNode.active = mergeBoardStateStore._fn_qz(roomData.id);
+            taskNodeLan.active = TreasureModel._fn_bq(roomData.id)
         }
 
 
@@ -972,7 +972,7 @@ export class MergeBoardLayer extends BaseView {
                     iconNode.active = false;
                     let flag = row * mergeBoardStateStore.colNum + col + 1;
                     let suffix = flag % 3 + 1;
-                    this.setSpriteFrame2(cartonNode.getComponent(Sprite)!, Const.resPath.mergeIcon + "board/xz" + suffix, () => {
+                    this._fn_agl(cartonNode.getComponent(Sprite)!, Const.resPath.mergeIcon + "board/xz" + suffix, () => {
                         cartonNode.active = true;
                     });
                     break;
@@ -982,18 +982,18 @@ export class MergeBoardLayer extends BaseView {
         } else if (statusNode) {
             statusNode.destroy();
         }
-        this.refreshSpeedUpSpine(itemUI);
+        this._fn_zt(itemUI);
 
     }
 
-    refreshSpeedUpSpine(itemUI: any) {
+    _fn_zt(itemUI: any) {
         let row = itemUI.row;
         let col = itemUI.col;
-        let roomData = this.getRoomDataByItemUI(itemUI);
-        if (!mergeBoardStateStore.isRoomNormal(row, col)) {
+        let roomData = this._fn_kf(itemUI);
+        if (!mergeBoardStateStore._fn_qn(row, col)) {
             return;
         }
-        let propRow = TableDataService.ins().getTableValueByID(Const.Tables.prop, roomData.id);
+        let propRow = TableDataService.ins()._fn_ly(Const.Tables.prop, roomData.id);
         if (propRow.mdt != 11 || !roomData.cd) {
             return;
         }
@@ -1009,7 +1009,7 @@ export class MergeBoardLayer extends BaseView {
                 let name = "speedUp_" + (row * 100 + col) + "_" + (r * 100 + c);
                 let rData = mergeBoardStateStore.roomArr[r][c];
                 let node = find(name, this.mergeFxLayer);
-                if (!mergeBoardStateStore.isRoomNormal(r, c) || !mergeBoardStateStore.propCanSpeedUp(rData.id)) {
+                if (!mergeBoardStateStore._fn_qn(r, c) || !mergeBoardStateStore._fn_xp(rData.id)) {
 
                     if (node) {
                         node.removeFromParent();
@@ -1017,10 +1017,10 @@ export class MergeBoardLayer extends BaseView {
                 } else {
 
                     if (!node) {
-                        this.addSpine(this.jsqSpinePath, this.mergeFxLayer, (err, aniCtrl: AnimationCtrl) => {
+                        this._fn_q(this.jsqSpinePath, this.mergeFxLayer, (err, aniCtrl: AnimationCtrl) => {
                             aniCtrl.playAnimation("animation", true);
                             aniCtrl.node.name = name;
-                            UtilPub.setNodePositionByOtherNode(aniCtrl.node, itemUI);
+                            UtilPub._fn_afg(aniCtrl.node, itemUI);
 
                             aniCtrl.node.angle = angle;
                             if (angle % 10 == 0) {
@@ -1035,15 +1035,15 @@ export class MergeBoardLayer extends BaseView {
             }
         });
     }
-    removeAllSpeedUpSpine(itemUI: any, isForce = false) {
+    _fn_aaf(itemUI: any, isForce = false) {
         let row = itemUI.row;
         let col = itemUI.col;
         if (!isForce) {
-            let roomData = this.getRoomDataByItemUI(itemUI);
-            if (!mergeBoardStateStore.isRoomNormal(row, col)) {
+            let roomData = this._fn_kf(itemUI);
+            if (!mergeBoardStateStore._fn_qn(row, col)) {
                 return;
             }
-            let propRow = TableDataService.ins().getTableValueByID(Const.Tables.prop, roomData.id);
+            let propRow = TableDataService.ins()._fn_ly(Const.Tables.prop, roomData.id);
             if (propRow.mdt != 11) {
                 return;
             }
@@ -1061,13 +1061,13 @@ export class MergeBoardLayer extends BaseView {
             }
         });
     }
-    refreshRoomItemUIByRowCol(row: number, col: number) {
+    _fn_zo(row: number, col: number) {
         let roomItem = this.roomItemUIArr[row][col];
-        this.refreshRoomItemUI(roomItem);
+        this._fn_zm(roomItem);
     }
-    refreshRoomItemUICd(roomItem: Node) {
+    _fn_zp(roomItem: Node) {
         let cdNode = find("cd", roomItem)!;
-        let roomData = this.getRoomDataByItemUI(roomItem);
+        let roomData = this._fn_kf(roomItem);
 
 
         let itemSpineNode = find("itemSpine", roomItem)!;
@@ -1082,7 +1082,7 @@ export class MergeBoardLayer extends BaseView {
         // @ts-ignore
         let col = roomItem.col;
 
-        let propRow = TableDataService.ins().getTableValueByID(Const.Tables.prop, roomData.id);
+        let propRow = TableDataService.ins()._fn_ly(Const.Tables.prop, roomData.id);
 
 
         let isClickSpine = false;
@@ -1097,13 +1097,13 @@ export class MergeBoardLayer extends BaseView {
         let dt = -1;
         let sum = 0;
         if (roomData.cd > 0 && roomData.cdSum > 0) {
-            dt = roomData.cd - mergeBoardStateStore.getCurrentTimestamp();
+            dt = roomData.cd - mergeBoardStateStore._fn_gm();
             sum = roomData.cdSum;
         }
 
         let dtAuto = -1;
         if (roomData.cdAuto > 0) {
-            dtAuto = roomData.cdAuto - mergeBoardStateStore.getCurrentTimestamp();
+            dtAuto = roomData.cdAuto - mergeBoardStateStore._fn_gm();
         }
 
         if (dt == -1 && dtAuto == -1) {
@@ -1119,7 +1119,7 @@ export class MergeBoardLayer extends BaseView {
                 }
             }
             cdNode.active = true;
-            this.setProgressBar(cdNode, dt / sum);
+            this._fn_afm(cdNode, dt / sum);
         }
 
 
@@ -1152,7 +1152,7 @@ export class MergeBoardLayer extends BaseView {
             itemSpineNode.active = false;
         }
 
-        if (mergeBoardStateStore.isRoomSpider(row, col) || mergeBoardStateStore.isRoomBubble(row, col)) {
+        if (mergeBoardStateStore._fn_qo(row, col) || mergeBoardStateStore._fn_qk(row, col)) {
             itemSpineNode.active = false;
             cdNode.active = false;
             isClickSpine = false;
@@ -1160,14 +1160,14 @@ export class MergeBoardLayer extends BaseView {
         }
 
         if (isClickSpine || isAutoSpine) {
-            this.showItemCreateTween(roomItem);
+            this._fn_ahm(roomItem);
         } else {
-            this.stopItemCreateTween(roomItem);
+            this._fn_aim(roomItem);
         }
 
     }
-    refreshRoomItemUIBubble(roomItem: Node) {
-        let roomData = this.getRoomDataByItemUI(roomItem);
+    _fn_zn(roomItem: Node) {
+        let roomData = this._fn_kf(roomItem);
         let bubbleNode = find("bubble", roomItem)!;
         if (!roomData.id || !roomData.cdBubble) {
             bubbleNode.active = false;
@@ -1175,43 +1175,43 @@ export class MergeBoardLayer extends BaseView {
         }
         bubbleNode.active = true;
     }
-    refreshRoomItemUIUpdate(roomItem: Node) {
-        this.refreshRoomItemUICd(roomItem);
-        this.refreshRoomItemUIBubble(roomItem);
+    _fn_zq(roomItem: Node) {
+        this._fn_zp(roomItem);
+        this._fn_zn(roomItem);
     }
 
-    getRoomItemByPos(pos: Vec2) {
-        let p = UtilPub.convertToNodeSpace(this.roomListLayer, v3(pos.x, pos.y, 0));
+    _fn_kj(pos: Vec2) {
+        let p = UtilPub._fn_do(this.roomListLayer, v3(pos.x, pos.y, 0));
         p.x += this.dPos.x + this.roomWidth * 0.5;
         p.y += this.dPos.y + this.roomWidth * 0.5;
 
         let col = Math.floor(p.x / this.roomWidth);
         let row = Math.floor(p.y / this.roomWidth);
 
-        if (mergeBoardStateStore.isCellInsideMergeBoard(row, col)) {
+        if (mergeBoardStateStore._fn_ps(row, col)) {
             return this.roomItemUIArr[row][col];
         }
 
         return null;
     }
 
-    setChoseRoomItem(roomItem: any) {
+    _fn_aep(roomItem: any) {
         if (this.choseRoomItem) {
             find("chose", this.choseRoomItem)!.active = false;
         }
         this.choseRoomItem = roomItem;
-        this.refreshBottomLayer();
+        this._fn_yv();
     }
 
-    showRoomListMaskLayer(row: number, col: number, targetRoomItem: any) {
+    _fn_ahs(row: number, col: number, targetRoomItem: any) {
         let roomData = mergeBoardStateStore.roomArr[row][col];
-        let propRow = TableDataService.ins().getTableValueByID(Const.Tables.prop, roomData.id);
+        let propRow = TableDataService.ins()._fn_ly(Const.Tables.prop, roomData.id);
 
 
         let isShow = false;
         if (propRow.mdt == 4 && targetRoomItem) {
-            let targetRoomData = this.getRoomDataByItemUI(targetRoomItem);
-            if (mergeBoardStateStore.isRoomNormal(targetRoomItem.row, targetRoomItem.col) && mergeBoardStateStore.canSplitProp(roomData.id, targetRoomData.id)) {
+            let targetRoomData = this._fn_kf(targetRoomItem);
+            if (mergeBoardStateStore._fn_qn(targetRoomItem.row, targetRoomItem.col) && mergeBoardStateStore._fn_ba(roomData.id, targetRoomData.id)) {
                 isShow = true;
             }
         }
@@ -1219,12 +1219,12 @@ export class MergeBoardLayer extends BaseView {
         let spineNode = find(spineName, this.mergeFxLayer);
         if (isShow) {
             if (spineNode) {
-                UtilPub.setNodePositionByOtherNode(spineNode, targetRoomItem);
+                UtilPub._fn_afg(spineNode, targetRoomItem);
             } else {
-                this.addSpine(this.tbgxSpinePath, this.mergeFxLayer, (err: any, aniCtrl: AnimationCtrl) => {
+                this._fn_q(this.tbgxSpinePath, this.mergeFxLayer, (err: any, aniCtrl: AnimationCtrl) => {
                     aniCtrl.node.name = spineName;
                     aniCtrl.playAnimation("3", true);
-                    UtilPub.setNodePositionByOtherNode(aniCtrl.node, targetRoomItem);
+                    UtilPub._fn_afg(aniCtrl.node, targetRoomItem);
                 });
             }
         } else {
@@ -1238,27 +1238,27 @@ export class MergeBoardLayer extends BaseView {
         }
         this.roomBgMaskNode.active = true;
 
-        let nextPropRow = TableDataService.ins().getTableValueByID(Const.Tables.prop, roomData.id + 1);
+        let nextPropRow = TableDataService.ins()._fn_ly(Const.Tables.prop, roomData.id + 1);
         let isMaxLv = false;
         if (!nextPropRow || nextPropRow.type != propRow.type || nextPropRow.typeson != propRow.typeson) {
             isMaxLv = true;
         }
 
         let arr: any = [];
-        UtilPub.for2Arr(this.roomItemUIArr, (roomItem: any, r: number, c: number) => {
-            if (!mergeBoardStateStore.isRoomNormal(r, c)) {
+        UtilPub._fn_ex(this.roomItemUIArr, (roomItem: any, r: number, c: number) => {
+            if (!mergeBoardStateStore._fn_qn(r, c)) {
                 return;
             }
             if (row == r && col == c) {
                 return;
             }
-            let tmpRoomData = this.getRoomDataByItemUI(roomItem);
+            let tmpRoomData = this._fn_kf(roomItem);
             if (tmpRoomData.id == propIds.bag) {
 
                 arr.push(roomItem);
                 return;
             }
-            let tmpPropRow = TableDataService.ins().getTableValueByID(Const.Tables.prop, tmpRoomData.id);
+            let tmpPropRow = TableDataService.ins()._fn_ly(Const.Tables.prop, tmpRoomData.id);
             if (!isMaxLv && propRow.id == tmpPropRow.id) {
 
                 arr.push(roomItem);
@@ -1282,35 +1282,35 @@ export class MergeBoardLayer extends BaseView {
                     break;
                 case 6:
 
-                    if (!mergeBoardStateStore.propIsMaxLv(tmpRoomData.id) && tmpPropRow.putong1) {
+                    if (!mergeBoardStateStore._fn_xq(tmpRoomData.id) && tmpPropRow.putong1) {
                         arr.push(roomItem);
                         roomItem.maskSpine = "";
                     }
                     break;
                 case 7:
 
-                    if (!mergeBoardStateStore.propIsMaxLv(tmpRoomData.id) && tmpPropRow.putong2) {
+                    if (!mergeBoardStateStore._fn_xq(tmpRoomData.id) && tmpPropRow.putong2) {
                         arr.push(roomItem);
                         roomItem.maskSpine = "";
                     }
                     break;
                 case 8:
 
-                    if (!mergeBoardStateStore.propIsMaxLv(tmpRoomData.id) && tmpPropRow.putong3) {
+                    if (!mergeBoardStateStore._fn_xq(tmpRoomData.id) && tmpPropRow.putong3) {
                         arr.push(roomItem);
                         roomItem.maskSpine = "";
                     }
                     break;
                 case 9:
 
-                    if (!mergeBoardStateStore.propIsMaxLv(tmpRoomData.id) && !tmpPropRow.nochaoji) {
+                    if (!mergeBoardStateStore._fn_xq(tmpRoomData.id) && !tmpPropRow.nochaoji) {
                         arr.push(roomItem);
                         roomItem.maskSpine = "";
                     }
                     break;
                 case 10:
 
-                    if (!mergeBoardStateStore.propIsMaxLv(tmpRoomData.id) && tmpPropRow.quanneng) {
+                    if (!mergeBoardStateStore._fn_xq(tmpRoomData.id) && tmpPropRow.quanneng) {
                         arr.push(roomItem);
                         roomItem.maskSpine = "";
                     }
@@ -1325,10 +1325,10 @@ export class MergeBoardLayer extends BaseView {
             roomItem.parent = this.roomBgMaskNode;
             if (roomItem.maskSpine) {
                 find("itemSpine", roomItem)!.getComponent(sp.Skeleton)!.enabled = false;
-                this.addSpine(this.tbgxSpinePath, find("tempSpine", roomItem)!, (err: any, aniCtrl: AnimationCtrl) => {
+                this._fn_q(this.tbgxSpinePath, find("tempSpine", roomItem)!, (err: any, aniCtrl: AnimationCtrl) => {
                     aniCtrl.playAnimation("1", true);
                 });
-                this.addSpine(this.tbgxSpinePath, find("tempSpine", roomItem)!, (err: any, aniCtrl: AnimationCtrl) => {
+                this._fn_q(this.tbgxSpinePath, find("tempSpine", roomItem)!, (err: any, aniCtrl: AnimationCtrl) => {
                     aniCtrl.playAnimation(roomItem.maskSpine, true);
                 });
             }
@@ -1336,7 +1336,7 @@ export class MergeBoardLayer extends BaseView {
 
     }
 
-    hideRoomListMaskLayer() {
+    _fn_nm() {
         this.roomBgMaskNode.active = false;
         let arr: any = [];
         this.roomBgMaskNode.children.forEach((roomItem: any) => {
@@ -1355,7 +1355,7 @@ export class MergeBoardLayer extends BaseView {
         }
     }
 
-    resetBagIconScale() {
+    _fn_abo() {
         // @ts-ignore
         if (this.bagIconNode) {
             // @ts-ignore
@@ -1369,35 +1369,35 @@ export class MergeBoardLayer extends BaseView {
         UtilPub.log("roomListTouchStart");
         this.touching = true;
 
-        this.clearComposeHintTween();
+        this._fn_cx();
         this.touchMoveCount = 0;
         if (this.moveRoomItem && isValid(this.moveRoomItem)) {
             this.moveRoomItem.destroy();
         }
         this.moveRoomItem = null;
         this.startRoomItem = null;
-        let roomItem = this.getRoomItemByPos(event.getUILocation());
-        let roomData = this.getRoomDataByItemUI(roomItem);
+        let roomItem = this._fn_kj(event.getUILocation());
+        let roomData = this._fn_kf(roomItem);
         if (!roomData.id || roomData.st == roomStatus.carton) {
             return;
         }
-        let propRow = TableDataService.ins().getTableValueByID(Const.Tables.prop, roomData.id);
+        let propRow = TableDataService.ins()._fn_ly(Const.Tables.prop, roomData.id);
         find("hintSpine", roomItem)!.active = false;
-        if (!mergeBoardStateStore.isHandDone()) {
-            let handIndex = mergeBoardStateStore.getHandIndex();
+        if (!mergeBoardStateStore._fn_px()) {
+            let handIndex = mergeBoardStateStore._fn_hj();
             switch (handIndex) {
                 case handIndexs.firstCompose:
                 case handIndexs.secondCompose:
                 case handIndexs.thirdCompose:
                 case handIndexs.boardMergeStepA:
                 case handIndexs.boardMergeStepB:
-                    if (roomItem != mergeBoardStateStore.getHandLayer()!.startNode) {
+                    if (roomItem != mergeBoardStateStore._fn_hk()!.startNode) {
                         return;
                     }
                     break;
                 case handIndexs.clickRoomNew:
                 case handIndexs.clickRoomNew2:
-                    if (this.getRoomDataByItemUI(roomItem).id != 10004) {
+                    if (this._fn_kf(roomItem).id != 10004) {
                         return;
                     }
                     break;
@@ -1406,8 +1406,8 @@ export class MergeBoardLayer extends BaseView {
             }
         }
         this.startRoomItem = roomItem;
-        this.clearSellBack();
-        this.removeAllSpeedUpSpine(roomItem);
+        this._fn_cz();
+        this._fn_aaf(roomItem);
         this.emit(GD.event.canvasTouchEvent)
         this._handDelay = 10
 
@@ -1425,8 +1425,8 @@ export class MergeBoardLayer extends BaseView {
             return;
         }
 
-        if (!mergeBoardStateStore.isHandDone()) {
-            let handIndex = mergeBoardStateStore.getHandIndex();
+        if (!mergeBoardStateStore._fn_px()) {
+            let handIndex = mergeBoardStateStore._fn_hj();
             switch (handIndex) {
                 case handIndexs.clickRoomNew:
                 case handIndexs.clickRoomNew2:
@@ -1437,7 +1437,7 @@ export class MergeBoardLayer extends BaseView {
             }
         }
 
-        let moveRoomData = this.getRoomDataByItemUI(this.startRoomItem);
+        let moveRoomData = this._fn_kf(this.startRoomItem);
         let row = this.startRoomItem.row;
         let col = this.startRoomItem.col;
 
@@ -1446,31 +1446,31 @@ export class MergeBoardLayer extends BaseView {
         }
 
         if (!this.moveRoomItem) {
-            this.setChoseRoomItem(this.startRoomItem);
+            this._fn_aep(this.startRoomItem);
             this.moveRoomItem = instantiate(this.startRoomItem);
             this.moveRoomItem.parent = this.moveItemLayer;
             this.moveRoomItem.row = this.startRoomItem.row;
             this.moveRoomItem.col = this.startRoomItem.col;
             this.startRoomItem.active = false;
-            this.refreshRoomItemUI(this.moveRoomItem, moveRoomData);
+            this._fn_zm(this.moveRoomItem, moveRoomData);
         }
         let pos = event.getUILocation();
 
-        let p = UtilPub.convertToNodeSpace(this.moveRoomItem, v3(pos.x, pos.y, 0));
+        let p = UtilPub._fn_do(this.moveRoomItem, v3(pos.x, pos.y, 0));
         this.moveRoomItem.position = p;
 
-        let propRow = TableDataService.ins().getTableValueByID(Const.Tables.prop, moveRoomData.id);
+        let propRow = TableDataService.ins()._fn_ly(Const.Tables.prop, moveRoomData.id);
 
         let isShowComposeEffect = false;
-        let targetRoomItem = this.getRoomItemByPos(pos);
-        if (!mergeBoardStateStore.isRoomBubble(row, col) && propRow.blessId > 0 && targetRoomItem) {
-            let targetRoomData = this.getRoomDataByItemUI(targetRoomItem);
+        let targetRoomItem = this._fn_kj(pos);
+        if (!mergeBoardStateStore._fn_qk(row, col) && propRow.blessId > 0 && targetRoomItem) {
+            let targetRoomData = this._fn_kf(targetRoomItem);
             let targetRow = targetRoomItem.row;
             let targetCol = targetRoomItem.col;
             if (targetRoomData != moveRoomData
                 && targetRoomData.id == moveRoomData.id
-                && !mergeBoardStateStore.isRoomCarton(targetRow, targetCol)
-                && !mergeBoardStateStore.isRoomBubble(targetRow, targetCol)
+                && !mergeBoardStateStore._fn_ql(targetRow, targetCol)
+                && !mergeBoardStateStore._fn_qk(targetRow, targetCol)
             ) {
                 isShowComposeEffect = true;
             }
@@ -1485,7 +1485,7 @@ export class MergeBoardLayer extends BaseView {
                 mergeFxItem.active = true;
                 mergeFxItem.parent = this.mergeFxLayer;
                 mergeFxItem.getComponent(AnimationCtrl)?.playAnimation("1", true);
-                UtilPub.setNodePositionByOtherNode(mergeFxItem, targetRoomItem);
+                UtilPub._fn_afg(mergeFxItem, targetRoomItem);
                 this.currentMergeFx = mergeFxItem;
                 this.currentMergeFx.targetRoomItem = targetRoomItem;
             }
@@ -1496,19 +1496,19 @@ export class MergeBoardLayer extends BaseView {
             }
         }
 
-        if (targetRoomItem && this.getRoomDataByItemUI(targetRoomItem).id == propIds.bag) {
+        if (targetRoomItem && this._fn_kf(targetRoomItem).id == propIds.bag) {
             // @ts-ignore
             this.bagIconNode = find("icon", targetRoomItem)!;
             // @ts-ignore
             this.bagIconNode.scale = v3(1.2, 1.2, 1);
         } else {
-            this.resetBagIconScale();
+            this._fn_abo();
         }
 
 
         if (propRow.mdt == 3 || propRow.mdt == 4
             || propRow.mdt == 6 || propRow.mdt == 7 || propRow.mdt == 8 || propRow.mdt == 9 || propRow.mdt == 10) {
-            this.showRoomListMaskLayer(row, col, targetRoomItem);
+            this._fn_ahs(row, col, targetRoomItem);
         }
     }
 
@@ -1524,35 +1524,35 @@ export class MergeBoardLayer extends BaseView {
 
         this.touching = false;
         if (!this.startRoomItem) {
-            this.refreshComposeHint();
+            this._fn_za();
             return;
         }
-        this.resetBagIconScale();
+        this._fn_abo();
         console.log("roomListTouchEnd  1")
         if (this.moveRoomItem) {
-            this.hideRoomListMaskLayer();
-            this.setChoseRoomItem(this.startRoomItem);
+            this._fn_nm();
+            this._fn_aep(this.startRoomItem);
             let row = this.moveRoomItem.row;
             let col = this.moveRoomItem.col;
             console.log("roomListTouchEnd  2")
-            let roomData = this.getRoomDataByItemUI(this.moveRoomItem);
-            let propRow = TableDataService.ins().getTableValueByID(Const.Tables.prop, roomData.id);
-            let endRoomItem = this.getRoomItemByPos(event.getUILocation());
-            let endRoomData = this.getRoomDataByItemUI(endRoomItem);
+            let roomData = this._fn_kf(this.moveRoomItem);
+            let propRow = TableDataService.ins()._fn_ly(Const.Tables.prop, roomData.id);
+            let endRoomItem = this._fn_kj(event.getUILocation());
+            let endRoomData = this._fn_kf(endRoomItem);
             if (row == endRoomItem.row && col == endRoomItem.col) {
 
-                this.moveRoomItemToRowCol(this.moveRoomItem, row, col, () => {
-                    mergeBoardStateStore.refreshRoomAutoNew(row, col);
+                this._fn_se(this.moveRoomItem, row, col, () => {
+                    mergeBoardStateStore._fn_zl(row, col);
                 });
-                this.refreshComposeHint();
+                this._fn_za();
                 return;
             }
             console.log("roomListTouchEnd  3")
-            let endRoomIsBubble = mergeBoardStateStore.isRoomBubble(endRoomItem.row, endRoomItem.col);
+            let endRoomIsBubble = mergeBoardStateStore._fn_qk(endRoomItem.row, endRoomItem.col);
             if (!endRoomData.id || roomData.id != endRoomData.id
-                || mergeBoardStateStore.isRoomBubble(row, col)
+                || mergeBoardStateStore._fn_qk(row, col)
                 || endRoomIsBubble
-                || mergeBoardStateStore.isRoomCarton(endRoomItem.row, endRoomItem.col)
+                || mergeBoardStateStore._fn_ql(endRoomItem.row, endRoomItem.col)
             ) {
                 console.log("roomListTouchEnd  4")
 
@@ -1560,41 +1560,41 @@ export class MergeBoardLayer extends BaseView {
                     console.log("roomListTouchEnd  5")
 
 
-                    if (mergeBoardStateStore.putDataInRoomBag(row, col, endRoomItem.row, endRoomItem.col)) {
+                    if (mergeBoardStateStore._fn_xy(row, col, endRoomItem.row, endRoomItem.col)) {
 
-                        this.refreshRoomItemUIByRowCol(row, col);
+                        this._fn_zo(row, col);
                         this.choseRoomItem = endRoomItem;
-                        this.refreshRoomItemUIByRowCol(endRoomItem.row, endRoomItem.col);
+                        this._fn_zo(endRoomItem.row, endRoomItem.col);
                         this.moveRoomItem.destroy();
                         this.moveRoomItem = null;
                     } else {
 
-                        this.moveRoomItemToRowCol(this.moveRoomItem, row, col);
+                        this._fn_se(this.moveRoomItem, row, col);
                     }
                 } else {
                     console.log("roomListTouchEnd  6")
 
 
-                    if (mergeBoardStateStore.isRoomSpider(endRoomItem.row, endRoomItem.col) || mergeBoardStateStore.isRoomCarton(endRoomItem.row, endRoomItem.col)) {
+                    if (mergeBoardStateStore._fn_qo(endRoomItem.row, endRoomItem.col) || mergeBoardStateStore._fn_ql(endRoomItem.row, endRoomItem.col)) {
                         console.log("roomListTouchEnd  7")
-                        this.setChoseRoomItem(this.startRoomItem);
-                        this.moveRoomItemToRowCol(this.moveRoomItem, row, col);
-                        this.refreshComposeHint();
+                        this._fn_aep(this.startRoomItem);
+                        this._fn_se(this.moveRoomItem, row, col);
+                        this._fn_za();
                         console.log("roomListTouchEnd  8")
 
                         return;
                     }
 
-                    let handIndex = mergeBoardStateStore.getHandIndex();
+                    let handIndex = mergeBoardStateStore._fn_hj();
                     switch (handIndex) {
                         case handIndexs.firstCompose:
                         case handIndexs.secondCompose:
                         case handIndexs.thirdCompose:
                         case handIndexs.boardMergeStepA:
                         case handIndexs.boardMergeStepB:
-                            if (endRoomItem != mergeBoardStateStore.getHandLayer()!.endNode) {
-                                this.setChoseRoomItem(this.startRoomItem);
-                                this.moveRoomItemToRowCol(this.moveRoomItem, row, col);
+                            if (endRoomItem != mergeBoardStateStore._fn_hk()!.endNode) {
+                                this._fn_aep(this.startRoomItem);
+                                this._fn_se(this.moveRoomItem, row, col);
                                 return;
                             }
                             break;
@@ -1602,17 +1602,17 @@ export class MergeBoardLayer extends BaseView {
                             break;
                     }
 
-                    if (propRow && propRow.mdt == 3 && mergeBoardStateStore.canAddTimes(endRoomData.id) && !endRoomIsBubble) {
+                    if (propRow && propRow.mdt == 3 && mergeBoardStateStore._fn_ax(endRoomData.id) && !endRoomIsBubble) {
 
                         this.moveRoomItem.destroy();
                         this.moveRoomItem = null;
-                        mergeBoardStateStore.roomAddTimes(row, col, endRoomItem.row, endRoomItem.col, propRow.p1);
-                        this.setChoseRoomItem(endRoomItem);
-                        this.refreshRoomItemUI(endRoomItem);
-                        this.refreshRoomItemUIByRowCol(row, col);
-                        this.refreshComposeHint();
-                        this.refreshRoomNineAroundAutoNew(row, col);
-                        this.addSpine(this.tbgxSpinePath, endRoomItem, (err: any, aniCtrl: AnimationCtrl) => {
+                        mergeBoardStateStore._fn_ace(row, col, endRoomItem.row, endRoomItem.col, propRow.p1);
+                        this._fn_aep(endRoomItem);
+                        this._fn_zm(endRoomItem);
+                        this._fn_zo(row, col);
+                        this._fn_za();
+                        this._fn_zr(row, col);
+                        this._fn_q(this.tbgxSpinePath, endRoomItem, (err: any, aniCtrl: AnimationCtrl) => {
                             aniCtrl.playAnimationOnce("5", () => {
                                 aniCtrl.node.destroy();
                             });
@@ -1620,40 +1620,40 @@ export class MergeBoardLayer extends BaseView {
                         return;
                     }
 
-                    if (propRow && propRow.mdt == 4 && mergeBoardStateStore.canSplitProp(propRow.id, endRoomData.id) && !endRoomIsBubble) {
+                    if (propRow && propRow.mdt == 4 && mergeBoardStateStore._fn_ba(propRow.id, endRoomData.id) && !endRoomIsBubble) {
 
                         this.moveRoomItem.destroy();
                         this.moveRoomItem = null;
-                        let retObj = mergeBoardStateStore.roomPropSplit(row, col, endRoomItem.row, endRoomItem.col);
-                        this.setChoseRoomItem(endRoomItem);
-                        this.refreshRoomItemUI(endRoomItem);
-                        this.refreshComposeHint();
-                        mergeBoardStateStore.refreshRoomAutoNew(row, col);
+                        let retObj = mergeBoardStateStore._fn_acj(row, col, endRoomItem.row, endRoomItem.col);
+                        this._fn_aep(endRoomItem);
+                        this._fn_zm(endRoomItem);
+                        this._fn_za();
+                        mergeBoardStateStore._fn_zl(row, col);
                         let mRow = retObj.emptyPos.row;
                         let mCol = retObj.emptyPos.col;
-                        this.addNewMoveNewItemRoomToRowCol(endRoomItem, mRow, mCol, 1, () => {
-                            mergeBoardStateStore.refreshRoomAutoNew(mRow, mCol);
-                            this.showHintSpineOnce(this.roomItemUIArr[mRow][mCol], "5");
-                            this.refreshTaskLayer();
+                        this._fn_j(endRoomItem, mRow, mCol, 1, () => {
+                            mergeBoardStateStore._fn_zl(mRow, mCol);
+                            this._fn_ahl(this.roomItemUIArr[mRow][mCol], "5");
+                            this._fn_zw();
                         });
-                        this.showHintSpineOnce(endRoomItem, "5");
+                        this._fn_ahl(endRoomItem, "5");
                         return;
                     }
 
                     if (propRow && (propRow.mdt == 6 || propRow.mdt == 7 || propRow.mdt == 8 || propRow.mdt == 9 || propRow.mdt == 10)
-                        && mergeBoardStateStore.canLvUpProp(propRow.id, endRoomData.id) && !endRoomIsBubble) {
+                        && mergeBoardStateStore._fn_az(propRow.id, endRoomData.id) && !endRoomIsBubble) {
 
                         this.moveRoomItem.destroy();
                         this.moveRoomItem = null;
-                        mergeBoardStateStore.roomPropLvUp(row, col, endRoomItem.row, endRoomItem.col);
-                        this.setChoseRoomItem(endRoomItem);
-                        this.refreshRoomItemUI(endRoomItem);
-                        this.refreshRoomItemUIByRowCol(row, col);
-                        this.refreshComposeHint();
-                        this.showChoseTween(endRoomItem);
-                        this.refreshTaskLayer();
-                        this.addSpine(this.tbgxSpinePath, this.mergeFxLayer, (err: any, aniCtrl: AnimationCtrl) => {
-                            UtilPub.setNodePositionByOtherNode(aniCtrl.node, endRoomItem);
+                        mergeBoardStateStore._fn_aci(row, col, endRoomItem.row, endRoomItem.col);
+                        this._fn_aep(endRoomItem);
+                        this._fn_zm(endRoomItem);
+                        this._fn_zo(row, col);
+                        this._fn_za();
+                        this._fn_ahd(endRoomItem);
+                        this._fn_zw();
+                        this._fn_q(this.tbgxSpinePath, this.mergeFxLayer, (err: any, aniCtrl: AnimationCtrl) => {
+                            UtilPub._fn_afg(aniCtrl.node, endRoomItem);
                             aniCtrl.playAnimationOnce("6", () => {
                                 aniCtrl.node.destroy();
                             });
@@ -1662,18 +1662,18 @@ export class MergeBoardLayer extends BaseView {
                     }
 
 
-                    mergeBoardStateStore.roomDataExchange(row, col, endRoomItem.row, endRoomItem.col);
-                    this.setChoseRoomItem(endRoomItem);
-                    this.moveRoomItemToRowCol(this.moveRoomItem, endRoomItem.row, endRoomItem.col, () => {
-                        mergeBoardStateStore.refreshRoomAutoNew(endRoomItem.row, endRoomItem.col);
-                        this.refreshComposeHint();
-                        this.refreshRoomNineAroundAutoNew(row, col);
+                    mergeBoardStateStore._fn_ach(row, col, endRoomItem.row, endRoomItem.col);
+                    this._fn_aep(endRoomItem);
+                    this._fn_se(this.moveRoomItem, endRoomItem.row, endRoomItem.col, () => {
+                        mergeBoardStateStore._fn_zl(endRoomItem.row, endRoomItem.col);
+                        this._fn_za();
+                        this._fn_zr(row, col);
                     });
                     if (endRoomData.id) {
 
                         endRoomItem.active = false;
-                        this.addNewMoveNewItemRoomToRowCol(endRoomItem, row, col, 0, () => {
-                            mergeBoardStateStore.refreshRoomAutoNew(row, col);
+                        this._fn_j(endRoomItem, row, col, 0, () => {
+                            mergeBoardStateStore._fn_zl(row, col);
                         });
                     }
                 }
@@ -1687,30 +1687,30 @@ export class MergeBoardLayer extends BaseView {
                 if (propRow.blessId) {
                     console.log("merge board item");
                     GameEventManager.eventTarget.emit(GameEventManager.EEventName.ADD_EXP_ANIMATION,1)
-                    let handIndex = mergeBoardStateStore.getHandIndex();
+                    let handIndex = mergeBoardStateStore._fn_hj();
                     if (handIndex == handIndexs.firstCompose && propRow.blessId == 10002) {
-                        mergeBoardStateStore.addHandIndex();
+                        mergeBoardStateStore._fn_e();
                         this.refreshHandLayer();
                     } else if (handIndex == handIndexs.secondCompose && propRow.blessId == 10003) {
-                        mergeBoardStateStore.addHandIndex();
+                        mergeBoardStateStore._fn_e();
                         this.refreshHandLayer();
                     } else if (handIndex == handIndexs.thirdCompose && propRow.blessId == 10004) {
-                        mergeBoardStateStore.addHandIndex();
-                        mergeBoardStateStore.closeHandLayer();
+                        mergeBoardStateStore._fn_e();
+                        mergeBoardStateStore._fn_df();
                     } else if (handIndex == handIndexs.boardMergeStepA && propRow.blessId == 10027) {
-                        mergeBoardStateStore.addHandIndex();
+                        mergeBoardStateStore._fn_e();
                         this.refreshHandLayer();
                     } else if (handIndex == handIndexs.boardMergeStepB && propRow.blessId == 10028) {
-                        mergeBoardStateStore.addHandIndex();
+                        mergeBoardStateStore._fn_e();
                         this.refreshHandLayer();
                     }
 
-                    let retObj = mergeBoardStateStore.mergeRoomData(row, col, endRoomItem.row, endRoomItem.col);
+                    let retObj = mergeBoardStateStore._fn_sd(row, col, endRoomItem.row, endRoomItem.col);
 
                     for (let i in retObj.cartonArr) {
                         let posInfo = retObj.cartonArr[i];
                         let cRoomItem = this.roomItemUIArr[posInfo.row][posInfo.col];
-                        this.addSpine(this.cartonSpinePath, cRoomItem, (err: any, aniCtrl: AnimationCtrl) => {
+                        this._fn_q(this.cartonSpinePath, cRoomItem, (err: any, aniCtrl: AnimationCtrl) => {
                             if (err) {
                                 return;
                             }
@@ -1727,7 +1727,7 @@ export class MergeBoardLayer extends BaseView {
                                     })
                                     .start();
                             }
-                            this.refreshRoomItemUIByRowCol(posInfo.row, posInfo.col);
+                            this._fn_zo(posInfo.row, posInfo.col);
                             aniCtrl.playAnimationOnce("animation", () => {
                                 aniCtrl.node.destroy();
                             });
@@ -1737,24 +1737,24 @@ export class MergeBoardLayer extends BaseView {
                     this.choseRoomItem = endRoomItem;
                     this.moveRoomItem.destroy();
                     this.moveRoomItem = null;
-                    this.refreshRoomItemUIByRowCol(row, col);
-                    this.refreshRoomItemUI(endRoomItem);
-                    this.showComposeEndTween(endRoomItem);
+                    this._fn_zo(row, col);
+                    this._fn_zm(endRoomItem);
+                    this._fn_ahe(endRoomItem);
 
                     let audioName = Const.Audio.mergeTap + (this.mergeAudioCount % 4)
                     this.mergeAudioCount++;
-                    AudioPlaybackService.instance.playSound(audioName);
-                    this.unschedule(this.scheduleAudioCountReset);
-                    this.scheduleOnce(this.scheduleAudioCountReset, 2);
+                    AudioPlaybackService.instance._fn_xc(audioName);
+                    this.unschedule(this._fn_acw);
+                    this.scheduleOnce(this._fn_acw, 2);
 
-                    mergeBoardStateStore.refreshRoomAutoNew(endRoomItem.row, endRoomItem.col);
-                    this.refreshRoomNineAroundAutoNew(row, col);
+                    mergeBoardStateStore._fn_zl(endRoomItem.row, endRoomItem.col);
+                    this._fn_zr(row, col);
 
                     if (propRow.luna >= 4)
-                        mergeBoardStateStore.afterRoomMerge(endRoomItem.row, endRoomItem.col);
+                        mergeBoardStateStore._fn_u(endRoomItem.row, endRoomItem.col);
 
-                    this.refreshBottomLayer();
-                    this.refreshTaskLayer();
+                    this._fn_yv();
+                    this._fn_zw();
 
                     if (this.currentMergeFx) {
                         this.currentMergeFx.getComponent(AnimationCtrl).playAnimationOnce("2", () => {
@@ -1764,9 +1764,9 @@ export class MergeBoardLayer extends BaseView {
                     }
                 } else {
 
-                    this.moveRoomItemToRowCol(this.moveRoomItem, row, col);
+                    this._fn_se(this.moveRoomItem, row, col);
                 }
-                this.refreshComposeHint();
+                this._fn_za();
                 return;
             }
         }
@@ -1775,63 +1775,63 @@ export class MergeBoardLayer extends BaseView {
 
         if (this.choseRoomItem == this.startRoomItem) {
 
-            this.onClickRoomItem(this.startRoomItem);
-            let handIndex = mergeBoardStateStore.getHandIndex();
+            this._fn_ug(this.startRoomItem);
+            let handIndex = mergeBoardStateStore._fn_hj();
             if (handIndex == handIndexs.clickRoomNew || handIndex == handIndexs.clickRoomNew2) {
-                mergeBoardStateStore.addHandIndex();
+                mergeBoardStateStore._fn_e();
                 this.refreshHandLayer();
             }
         } else {
-            this.refreshRoomItemUI(this.choseRoomItem);
+            this._fn_zm(this.choseRoomItem);
         }
-        this.setChoseRoomItem(this.startRoomItem);
-        this.refreshRoomItemUI(this.choseRoomItem);
+        this._fn_aep(this.startRoomItem);
+        this._fn_zm(this.choseRoomItem);
 
-        this.showChoseTween(this.choseRoomItem);
+        this._fn_ahd(this.choseRoomItem);
 
-        this.refreshComposeHint();
+        this._fn_za();
         console.log("roomListTouchEnd  11")
 
     }
 
-    scheduleAudioCountReset() {
+    _fn_acw() {
         this.mergeAudioCount = 0;
     }
 
     roomListTouchCancel(event: EventTouch) {
         UtilPub.log("roomListTouchCancel");
         this.touching = false;
-        this.refreshComposeHint();
-        this.hideRoomListMaskLayer();
-        this.resetBagIconScale();
+        this._fn_za();
+        this._fn_nm();
+        this._fn_abo();
         if (!this.moveRoomItem) {
             return;
         }
-        this.setChoseRoomItem(this.startRoomItem);
+        this._fn_aep(this.startRoomItem);
 
         let row = this.moveRoomItem.row;
         let col = this.moveRoomItem.col;
 
-        this.moveRoomItemToRowCol(this.moveRoomItem, row, col);
+        this._fn_se(this.moveRoomItem, row, col);
     }
 
-    getCardLayerPos() {
-        return UtilPub.convertToWorldSpace(this.cardLayer);
+    _fn_gc() {
+        return UtilPub._fn_dp(this.cardLayer);
     }
 
-    getBtnBuildStarPos() {
-        return UtilPub.convertToWorldSpace(find("icon", this.btnBuild)!);
+    _fn_fy() {
+        return UtilPub._fn_dp(find("icon", this.btnBuild)!);
     }
 
 
-    refreshRoomNineAroundAutoNew(row: number, col: number) {
+    _fn_zr(row: number, col: number) {
         nineAroundArr.forEach((posArr: any) => {
             let r = row + posArr[0];
             let c = col + posArr[1];
             if (r >= 0 && r <= mergeBoardStateStore.rowNum - 1 && c >= 0 && c <= mergeBoardStateStore.colNum - 1) {
                 let rData = mergeBoardStateStore.roomArr[r][c];
                 if (rData.id > 0) {
-                    mergeBoardStateStore.refreshRoomAutoNew(r, c);
+                    mergeBoardStateStore._fn_zl(r, c);
                 }
             }
         });
@@ -1842,26 +1842,26 @@ export class MergeBoardLayer extends BaseView {
 
 
 
-    clearTouchStatus(row: number, col: number) {
+    _fn_da(row: number, col: number) {
         if (this.startRoomItem && this.startRoomItem.row == row && this.startRoomItem.col == col) {
             if (this.moveRoomItem) {
                 this.moveRoomItem.destroy();
                 this.moveRoomItem = null;
             }
             this.startRoomItem = null;
-            this.refreshRoomItemUIByRowCol(row, col);
+            this._fn_zo(row, col);
         }
     }
 
-    onMessageEvent(value: any) {
+    _fn_uw(value: any) {
         console.log("onMessageEvent:", value);
-        let data = ServerCtrJSF.GetInstance().getUserDataByKey(value, Const.MoneyKeys.MonthCharge)
+        let data = ServerCtrJSF._fn_hp()._fn_mu(value, Const.MoneyKeys.MonthCharge)
         if (data && this.choseRoomItem) {
-            let monthCardVal = MonthCard.checkMonthCard(value)
+            let monthCardVal = MonthCard._fn_ca(value)
             if (monthCardVal) {
                 let row = this.choseRoomItem.row;
                 let col = this.choseRoomItem.col;
-                mergeBoardStateStore.rommDataCdBubbleOver(row, col);
+                mergeBoardStateStore._fn_acd(row, col);
             } else {
 
                 UtilPub.log("prompt purchase privilege");
@@ -1870,37 +1870,37 @@ export class MergeBoardLayer extends BaseView {
 
     }
 
-    boardSpeedupEndedRet(data: any) {
-        this.refreshRoomItemUIByRowCol(data.row, data.col);
-        this.removeAllSpeedUpSpine(this.roomItemUIArr[data.row][data.col], true);
+    _fn_al(data: any) {
+        this._fn_zo(data.row, data.col);
+        this._fn_aaf(this.roomItemUIArr[data.row][data.col], true);
     }
 
-    refreshTaskRet() {
-        this.refreshTaskLayer();
-        this.refershRoomLayer();
+    _fn_zx() {
+        this._fn_zw();
+        this._fn_yr();
     }
 
-    goToBuildSceneRet() {
+    _fn_nc() {
         this.close();
     }
 
-    refreshHandLayerRet() {
+    _fn_ze() {
         this.refreshHandLayer();
     }
 
-    boardDiscoveryRet(propId: number) {
-        UiLayerService.instance.showDialog(Const.Dialogs.NewItemLayer, propId);
+    _fn_aj(propId: number) {
+        UiLayerService.instance._fn_ahg(Const.Dialogs.NewItemLayer, propId);
     }
 
-    boardCardRefreshRet() {
-        this.refreshCardLayer();
+    _fn_ai() {
+        this._fn_yz();
     }
 
-    boardMilestoneRefreshRet() {
-        this.refreshManagerLayer();
+    _fn_ak() {
+        this._fn_zi();
     }
 
-    showHintSpineOnce(roomItem: any, aniName: string) {
+    _fn_ahl(roomItem: any, aniName: string) {
         let hintSpine = find("hintSpine", roomItem)!;
         hintSpine.active = true;
         hintSpine.getComponent(AnimationCtrl)!.playAnimationOnce(aniName, () => {
@@ -1912,10 +1912,10 @@ export class MergeBoardLayer extends BaseView {
         UtilPub.log("boardBagWithdrawRet", data);
         let roomItem = this.roomItemUIArr[data.row][data.col];
         data.getOutArr.forEach((pos: any) => {
-            this.addNewMoveNewItemRoomToRowCol(roomItem, pos.row, pos.col, 1, () => {
+            this._fn_j(roomItem, pos.row, pos.col, 1, () => {
 
                 let outItem = this.roomItemUIArr[pos.row][pos.col];
-                this.showHintSpineOnce(outItem, "5");
+                this._fn_ahl(outItem, "5");
             });
         });
     }
@@ -1925,21 +1925,21 @@ export class MergeBoardLayer extends BaseView {
         let row = data.row;
         let col = data.col;
         let roomItem = this.roomItemUIArr[row][col];
-        this.refreshRoomItemUIByRowCol(row, col);
-        this.showChoseTween(roomItem);
+        this._fn_zo(row, col);
+        this._fn_ahd(roomItem);
 
-        this.clearTouchStatus(row, col);
+        this._fn_da(row, col);
         if (this.choseRoomItem == roomItem) {
-            this.refreshBottomLayer();
+            this._fn_yv();
         }
-        this.refreshTaskLayer();
-        this.addSpine(Const.resPath.mergeSpine + "qipao/qipao", this.bubbleLayer, (err, aniCtrl: AnimationCtrl) => {
-            UtilPub.setNodePositionByOtherNode(aniCtrl.node, roomItem);
+        this._fn_zw();
+        this._fn_q(Const.resPath.mergeSpine + "qipao/qipao", this.bubbleLayer, (err, aniCtrl: AnimationCtrl) => {
+            UtilPub._fn_afg(aniCtrl.node, roomItem);
             aniCtrl.playAnimationOnce("3", () => {
                 aniCtrl.node.destroy();
             })
         });
-        AudioPlaybackService.instance.playSound(Const.Audio.bubbleBomb);
+        AudioPlaybackService.instance._fn_xc(Const.Audio.bubbleBomb);
     }
 
     boardSlotSpawnRet(data: any) {
@@ -1948,16 +1948,16 @@ export class MergeBoardLayer extends BaseView {
         let col = data.col;
         let roomItem = this.roomItemUIArr[row][col];
         data.newPosArr.forEach((posArr: any) => {
-            this.addNewMoveNewItemRoomToRowCol(roomItem, posArr[0], posArr[1], 1);
-            if (mergeBoardStateStore.isRoomBubble(posArr[0], posArr[1])) {
-                AudioPlaybackService.instance.playSound(Const.Audio.bubble);
+            this._fn_j(roomItem, posArr[0], posArr[1], 1);
+            if (mergeBoardStateStore._fn_qk(posArr[0], posArr[1])) {
+                AudioPlaybackService.instance._fn_xc(Const.Audio.bubble);
             }
         });
         if (data.isAuto) {
-            AudioPlaybackService.instance.playSound(Const.Audio.createProp);
+            AudioPlaybackService.instance._fn_xc(Const.Audio.createProp);
         }
-        this.clearTouchStatus(row, col);
-        this.refreshTaskLayer();
+        this._fn_da(row, col);
+        this._fn_zw();
     }
 
 
@@ -1968,7 +1968,7 @@ export class MergeBoardLayer extends BaseView {
 
 
 
-    addNewMoveNewItemRoomToRowCol(roomItem: Node, row: number, col: number, aniType: number = 0, cb?: Function) {
+    _fn_j(roomItem: Node, row: number, col: number, aniType: number = 0, cb?: Function) {
         let moveRoomItem = instantiate(this.roomItem);
         moveRoomItem.active = true;
         moveRoomItem.parent = this.moveItemLayer;
@@ -1976,15 +1976,15 @@ export class MergeBoardLayer extends BaseView {
         moveRoomItem.row = row;
         // @ts-ignore
         moveRoomItem.col = col;
-        this.refreshRoomItemUI(moveRoomItem, mergeBoardStateStore.roomArr[row][col]);
-        let pos = UtilPub.convertToWorldSpace(roomItem);
-        pos = UtilPub.convertToNodeSpace(moveRoomItem, pos);
+        this._fn_zm(moveRoomItem, mergeBoardStateStore.roomArr[row][col]);
+        let pos = UtilPub._fn_dp(roomItem);
+        pos = UtilPub._fn_do(moveRoomItem, pos);
         moveRoomItem.position = pos;
         if (aniType == 1) {
             let targetRoomItem = this.roomItemUIArr[row][col];
-            let targetPos = UtilPub.convertToNodeSpace(moveRoomItem, UtilPub.convertToWorldSpace(targetRoomItem));
+            let targetPos = UtilPub._fn_do(moveRoomItem, UtilPub._fn_dp(targetRoomItem));
             let midPos = v3(0, 0, 0);
-            let dis = UtilPub.getDis(pos, targetPos);
+            let dis = UtilPub._fn_gu(pos, targetPos);
             Vec3.lerp(midPos, pos, targetPos, 1 - (this.roomWidth * 0.6) / dis);
 
             let t1 = tween(moveRoomItem)
@@ -2000,13 +2000,13 @@ export class MergeBoardLayer extends BaseView {
 
             tween(moveRoomItem).parallel(t1, t2).call(() => {
                 moveRoomItem.destroy();
-                this.refreshRoomItemUIByRowCol(row, col);
+                this._fn_zo(row, col);
                 if (cb) {
                     cb();
                 }
             }).start();
         } else {
-            this.moveRoomItemToRowCol(moveRoomItem, row, col, cb);
+            this._fn_se(moveRoomItem, row, col, cb);
         }
     }
 
@@ -2016,12 +2016,12 @@ export class MergeBoardLayer extends BaseView {
 
 
 
-    addMoveItemToWorldPos(propId: number, startWorldPos: Vec3, endWorldPos: Vec3, cb?: Function) {
-        let propRow = TableDataService.ins().getTableValueByID(Const.Tables.prop, propId);
+    _fn_i(propId: number, startWorldPos: Vec3, endWorldPos: Vec3, cb?: Function) {
+        let propRow = TableDataService.ins()._fn_ly(Const.Tables.prop, propId);
         let moveItem = instantiate(this.moveItem);
         moveItem.active = true;
         moveItem.parent = this.moveItemLayer;
-        this.setSpriteFrame2(find("icon", moveItem)?.getComponent(Sprite)!, Const.resPath.icon + propRow.icon);
+        this._fn_agl(find("icon", moveItem)?.getComponent(Sprite)!, Const.resPath.icon + propRow.icon);
         moveItem.addComponent(MovePath).startMove(startWorldPos, endWorldPos, 0.3, () => {
             moveItem.destroy();
             if (cb) {
@@ -2031,40 +2031,40 @@ export class MergeBoardLayer extends BaseView {
     }
 
 
-    refreshComposeHint() {
-        this.clearComposeHintTween();
-        if (!mergeBoardStateStore.isHandDone()) {
+    _fn_za() {
+        this._fn_cx();
+        if (!mergeBoardStateStore._fn_px()) {
             return;
         }
         let tmpObj: any = {};
         let idArr: any = [];
 
-        let tmpFunc = (arr: any, isRemove: boolean = false) => {
+        let _fn_ait = (arr: any, isRemove: boolean = false) => {
             let tmpArr = [];
             for (let i in arr) {
                 let tmpItem = arr[i];
-                let tmpRoomData = this.getRoomDataByItemUI(tmpItem);
+                let tmpRoomData = this._fn_kf(tmpItem);
                 if (!tmpRoomData.st) {
                     tmpArr.push(tmpItem);
                 }
             }
-            let retItem = UtilPub.getRandomItemByArr(tmpArr);
+            let retItem = UtilPub._fn_jv(tmpArr);
             if (retItem && isRemove) {
                 let index = arr.indexOf(retItem);
                 arr.splice(index, 1);
             }
             return retItem;
         };
-        UtilPub.for2Arr(this.roomItemUIArr, (roomItem: any) => {
-            let roomData = this.getRoomDataByItemUI(roomItem);
+        UtilPub._fn_ex(this.roomItemUIArr, (roomItem: any) => {
+            let roomData = this._fn_kf(roomItem);
             let id = roomData.id;
             if (!id) {
                 return;
             }
-            if (mergeBoardStateStore.isRoomBubble(roomItem.row, roomItem.col)) {
+            if (mergeBoardStateStore._fn_qk(roomItem.row, roomItem.col)) {
                 return;
             }
-            let propRow = TableDataService.ins().getTableValueByID(Const.Tables.prop, id);
+            let propRow = TableDataService.ins()._fn_ly(Const.Tables.prop, id);
             if (!propRow.blessId) {
                 return;
             }
@@ -2075,43 +2075,43 @@ export class MergeBoardLayer extends BaseView {
                 tmpObj[id] = [];
             }
             tmpObj[id].push(roomItem);
-            if (tmpObj[id].length >= 2 && tmpFunc(tmpObj[id]) && idArr.indexOf(id) == -1) {
+            if (tmpObj[id].length >= 2 && _fn_ait(tmpObj[id]) && idArr.indexOf(id) == -1) {
                 idArr.push(id);
             }
         });
         if (idArr.length > 0) {
-            let id = UtilPub.getRandomItemByArr(idArr);
+            let id = UtilPub._fn_jv(idArr);
             let arr = tmpObj[id];
 
-            let normalRoomItem = tmpFunc(arr, true);
-            this.showComposeHintTween(normalRoomItem);
+            let normalRoomItem = _fn_ait(arr, true);
+            this._fn_ahf(normalRoomItem);
             this.roomItemMergeHintArr.push(normalRoomItem);
 
-            let otherRoomItem = UtilPub.getRandomItemByArr(arr, true);
-            this.showComposeHintTween(otherRoomItem);
+            let otherRoomItem = UtilPub._fn_jv(arr, true);
+            this._fn_ahf(otherRoomItem);
             this.roomItemMergeHintArr.push(otherRoomItem);
 
         }
     }
 
-    moveRoomItemToRowCol(moveRoomItem: Node, row: number, col: number, cb?: Function) {
+    _fn_se(moveRoomItem: Node, row: number, col: number, cb?: Function) {
         let roomItem = this.roomItemUIArr[row][col];
-        let wpos = UtilPub.convertToWorldSpace(roomItem);
-        let pos = UtilPub.convertToNodeSpace(moveRoomItem, wpos);
+        let wpos = UtilPub._fn_dp(roomItem);
+        let pos = UtilPub._fn_do(moveRoomItem, wpos);
         tween(moveRoomItem).to(0.1, { position: pos }).call(() => {
             moveRoomItem.destroy();
-            this.refreshRoomItemUIByRowCol(row, col);
+            this._fn_zo(row, col);
             if (cb) {
                 cb();
             }
         }).start();
     }
 
-    showChoseTween(node: Node) {
+    _fn_ahd(node: Node) {
         if (!node) {
             return;
         }
-        let roomData = this.getRoomDataByItemUI(node);
+        let roomData = this._fn_kf(node);
         if (!roomData.id) {
             return;
         }
@@ -2127,7 +2127,7 @@ export class MergeBoardLayer extends BaseView {
             .start();
     }
 
-    showComposeEndTween(node: Node) {
+    _fn_ahe(node: Node) {
         let tag = 101;
         let iconNode = find("icon", node)!;
         Tween.stopAllByTag(tag, iconNode);
@@ -2140,7 +2140,7 @@ export class MergeBoardLayer extends BaseView {
             .start();
     }
 
-    showComposeHintTween(node: Node) {
+    _fn_ahf(node: Node) {
         let tag = 102;
         let iconNode = find("icon", node)!;
         Tween.stopAllByTag(tag, iconNode);
@@ -2157,7 +2157,7 @@ export class MergeBoardLayer extends BaseView {
         node.mergeHintTween = mergeHintTween;
     }
 
-    clearComposeHintTween() {
+    _fn_cx() {
         this.roomItemMergeHintArr.forEach((node: Node) => {
             let iconNode = find("icon", node)!;
             iconNode.scale = v3(1, 1, 1);
@@ -2168,11 +2168,11 @@ export class MergeBoardLayer extends BaseView {
         this.roomItemMergeHintArr = [];
     }
 
-    showItemCreateTween(node: Node) {
+    _fn_ahm(node: Node) {
 
         // @ts-ignore
         if (node.mergeHintTween) {
-            this.stopItemCreateTween(node);
+            this._fn_aim(node);
             return;
         }
 
@@ -2199,7 +2199,7 @@ export class MergeBoardLayer extends BaseView {
         // @ts-ignore
         node.itemCreateTween = itemCreateTween;
     }
-    stopItemCreateTween(node: Node) {
+    _fn_aim(node: Node) {
         // @ts-ignore
         let itemCreateTween = node.itemCreateTween;
         if (itemCreateTween) {
@@ -2212,21 +2212,21 @@ export class MergeBoardLayer extends BaseView {
         }
     }
 
-    refreshBottomLayerUpdate() {
+    _fn_yw() {
         if (!this.choseRoomItem) {
             return;
         }
-        let roomData = this.getRoomDataByItemUI(this.choseRoomItem);
+        let roomData = this._fn_kf(this.choseRoomItem);
         if (!roomData.id) {
             return;
         }
 
-        let propRow = TableDataService.ins().getTableValueByID(Const.Tables.prop, roomData.id);
+        let propRow = TableDataService.ins()._fn_ly(Const.Tables.prop, roomData.id);
         let row = this.choseRoomItem.row;
         let col = this.choseRoomItem.col;
 
 
-        let timestamp = mergeBoardStateStore.getCurrentTimestamp();
+        let timestamp = mergeBoardStateStore._fn_gm();
         let dt = -1;
         if (roomData.cd > 0 && roomData.cdSum > 0) {
             dt = roomData.cd - timestamp;
@@ -2254,26 +2254,26 @@ export class MergeBoardLayer extends BaseView {
             }
             // @ts-ignore
             this.btnCdOver.dt = dt;
-            let timeStr = UtilPub.getDurationStr(dt);
-            this.setString(find("cd/time", this.btnCdOver), timeStr);
-            let num = mergeBoardStateStore.getOverCdCostDiamond(dt);
-            this.setString(find("num", this.btnCdOver), num);
+            let timeStr = UtilPub._fn_gw(dt);
+            this._fn_ago(find("cd/time", this.btnCdOver), timeStr);
+            let num = mergeBoardStateStore._fn_it(dt);
+            this._fn_ago(find("num", this.btnCdOver), num);
         }
 
 
-        if (mergeBoardStateStore.isRoomBubble(row, col) && roomData.cdBubble > 0) {
+        if (mergeBoardStateStore._fn_qk(row, col) && roomData.cdBubble > 0) {
             this.btnBubbleGet.active = true;
             this.btnBubbleOver.active = true;
             let dt2 = roomData.cdBubble - timestamp;
-            this.setString(find("time", this.btnBubbleGet), UtilPub.getDurationStr(dt2));
-            this.setString(find("num", this.btnBubbleGet), propRow.bubble);
+            this._fn_ago(find("time", this.btnBubbleGet), UtilPub._fn_gw(dt2));
+            this._fn_ago(find("num", this.btnBubbleGet), propRow.bubble);
             this.btnUnlock.active = false;
         } else {
             this.btnBubbleGet.active = false;
             this.btnBubbleOver.active = false;
             if (propRow.mdt == 1 && !roomData.unlock && !roomData.cdSum) {
                 this.btnUnlock.active = true;
-                this.setString(find("time", this.btnUnlock)!, UtilPub.getDurationStr(propRow.p1 * 1000));
+                this._fn_ago(find("time", this.btnUnlock)!, UtilPub._fn_gw(propRow.p1 * 1000));
             } else {
                 this.btnUnlock.active = false;
             }
@@ -2286,17 +2286,17 @@ export class MergeBoardLayer extends BaseView {
     }
 
     update(dt: number) {
-        UtilPub.for2Arr(this.roomItemUIArr, (roomItem: Node) => {
-            this.refreshRoomItemUIUpdate(roomItem);
+        UtilPub._fn_ex(this.roomItemUIArr, (roomItem: Node) => {
+            this._fn_zq(roomItem);
         });
-        this.refreshBottomLayerUpdate();
+        this._fn_yw();
     }
 
 
-    onClickRoomItem(roomItem: any) {
+    _fn_ug(roomItem: any) {
         let row = roomItem.row;
         let col = roomItem.col;
-        let roomData = this.getRoomDataByItemUI(roomItem);
+        let roomData = this._fn_kf(roomItem);
         UtilPub.log("点击了房�?row:%d,col:%d".format(row, col), roomData);
 
         if (roomData.id == propIds.bag) {
@@ -2305,13 +2305,13 @@ export class MergeBoardLayer extends BaseView {
                 row: row,
                 col: col
             };
-            UiLayerService.instance.showDialog(Const.Dialogs.BagLayer, obj);
+            UiLayerService.instance._fn_ahg(Const.Dialogs.BagLayer, obj);
             return;
         }
 
-        let propRow = TableDataService.ins().getTableValueByID(Const.Tables.prop, roomData.id);
+        let propRow = TableDataService.ins()._fn_ly(Const.Tables.prop, roomData.id);
 
-        if (mergeBoardStateStore.isRoomBubble(row, col)) {
+        if (mergeBoardStateStore._fn_qk(row, col)) {
 
             let aniCtrl = find("bubble", roomItem)!.getComponent(AnimationCtrl)!;
             aniCtrl.playAnimationOnce("2", () => {
@@ -2320,39 +2320,39 @@ export class MergeBoardLayer extends BaseView {
             return;
         }
 
-        if (mergeBoardStateStore.isRoomCd(row, col)) {
+        if (mergeBoardStateStore._fn_qm(row, col)) {
 
             return;
         }
 
         if (propRow.clickAwardId > 0) {
 
-            mergeBoardStateStore.onClickRoomAward(row, col, UtilPub.convertToWorldSpace(roomItem));
-            this.setChoseRoomItem(null);
-            this.refreshRoomItemUIByRowCol(row, col);
-            this.refreshTaskLayer();
+            mergeBoardStateStore._fn_uf(row, col, UtilPub._fn_dp(roomItem));
+            this._fn_aep(null);
+            this._fn_zo(row, col);
+            this._fn_zw();
             if (propRow.clickAwardId == propIds.coin) {
-                AudioPlaybackService.instance.playSound(Const.Audio.clickCoin);
+                AudioPlaybackService.instance._fn_xc(Const.Audio.clickCoin);
             }
             return;
         }
 
         if (propRow.mdt == 1 && !roomData.unlock) {
 
-            mergeBoardStateStore.onClickUnlockRoom(row, col);
-            this.refreshBottomLayer();
+            mergeBoardStateStore._fn_um(row, col);
+            this._fn_yv();
             return;
         }
 
         if (propRow.mdt == 2 || propRow.mdt == 5 || propRow.mdt == 11) {
-            let ret = mergeBoardStateStore.onClickEspRoom(row, col);
-            this.refreshRoomItemUIByRowCol(row, col);
-            this.refreshBottomLayer();
+            let ret = mergeBoardStateStore._fn_ty(row, col);
+            this._fn_zo(row, col);
+            this._fn_yv();
             if (propRow.mdt == 5) {
                 ret.arr.forEach((info: any) => {
                     let tempRoomItem = this.roomItemUIArr[info.row][info.col];
-                    this.addSpine(this.tbgxSpinePath, this.mergeFxLayer, (err: any, aniCtrl: AnimationCtrl) => {
-                        UtilPub.setNodePositionByOtherNode(aniCtrl.node, tempRoomItem);
+                    this._fn_q(this.tbgxSpinePath, this.mergeFxLayer, (err: any, aniCtrl: AnimationCtrl) => {
+                        UtilPub._fn_afg(aniCtrl.node, tempRoomItem);
                         aniCtrl.playAnimationOnce("7", () => {
                             aniCtrl.node.destroy();
                         });
@@ -2377,7 +2377,7 @@ export class MergeBoardLayer extends BaseView {
             return;
         }
 
-        let emptyPos = mergeBoardStateStore.getEmptyRoomPos();
+        let emptyPos = mergeBoardStateStore._fn_gz();
         if (!emptyPos) {
 
             return;
@@ -2388,23 +2388,23 @@ export class MergeBoardLayer extends BaseView {
             return;
         }
 
-        if (!propRow.noPower && mergeBoardStateStore.getPropNumById(propIds.power) <= 0 && mergeBoardStateStore.getBoardEnergyCooldown() <= 0) {
+        if (!propRow.noPower && mergeBoardStateStore._fn_jp(propIds.power) <= 0 && mergeBoardStateStore._fn_fs() <= 0) {
 
-            UiLayerService.instance.showDialog(Const.Dialogs.ShopPowerDialog);
+            UiLayerService.instance._fn_ahg(Const.Dialogs.ShopPowerDialog);
             return;
         }
 
 
-        mergeBoardStateStore.onClickRoomNew(row, col, emptyPos.row, emptyPos.col);
-        this.addNewMoveNewItemRoomToRowCol(roomItem, emptyPos.row, emptyPos.col, 1, () => {
-            mergeBoardStateStore.refreshRoomAutoNew(emptyPos.row, emptyPos.col);
-            this.refreshTaskLayer();
+        mergeBoardStateStore._fn_uh(row, col, emptyPos.row, emptyPos.col);
+        this._fn_j(roomItem, emptyPos.row, emptyPos.col, 1, () => {
+            mergeBoardStateStore._fn_zl(emptyPos.row, emptyPos.col);
+            this._fn_zw();
         });
 
-        AudioPlaybackService.instance.playSound(Const.Audio.createProp);
+        AudioPlaybackService.instance._fn_xc(Const.Audio.createProp);
 
-        this.refreshRoomItemUI(roomItem);
-        roomData = this.getRoomDataByItemUI(roomItem);
+        this._fn_zm(roomItem);
+        roomData = this._fn_kf(roomItem);
         if (!roomData.id) {
             UtilPub.log("clicked item disappeared");
             this.choseRoomItem = null;
@@ -2412,35 +2412,35 @@ export class MergeBoardLayer extends BaseView {
 
     }
 
-    clearSellBack() {
+    _fn_cz() {
         this.sellData = null;
-        this.refreshBottomLayer();
+        this._fn_yv();
     }
 
-    onClickInfoUI() {
+    _fn_uc() {
         if (!this.choseRoomItem) {
             return;
         }
-        let roomData = this.getRoomDataByItemUI(this.choseRoomItem);
+        let roomData = this._fn_kf(this.choseRoomItem);
         if (roomData.st == roomStatus.spider) {
             return;
         }
-        mergeBoardStateStore.openPropInfoLayer(roomData.id);
+        mergeBoardStateStore._fn_wh(roomData.id);
     }
 
-    onClickBtnUnlock(btn: Button) {
+    _fn_ts(btn: Button) {
         if (!this.choseRoomItem) {
             return;
         }
         let row = this.choseRoomItem.row;
         let col = this.choseRoomItem.col;
-        mergeBoardStateStore.onClickUnlockRoom(row, col);
-        this.refreshRoomItemUI(this.choseRoomItem);
-        this.refreshBottomLayer();
+        mergeBoardStateStore._fn_um(row, col);
+        this._fn_zm(this.choseRoomItem);
+        this._fn_yv();
     }
 
-    onClickBtnSell() {
-        AudioPlaybackService.instance.playSound(Const.Audio.sellBack);
+    _fn_tk() {
+        AudioPlaybackService.instance._fn_xc(Const.Audio.sellBack);
 
         if (!this.choseRoomItem) {
             return;
@@ -2448,39 +2448,39 @@ export class MergeBoardLayer extends BaseView {
 
         let row = this.choseRoomItem.row;
         let col = this.choseRoomItem.col;
-        let sellData = mergeBoardStateStore.sellRoomData(row, col, UtilPub.convertToWorldSpace(this.choseRoomItem));
+        let sellData = mergeBoardStateStore._fn_adj(row, col, UtilPub._fn_dp(this.choseRoomItem));
         if (!sellData) {
             return;
         }
 
         this.sellData = sellData;
-        this.setChoseRoomItem(null);
-        this.refreshRoomItemUIByRowCol(row, col);
-        this.refreshTaskLayer();
-        this.refreshComposeHint();
-        this.refreshRoomNineAroundAutoNew(row, col);
+        this._fn_aep(null);
+        this._fn_zo(row, col);
+        this._fn_zw();
+        this._fn_za();
+        this._fn_zr(row, col);
 
     }
 
-    onClickBtnSellBack() {
-        AudioPlaybackService.instance.playSound(Const.Audio.sellBack);
+    _fn_tl() {
+        AudioPlaybackService.instance._fn_xc(Const.Audio.sellBack);
 
         let pos = mergeBoardStateStore.sellBack(this.sellData);
         if (!pos) {
 
-            this.refreshCardLayer();
+            this._fn_yz();
             return;
         }
         let roomItem = this.roomItemUIArr[pos.row][pos.col];
-        this.setChoseRoomItem(roomItem);
-        this.refreshRoomItemUI(roomItem);
-        this.showChoseTween(roomItem);
-        this.clearSellBack();
-        this.refreshTaskLayer();
-        this.refreshComposeHint();
+        this._fn_aep(roomItem);
+        this._fn_zm(roomItem);
+        this._fn_ahd(roomItem);
+        this._fn_cz();
+        this._fn_zw();
+        this._fn_za();
     }
 
-    onClickBtnCdOver(btn: Button) {
+    _fn_sx(btn: Button) {
         if (!this.choseRoomItem) {
             return;
         }
@@ -2490,64 +2490,64 @@ export class MergeBoardLayer extends BaseView {
         let dt = btn.node.dt;
         // @ts-ignore
         let cdType = btn.node.cdType;
-        mergeBoardStateStore.roomDataCdOver(row, col, dt, cdType);
+        mergeBoardStateStore._fn_acg(row, col, dt, cdType);
     }
 
-    onClickBtnBubbleGet() {
+    _fn_su() {
         if (!this.choseRoomItem) {
             return;
         }
         let row = this.choseRoomItem.row;
         let col = this.choseRoomItem.col;
-        let isSuccess = mergeBoardStateStore.roomDataBubbleGet(row, col);
+        let isSuccess = mergeBoardStateStore._fn_acf(row, col);
         if (!isSuccess) {
             return;
         }
-        this.refreshRoomItemUI(this.choseRoomItem);
-        this.showChoseTween(this.choseRoomItem);
-        this.refreshTaskLayer();
+        this._fn_zm(this.choseRoomItem);
+        this._fn_ahd(this.choseRoomItem);
+        this._fn_zw();
     }
 
-    onClickBtnBubbleOver() {
+    _fn_sv() {
         if (!this.choseRoomItem) {
             return;
         }
-        GamePlatform.showRewardVideo("气泡免费跳过", (st) => {
+        GamePlatform._fn_ahr("气泡免费跳过", (st) => {
             if (st == 1) {
                 let row = this.choseRoomItem.row;
                 let col = this.choseRoomItem.col;
-                mergeBoardStateStore.rommDataCdBubbleOver(row, col);
+                mergeBoardStateStore._fn_acd(row, col);
             }
         });
         return;
-        ServerCtrJSF.GetInstance().reqGetUserDataObjByKey(GameStorage.Key(Const.MoneyKeys.MonthCharge));
+        ServerCtrJSF._fn_hp()._fn_aau(GameStorage._fn_rb(Const.MoneyKeys.MonthCharge));
     }
 
-    updateTaskLayerLayout() {
+    _fn_aju() {
         let layout = this.taskLayer.getComponent(Layout)!;
 
         layout.enabled = false;
         layout.enabled = true;
     }
 
-    onClickTaskPropInfo(btn: Button) {
+    _fn_uj(btn: Button) {
         // @ts-ignore
         let propRow = btn.node.propRow;
-        mergeBoardStateStore.openPropInfoLayer(propRow.id);
+        mergeBoardStateStore._fn_wh(propRow.id);
     }
 
-    onClickTaskPropItem(btn: Button) {
+    _fn_uk(btn: Button) {
         // @ts-ignore
         let propRow = btn.node.propRow;
-        mergeBoardStateStore.openPropInfoLayer(propRow.id);
+        mergeBoardStateStore._fn_wh(propRow.id);
     }
 
-    onClickBtnTaskDoneEvent(btn: Button) {
+    _fn_tq(btn: Button) {
         let node = btn.node;
         // @ts-ignore
         let task1 = node.task;
 
-        let arr = mergeBoardStateStore.getTaskArrSort();
+        let arr = mergeBoardStateStore._fn_mh();
         for (let i = 0; i < arr.length; i++) {
             let TaskItemCellController = this.taskLayer.children[i];
             if (TaskItemCellController) {
@@ -2557,7 +2557,7 @@ export class MergeBoardLayer extends BaseView {
                     // @ts-ignore
                     let task2 = btnTaskDone.task;
                     if (task1.id == task2.id) {
-                        this.onClickBtnTaskDone(btnTaskDone.getComponent(Button)!)
+                        this._fn_tp(btnTaskDone.getComponent(Button)!)
                         return true
                     }
                 }
@@ -2566,14 +2566,14 @@ export class MergeBoardLayer extends BaseView {
         return false
     }
 
-    onClickBtnTaskDone(btn: Button) {
-        let handIndex = mergeBoardStateStore.getHandIndex();
+    _fn_tp(btn: Button) {
+        let handIndex = mergeBoardStateStore._fn_hj();
         if (handIndex == handIndexs.taskMittens) {
-            mergeBoardStateStore.addHandIndex();
+            mergeBoardStateStore._fn_e();
             this.refreshHandLayer();
         }
 
-        AudioPlaybackService.instance.playSound(Const.Audio.taskDone);
+        AudioPlaybackService.instance._fn_xc(Const.Audio.taskDone);
 
         let node = btn.node;
         node.active = false;
@@ -2590,26 +2590,26 @@ export class MergeBoardLayer extends BaseView {
 
 
         GameEventManager.eventTarget.emit(GameEventManager.EEventName.ADD_EXP_ANIMATION,task.starNum)
-        let subPropArr = mergeBoardStateStore.onClickTaskDone(task, UtilPub.convertToWorldSpace(find("award/icon", node.parent!)!));
-        let bagInfo = mergeBoardStateStore.getRoomDataBagInfo();
+        let subPropArr = mergeBoardStateStore.onClickTaskDone(task, UtilPub._fn_dp(find("award/icon", node.parent!)!));
+        let bagInfo = mergeBoardStateStore._fn_ke();
         let TaskItemCellController = node.parent!;
-        let worldPos = UtilPub.convertToWorldSpace(TaskItemCellController);
+        let worldPos = UtilPub._fn_dp(TaskItemCellController);
         let hasCb = false;
-        let tmpCb = () => {
+        let _fn_ais = () => {
             if (hasCb) {
                 return;
             }
             hasCb = true;
             tween(TaskItemCellController).to(0.3, { scale: v3(0, 0, 1) }, {
                 onUpdate: () => {
-                    this.updateTaskLayerLayout();
+                    this._fn_aju();
                 }
             }).call(() => {
-                mergeBoardStateStore.createTask()
-                this.initTaskLayer();
-                this.refershRoomLayer();
-                this.refreshBuildLayer();
-                this.refreshComposeHint();
+                mergeBoardStateStore._fn_dw()
+                this._fn_pf();
+                this._fn_yr();
+                this._fn_yy();
+                this._fn_za();
                 this.lastTaskArr = null;
             }).start();
         };
@@ -2617,20 +2617,20 @@ export class MergeBoardLayer extends BaseView {
             let subProp = subPropArr[i];
             if (subProp.isBag) {
                 let roomItem = this.roomItemUIArr[bagInfo.row][bagInfo.col];
-                let startPos = UtilPub.convertToWorldSpace(roomItem);
-                this.addMoveItemToWorldPos(subProp.id, startPos, worldPos, tmpCb);
+                let startPos = UtilPub._fn_dp(roomItem);
+                this._fn_i(subProp.id, startPos, worldPos, _fn_ais);
             } else {
                 let roomItem = this.roomItemUIArr[subProp.row][subProp.col];
-                let startPos = UtilPub.convertToWorldSpace(roomItem);
-                this.addMoveItemToWorldPos(subProp.id, startPos, worldPos, tmpCb);
-                this.refreshRoomItemUIByRowCol(subProp.row, subProp.col);
+                let startPos = UtilPub._fn_dp(roomItem);
+                this._fn_i(subProp.id, startPos, worldPos, _fn_ais);
+                this._fn_zo(subProp.row, subProp.col);
             }
         }
-        this.refreshBottomLayer();
-        this.refreshBtnTaskList();
+        this._fn_yv();
+        this._fn_yx();
     }
 
-    onClickTaskItem(btn: Button) {
+    _fn_ui(btn: Button) {
         let task = mergeBoardStateStore.taskArr[0];
 
 
@@ -2639,52 +2639,52 @@ export class MergeBoardLayer extends BaseView {
 
 
 
-        UiLayerService.instance.showDialog(Const.Dialogs.TaskListLayer);
+        UiLayerService.instance._fn_ahg(Const.Dialogs.TaskListLayer);
     }
 
-    onClickBtnTaskList() {
-        UiLayerService.instance.showDialog(Const.Dialogs.TaskListLayer);
+    _fn_tr() {
+        UiLayerService.instance._fn_ahg(Const.Dialogs.TaskListLayer);
     }
 
 
-    onClickCardLayer(btn: Button) {
-        let emptyPos = mergeBoardStateStore.onClickCardLayer();
+    _fn_tu(btn: Button) {
+        let emptyPos = mergeBoardStateStore._fn_tu();
         if (!emptyPos) {
             return;
         }
         let roomItem = this.roomItemUIArr[emptyPos.row][emptyPos.col];
-        let roomData = this.getRoomDataByItemUI(roomItem);
+        let roomData = this._fn_kf(roomItem);
         let ch = btn.node.children;
         let cardItem = ch[ch.length - 1];
-        this.addMoveItemToWorldPos(roomData.id, UtilPub.convertToWorldSpace(cardItem), UtilPub.convertToWorldSpace(roomItem), () => {
-            this.refreshRoomItemUI(roomItem);
-            this.refreshTaskLayer()
+        this._fn_i(roomData.id, UtilPub._fn_dp(cardItem), UtilPub._fn_dp(roomItem), () => {
+            this._fn_zm(roomItem);
+            this._fn_zw()
         });
-        this.refreshCardLayer();
+        this._fn_yz();
 
-        let handIndex = mergeBoardStateStore.getHandIndex();
+        let handIndex = mergeBoardStateStore._fn_hj();
         if (handIndex == handIndexs.boardCardPanel) {
-            mergeBoardStateStore.addHandIndex();
-            mergeBoardStateStore.closeHandLayer();
+            mergeBoardStateStore._fn_e();
+            mergeBoardStateStore._fn_df();
         }
     }
 
 
     onClickBtnBuild() {
-        mergeBoardStateStore.closeHandLayer();
-        UiLayerService.instance.showDialog(Const.Dialogs.BuildListPanelController);
+        mergeBoardStateStore._fn_df();
+        UiLayerService.instance._fn_ahg(Const.Dialogs.BuildListPanelController);
     }
 
 
-    onClickBtnManager() {
+    _fn_tg() {
 
 
 
-        UiLayerService.instance.showDialog(Const.Dialogs.ManagerLayer);
+        UiLayerService.instance._fn_ahg(Const.Dialogs.ManagerLayer);
     }
 
 
-    onClickBtnShop() {
+    _fn_tn() {
 
 
 
@@ -2699,14 +2699,14 @@ export class MergeBoardLayer extends BaseView {
 
 
         if (playerDataStore.roleLv < 3) {
-            this.toast("还未解锁商店")
+            this._fn_aiu("还未解锁商店")
             return
         }
-        this.clearSellBack();
-        UiLayerService.instance.showDialog(Const.Dialogs.ShopSynthesisDialog);
-        let handIndex = mergeBoardStateStore.getHandIndex();
+        this._fn_cz();
+        UiLayerService.instance._fn_ahg(Const.Dialogs.ShopSynthesisDialog);
+        let handIndex = mergeBoardStateStore._fn_hj();
         if (handIndex == handIndexs.shopOpen) {
-            mergeBoardStateStore.addHandIndex();
+            mergeBoardStateStore._fn_e();
         }
 
 
@@ -2730,12 +2730,12 @@ export class MergeBoardLayer extends BaseView {
 
     }
 
-    onClickBtnClose() {
+    _fn_sz() {
         this.close();
     }
 
-    onClickBtnDeleteData() {
-        mergeBoardStateStore.deleteAllRoomData();
+    _fn_ta() {
+        mergeBoardStateStore._fn_eg();
         this.close();
     }
 

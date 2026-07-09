@@ -12,10 +12,10 @@ export default class TimeCtrJSF extends Component {
 
     private static instance: TimeCtrJSF = null!;
 
-    public static GetInstance() {
+    public static _fn_hp() {
         if (!this.instance) {
             this.instance = new TimeCtrJSF();
-            this.instance.InitTimeCtr();
+            this.instance._fn_pg();
         }
         return this.instance;
     }
@@ -32,30 +32,30 @@ export default class TimeCtrJSF extends Component {
     public isRunServerTime: boolean = false;
     public loginTime: string = '';
 
-    InitTimeCtr() {
+    _fn_pg() {
 
     }
 
-    UpdateServerTime(time: number) {
-        director.getScheduler().unschedule(this.updateTimer, this)
+    _fn_ajr(time: number) {
+        director.getScheduler().unschedule(this._fn_ajv, this)
 
         this.serverTime = time;
 
-        director.getScheduler().schedule(this.updateTimer, this, 1);
+        director.getScheduler().schedule(this._fn_ajv, this, 1);
 
 
     }
 
-    UpdateServerTimeByHeartbeat(time: number) {
+    _fn_ajs(time: number) {
 
         this.serverTime = time;
     }
 
-    ReInit() {
-        director.getScheduler().unschedule(this.updateTimer, this)
+    _fn_aab() {
+        director.getScheduler().unschedule(this._fn_ajv, this)
     }
 
-    public updateTimer() {
+    public _fn_ajv() {
 
         this.isRunServerTime = true;
 
@@ -68,7 +68,7 @@ export default class TimeCtrJSF extends Component {
     get ServerTime() {
         return Date.now();
         if (this.serverTime != 0) {
-            let delay = GameStorage.getInt("modifyTime", 0)
+            let delay = GameStorage._fn_hr("modifyTime", 0)
             if (delay > 0) {
                 return this.serverTime + delay * 60 * 1000;
             }
@@ -83,7 +83,7 @@ export default class TimeCtrJSF extends Component {
         }
     }
 
-    public static isSameDay(t1: number, t2: number) {
+    public static _fn_qp(t1: number, t2: number) {
         let time1 = new Date(t1)
         let time2 = new Date(t2)
         if (time1.getFullYear() == time2.getFullYear() && time1.getMonth() == time2.getMonth() && time1.getDate() == time2.getDate()) {
@@ -99,14 +99,14 @@ export default class TimeCtrJSF extends Component {
 
 
 
-    public static isSameHalfDay(t1: number, t2: number) {
+    public static _fn_qq(t1: number, t2: number) {
         let time1 = new Date(t1)
         let time2 = new Date(t2)
         if (time1.getFullYear() == time2.getFullYear() && time1.getMonth() == time2.getMonth() && time1.getDate() == time2.getDate()) {
-            if (this.isMorningTime(t1) && this.isMorningTime(t2)) {
+            if (this._fn_qb(t1) && this._fn_qb(t2)) {
                 return true
             }
-            if (this.isAfternoonTime(t1) && this.isAfternoonTime(t2)) {
+            if (this._fn_pp(t1) && this._fn_pp(t2)) {
                 return true
             }
             return false
@@ -114,7 +114,7 @@ export default class TimeCtrJSF extends Component {
         return false
     }
 
-    public static isSameInterval(t1: number, t2: number, interval: number) {
+    public static _fn_qr(t1: number, t2: number, interval: number) {
         let time1 = new Date(t1)
         let time2 = new Date(t2)
         if (interval <= 24 * 60) {
@@ -127,7 +127,7 @@ export default class TimeCtrJSF extends Component {
                 return false
             }
         } else if (interval <= 24 * 60 * 7) {
-            return TimeCtrJSF.isSameWeek(t1, t2)
+            return TimeCtrJSF._fn_qs(t1, t2)
         } else {
             if (time1.getFullYear() == time2.getFullYear() && time1.getMonth() == time2.getMonth()) {
                 return true
@@ -140,19 +140,19 @@ export default class TimeCtrJSF extends Component {
 
 
 
-    public static isMorningTime(t1: number) {
+    public static _fn_qb(t1: number) {
         let time1 = new Date(t1)
         let hours = time1.getHours()
         return hours < 12
     }
 
-    public static isAfternoonTime(t1: number) {
+    public static _fn_pp(t1: number) {
         let time1 = new Date(t1)
         let hours = time1.getHours()
         return hours >= 12
     }
 
-    public static isSameWeek(t1: number, t2: number) {
+    public static _fn_qs(t1: number, t2: number) {
         let day1 = new Date(t1).getDay()
         let day2 = new Date(t2).getDay()
 

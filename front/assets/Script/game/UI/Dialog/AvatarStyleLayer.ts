@@ -23,10 +23,10 @@ export class AvatarStyleLayer extends BaseView {
     @property({ type: sp.Skeleton }) roleSpine: sp.Skeleton = null!;
 
     start() {
-        this.bindButton(find("root/btnClose", this.node)!, this.popClose)
+        this.bindButton(find("root/btnClose", this.node)!, this._fn_xe)
 
-        this.bindButton(find("root/item2", this.node)!, this.selectWomen)
-        this.bindButton(find("root/item1", this.node)!, this.selectMen)
+        this.bindButton(find("root/item2", this.node)!, this._fn_adi)
+        this.bindButton(find("root/item1", this.node)!, this._fn_adh)
     }
 
     onEnable() {
@@ -37,19 +37,19 @@ export class AvatarStyleLayer extends BaseView {
         this.off(GD.event.updateDressUp, this.updateDressUp)
     }
 
-    selectWomen() {
-        let dressData = TableDataService.ins().getTableValuesByType(Const.Tables.avatarStyle, "type", RoleSex.women)
-        this.scrollViewSetData(this.scrollViewNode, dressData, this.initItem, this)
+    _fn_adi() {
+        let dressData = TableDataService.ins()._fn_mb(Const.Tables.avatarStyle, "type", RoleSex.women)
+        this._fn_adc(this.scrollViewNode, dressData, this._fn_oc, this)
     }
 
-    selectMen() {
-        let dressData = TableDataService.ins().getTableValuesByType(Const.Tables.avatarStyle, "type", RoleSex.men)
-        this.scrollViewSetData(this.scrollViewNode, dressData, this.initItem, this)
+    _fn_adh() {
+        let dressData = TableDataService.ins()._fn_mb(Const.Tables.avatarStyle, "type", RoleSex.men)
+        this._fn_adc(this.scrollViewNode, dressData, this._fn_oc, this)
     }
 
-    initInfo() {
-        let currentAvatarConfig = TableDataService.ins().getTableValueByID(Const.Tables.avatarStyle, playerDataStore.avatarLookId)
-        ResourceLoaderService.loadResWithBundle(Const.resPath.roleSpine + currentAvatarConfig.spine, sp.SkeletonData, (err, skeletonData) => {
+    _fn_ob() {
+        let currentAvatarConfig = TableDataService.ins()._fn_ly(Const.Tables.avatarStyle, playerDataStore.avatarLookId)
+        ResourceLoaderService._fn_rq(Const.resPath.roleSpine + currentAvatarConfig.spine, sp.SkeletonData, (err, skeletonData) => {
             this.roleSpine.skeletonData = skeletonData;
             this.roleSpine.setSkin(currentAvatarConfig.spineSkin)
             this.roleSpine.setAnimation(0, currentAvatarConfig.spineAni, true);
@@ -58,29 +58,29 @@ export class AvatarStyleLayer extends BaseView {
 
     show(args: any) {
         super.show(args)
-        let currentAvatarConfig = TableDataService.ins().getTableValueByID(Const.Tables.avatarStyle, playerDataStore.avatarLookId)
+        let currentAvatarConfig = TableDataService.ins()._fn_ly(Const.Tables.avatarStyle, playerDataStore.avatarLookId)
         if (currentAvatarConfig.type == RoleSex.men) {
-            this.selectMen()
+            this._fn_adh()
         } else {
-            this.selectWomen()
+            this._fn_adi()
         }
-        this.initInfo()
+        this._fn_ob()
 
         find("root/dressbg1/Label", this.node)!.getComponent(Label)!.string = playerDataStore.dressValue + ""
     }
 
     openSkinDetail(event: any, avatarConfig: any) {
-        UiLayerService.instance.showDialog(Const.Dialogs.SceneSkinDetailController, { dressUpData: avatarConfig })
+        UiLayerService.instance._fn_ahg(Const.Dialogs.SceneSkinDetailController, { dressUpData: avatarConfig })
 
     }
 
-    initItem(skinCellNode: Node, avatarConfig: any, avatarIndex: number, self: AvatarStyleLayer) {
-        self.setSpriteFrame(skinCellNode.getChildByName("icon")!.getComponent(Sprite)!, Const.resPath.roleIcon + avatarConfig.icon, undefined, 200)
+    _fn_oc(skinCellNode: Node, avatarConfig: any, avatarIndex: number, self: AvatarStyleLayer) {
+        self._fn_agk(skinCellNode.getChildByName("icon")!.getComponent(Sprite)!, Const.resPath.roleIcon + avatarConfig.icon, undefined, 200)
         self.addButtonHander(skinCellNode!, self.node, "AvatarStyleLayer", "onChangeWear", avatarConfig)
-        self.clearButtonHander(skinCellNode.getChildByName("gantan")!)
+        self._fn_ct(skinCellNode.getChildByName("gantan")!)
         self.addButtonHander(skinCellNode.getChildByName("gantan")!, self.node, "AvatarStyleLayer", "openSkinDetail", avatarConfig)
 
-        if (playerDataStore.isAvatarLookOwned(avatarConfig.id) || avatarConfig.price == 0) {
+        if (playerDataStore._fn_pq(avatarConfig.id) || avatarConfig.price == 0) {
             skinCellNode.getChildByName("btnBuy")!.active = false
             skinCellNode.getChildByName("hua1")!.active = false
             if (playerDataStore.avatarLookId == avatarConfig.id) {
@@ -97,8 +97,8 @@ export class AvatarStyleLayer extends BaseView {
             skinCellNode.getChildByName("btnBuy")!.active = true
 
             let costPropId = avatarConfig.price[0][0]
-            let costPropConfig = TableDataService.ins().getTableValueByID(Const.Tables.prop, costPropId)
-            self.setSpriteFrame(find("btnBuy/Node/icon", skinCellNode)!.getComponent(Sprite)!, Const.resPath.icon + costPropConfig.icon, undefined, 40)
+            let costPropConfig = TableDataService.ins()._fn_ly(Const.Tables.prop, costPropId)
+            self._fn_agk(find("btnBuy/Node/icon", skinCellNode)!.getComponent(Sprite)!, Const.resPath.icon + costPropConfig.icon, undefined, 40)
             find("btnBuy/Node/Label", skinCellNode)!.getComponent(Label)!.string = "x" + avatarConfig.price[0][1]
 
             if (avatarConfig.changeZhi > 0) {
@@ -112,9 +112,9 @@ export class AvatarStyleLayer extends BaseView {
     }
 
     onChangeWear(event: any, avatarConfig: any) {
-        AudioPlaybackService.instance.playSound(Const.Audio.btn)
+        AudioPlaybackService.instance._fn_xc(Const.Audio.btn)
 
-        ResourceLoaderService.loadResWithBundle(Const.resPath.roleSpine + avatarConfig.spine, sp.SkeletonData, (err, skeletonData) => {
+        ResourceLoaderService._fn_rq(Const.resPath.roleSpine + avatarConfig.spine, sp.SkeletonData, (err, skeletonData) => {
             this.roleSpine.skeletonData = skeletonData;
             this.roleSpine.setSkin(avatarConfig.spineSkin)
             this.roleSpine.setAnimation(0, avatarConfig.spineAni, true);
@@ -122,7 +122,7 @@ export class AvatarStyleLayer extends BaseView {
     }
 
     onClickWear(event: any, avatarConfig: any) {
-        AudioPlaybackService.instance.playSound(Const.Audio.btn)
+        AudioPlaybackService.instance._fn_xc(Const.Audio.btn)
         playerDataStore.avatarLookId = avatarConfig.id
         this.updateDressUp()
 
@@ -131,14 +131,14 @@ export class AvatarStyleLayer extends BaseView {
     updateDressUp() {
         find("root/dressbg1/Label", this.node)!.getComponent(Label)!.string = playerDataStore.dressValue + ""
         this.scrollViewNode.getComponent(ScrollViewUtil)?.refreshList()
-        this.initInfo()
+        this._fn_ob()
     }
 
     onClickBuy(event: any, avatarConfig: any) {
-        AudioPlaybackService.instance.playSound(Const.Audio.btn)
-        if (avatarConfig.price == 0 || playerDataStore.checkAndUseProp(avatarConfig.price[0])) {
-            playerDataStore.unlockAvatarLook(avatarConfig.id)
-            GamePlatform.track("buy role skin " + avatarConfig.name)
+        AudioPlaybackService.instance._fn_xc(Const.Audio.btn)
+        if (avatarConfig.price == 0 || playerDataStore._fn_bk(avatarConfig.price[0])) {
+            playerDataStore._fn_aji(avatarConfig.id)
+            GamePlatform._fn_aja("buy role skin " + avatarConfig.name)
             playerDataStore.dressValue += avatarConfig.changeZhi
             find("root/dressbg1/Label", this.node)!.getComponent(Label)!.string = playerDataStore.dressValue + ""
             this.scrollViewNode.getComponent(ScrollViewUtil)!.refreshList()

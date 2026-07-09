@@ -25,11 +25,11 @@ export class BagNewLayer extends BaseView {
     selectType:number = 2
 
     onLoad() {
-        this.bindButton(this.btnClose, this.onClickBtnClose);
+        this.bindButton(this.btnClose, this._fn_sz);
     }
 
     onEnable() {
-        this.on(GD.event.updateGame, this.refresh)
+        this.on(GD.event.updateGame, this._fn_ys)
     }
 
     onDisable() {
@@ -39,10 +39,10 @@ export class BagNewLayer extends BaseView {
     show(args: any) {
         super.show(args);
 
-        GameHttpClient.getInstance().sednBagInfo(this.selectType);
+        GameHttpClient._fn_ho().sednBagInfo(this.selectType);
     }
 
-    refresh(){
+    _fn_ys(){
 
         for (let cellIndex = 0; cellIndex < this.listContent.children.length; cellIndex++) {
             const bagCellNode = this.listContent.children[cellIndex];
@@ -65,13 +65,13 @@ export class BagNewLayer extends BaseView {
     }
 
     onClickHandler(eve:Event, str:string){
-        AudioPlaybackService.instance.playSound(Const.Audio.btn)
+        AudioPlaybackService.instance._fn_xc(Const.Audio.btn)
         if (str && str.includes("tog")){
             let selectedStoreType = Number(str.slice(-1)) ;
             if (this.selectType != selectedStoreType){
                 this.selectType = selectedStoreType;
 
-                GameHttpClient.getInstance().sednBagInfo(this.selectType);
+                GameHttpClient._fn_ho().sednBagInfo(this.selectType);
             }
         }
         else if (str == "click"){
@@ -79,7 +79,7 @@ export class BagNewLayer extends BaseView {
         }
     }
 
-    onClickBtnClose() {
+    _fn_sz() {
         this.close();
     }
 

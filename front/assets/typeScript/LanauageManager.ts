@@ -51,7 +51,7 @@ export class LanguageContentManager {
 
 
 
-    public static getConfigDataById(id:number, config:any[]){
+    public static _fn_gj(id:number, config:any[]){
         if (!config){
             return null;
         }
@@ -77,7 +77,7 @@ export class LanguageContentManager {
     }
 
 
-        public static setRewardConfig(configRecord:any){
+        public static _fn_afs(configRecord:any){
             if (!configRecord){
                 return null;
             }
@@ -90,7 +90,7 @@ export class LanguageContentManager {
             return configRecord;
         }
 
-    public static getPetConfigsByType(petType:PetSpeciesType){
+    public static _fn_ja(petType:PetSpeciesType){
         if (LanguageContentManager.petCatConfig.length == 0){
             for (let petConfigIndex = 0; petConfigIndex < this.petConfigs.length; petConfigIndex++) {
                 const petConfig:PetConfigRecord = this.petConfigs[petConfigIndex];
@@ -110,7 +110,7 @@ export class LanguageContentManager {
     }
 
 
-    public static getDesStrById(id:number){
+    public static _fn_gr(id:number){
         if (id == 0){
             return "";
         }
@@ -127,11 +127,11 @@ export class LanguageContentManager {
         return str.replace(/\\n/g, "\n");
     }
 
-    public static getShopItemData(id:number){
-        return LanguageContentManager.getConfigDataById(id, this.itemConfigs);
+    public static _fn_le(id:number){
+        return LanguageContentManager._fn_gj(id, this.itemConfigs);
     }
 
-    public static getItemNumById(id:number):number{
+    public static _fn_hy(id:number):number{
         for (let bagIndex = 0; bagIndex < GameRuntimeData.saveData.backList.length; bagIndex++) {
             let backpackRecord = GameRuntimeData.saveData.backList[bagIndex];
             if (backpackRecord.id == id){
@@ -141,7 +141,7 @@ export class LanguageContentManager {
         return 0;
     }
 
-    public static getTaskDataById(id:number):any{
+    public static _fn_mi(id:number):any{
         for (let taskConfigIndex = 0; taskConfigIndex < LanguageContentManager.taskConfig.length; taskConfigIndex++) {
             let taskConfigRecord = LanguageContentManager.taskConfig[taskConfigIndex];
             if (taskConfigRecord.id == id){
@@ -152,7 +152,7 @@ export class LanguageContentManager {
     }
 
 
-    public static loadImage(url: string, spr:Sprite) {
+    public static _fn_rj(url: string, spr:Sprite) {
         if (url == "" || url == undefined || url == LanguageContentManager.itemBaseUrl){
             return;
         }
@@ -166,20 +166,20 @@ export class LanguageContentManager {
     }
 
 
-    public static loadImageById(id:number, spr:Sprite) {
-        let itemCfg:ItemConfigRecord = LanguageContentManager.getConfigDataById(id, this.itemConfigs);
+    public static _fn_rk(id:number, spr:Sprite) {
+        let itemCfg:ItemConfigRecord = LanguageContentManager._fn_gj(id, this.itemConfigs);
         if (!itemCfg){
             console.log("dont have:  " + id);
         }
         let url = LanguageContentManager.itemBaseUrl + itemCfg.iconUrl;
-        LanguageContentManager.loadImage(url, spr);
+        LanguageContentManager._fn_rj(url, spr);
     }
 
-    public static roundToTwoDecimals(num: number, num2:number = 100): number {
+    public static _fn_ack(num: number, num2:number = 100): number {
         return Math.floor(num * num2) / num2;
     }
 
-    public static getCoinNumString(coinNum:number = 0, type:number = 1){
+    public static _fn_gh(coinNum:number = 0, type:number = 1){
         let displayCoinAmount = coinNum;
         if (displayCoinAmount == 0){
             displayCoinAmount = GameRuntimeData.saveData.coin;
@@ -192,14 +192,14 @@ export class LanguageContentManager {
             unitIndex = 1
             num1 = 10000;
         }else{
-            return LanguageContentManager.roundToTwoDecimals(displayCoinAmount, type == 2?1000:100).toString()
+            return LanguageContentManager._fn_ack(displayCoinAmount, type == 2?1000:100).toString()
         }
-        displayCoinAmount = Number(LanguageContentManager.roundToTwoDecimals(displayCoinAmount/num1).toString());
+        displayCoinAmount = Number(LanguageContentManager._fn_ack(displayCoinAmount/num1).toString());
         let  formattedCoinAmount = displayCoinAmount.toFixed(2)
         return formattedCoinAmount + units[unitIndex];
     }
 
-    public static getCoinNumByType(type:number){
+    public static _fn_gg(type:number){
         let coinAmount:number = 0
         if (type == WalletCoinType.coin1){
             coinAmount = GameRuntimeData.saveData.coin2;
@@ -214,7 +214,7 @@ export class LanguageContentManager {
     }
 
 
-    private static getTaskInfoState(id:number, isLine:boolean =false):TaskProgressRecord{
+    private static _fn_mj(id:number, isLine:boolean =false):TaskProgressRecord{
         if (isLine){
             for (let taskStateIndex = 0; taskStateIndex < GameRuntimeData.severData.taskMainStatetList.length; taskStateIndex++) {
                 const mainTaskState = GameRuntimeData.severData.taskMainStatetList[taskStateIndex];
@@ -236,8 +236,8 @@ export class LanguageContentManager {
     }
 
 
-    public static getTaskState(id:number, isLine:boolean =false):number{
-        let taskState:TaskProgressRecord = LanguageContentManager.getTaskInfoState(id, isLine);
+    public static _fn_ml(id:number, isLine:boolean =false):number{
+        let taskState:TaskProgressRecord = LanguageContentManager._fn_mj(id, isLine);
         if (!taskState){
             return 1;
         }
@@ -250,11 +250,11 @@ export class LanguageContentManager {
         return 1;
     }
 
-    public static playSound(index:number = 0){
+    public static _fn_xc(index:number = 0){
         GameEventManager.eventTarget.emit(GameEventManager.EEventName.PLAY_SOUND_INDEX, index)
     }
 
-    public static truncateString(str: string, maxLength: number = 15, type:number = 1): string {
+    public static _fn_ajd(str: string, maxLength: number = 15, type:number = 1): string {
         let showStr:string = "";
         if (!str){
             return "";
@@ -270,8 +270,8 @@ export class LanguageContentManager {
         return showStr
     }
 
-    public static copyText(str:string){
-        LanguageContentManager.playSound();
+    public static _fn_dr(str:string){
+        LanguageContentManager._fn_xc();
         if (navigator.clipboard) {
             navigator.clipboard.writeText(str)
                 .then(() => {
@@ -289,7 +289,7 @@ export class LanguageContentManager {
     }
 
 
-    public static getShowCharacterCon(petData:PetProfileRecord):string{
+    public static _fn_lf(petData:PetProfileRecord):string{
         let str:string = ""
         for (let traitIndex = 0; traitIndex < petData.characteristics.length; traitIndex++) {
             const petTrait = petData.characteristics[traitIndex];
@@ -308,7 +308,7 @@ export class LanguageContentManager {
     }
 
 
-    public static getPetValueSumCon(valType:ItemValType):[number, number]{
+    public static _fn_jd(valType:ItemValType):[number, number]{
         let currentValue:number = 0;
         let totalValue:number = 0;
         for (let petIndex = 0; petIndex < GameRuntimeData.severData.petList.length; petIndex++) {
@@ -329,7 +329,7 @@ export class LanguageContentManager {
     }
 
 
-    public static getItemValByType(item:ItemConfigRecord, valType:number){
+    public static _fn_ic(item:ItemConfigRecord, valType:number){
 
         let valueTypes = JSON.parse(item.val_type.toString());
         for (let valueIndex = 0; valueIndex < valueTypes.length; valueIndex++) {
@@ -344,10 +344,10 @@ export class LanguageContentManager {
     }
 
 
-    public static getItemCfgsByType(types:number){
+    public static _fn_hx(types:number){
         let itemConfigs:ItemConfigRecord[] = [];
         for (let itemConfigIndex = 0; itemConfigIndex < this.itemConfigs.length; itemConfigIndex++) {
-            const itemConfig:ItemConfigRecord = LanguageContentManager.setRewardConfig(this.itemConfigs[itemConfigIndex]);
+            const itemConfig:ItemConfigRecord = LanguageContentManager._fn_afs(this.itemConfigs[itemConfigIndex]);
             if (itemConfig.types == types){
                 itemConfigs.push(itemConfig);
             }
@@ -358,7 +358,7 @@ export class LanguageContentManager {
 
 
 
-    public static getAdCountById(propId:number):number{
+    public static _fn_fh(propId:number):number{
         for (let adPropIndex = 0; adPropIndex < playerDataStore.adProps.length; adPropIndex++) {
             let adPropRecord = playerDataStore.adProps[adPropIndex];
             if (adPropRecord && adPropRecord.prop_id == propId){

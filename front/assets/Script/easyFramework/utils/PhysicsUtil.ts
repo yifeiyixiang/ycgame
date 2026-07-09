@@ -29,18 +29,18 @@ export class PhysicsUtil {
 
     public get totalTime():number {return this.m_totalTime}
 
-    public get top():Vec3 {return this.GetPosition(this.m_upTime)}
+    public get top():Vec3 {return this._fn_ji(this.m_upTime)}
 
     public get velocityStart():Vec3 {return this.m_velocityStart}
 
     public get position():Vec3 {return this.m_position}
 
-    public get velocity():Vec3 {return this.GetVelocity(this.m_time)}
+    public get velocity():Vec3 {return this._fn_mw(this.m_time)}
 
     public get time() {return this.m_time;}
     public set time(val) {
         this.m_time = val;
-        this.m_position = this.GetPosition(this.m_time);
+        this.m_position = this._fn_ji(this.m_time);
     }
 
 
@@ -73,7 +73,7 @@ export class PhysicsUtil {
     }
 
 
-    public GetPosition(time:number):Vec3
+    public _fn_ji(time:number):Vec3
     {
         if (time == 0) {
             return this.m_start;
@@ -88,7 +88,7 @@ export class PhysicsUtil {
     }
 
 
-    public GetVelocity(time:number):Vec3
+    public _fn_mw(time:number):Vec3
     {
         if (time == 0) return this.m_velocityStart;
         let dYVec3=new Vec3(0+this.m_velocityStart.x, this.m_velocityStart.y +this.m_velocityStart.y + (this.m_gravity * time), this.m_velocityStart.z)

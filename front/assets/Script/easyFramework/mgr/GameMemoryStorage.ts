@@ -32,7 +32,7 @@ export default class GameMemoryStorage {
 
     public static setItem(key: string, value: string) {
         this.memory[key] = value + "";
-        sys.localStorage.setItem(key, this.encrypt(value));
+        sys.localStorage.setItem(key, this._fn_em(value));
     }
 
     public static removeItem(key: string) {
@@ -56,7 +56,7 @@ export default class GameMemoryStorage {
         return keys;
     }
 
-    public static encrypt(content: string) {
+    public static _fn_em(content: string) {
         return content
 
 
@@ -71,7 +71,7 @@ export default class GameMemoryStorage {
 
     }
 
-    public static decrypt(content: string) {
+    public static _fn_ef(content: string) {
         return content
 
 

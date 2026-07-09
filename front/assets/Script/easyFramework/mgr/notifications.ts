@@ -94,7 +94,7 @@ export class notifications {
 
 
 
-	public offTarget(target: Object) {
+	public _fn_sk(target: Object) {
 		for (let type in this._eventMap) {
 			if (this._eventMap.hasOwnProperty(type)) {
 				let eventList: Array<any> = this._eventMap[type];

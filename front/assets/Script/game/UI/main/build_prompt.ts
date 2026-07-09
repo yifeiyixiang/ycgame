@@ -52,24 +52,24 @@ export class BuildPromptDialogController extends BaseView {
     isBtnActive: boolean = false
 
     start() {
-        UtilPub.breathScale(this.starNode, 1.1)
-        UtilPub.breathScale(this.pop)
+        UtilPub._fn_as(this.starNode, 1.1)
+        UtilPub._fn_as(this.pop)
         this.bindButton(this.btnClose, () => {
             this.close()
         })
 
         this.bindButton(this.gift, () => {
 
-            let roomData = TableDataService.ins().getTableValueByID(Const.Tables.scene_room, this.sceneItemData.room)
-            let pos = UtilPub.convertToWorldSpace(this.gift)
-            UiLayerService.instance.showDialog(Const.Dialogs.RewardPopupItemController, { RewardItemRecord: roomData.resAll, pos: pos })
+            let roomData = TableDataService.ins()._fn_ly(Const.Tables.scene_room, this.sceneItemData.room)
+            let pos = UtilPub._fn_dp(this.gift)
+            UiLayerService.instance._fn_ahg(Const.Dialogs.RewardPopupItemController, { RewardItemRecord: roomData.resAll, pos: pos })
         })
 
         this.bindButton(this.btnBuild, this.onClickBtnBuild);
 
         this.bindButton(this.goToMergeBoard, () => {
             this.close()
-            UiLayerService.instance.showDialog(Const.Dialogs.MergeBoardLayer)
+            UiLayerService.instance._fn_ahg(Const.Dialogs.MergeBoardLayer)
         })
 
 
@@ -77,21 +77,21 @@ export class BuildPromptDialogController extends BaseView {
             let name = trackEntry.animation ? trackEntry.animation.name : '';
             if (name == "animation") {
 
-                let handIndex = mergeBoardStateStore.getHandIndex();
+                let handIndex = mergeBoardStateStore._fn_hj();
                 if (handIndex == handIndexs.buildCashDesk) {
-                    mergeBoardStateStore.addHandIndex();
-                    mergeBoardStateStore.addHandIndex();
-                    mergeBoardStateStore.closeHandLayer();
+                    mergeBoardStateStore._fn_e();
+                    mergeBoardStateStore._fn_e();
+                    mergeBoardStateStore._fn_df();
                 }
 
                 this.emit(GD.event.chgGreenStar)
 
-                AudioPlaybackService.instance.playSound(Const.Audio.flash_show)
-                let script = UtilScene.getSceneItemNodeById(this.sceneItemData.id)!
+                AudioPlaybackService.instance._fn_xc(Const.Audio.flash_show)
+                let script = UtilScene._fn_kv(this.sceneItemData.id)!
 
 
                 if (this.type != GBuildType.room) {
-                    this.emit(GD.event.popOpsWindow, UtilScene.getSceneItemNodeById(this.sceneItemData.id)!.node)
+                    this.emit(GD.event.popOpsWindow, UtilScene._fn_kv(this.sceneItemData.id)!.node)
 
                     this.addPrefab(Const.Prefabs.FlashStarController, script.node, (itemNode: any) => {
                         itemNode.getComponent(FlashStarController).init()
@@ -99,9 +99,9 @@ export class BuildPromptDialogController extends BaseView {
 
                 }
 
-                if (mergeBoardStateStore.isHandDone()) {
+                if (mergeBoardStateStore._fn_px()) {
                     this.scheduleOnce(() => {
-                        UtilScene.setSceneItemAni(script.node, () => {
+                        UtilScene._fn_afy(script.node, () => {
 
                         })
                     }, 0.2)
@@ -112,10 +112,10 @@ export class BuildPromptDialogController extends BaseView {
         });
     }
 
-    setScript(script: GISceneItemParent, skin: number) {
+    _fn_agc(script: GISceneItemParent, skin: number) {
         script.lockState = GLockState.unlock
         script.skin = skin
-        SceneData.ins.setSceneItem(UtilScene.getSceneData(script))
+        SceneData.ins._fn_afx(UtilScene._fn_kq(script))
         script.switchIcon(skin)
         this.emit(GD.event.chgGreenStar)
     }
@@ -126,10 +126,10 @@ export class BuildPromptDialogController extends BaseView {
         this.id = args.id
         this.type = args.type
 
-        this.sceneItemData = TableDataService.ins().getTableValueByID(Const.Tables.scene_item, this.id)
-        let roomData = TableDataService.ins().getTableValueByID(Const.Tables.scene_room, this.sceneItemData.room)
+        this.sceneItemData = TableDataService.ins()._fn_ly(Const.Tables.scene_item, this.id)
+        let roomData = TableDataService.ins()._fn_ly(Const.Tables.scene_room, this.sceneItemData.room)
 
-        let itemSkinData = TableDataService.ins().getTableValueByID(Const.Tables.scene_skin, this.sceneItemData.skin)
+        let itemSkinData = TableDataService.ins()._fn_ly(Const.Tables.scene_skin, this.sceneItemData.skin)
 
         this.titleLabel.string = roomData.name
         this.starLabel.string = playerDataStore.greenStar + ""
@@ -139,7 +139,7 @@ export class BuildPromptDialogController extends BaseView {
 
         let val = 0
         if (this.type != GBuildType.room) {
-            val = UtilScene.calcRoomCompletionRatio(this.sceneItemData.room)
+            val = UtilScene._fn_aw(this.sceneItemData.room)
         }
         this.roomBar.progress = val
         this.roomBarLabel.string = Math.round(val * 100) + "%"
@@ -181,23 +181,23 @@ export class BuildPromptDialogController extends BaseView {
         this.btnBuild.active = isShowBuild
         this.goToMergeBoard.active = !isShowBuild
 
-        let handIndex = mergeBoardStateStore.getHandIndex();
+        let handIndex = mergeBoardStateStore._fn_hj();
         if (handIndex == handIndexs.buildCashDesk) {
             let obj: any = {};
-            obj.id = mergeBoardStateStore.getHandIndex() + 1;
+            obj.id = mergeBoardStateStore._fn_hj() + 1;
             obj.node = this.btnBuild;
             obj.delayTime = 0.5;
-            UiLayerService.instance.showDialog(Const.Dialogs.HandLayer, obj);
+            UiLayerService.instance._fn_ahg(Const.Dialogs.HandLayer, obj);
         }
 
 
 
-        let skinData = TableDataService.ins().getTableValueByID(Const.Tables.scene_skin, this.sceneItemData.unlockSkin)
-        UtilScene.setSkinIcon(this.icon, skinData)
+        let skinData = TableDataService.ins()._fn_ly(Const.Tables.scene_skin, this.sceneItemData.unlockSkin)
+        UtilScene._fn_agh(this.icon, skinData)
     }
 
     close() {
-        UiLayerService.instance.hideDialog(this.dialogPath)
+        UiLayerService.instance._fn_nk(this.dialogPath)
     }
 
     onClickBtnBuild() {
@@ -208,14 +208,14 @@ export class BuildPromptDialogController extends BaseView {
 
         if (this.type == GBuildType.room) {
 
-            let roomData = TableDataService.ins().getTableValueByID(Const.Tables.scene_room, this.sceneItemData.room)
+            let roomData = TableDataService.ins()._fn_ly(Const.Tables.scene_room, this.sceneItemData.room)
             star = roomData.stars.split(",")[1]
         }
 
-        if (playerDataStore.checkAndUseGreenStar(star)) {
+        if (playerDataStore._fn_bi(star)) {
             this.isBtnActive = true
-            AudioPlaybackService.instance.playSound(Const.Audio.star_touch)
-            mergeBoardStateStore.addManagerVal(Const.ManagerTypes.buildCount);
+            AudioPlaybackService.instance._fn_xc(Const.Audio.star_touch)
+            mergeBoardStateStore._fn_h(Const.ManagerTypes.buildCount);
 
             this.spineAni.node.active = true
             this.spineAni.setAnimation(0, "animation", false)
@@ -223,15 +223,15 @@ export class BuildPromptDialogController extends BaseView {
 
             if (this.type == GBuildType.room) {
 
-                SceneData.ins.setRoomLockInfoById(this.sceneItemData.room, GSceneRoomState.unlock)
-                UtilScene.initRoomById(this.sceneItemData.room).then(() => {
+                SceneData.ins._fn_afv(this.sceneItemData.room, GSceneRoomState.unlock)
+                UtilScene._fn_ot(this.sceneItemData.room).then(() => {
                 })
 
             } else {
 
-                let script = UtilScene.getSceneItemNodeById(this.sceneItemData.id)!
-                SceneData.ins.setSceneSkinById(this.sceneItemData.unlockSkin, GSceneSkinState.gotted)
-                this.setScript(script, this.sceneItemData.unlockSkin)
+                let script = UtilScene._fn_kv(this.sceneItemData.id)!
+                SceneData.ins._fn_agb(this.sceneItemData.unlockSkin, GSceneSkinState.gotted)
+                this._fn_agc(script, this.sceneItemData.unlockSkin)
             }
             this.emit(GD.event.goToBuildScene, this.id, this.type)
 
@@ -240,11 +240,11 @@ export class BuildPromptDialogController extends BaseView {
             this.emit(GD.event.updateMoney);
 
 
-            mergeBoardStateStore.addPropNum(this.sceneItemData.reward[0], this.sceneItemData.reward[1], v3(), v3(), true)
+            mergeBoardStateStore._fn_m(this.sceneItemData.reward[0], this.sceneItemData.reward[1], v3(), v3(), true)
 
 
             if (this.type != GBuildType.room) {
-                let val = UtilScene.calcRoomCompletionRatio(this.sceneItemData.room)
+                let val = UtilScene._fn_aw(this.sceneItemData.room)
                 tween(this.roomBar).to(0.3, { progress: val }).start()
                 this.roomBarLabel.string = Math.round(val * 100) + "%"
             }

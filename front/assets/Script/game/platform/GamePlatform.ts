@@ -12,7 +12,7 @@ export class GamePlatform {
     private static rewardedVideoAd: any = null;
     private static currentRewardedVideoAdUnitId: string = "";
 
-    private static getWxApi() {
+    private static _fn_na() {
         if (!WECHAT || typeof wx === "undefined") {
             return null;
         }
@@ -23,20 +23,20 @@ export class GamePlatform {
     public static init() {
     }
 
-    public static track(eventName: string) {
+    public static _fn_aja(eventName: string) {
         void eventName;
     }
 
-    public static showRewardVideo(eventName: string, cb: (state: RewardResult) => void) {
+    public static _fn_ahr(eventName: string, cb: (state: RewardResult) => void) {
         void eventName;
 
-        const wxApi = this.getWxApi();
+        const wxApi = this._fn_na();
         if (!wxApi) {
             cb(1);
             return;
         }
 
-        const ad = this.getRewardedVideoAd(wxApi);
+        const ad = this._fn_kd(wxApi);
         if (!ad) {
             cb(0);
             return;
@@ -45,7 +45,7 @@ export class GamePlatform {
         let finished = false;
         let onClose: (res: any) => void = null!;
         let onError: (err: any) => void = null!;
-        const finish = (state: RewardResult) => {
+        const _fn_et = (state: RewardResult) => {
             if (finished) {
                 return;
             }
@@ -61,11 +61,11 @@ export class GamePlatform {
         };
 
         onClose = (res: any) => {
-            finish(!res || res.isEnded ? 1 : 2);
+            _fn_et(!res || res.isEnded ? 1 : 2);
         };
         onError = (err: any) => {
             console.warn("rewarded video error:", err);
-            finish(0);
+            _fn_et(0);
         };
 
         if (ad.onClose) {
@@ -75,7 +75,7 @@ export class GamePlatform {
             ad.onError(onError);
         }
 
-        const showAd = () => {
+        const _fn_agz = () => {
             try {
                 const showTask = ad.show();
                 if (showTask && showTask.catch) {
@@ -95,13 +95,13 @@ export class GamePlatform {
 
         const loadTask = ad.load ? ad.load() : null;
         if (loadTask && loadTask.then) {
-            loadTask.then(showAd).catch(onError);
+            loadTask.then(_fn_agz).catch(onError);
         } else {
-            showAd();
+            _fn_agz();
         }
     }
 
-    private static getRewardedVideoAd(wxApi: any) {
+    private static _fn_kd(wxApi: any) {
         if (!wxApi.createRewardedVideoAd) {
             return null;
         }
@@ -126,8 +126,8 @@ export class GamePlatform {
         return this.rewardedVideoAd;
     }
 
-    public static share(params: any) {
-        const wxApi = this.getWxApi();
+    public static _fn_agw(params: any) {
+        const wxApi = this._fn_na();
         if (!wxApi || !wxApi.shareAppMessage) {
             return;
         }
@@ -140,8 +140,8 @@ export class GamePlatform {
         wxApi.shareAppMessage(params || {});
     }
 
-    public static getLaunchQuery() {
-        const wxApi = this.getWxApi();
+    public static _fn_ie() {
+        const wxApi = this._fn_na();
         if (!wxApi) {
             return null;
         }
@@ -150,8 +150,8 @@ export class GamePlatform {
         return options && options.query ? options.query : null;
     }
 
-    public static getWechatAppId(): string {
-        const wxApi = this.getWxApi();
+    public static _fn_mz(): string {
+        const wxApi = this._fn_na();
         if (!wxApi || !wxApi.getAccountInfoSync) {
             return "";
         }
@@ -165,8 +165,8 @@ export class GamePlatform {
         }
     }
 
-    public static requestWechatLoginCode(): Promise<string> {
-        const wxApi = this.getWxApi();
+    public static _fn_abi(): Promise<string> {
+        const wxApi = this._fn_na();
         if (!wxApi || !wxApi.login) {
             return Promise.reject(new Error("WeChat login unavailable"));
         }
@@ -185,14 +185,14 @@ export class GamePlatform {
         });
     }
 
-    public static requestWechatUserInfo(): Promise<any> {
-        const wxApi = this.getWxApi();
+    public static _fn_abj(): Promise<any> {
+        const wxApi = this._fn_na();
         if (!wxApi) {
             return Promise.reject(new Error("WeChat API unavailable"));
         }
 
         return new Promise((resolve, reject) => {
-            const normalize = (res: any) => {
+            const _fn_sg = (res: any) => {
                 const info = res && res.userInfo ? res.userInfo : res;
                 if (info && res && res.userInfo) {
                     const normalized: any = {};
@@ -207,8 +207,8 @@ export class GamePlatform {
                 resolve(info);
             };
 
-            const requestLegacyUserInfo = () => {
-                const requestByButton = () => {
+            const _fn_abh = () => {
+                const _fn_abf = () => {
                     if (!wxApi.createUserInfoButton || !wxApi.getSystemInfoSync) {
                         reject(new Error("WeChat user info button unavailable"));
                         return;
@@ -241,7 +241,7 @@ export class GamePlatform {
                         }
 
                         if (res && res.errMsg === "getUserInfo:ok") {
-                            normalize(res);
+                            _fn_sg(res);
                         } else {
                             reject(res);
                         }
@@ -249,24 +249,24 @@ export class GamePlatform {
                     button.show();
                 };
 
-                const requestDirectly = () => {
+                const _fn_abg = () => {
                     if (wxApi.getUserInfo) {
                         wxApi.getUserInfo({
-                            success: normalize,
-                            fail: requestByButton,
+                            success: _fn_sg,
+                            fail: _fn_abf,
                         });
                         return;
                     }
 
-                    requestByButton();
+                    _fn_abf();
                 };
 
                 wxApi.getSetting({
                     success: (res: any) => {
                         if (res && res.authSetting && res.authSetting["scope.userInfo"]) {
-                            requestDirectly();
+                            _fn_abg();
                         } else {
-                            requestByButton();
+                            _fn_abf();
                         }
                     },
                     fail: reject,
@@ -277,11 +277,11 @@ export class GamePlatform {
                 wxApi.getUserProfile({
                     desc: "Complete your game profile",
                     lang: "zh_CN",
-                    success: normalize,
+                    success: _fn_sg,
                     fail: (err: any) => {
                         const errMsg = err && err.errMsg ? String(err.errMsg).toLowerCase() : "";
                         if (errMsg.indexOf("not supported") >= 0 || errMsg.indexOf("unsupported") >= 0) {
-                            requestLegacyUserInfo();
+                            _fn_abh();
                             return;
                         }
                         reject(err);
@@ -290,11 +290,11 @@ export class GamePlatform {
                 return;
             }
 
-            requestLegacyUserInfo();
+            _fn_abh();
         });
     }
 
-    public static initNativeRewardCallbacks(success: Function, fail: Function) {
+    public static _fn_ol(success: Function, fail: Function) {
         if (!NATIVE) {
             return;
         }
@@ -306,23 +306,23 @@ export class GamePlatform {
         window.videoFailCallBack = () => fail();
     }
 
-    public static loginGoogle() {
+    public static _fn_rx() {
         if (NATIVE) {
             native.reflection.callStaticMethod("com/cocos/game/AppActivity", "onClickGoogleSignIn", "(Ljava/lang/String;)V", "---google");
         }
     }
 
-    public static loginFacebook() {
+    public static _fn_rv() {
         if (NATIVE) {
             native.reflection.callStaticMethod("com/cocos/game/AppActivity", "onClickFacebookSignIn", "(Ljava/lang/String;)V", "---facebook");
         }
     }
 
-    public static checkH5DownUrl() {
+    public static _fn_bt() {
     }
 
-    public static checkWechatUpdate() {
-        const wxApi = this.getWxApi();
+    public static _fn_co() {
+        const wxApi = this._fn_na();
         if (!wxApi || !wxApi.getUpdateManager) {
             return;
         }

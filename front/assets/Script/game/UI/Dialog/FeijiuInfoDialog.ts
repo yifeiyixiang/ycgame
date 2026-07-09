@@ -15,23 +15,23 @@ export class FeijiuInfoDialog extends BaseView {
 
     show(args: any) {
         super.show(args)
-        this.initInfo()
+        this._fn_ob()
     }
 
     start() {
-        this.bindButton(find("root/btnClose", this.node)!, this.popClose)
+        this.bindButton(find("root/btnClose", this.node)!, this._fn_xe)
     }
 
-    initInfo() {
+    _fn_ob() {
         let data = this._layerData.roleData
-        this.setSpriteFrame(this.icon.getComponent(Sprite)!, Const.resPath.roleIcon + data.icon, undefined, 300)
+        this._fn_agk(this.icon.getComponent(Sprite)!, Const.resPath.roleIcon + data.icon, undefined, 300)
 
-        let scene_skin = TableDataService.ins().getTableValueByID(Const.Tables.scene_skin, data.skin)
+        let scene_skin = TableDataService.ins()._fn_ly(Const.Tables.scene_skin, data.skin)
 
         let tmd = find("root/di1/tmd", this.node)!
         find("limitLabel", tmd)!.getComponent(Label)!.string = "购买【" + scene_skin.name + "】"
 
-        if (SceneData.ins.getSceneSkinById(data.skin) == GSceneSkinState.gotted) {
+        if (SceneData.ins._fn_ky(data.skin) == GSceneSkinState.gotted) {
             this.icon.getComponent(Sprite)!.color = Const.color.white
             this.icon.getComponent(UIOpacity)!.opacity = 255
             find("root/titl2/Label", this.node)!.getComponent(Label)!.string = data.name

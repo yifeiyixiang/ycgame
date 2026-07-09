@@ -33,7 +33,7 @@ export class PropItemInfo extends BaseView {
                 item.getComponent(PropItem).setData(this._propdata.id, PropItemFlag.ShowLevel | PropItemFlag.HideName).setBg(this.iconbg)
             })
         } else {
-            let xilie = TableDataService.ins().getTableValuesByType(Const.Tables.prop, "type", this._propdata.type)
+            let xilie = TableDataService.ins()._fn_mb(Const.Tables.prop, "type", this._propdata.type)
             if (xilie.length > 0) {
                 let parent = xilie.length >= 4 ? this.curItemGrid : this.curItem
                 let maxSize = xilie.length >= 4 ? 115 : 170
@@ -55,12 +55,12 @@ export class PropItemInfo extends BaseView {
             }
         }
 
-        this.initPropList(this._propdata)
+        this._fn_oo(this._propdata)
     }
 
     changePropInfo(event: any, id: number) {
-        let propData = TableDataService.ins().getTableValueByID(Const.Tables.prop, id)
-        this.initPropList(propData)
+        let propData = TableDataService.ins()._fn_ly(Const.Tables.prop, id)
+        this._fn_oo(propData)
 
         let children = this.curItemGrid.children
         children.forEach(element => {
@@ -83,7 +83,7 @@ export class PropItemInfo extends BaseView {
         });
     }
 
-    initPropList(propData: any) {
+    _fn_oo(propData: any) {
         this.nameLab.string = propData.name
         this.listLayer.removeAllChildren()
         if (propData.atom != "" && propData.atom) {

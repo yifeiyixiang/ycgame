@@ -122,15 +122,15 @@ export class ScrollViewUtil extends Component {
         this.startPosY = contentHeight * (1 - this.contentTransform.anchorY) - this.itemUIHeight * (1 - this.itemUITransform.anchorY) - this.paddingTop;
 
 
-        this.node.on('scrolling', this.onScrolling, this);
+        this.node.on('scrolling', this._fn_vh, this);
 
 
         this.frameUpdateArr = [];
 
-        this.addRenderChildBatch();
+        this._fn_n();
     }
 
-    public addRenderChildBatch() {
+    public _fn_n() {
         if (this.renderChildBatch) {
             return;
         }
@@ -138,7 +138,7 @@ export class ScrollViewUtil extends Component {
     }
 
 
-    onScrolling() {
+    _fn_vh() {
         if (this.itemArr.length <= 0) {
             return;
         }
@@ -187,24 +187,24 @@ export class ScrollViewUtil extends Component {
         if (start != this.startIndex || stop != this.stopIndex) {
             this.startIndex = start;
             this.stopIndex = stop;
-            this.renderItemArr();
+            this._fn_aam();
         }
     }
 
 
-    renderItemArr() {
+    _fn_aam() {
         let item = null;
 
         let hideIndex = this.startIndex * this.changeNum;
         for (let i = 0; i < hideIndex; i++) {
             item = this.itemArr[i];
-            this.recycleItem(item);
+            this._fn_yq(item);
         }
 
         hideIndex = (this.stopIndex + 1) * this.changeNum;
         for (let i = hideIndex; i < this.itemArr.length; i++) {
             item = this.itemArr[i];
-            this.recycleItem(item);
+            this._fn_yq(item);
         }
         let isupdate = false
 
@@ -226,13 +226,13 @@ export class ScrollViewUtil extends Component {
                 this.frameUpdateArr.push(item);
             }
         }
-        this.startFrameUpdate();
+        this._fn_aih();
         if (isupdate && this.reIndex)
             this.updateItemZindex()
     }
 
 
-    createNode() {
+    _fn_dv() {
         let node = null;
         if (this.itemUIFreeArr.length > 0) {
             node = this.itemUIFreeArr.shift();
@@ -242,13 +242,13 @@ export class ScrollViewUtil extends Component {
         node.parent = this.contentNode;
 
         if (this.renderChildBatch) {
-            this.renderChildBatch.addRootItemNode(node);
+            this.renderChildBatch._fn_o(node);
         }
 
         return node;
     }
 
-    startFrameUpdate() {
+    _fn_aih() {
         let startTime = new Date().getTime();
         while (true) {
             if (!this.frameUpdateArr || this.frameUpdateArr.length <= 0) {
@@ -262,7 +262,7 @@ export class ScrollViewUtil extends Component {
             }
 
             if (!item.node) {
-                item.node = this.createNode();
+                item.node = this._fn_dv();
             }
             if (!item.node.active) {
                 item.node.active = true;
@@ -285,13 +285,13 @@ export class ScrollViewUtil extends Component {
                 }).start();
                 item.node.showTween = tn;
                 this.scheduleOnce(() => {
-                    this.startFrameUpdate();
+                    this._fn_aih();
                 }, 0.05);
                 break;
             } else {
                 if (new Date().getTime() - startTime >= this.frameTime) {
 
-                    this.scheduleOnce(this.startFrameUpdate.bind(this));
+                    this.scheduleOnce(this._fn_aih.bind(this));
                     break;
                 }
             }
@@ -299,7 +299,7 @@ export class ScrollViewUtil extends Component {
     }
 
 
-    recycleItem(item: any) {
+    _fn_yq(item: any) {
         if (item.node && isValid(item.node)) {
             if (this.itemUIFreeArr.indexOf(item.node) == -1) {
                 this.itemUIFreeArr.push(item.node);
@@ -312,14 +312,14 @@ export class ScrollViewUtil extends Component {
     }
 
 
-    clearAllItems() {
+    _fn_cs() {
         for (let item of this.itemArr) {
-            this.recycleItem(item);
+            this._fn_yq(item);
         }
     }
 
 
-    initItem(data: any, index: number) {
+    _fn_oc(data: any, index: number) {
         let item = {
             node: null,
             data: data,
@@ -331,7 +331,7 @@ export class ScrollViewUtil extends Component {
         return item;
     }
 
-    refreshItemIndex(item: any, index: number) {
+    _fn_zg(item: any, index: number) {
         item.index = index;
         if (item.node) {
             item.node.index = index;
@@ -352,7 +352,7 @@ export class ScrollViewUtil extends Component {
         this.frameUpdateArr = [];
         this.unscheduleAllCallbacks();
 
-        this.clearAllItems();
+        this._fn_cs();
         this.itemArr = [];
 
         if (!dataArr) {
@@ -362,7 +362,7 @@ export class ScrollViewUtil extends Component {
         this.refreshItemFunc = refreshItemFunc;
         for (let i = 0; i < dataArr.length; i++) {
             let data = dataArr[i];
-            let item = this.initItem(data, i);
+            let item = this._fn_oc(data, i);
             this.itemArr.push(item);
         }
 
@@ -371,11 +371,11 @@ export class ScrollViewUtil extends Component {
             this.maxLines = 1;
         }
 
-        this.refreshItemArr(0, resetPos);
+        this._fn_zf(0, resetPos);
     }
 
 
-    layoutItemArr(start: number) {
+    _fn_rc(start: number) {
         if (this.itemArr.length <= 0) {
             return;
         }
@@ -395,7 +395,7 @@ export class ScrollViewUtil extends Component {
     }
 
 
-    resizeContentNode() {
+    _fn_abs() {
         if (!this.contentNode || !this.itemUI) {
             return;
         }
@@ -415,7 +415,7 @@ export class ScrollViewUtil extends Component {
     }
 
 
-    resizeContentNodeAuto() {
+    _fn_abt() {
         if (!this.contentNode || !this.itemUI) {
             return;
         }
@@ -438,13 +438,13 @@ export class ScrollViewUtil extends Component {
     }
 
 
-    refreshItemArr(start: number, resetPos: boolean = true) {
+    _fn_zf(start: number, resetPos: boolean = true) {
         if (!this.scrollView) {
             return;
         }
 
-        this.layoutItemArr(start);
-        this.resizeContentNode();
+        this._fn_rc(start);
+        this._fn_abs();
 
         this.startIndex = -1;
         this.stopIndex = -1;
@@ -480,7 +480,7 @@ export class ScrollViewUtil extends Component {
             this.scrollView.scrollToOffset(offset, 0);
         }
 
-        this.onScrolling();
+        this._fn_vh();
     }
 
 
@@ -497,7 +497,7 @@ export class ScrollViewUtil extends Component {
     }
 
 
-    removeByIndex(index: number, resetPos: boolean = false) {
+    _fn_aag(index: number, resetPos: boolean = false) {
         if (index < 0 || index >= this.itemArr.length) {
             console.log("无效的index", index);
             return;
@@ -508,18 +508,18 @@ export class ScrollViewUtil extends Component {
         }
 
         this.itemArr.splice(index, 1);
-        this.recycleItem(item);
+        this._fn_yq(item);
 
 
         for (let i = index; i < this.itemArr.length; i++) {
             let item = this.itemArr[i];
-            this.refreshItemIndex(item, i);
+            this._fn_zg(item, i);
         }
         this.maxLines = Math.ceil(this.itemArr.length / this.changeNum);
         if (this.maxLines < 1) {
             this.maxLines = 1;
         }
-        this.refreshItemArr(index, resetPos);
+        this._fn_zf(index, resetPos);
     }
 
 
@@ -544,7 +544,7 @@ export class ScrollViewUtil extends Component {
     }
 
 
-    insertData(index: number, arr: any, resetPos: boolean = false) {
+    _fn_pm(index: number, arr: any, resetPos: boolean = false) {
         if (!arr || arr.length == 0) {
             console.log("没有要添加的数据");
             return;
@@ -560,12 +560,12 @@ export class ScrollViewUtil extends Component {
 
         for (let i = 0; i < arr.length; i++) {
             let pIndex = index + i;
-            let item = this.initItem(arr[i], pIndex);
+            let item = this._fn_oc(arr[i], pIndex);
             this.itemArr.splice(pIndex, 0, item);
         }
         for (let i = index + arr.length; i < this.itemArr.length; i++) {
             let item = this.itemArr[i];
-            this.refreshItemIndex(item, i);
+            this._fn_zg(item, i);
         }
 
         this.maxLines = Math.ceil(this.itemArr.length / this.changeNum);
@@ -573,17 +573,17 @@ export class ScrollViewUtil extends Component {
             this.maxLines = 1;
         }
 
-        this.refreshItemArr(index, resetPos);
+        this._fn_zf(index, resetPos);
 
     }
 
 
-    pushData(arr: any, resetPos: boolean = false) {
-        this.insertData(this.itemArr.length, arr, resetPos);
+    _fn_xt(arr: any, resetPos: boolean = false) {
+        this._fn_pm(this.itemArr.length, arr, resetPos);
     }
 
 
-    isScrollEnd() {
+    _fn_qu() {
         let maxOffset = this.scrollView.getMaxScrollOffset();
         let offset = this.scrollView.getScrollOffset();
         if (Math.abs(maxOffset.x - offset.x) <= 10 && Math.abs(maxOffset.y - offset.y) <= 10) {
@@ -646,7 +646,7 @@ export class ScrollViewUtil extends Component {
             offset.x = -dx;
             this.scrollView.scrollToOffset(offset, time);
         }
-        this.onScrolling();
+        this._fn_vh();
     }
 
     onDestroy() {
@@ -654,7 +654,7 @@ export class ScrollViewUtil extends Component {
         this.itemArr = [];
         this.frameUpdateArr = [];
         this.refreshItemFunc = null!;
-        this.node.off("scrolling", this.onScrolling, this);
+        this.node.off("scrolling", this._fn_vh, this);
         this.unscheduleAllCallbacks();
     }
 

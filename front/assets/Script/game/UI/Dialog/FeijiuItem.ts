@@ -14,9 +14,9 @@ export class FeijiuItem extends BaseView {
 
     start() {
         let guestConfig = this._layerData.roleData
-        this.setSpriteFrame(this.icon.getComponent(Sprite)!, Const.resPath.roleIcon + guestConfig.icon, undefined, 200)
+        this._fn_agk(this.icon.getComponent(Sprite)!, Const.resPath.roleIcon + guestConfig.icon, undefined, 200)
 
-        if (SceneData.ins.getSceneSkinById(guestConfig.skin) == GSceneSkinState.gotted) {
+        if (SceneData.ins._fn_ky(guestConfig.skin) == GSceneSkinState.gotted) {
             this.icon.getComponent(Sprite)!.color = Const.color.white
             this.icon.getComponent(UIOpacity)!.opacity = 255
             find("roleItembg/name", this.node)!.getComponent(Label)!.string = guestConfig.name
@@ -26,7 +26,7 @@ export class FeijiuItem extends BaseView {
             find("roleItembg/name", this.node)!.getComponent(Label)!.string = "?????"
         }
         this.bindButton(this.node, () => {
-            UiLayerService.instance.showDialog(Const.Dialogs.FeijiuInfoDialog, { roleData: guestConfig });
+            UiLayerService.instance._fn_ahg(Const.Dialogs.FeijiuInfoDialog, { roleData: guestConfig });
         })
     }
 

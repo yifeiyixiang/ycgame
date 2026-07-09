@@ -22,12 +22,12 @@ export class PropReceive extends BaseView {
 
     initData() {
         if (this._layerData.key == Const.DataKeys.tujianProp) {
-            let propdata = TableDataService.ins().getTableValueByID(Const.Tables.prop, this._layerData.propId)
+            let propdata = TableDataService.ins()._fn_ly(Const.Tables.prop, this._layerData.propId)
             let prop = propdata.reward.split(",")
             this._propdata = propdata
             this._propReward = prop
         } else {
-            let skindata = TableDataService.ins().getTableValueByID(Const.Tables.scene_skin, this._layerData.propId)
+            let skindata = TableDataService.ins()._fn_ly(Const.Tables.scene_skin, this._layerData.propId)
             let prop = skindata.reward.split(",")
             this.node.scale = v3(0.8, 0.8, 1)
             find("root", this.node)!.getComponent(UITransform)!.contentSize = size(200, 200 / 160 * 180)
@@ -36,11 +36,11 @@ export class PropReceive extends BaseView {
         }
 
         if (this._propReward[0] == GoodsType.Coin) {
-            this.setSpriteFrame(this.icon.getComponent(Sprite)!, Const.resPath.common + "icon_coin", undefined, 120)
+            this._fn_agk(this.icon.getComponent(Sprite)!, Const.resPath.common + "icon_coin", undefined, 120)
         } else if (this._propReward[0] == GoodsType.Diamonds) {
-            this.setSpriteFrame(this.icon.getComponent(Sprite)!, Const.resPath.common + "icon_diamond", undefined, 120)
+            this._fn_agk(this.icon.getComponent(Sprite)!, Const.resPath.common + "icon_diamond", undefined, 120)
         } else if (this._propReward[0] == GoodsType.Power) {
-            this.setSpriteFrame(this.icon.getComponent(Sprite)!, Const.resPath.common + "icon_power", undefined, 120)
+            this._fn_agk(this.icon.getComponent(Sprite)!, Const.resPath.common + "icon_power", undefined, 120)
         }
     }
 
@@ -50,18 +50,18 @@ export class PropReceive extends BaseView {
     }
 
     onClickReceive(event: any) {
-        AudioPlaybackService.instance.playSound(Const.Audio.btn)
+        AudioPlaybackService.instance._fn_xc(Const.Audio.btn)
 
         let target = event.target!
         let pos = target.getComponent(UITransform).convertToWorldSpaceAR(v3(0, 0, 0))
-        playerDataStore.setGetPropTujian(this._layerData.propId, TujianState.received, this._layerData.key);
-        playerDataStore.getProp(this._propReward, pos, v3(0, 0, 0))
+        playerDataStore._fn_aes(this._layerData.propId, TujianState.received, this._layerData.key);
+        playerDataStore._fn_jk(this._propReward, pos, v3(0, 0, 0))
         if (this._propReward[0] == GoodsType.Coin) {
-            GamePlatform.track("图鉴-获得金币")
+            GamePlatform._fn_aja("图鉴-获得金币")
         } else if (this._propReward[0] == GoodsType.Diamonds) {
-            GamePlatform.track("图鉴-获得钻石")
+            GamePlatform._fn_aja("图鉴-获得钻石")
         } else if (this._propReward[0] == GoodsType.Power) {
-            GamePlatform.track("图鉴-获得体力")
+            GamePlatform._fn_aja("图鉴-获得体力")
         }
 
         this.node.removeFromParent()

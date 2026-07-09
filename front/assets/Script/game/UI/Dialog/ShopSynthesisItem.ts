@@ -72,11 +72,11 @@ export class ShopSynthesisItem extends BaseView {
 
         let buyTime = 0
         if (data.cdKey > 0) {
-            let privilegeData = TableDataService.ins().getTableValueByKey(Const.Tables.privilege, "key", data.cdKey)
+            let privilegeData = TableDataService.ins()._fn_lz(Const.Tables.privilege, "key", data.cdKey)
             if (data.type == 6) {
-                buyTime = playerDataStore.getReceiveTime(privilegeData.dataKey + itemData[0][0], privilegeData.cdTime)
+                buyTime = playerDataStore._fn_jz(privilegeData.dataKey + itemData[0][0], privilegeData.cdTime)
             } else {
-                buyTime = playerDataStore.getReceiveTime(privilegeData.dataKey + data.id, privilegeData.cdTime)
+                buyTime = playerDataStore._fn_jz(privilegeData.dataKey + data.id, privilegeData.cdTime)
             }
             this._limitTime = privilegeData
         } else {
@@ -96,7 +96,7 @@ export class ShopSynthesisItem extends BaseView {
         let priceIcon = find("btnbg/Layout/prop_diamond1", this.node)!
 
         if (data.recharge && data.recharge > 0) {
-            let rechargeData = TableDataService.ins().getTableValueByID(Const.Tables.recharge, data.recharge)
+            let rechargeData = TableDataService.ins()._fn_ly(Const.Tables.recharge, data.recharge)
             this.priceLab.string = "￥" + rechargeData.cash
             priceIcon.active = false
 
@@ -128,18 +128,18 @@ export class ShopSynthesisItem extends BaseView {
 
             if (this._priceType == PriceType.Diamonds) {
                 priceIcon.active = true
-                this.setSpriteFrame(priceIcon.getComponent(Sprite)!, Const.resPath.icon_diamons, () => { }, 45)
+                this._fn_agk(priceIcon.getComponent(Sprite)!, Const.resPath.icon_diamons, () => { }, 45)
                 this.priceLab.string = "X" + this._priceNum
             } else if (this._priceType == PriceType.Coin) {
                 priceIcon.active = true
-                this.setSpriteFrame(priceIcon.getComponent(Sprite)!, Const.resPath.icon_coin, () => { }, 45)
+                this._fn_agk(priceIcon.getComponent(Sprite)!, Const.resPath.icon_coin, () => { }, 45)
                 this.priceLab.string = "X" + this._priceNum
             } else if (this._priceType == PriceType.Free) {
                 priceIcon.active = false
                 this.priceLab.string = "免费"
             } else if (this._priceType == PriceType.Video) {
                 priceIcon.active = true
-                this.setSpriteFrame(priceIcon.getComponent(Sprite)!, Const.resPath.icon_video, () => { }, 45)
+                this._fn_agk(priceIcon.getComponent(Sprite)!, Const.resPath.icon_video, () => { }, 45)
                 this.priceLab.string = "免费"
             }
 
@@ -147,63 +147,63 @@ export class ShopSynthesisItem extends BaseView {
 
         if (data.id == 18) {
 
-            let hadnIdnex = mergeBoardStateStore.getHandIndex();
+            let hadnIdnex = mergeBoardStateStore._fn_hj();
             if (hadnIdnex == handIndexs.shopbuy) {
-                mergeBoardStateStore.closeHandLayer()
+                mergeBoardStateStore._fn_df()
                 let obj: any = {};
                 obj.id = hadnIdnex;
                 obj.node = this.node;
                 obj.delayTime = 0.5;
-                UiLayerService.instance.showDialog(Const.Dialogs.HandLayer, obj);
+                UiLayerService.instance._fn_ahg(Const.Dialogs.HandLayer, obj);
             }
         }
     }
 
     onClickBuy(event: any) {
-        AudioPlaybackService.instance.playSound(Const.Audio.btn)
+        AudioPlaybackService.instance._fn_xc(Const.Audio.btn)
         let targetPos: any = null
         if (event.target && event.target.parent) {
             targetPos = event.target.parent.getComponent(UITransform).convertToWorldSpaceAR(v3(0, 0, 0))
         }
 
         if (this._priceType == PriceType.Free) {
-            GamePlatform.track("免费领取肥啾存钱罐")
-            this.onBuySuccessCB(targetPos)
+            GamePlatform._fn_aja("免费领取肥啾存钱罐")
+            this._fn_sq(targetPos)
         } else if (this._priceType == PriceType.Video) {
 
-            RewardVideoManager.showVideo("免费获得" + this._layerData.data.typename, () => {
-                this.onBuySuccessCB(targetPos)
+            RewardVideoManager._fn_ahy("免费获得" + this._layerData.data.typename, () => {
+                this._fn_sq(targetPos)
             })
 
         } else if (this._priceType == PriceType.Coin) {
-            if (playerDataStore.checkAndUseCoin(this._priceNum)) {
+            if (playerDataStore._fn_bf(this._priceNum)) {
 
-                this.onBuySuccessCB(targetPos)
+                this._fn_sq(targetPos)
                 this.emit(GD.event.updateMoney)
             } else {
-                this.toast("金币不足")
+                this._fn_aiu("金币不足")
             }
         } else if (this._priceType == PriceType.Diamonds) {
-            if (playerDataStore.checkAndUseDiamonds(this._priceNum)) {
-                this.onBuySuccessCB(targetPos)
+            if (playerDataStore._fn_bg(this._priceNum)) {
+                this._fn_sq(targetPos)
                 this.emit(GD.event.updateMoney)
             } else {
-                this.toast("钻石不足")
+                this._fn_aiu("钻石不足")
             }
         } else if (this._priceType == PriceType.Dollar) {
             console.log("----等待支付接入")
-            this.onBuySuccessCB(targetPos)
+            this._fn_sq(targetPos)
         }
 
     }
 
 
-    onBuySuccessCB(targetPos: any) {
+    _fn_sq(targetPos: any) {
 
-        let hadnIdnex = mergeBoardStateStore.getHandIndex();
+        let hadnIdnex = mergeBoardStateStore._fn_hj();
         if (hadnIdnex == handIndexs.shopbuy) {
-            mergeBoardStateStore.closeHandLayer()
-            mergeBoardStateStore.addHandIndex()
+            mergeBoardStateStore._fn_df()
+            mergeBoardStateStore._fn_e()
         }
         let shopData = this._layerData.data
         let itemData = this._layerData.item
@@ -212,23 +212,23 @@ export class ShopSynthesisItem extends BaseView {
             let item = itemData[index];
             if (this._limitTime) {
                 if (this._layerData.data.type == 6) {
-                    playerDataStore.setReceiveTime(this._limitTime.dataKey + itemData[0][0], this._limitTime.cdTime)
+                    playerDataStore._fn_afo(this._limitTime.dataKey + itemData[0][0], this._limitTime.cdTime)
                 } else {
-                    playerDataStore.setReceiveTime(this._limitTime.dataKey + shopData.id, this._limitTime.cdTime)
+                    playerDataStore._fn_afo(this._limitTime.dataKey + shopData.id, this._limitTime.cdTime)
                 }
             } else {
-                playerDataStore.addPropBuyTime(shopData.id)
+                playerDataStore._fn_l(shopData.id)
             }
-            mergeBoardStateStore.addPropNum(item[0], item[1], targetPos)
+            mergeBoardStateStore._fn_m(item[0], item[1], targetPos)
 
-            let propRow = TableDataService.ins().getTableValueByID(Const.Tables.prop, item[0]);
+            let propRow = TableDataService.ins()._fn_ly(Const.Tables.prop, item[0]);
             if (propRow) {
                 if (this._priceType == PriceType.Coin) {
-                    GamePlatform.track("金币-购买" + propRow.name)
+                    GamePlatform._fn_aja("金币-购买" + propRow.name)
                 } else if (this._priceType == PriceType.Diamonds) {
-                    GamePlatform.track("钻石-购买" + propRow.name)
+                    GamePlatform._fn_aja("钻石-购买" + propRow.name)
                 } else if (this._priceType == PriceType.Free) {
-                    GamePlatform.track("免费领取" + propRow.name)
+                    GamePlatform._fn_aja("免费领取" + propRow.name)
                 }
             }
 

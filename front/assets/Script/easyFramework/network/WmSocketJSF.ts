@@ -21,36 +21,36 @@ export class WmSocketJSF{
 
 
     private static _instance: WmSocketJSF;
-    public static getInstance(): WmSocketJSF {
+    public static _fn_ho(): WmSocketJSF {
         if (!this._instance) {
             this._instance = new WmSocketJSF();
-			this._instance.addListener();
+			this._instance._fn_g();
         }
         return this._instance;
     }
 
     private isFirst = true;
 
-    addListener(){
-		director.off(GEvent.ws_reconnect, this.onReconnect,this);
+    _fn_g(){
+		director.off(GEvent.ws_reconnect, this._fn_vf,this);
         director.off(GEvent.ws_colse, this.onClose,this);
-		director.off(GNetCmd.StickPack, this.respStickPack, this)
+		director.off(GNetCmd.StickPack, this._fn_abv, this)
 
-        director.on(GEvent.ws_reconnect, this.onReconnect,this);
+        director.on(GEvent.ws_reconnect, this._fn_vf,this);
         director.on(GEvent.ws_colse, this.onClose,this);
-		director.on(GNetCmd.StickPack, this.respStickPack, this)
+		director.on(GNetCmd.StickPack, this._fn_abv, this)
     }
 
-	respStickPack(data:any){
+	_fn_abv(data:any){
 
 		if(data["isEnd"]==false){
-			this.sendStickPack(data["stick_id"], data["idx"]+1)
+			this._fn_aea(data["stick_id"], data["idx"]+1)
 		}else{
 			delete this.msgBuff[data["stick_id"]]
 		}
 	}
 
-	getGuid(){
+	_fn_hi(){
 		let d = new Date().getTime();
 		return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
 			let r = (d + Math.random() * 16) % 16 | 0;
@@ -59,7 +59,7 @@ export class WmSocketJSF{
 		});
 	}
 
-	getTotalLen(arr:any[]){
+	_fn_mp(arr:any[]){
     	let len = 0;
     	for(let i=0;i<arr.length; i++){
     		len += arr[i].length;
@@ -67,29 +67,29 @@ export class WmSocketJSF{
     	return len;
 	}
 
-	sendStickPack(uuid:string, i:number){
+	_fn_aea(uuid:string, i:number){
 		let data = {
 			"cmd": GNetCmd.StickPack,
 			"stick_id": uuid,
-			"stick_len": this.getTotalLen(this.msgBuff[uuid]),
+			"stick_len": this._fn_mp(this.msgBuff[uuid]),
 			"stick_val":this.msgBuff[uuid][i],
 			"isEnd": i==this.msgBuff[uuid].length-1,
 			"isStart": i==0,
 			"idx":i
 		}
 
-		WmSocketJSF.getInstance().sendSP(JSON.stringify(data));
+		WmSocketJSF._fn_ho()._fn_adz(JSON.stringify(data));
 	}
 
-    onReconnect(){
+    _fn_vf(){
 
 		if(this.isFirst){
 			this.isFirst = false;
-			this.connect();
+			this._fn_dm();
 			console.log("发起第一次连-------")
 		}else{
-			if(!this.isConnected()){
-				this.connect();
+			if(!this._fn_pt()){
+				this._fn_dm();
 				console.log("发起重连-------")
 			}
 		}
@@ -97,7 +97,7 @@ export class WmSocketJSF{
 
     onClose(){
 
-        if (!this.isConnected()) {
+        if (!this._fn_pt()) {
             return;
         }
         else{
@@ -106,24 +106,24 @@ export class WmSocketJSF{
     }
 
 
-    connect(){
-        this.ws_connect();
+    _fn_dm(){
+        this._fn_akb();
     }
 
-    ws_connect(){
+    _fn_akb(){
 
     }
 
-    onMessage(resp:string){
+    _fn_uv(resp:string){
 		let respJson = JSON.parse(resp)
 
 		director.emit(respJson.cmd+"" , respJson)
     }
 
-    isConnected(){
+    _fn_pt(){
     	return this.isWsConnect;
     }
-    sendSP(jsonData:string){
+    _fn_adz(jsonData:string){
 
 	}
 

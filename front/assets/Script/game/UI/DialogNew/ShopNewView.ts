@@ -23,7 +23,7 @@ export class ShopNewView extends BaseView {
     selectType:number = 1
 
     onLoad() {
-        this.bindButton(this.btnClose, this.onClickBtnClose);
+        this.bindButton(this.btnClose, this._fn_sz);
 
 
 
@@ -34,7 +34,7 @@ export class ShopNewView extends BaseView {
     }
 
     onEnable() {
-        this.on(GD.event.updateGame, this.refresh)
+        this.on(GD.event.updateGame, this._fn_ys)
     }
 
     onDisable() {
@@ -44,11 +44,11 @@ export class ShopNewView extends BaseView {
     show(args: any) {
         super.show(args);
 
-        this.refresh();
+        this._fn_ys();
     }
 
-    refresh(){
-        let shopPropConfigs = TableDataService.ins().getTable(Const.Tables.new_prop);
+    _fn_ys(){
+        let shopPropConfigs = TableDataService.ins()._fn_lt(Const.Tables.new_prop);
 
         for (let cellIndex = 0; cellIndex < this.listContent.children.length; cellIndex++) {
             const shopCellNode = this.listContent.children[cellIndex];
@@ -76,12 +76,12 @@ export class ShopNewView extends BaseView {
     }
 
     onClickHandler(eve:Event, str:string){
-        AudioPlaybackService.instance.playSound(Const.Audio.btn)
+        AudioPlaybackService.instance._fn_xc(Const.Audio.btn)
         if (str && str.includes("tog")){
             let selectedStoreType = Number(str.slice(-1)) ;
             if (this.selectType != selectedStoreType){
                 this.selectType = selectedStoreType;
-                this.refresh();
+                this._fn_ys();
             }
         }
         else if (str == "click"){
@@ -89,7 +89,7 @@ export class ShopNewView extends BaseView {
         }
     }
 
-    onClickBtnClose() {
+    _fn_sz() {
         this.close();
     }
 

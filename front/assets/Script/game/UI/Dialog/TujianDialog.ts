@@ -46,12 +46,12 @@ export class TujianDialog extends BaseView {
     show(args: any) {
         super.show(args)
         this.layerPool.position = v3(285, 0, 0)
-        this.bindButton(find("root/btnClose", this.node)!, this.popClose)
+        this.bindButton(find("root/btnClose", this.node)!, this._fn_xe)
 
         this.initElementArr()
-        GamePlatform.track("查看道具图鉴")
-        redPointManager.setRedpoint(this.btnItem, RPointEvent.RPM_TujianProp, false)
-        redPointManager.setRedpoint(this.btndress, RPointEvent.RPM_TujianScene, false)
+        GamePlatform._fn_aja("查看道具图鉴")
+        redPointManager._fn_afp(this.btnItem, RPointEvent.RPM_TujianProp, false)
+        redPointManager._fn_afp(this.btndress, RPointEvent.RPM_TujianScene, false)
 
 
     }
@@ -59,31 +59,31 @@ export class TujianDialog extends BaseView {
     initElementArr() {
         this.tujianScroll.getChildByName("view")!.active = true
         let tujiandata = playerDataStore.TujianArr
-        this.scrollViewSetData(this.tujianScroll, tujiandata, this.initItem, this)
+        this._fn_adc(this.tujianScroll, tujiandata, this._fn_oc, this)
     }
 
     initDressArr() {
         this.tujianScroll.getChildByName("view")!.active = true
 
         let tujiandata = playerDataStore.TujianSceneArr
-        this.scrollViewSetData(this.tujianScroll, tujiandata, this.initDressItem, this)
+        this._fn_adc(this.tujianScroll, tujiandata, this._fn_nx, this)
     }
 
-    initItem(itemUI: Node, item: any, index: number, self: any) {
+    _fn_oc(itemUI: Node, item: any, index: number, self: any) {
         itemUI.getChildByName("title")!.getComponent(Label)!.string = "" + item.typename
         itemUI.getChildByName("info")!.getComponent(Label)!.string = "" + item.mask1
         self.addButtonHander(itemUI, self.node, "TujianDialog", "openTujianArr", item)
-        UtilPub.getPic(Const.resPath.icon + item.icon, (sf: SpriteFrame) => {
+        UtilPub._fn_je(Const.resPath.icon + item.icon, (sf: SpriteFrame) => {
             itemUI.getChildByName("icon")!.getComponent(Sprite)!.spriteFrame = sf
-            UtilPub.setCustomSize(itemUI.getChildByName("icon")!, 110)
+            UtilPub._fn_aer(itemUI.getChildByName("icon")!, 110)
         })
-        let propData = TableDataService.ins().getTableValuesByType(Const.Tables.prop, "type", item.type)
+        let propData = TableDataService.ins()._fn_mb(Const.Tables.prop, "type", item.type)
         let totalNum = 0
         let getNum = 0
 
         propData.forEach(element => {
             totalNum++
-            if (playerDataStore.isGetPropTujian(element.id) != TujianState.unGet) {
+            if (playerDataStore._fn_pv(element.id) != TujianState.unGet) {
                 getNum++
             }
         });
@@ -93,22 +93,22 @@ export class TujianDialog extends BaseView {
 
         find("getLabel", itemUI)!.getComponent(Label)!.string = getNum + "/" + totalNum
 
-        redPointManager.setRedpointFix(itemUI, RPointEvent.RPM_Null, playerDataStore.checkTujianRedPoint(item.type))
+        redPointManager._fn_afq(itemUI, RPointEvent.RPM_Null, playerDataStore._fn_cm(item.type))
     }
 
     openTujianArr(event: any, data: any) {
-        AudioPlaybackService.instance.playSound(Const.Audio.btn)
+        AudioPlaybackService.instance._fn_xc(Const.Audio.btn)
         this._curListType = data.type
 
         this.tujianInfoScroll.getChildByName("view")!.active = true
-        this.initList()
+        this._fn_og()
         tween(this.layerPool).to(0.2, { position: v3(-285, 0, 0) }).call(() => {
             this.tujianScroll.getChildByName("view")!.active = false
         }).start()
     }
 
-    initList() {
-        let propData = TableDataService.ins().getTableValuesByType(Const.Tables.prop, "type", this._curListType)
+    _fn_og() {
+        let propData = TableDataService.ins()._fn_mb(Const.Tables.prop, "type", this._curListType)
         let dataArr: any = []
         propData.forEach(element => {
             if (!dataArr[element.typeson - 1]) {
@@ -138,7 +138,7 @@ export class TujianDialog extends BaseView {
         let content = find("view/content", this.tujianInfoScroll)!
         content.getComponent(Layout)!.spacingY = 10
 
-        this.scrollViewSetData(this.tujianInfoScroll, newArr, this.initItemInfo2, this)
+        this._fn_adc(this.tujianInfoScroll, newArr, this._fn_oe, this)
 
 
 
@@ -146,7 +146,7 @@ export class TujianDialog extends BaseView {
 
     }
 
-    initItemInfo2(itemUI: Node, itemData: any, index: number, self: TujianDialog) {
+    _fn_oe(itemUI: Node, itemData: any, index: number, self: TujianDialog) {
 
         let title = itemUI.getChildByName("titl2")!
         let layer = itemUI.getChildByName("Layout")!
@@ -190,9 +190,9 @@ export class TujianDialog extends BaseView {
                         propReceive.active = false
                     }
                     item.active = true
-                    if (playerDataStore.isGetPropTujian(element.id) == TujianState.received) {
+                    if (playerDataStore._fn_pv(element.id) == TujianState.received) {
                         item!.getComponent(PropItem)!.setData(element.id, PropItemFlag.HideName | PropItemFlag.ShowLevel | PropItemFlag.ShowMinInfo)
-                    } else if (playerDataStore.isGetPropTujian(element.id) == TujianState.geted) {
+                    } else if (playerDataStore._fn_pv(element.id) == TujianState.geted) {
                         item!.getComponent(PropItem)!.setData(element.id, PropItemFlag.HideName | PropItemFlag.ShowLevel | PropItemFlag.ShowMinInfo)
                         if (propReceive == null) {
                             self.addPrefab(Const.Prefabs.PropReceive, item.getChildByName("root")!, undefined, { propId: element.id, key: Const.DataKeys.tujianProp })
@@ -221,7 +221,7 @@ export class TujianDialog extends BaseView {
 
     }
 
-    initItemInfo(itemUI: Node, itemData: any, index: number, self: any) {
+    _fn_od(itemUI: Node, itemData: any, index: number, self: any) {
 
         if (itemData.length > 0) {
             itemUI.getChildByName("titl2")!.getChildByName("title")!.getComponent(Label)!.string = itemData[0].sonname + ""
@@ -233,9 +233,9 @@ export class TujianDialog extends BaseView {
             for (let index = 0; index < itemData.length; index++) {
                 const element = itemData[index];
                 self.addPrefab(Const.Prefabs.PropItem, layer!, (item: any) => {
-                    if (playerDataStore.isGetPropTujian(element.id) == TujianState.received) {
+                    if (playerDataStore._fn_pv(element.id) == TujianState.received) {
                         item.getComponent(PropItem).setData(element.id, PropItemFlag.HideName | PropItemFlag.ShowLevel | PropItemFlag.ShowMinInfo)
-                    } else if (playerDataStore.isGetPropTujian(element.id) == TujianState.geted) {
+                    } else if (playerDataStore._fn_pv(element.id) == TujianState.geted) {
                         item.getComponent(PropItem).setData(element.id, PropItemFlag.HideName | PropItemFlag.ShowLevel | PropItemFlag.ShowMinInfo)
                         self.addPrefab(Const.Prefabs.PropReceive, item.getChildByName("root"), null, { propId: element.id, key: Const.DataKeys.tujianProp })
                     } else {
@@ -254,7 +254,7 @@ export class TujianDialog extends BaseView {
     }
 
 
-    initDressItem(itemUI: Node, item: any, index: number, self: TujianDialog) {
+    _fn_nx(itemUI: Node, item: any, index: number, self: TujianDialog) {
         itemUI.getChildByName("title")!.getComponent(Label)!.string = "" + item.name
         itemUI.getChildByName("info")!.getComponent(Label)!.string = "" + item.desc
 
@@ -263,7 +263,7 @@ export class TujianDialog extends BaseView {
         if (icon == "") {
             icon = "icon_" + item.id
         }
-        self.setSpriteFrame(find("icon", itemUI)!.getComponent(Sprite)!, UtilScene.getResSceneIcon(icon), undefined, 120)
+        self._fn_agk(find("icon", itemUI)!.getComponent(Sprite)!, UtilScene._fn_kb(icon), undefined, 120)
 
 
         self.addButtonHander(itemUI, self.node, "TujianDialog", "openSceneTujianArr", item)
@@ -271,18 +271,18 @@ export class TujianDialog extends BaseView {
         let totalNum = 0
         let getNum = 0
         let isCanReceive = false
-        let propData = TableDataService.ins().getTableValuesByType(Const.Tables.scene_item, "room", item.id)
+        let propData = TableDataService.ins()._fn_mb(Const.Tables.scene_item, "room", item.id)
 
         propData.forEach(element => {
-            let skinData = TableDataService.ins().getTableValuesByType(Const.Tables.scene_skin, "scene", element.id)
+            let skinData = TableDataService.ins()._fn_mb(Const.Tables.scene_skin, "scene", element.id)
             skinData.forEach(skin => {
                 let index = skin.id % element.id
                 if (index > 0) {
                     totalNum++
 
-                    if (playerDataStore.isGetPropTujian(skin.id, Const.DataKeys.tujianScene) != TujianState.unGet) {
+                    if (playerDataStore._fn_pv(skin.id, Const.DataKeys.tujianScene) != TujianState.unGet) {
                         getNum++
-                        if (playerDataStore.isGetPropTujian(skin.id, Const.DataKeys.tujianScene) == TujianState.geted) {
+                        if (playerDataStore._fn_pv(skin.id, Const.DataKeys.tujianScene) == TujianState.geted) {
                             isCanReceive = true
                         }
                     }
@@ -294,24 +294,24 @@ export class TujianDialog extends BaseView {
         progressBar!.progress = getNum / totalNum
 
         find("getLabel", itemUI)!.getComponent(Label)!.string = getNum + "/" + totalNum
-        redPointManager.setRedpointFix(itemUI, RPointEvent.RPM_Null, isCanReceive)
+        redPointManager._fn_afq(itemUI, RPointEvent.RPM_Null, isCanReceive)
     }
 
     openSceneTujianArr(event: any, data: any) {
-        AudioPlaybackService.instance.playSound(Const.Audio.btn)
+        AudioPlaybackService.instance._fn_xc(Const.Audio.btn)
         this._curListType = data
 
 
         this.tujianScroll.getChildByName("view")!.active = false
-        this.initSceneList()
+        this._fn_ox()
 
         tween(this.layerPool).to(0.2, { position: v3(-285, 0, 0) }).call(() => {
             this.tujianInfoScroll.getChildByName("view")!.active = true
         }).start()
     }
 
-    initSceneList() {
-        let propData = TableDataService.ins().getTableValuesByType(Const.Tables.scene_item, "room", this._curListType.id)
+    _fn_ox() {
+        let propData = TableDataService.ins()._fn_mb(Const.Tables.scene_item, "room", this._curListType.id)
         let dataArr: any = []
 
 
@@ -319,7 +319,7 @@ export class TujianDialog extends BaseView {
 
 
         propData.forEach(element => {
-            let skinData = TableDataService.ins().getTableValuesByType(Const.Tables.scene_skin, "scene", element.id)
+            let skinData = TableDataService.ins()._fn_mb(Const.Tables.scene_skin, "scene", element.id)
             skinData.forEach(skin => {
                 let index = skin.tujianId
                 if (index > 0) {
@@ -353,14 +353,14 @@ export class TujianDialog extends BaseView {
         }
         let content = find("view/content", this.tujianInfoScroll)!
         content.getComponent(Layout)!.spacingY = 0
-        this.scrollViewSetData(this.tujianInfoScroll, newArr, this.initSkinInfo2, this)
+        this._fn_adc(this.tujianInfoScroll, newArr, this._fn_pb, this)
 
 
 
 
     }
 
-    initSkinInfo2(itemUI: Node, itemData: any, index: number, self: any) {
+    _fn_pb(itemUI: Node, itemData: any, index: number, self: any) {
 
         let title = itemUI.getChildByName("titl2")!
         let layer = itemUI.getChildByName("Layout")!
@@ -404,17 +404,17 @@ export class TujianDialog extends BaseView {
                     skinNode.active = true
                     find("name", skinNode)!.getComponent(Label)!.string = element.name
                     let iconSprite = find("icon", skinNode)!.getComponent(Sprite)!
-                    UtilScene.setSkinIcon(iconSprite, element)
+                    UtilScene._fn_agh(iconSprite, element)
 
                     let propReceive = find("PropReceive", skinNode)!
                     if (propReceive) {
                         propReceive.active = false
                     }
 
-                    if (playerDataStore.isGetPropTujian(element.id, Const.DataKeys.tujianScene) == TujianState.received) {
+                    if (playerDataStore._fn_pv(element.id, Const.DataKeys.tujianScene) == TujianState.received) {
                         iconSprite.color = Color.WHITE
                         iconSprite.node.getComponent(UIOpacity)!.opacity = 255
-                    } else if (playerDataStore.isGetPropTujian(element.id, Const.DataKeys.tujianScene) == TujianState.geted) {
+                    } else if (playerDataStore._fn_pv(element.id, Const.DataKeys.tujianScene) == TujianState.geted) {
                         iconSprite.color = Color.WHITE
                         iconSprite.node.getComponent(UIOpacity)!.opacity = 255
 
@@ -432,7 +432,7 @@ export class TujianDialog extends BaseView {
                     }
 
                     self.bindButton(skinNode, () => {
-                        UiLayerService.instance.showDialog(Const.Dialogs.SceneSkinDetailListController, { skinId: element.id })
+                        UiLayerService.instance._fn_ahg(Const.Dialogs.SceneSkinDetailListController, { skinId: element.id })
                     })
                 }
             }
@@ -440,7 +440,7 @@ export class TujianDialog extends BaseView {
     }
 
 
-    initSkinInfo(itemUI: Node, itemData: any, index: number, self: any) {
+    _fn_pa(itemUI: Node, itemData: any, index: number, self: any) {
 
         if (itemData.length > 0) {
             itemUI.getChildByName("titl2")!.getChildByName("title")!.getComponent(Label)!.string = self._curListType.tujianName[index - 1] + ""
@@ -458,12 +458,12 @@ export class TujianDialog extends BaseView {
                 layer!.addChild(skinNode)
                 find("name", skinNode)!.getComponent(Label)!.string = element.name
                 let iconSprite = find("icon", skinNode)!.getComponent(Sprite)!
-                UtilScene.setSkinIcon(iconSprite, element)
+                UtilScene._fn_agh(iconSprite, element)
 
-                if (playerDataStore.isGetPropTujian(element.id, Const.DataKeys.tujianScene) == TujianState.received) {
+                if (playerDataStore._fn_pv(element.id, Const.DataKeys.tujianScene) == TujianState.received) {
                     iconSprite.color = Color.WHITE
                     iconSprite.node.getComponent(UIOpacity)!.opacity = 255
-                } else if (playerDataStore.isGetPropTujian(element.id, Const.DataKeys.tujianScene) == TujianState.geted) {
+                } else if (playerDataStore._fn_pv(element.id, Const.DataKeys.tujianScene) == TujianState.geted) {
                     iconSprite.color = Color.WHITE
                     iconSprite.node.getComponent(UIOpacity)!.opacity = 255
                     self.addPrefab(Const.Prefabs.PropReceive, skinNode, null, { propId: element.id, key: Const.DataKeys.tujianScene })
@@ -473,7 +473,7 @@ export class TujianDialog extends BaseView {
                 }
 
                 self.bindButton(skinNode, () => {
-                    UiLayerService.instance.showDialog(Const.Dialogs.SceneSkinDetailListController, { skinId: element.id })
+                    UiLayerService.instance._fn_ahg(Const.Dialogs.SceneSkinDetailListController, { skinId: element.id })
                 })
             }
         }
@@ -488,16 +488,16 @@ export class TujianDialog extends BaseView {
 
     }
 
-    public static setSkinIcon(node: Sprite, skinData: any) {
+    public static _fn_agh(node: Sprite, skinData: any) {
         let icon = skinData.tujianIcon
         if (icon == "") {
             icon = "icon_" + skinData.id
         }
-        UtilPub.getPic(UtilScene.getResSceneIcon(icon), (sf: SpriteFrame) => {
+        UtilPub._fn_je(UtilScene._fn_kb(icon), (sf: SpriteFrame) => {
             if (sf != null) {
                 node.spriteFrame = sf
             } else {
-                UtilPub.getPic(Const.resPath.defaultSceneIcons + "icon_default", (sf: SpriteFrame) => {
+                UtilPub._fn_je(Const.resPath.defaultSceneIcons + "icon_default", (sf: SpriteFrame) => {
                     node.spriteFrame = sf
                 })
             }

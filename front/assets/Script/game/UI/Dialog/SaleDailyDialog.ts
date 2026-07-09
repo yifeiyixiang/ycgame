@@ -28,7 +28,7 @@ export class SaleDailyDialog extends BaseView {
     _isCanBuyAll = true
 
     start() {
-        this.bindButton(find("root/btnClose", this.node)!, this.popClose)
+        this.bindButton(find("root/btnClose", this.node)!, this._fn_xe)
 
         this.addButtonHander(find("root/btnday", this.node)!, this.node, "SaleDailyDialog", "initData", 1)
         this.addButtonHander(find("root/btnWeek", this.node)!, this.node, "SaleDailyDialog", "initData", 2)
@@ -37,51 +37,51 @@ export class SaleDailyDialog extends BaseView {
 
     show(args: any) {
         super.show(args)
-        this.initShop(1)
+        this._fn_oz(1)
 
     }
 
     initData(event: any, data: number) {
-        this.initShop(data)
+        this._fn_oz(data)
     }
 
-    initShop(type: number) {
-        let shopdata = TableDataService.ins().getTableValueByID(Const.Tables.saleShop, type)
+    _fn_oz(type: number) {
+        let shopdata = TableDataService.ins()._fn_ly(Const.Tables.saleShop, type)
         this.titlelabel.string = shopdata.typename
 
         this.timelabel.getComponent(CdComponent)!.setCD(CDType.CDIneterVal, shopdata.dataKey, shopdata.cdTime)
 
-        let data = TableDataService.ins().getTableValuesByType(Const.Tables.saleShopItem, "type", shopdata.typeson)
+        let data = TableDataService.ins()._fn_mb(Const.Tables.saleShopItem, "type", shopdata.typeson)
         if (data.length > 0) {
             this._isCanBuyAll = true
-            this.setScrollViewData(this.dataContent, data, this.item, this.initItem, this)
+            this._fn_agd(this.dataContent, data, this.item, this._fn_oc, this)
         }
 
         if (shopdata.recharge > 0) {
-            let rechargeData = TableDataService.ins().getTableValueByID(Const.Tables.recharge, shopdata.recharge)
+            let rechargeData = TableDataService.ins()._fn_ly(Const.Tables.recharge, shopdata.recharge)
             let btnBuyAll = find("root/btnBuyAll", this.node)!
             find("Label", btnBuyAll)!.getComponent(Label)!.string = "￥" + rechargeData.cash
             if (this._isCanBuyAll) {
                 this.addButtonHander(btnBuyAll, this.node, "SaleDailyDialog", "onClickBtnBuyAll", shopdata)
                 btnBuyAll.getComponent(Sprite)!.grayscale = false
             } else {
-                this.clearButtonHander(btnBuyAll)
+                this._fn_ct(btnBuyAll)
                 btnBuyAll.getComponent(Sprite)!.grayscale = true
             }
         }
     }
 
     onClickBtnBuyAll(event: any, shopdata: any) {
-        let data = TableDataService.ins().getTableValuesByType(Const.Tables.saleShopItem, "type", shopdata.typeson)
+        let data = TableDataService.ins()._fn_mb(Const.Tables.saleShopItem, "type", shopdata.typeson)
         if (data.length > 0) {
             for (let index = 0; index < data.length; index++) {
                 this.onClickFreeSaleShop(null, data[index])
             }
         }
-        this.initShop(shopdata.id)
+        this._fn_oz(shopdata.id)
     }
 
-    initItem(itemUi: Node, data: any, index: number, self: SaleDailyDialog) {
+    _fn_oc(itemUi: Node, data: any, index: number, self: SaleDailyDialog) {
         find("Layout", itemUi)!.removeAllChildren()
         let reward = data.reward
         reward.forEach((element: any) => {
@@ -91,18 +91,18 @@ export class SaleDailyDialog extends BaseView {
         });
         let btnFree = find("btnyellow", itemUi)!
         let btnBuy = find("btnGreenbg", itemUi)!
-        let time = playerDataStore.getReceiveTime(data.dataKey, data.cdTime)
+        let time = playerDataStore._fn_jz(data.dataKey, data.cdTime)
         if (data.recharge > 0) {
             btnFree.active = false
             btnBuy.active = true
             let btnLabel = btnBuy.getChildByName("Label")!.getComponent(Label)!
             if (time < data.buyUpLimit) {
                 self.addButtonHander(btnBuy, self.node, "SaleDailyDialog", "onClickBuySaleShop", data)
-                let rechargeData = TableDataService.ins().getTableValueByID(Const.Tables.recharge, data.recharge)
+                let rechargeData = TableDataService.ins()._fn_ly(Const.Tables.recharge, data.recharge)
                 btnLabel.string = "￥" + rechargeData.cash
             } else {
                 btnLabel.string = "已领取"
-                self.clearButtonHander(btnBuy)
+                self._fn_ct(btnBuy)
                 self._isCanBuyAll = false
             }
         } else {
@@ -112,7 +112,7 @@ export class SaleDailyDialog extends BaseView {
                 self.addButtonHander(btnFree, self.node, "SaleDailyDialog", "onClickFreeSaleShop", data)
             } else {
                 btnFree.getChildByName("Label")!.getComponent(Label)!.string = "已领取"
-                self.clearButtonHander(btnFree)
+                self._fn_ct(btnFree)
             }
         }
     }
@@ -123,10 +123,10 @@ export class SaleDailyDialog extends BaseView {
 
     onClickFreeSaleShop(event: any, data: any) {
         data.reward.forEach((element: any) => {
-            mergeBoardStateStore.addPropNum(element[0], element[1])
+            mergeBoardStateStore._fn_m(element[0], element[1])
         });
-        playerDataStore.setReceiveTime(data.dataKey, data.cdTime)
-        this.initShop(data.type)
+        playerDataStore._fn_afo(data.dataKey, data.cdTime)
+        this._fn_oz(data.type)
 
     }
 }

@@ -46,44 +46,44 @@ export class HttpRequestTransport {
 
 
 
-    addHeader(name:string, value:string) {
+    _fn_f(name:string, value:string) {
         this.header.set(name, value);
     }
 
-    getHeader(name:string):string {
+    _fn_hl(name:string):string {
         return this.header.get(name);
     }
 
-    isHeader(name:string):boolean {
+    _fn_py(name:string):boolean {
         return this.header.has(name);
     }
 
     get(name:string, onComplete:HttpCallback, requestParams:any = null) {
-        this.sendRequest(name, requestParams, false, onComplete)
+        this._fn_adv(name, requestParams, false, onComplete)
     }
 
-    getAsync(name:string, requestParams:any = null): Promise<HttpResponsePacket> {
+    _fn_fn(name:string, requestParams:any = null): Promise<HttpResponsePacket> {
         return new Promise((resolve, reject) => {
-            this.sendRequest(name, requestParams, false, (responsePacket:HttpResponsePacket) => {
+            this._fn_adv(name, requestParams, false, (responsePacket:HttpResponsePacket) => {
                 resolve(responsePacket);
             });
         });
     }
 
-    getByArraybuffer(name:string, onComplete:HttpCallback, requestParams:any = null) {
-        this.sendRequest(name, requestParams, false, onComplete, 'arraybuffer', false);
+    _fn_ga(name:string, onComplete:HttpCallback, requestParams:any = null) {
+        this._fn_adv(name, requestParams, false, onComplete, 'arraybuffer', false);
     }
 
-    getAsyncByArraybuffer(name:string, requestParams:any = null): Promise<HttpResponsePacket> {
+    _fn_fo(name:string, requestParams:any = null): Promise<HttpResponsePacket> {
         return new Promise((resolve, reject) => {
-            this.sendRequest(name, requestParams, false, (responsePacket:HttpResponsePacket) => {
+            this._fn_adv(name, requestParams, false, (responsePacket:HttpResponsePacket) => {
                 resolve(responsePacket);
             }, 'arraybuffer', false);
         });
     }
 
-    post(name:string, onComplete:HttpCallback, requestParams:any = null) {
-        this.sendRequest(name, requestParams, true, onComplete);
+    _fn_xi(name:string, onComplete:HttpCallback, requestParams:any = null) {
+        this._fn_adv(name, requestParams, true, onComplete);
     }
 
 
@@ -94,9 +94,9 @@ export class HttpRequestTransport {
 
 
 
-    postAsync(name:string, requestParams:any = null): Promise<HttpResponsePacket> {
+    _fn_xj(name:string, requestParams:any = null): Promise<HttpResponsePacket> {
         return new Promise((resolve, reject) => {
-            this.sendRequest(name, requestParams, true, (responsePacket: HttpResponsePacket) => {
+            this._fn_adv(name, requestParams, true, (responsePacket: HttpResponsePacket) => {
                 resolve(responsePacket);
             });
         });
@@ -124,7 +124,7 @@ export class HttpRequestTransport {
 
 
 
-    private sendRequest(name:string, requestParams:any, isPost:boolean, onComplete:HttpCallback, responseType?:string, isOpenTimeout:boolean = true):void {
+    private _fn_adv(name:string, requestParams:any, isPost:boolean, onComplete:HttpCallback, responseType?:string, isOpenTimeout:boolean = true):void {
         if (NativeSdkBridge.isLocal){
             return;
         }
@@ -146,7 +146,7 @@ export class HttpRequestTransport {
             url = this.defaultUrl + name;
         }
         if (requestParams) {
-            queryString = this.getParamString(requestParams);
+            queryString = this._fn_ix(requestParams);
             if (url.indexOf("?") > -1) {
                 requestUrl = url + "&" + queryString;
             } else {
@@ -191,7 +191,7 @@ export class HttpRequestTransport {
         if (isOpenTimeout) {
             request.timeout = this.timeout;
             request.ontimeout = () => {
-                this.deleteCache(requestUrl);
+                this._fn_eh(requestUrl);
 
                 responsePacket.isSucc = false;
                 responsePacket.err = HttpEvent.TIMEOUT;
@@ -201,7 +201,7 @@ export class HttpRequestTransport {
 
         request.onloadend = () => {
             if (request.status == 500) {
-                this.deleteCache(requestUrl);
+                this._fn_eh(requestUrl);
 
                 responsePacket.isSucc = false;
                 responsePacket.err = HttpEvent.NO_NETWORK;
@@ -210,7 +210,7 @@ export class HttpRequestTransport {
         }
 
         request.onerror = () => {
-            this.deleteCache(requestUrl);
+            this._fn_eh(requestUrl);
             console.log("断网------------------" + request);
             responsePacket.isSucc = false;
             if (request.readyState == 0 || request.readyState == 1 || request.status == 0) {
@@ -224,7 +224,7 @@ export class HttpRequestTransport {
         request.onreadystatechange = () => {
             if (request.readyState != 4) return ;
 
-            this.deleteCache(requestUrl);
+            this._fn_eh(requestUrl);
 
             if (request.status == 200 && onComplete) {
                 responsePacket.isSucc = true;
@@ -244,7 +244,7 @@ export class HttpRequestTransport {
         } else {
             if (isPost) {
                 if (NativeSdkBridge.isAndroid){
-                    request.send(this.getParamBodyAndroid(requestParams));
+                    request.send(this._fn_iw(requestParams));
                 }else{
 
 
@@ -264,7 +264,7 @@ export class HttpRequestTransport {
 
 
 
-    private getParamString(requestParams:any): string {
+    private _fn_ix(requestParams:any): string {
         var queryString = "";
         for (var paramName in requestParams) {
             let paramValue = requestParams[paramName];
@@ -280,7 +280,7 @@ export class HttpRequestTransport {
         return queryString.substring(0, queryString.length - 1);
     }
 
-    private getParamBodyAndroid(requestParams: any): string {
+    private _fn_iw(requestParams: any): string {
         let formBody = '';
         for (let paramName in requestParams) {
             if (formBody !== '') {
@@ -292,7 +292,7 @@ export class HttpRequestTransport {
         return formBody;
     }
 
-    private getParamBody(requestParams:any):FormData {
+    private _fn_iv(requestParams:any):FormData {
         if (!requestParams){
             return;
         }
@@ -305,7 +305,7 @@ export class HttpRequestTransport {
         return formData;
     }
 
-    private deleteCache(url:string) {
+    private _fn_eh(url:string) {
         delete activeRequestMap[url];
         delete requestParamCache[url];
     }

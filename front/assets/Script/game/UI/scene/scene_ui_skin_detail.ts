@@ -31,9 +31,9 @@ export class SceneSkinDetailController extends BaseView {
     start() {
         this.bindButton(this.buyBtn, () => {
             if (this.skinId > 0) {
-                this.onSceneIDBuy()
+                this._fn_vg()
             } else if (this.dressData) {
-                this.onClickDress()
+                this._fn_tx()
             }
         })
 
@@ -42,35 +42,35 @@ export class SceneSkinDetailController extends BaseView {
         })
     }
 
-    onSceneIDBuy() {
+    _fn_vg() {
 
-        let skinData = TableDataService.ins().getTableValueByID(Const.Tables.scene_skin, this.skinId)
+        let skinData = TableDataService.ins()._fn_ly(Const.Tables.scene_skin, this.skinId)
         let type = skinData.res.split(",")[0]
         let val = skinData.res.split(",")[1]
         let isBuySuccess: boolean = false
         if (type == GResType.gold) {
-            if (playerDataStore.checkAndUseCoin(val) == false) {
+            if (playerDataStore._fn_bf(val) == false) {
                 this.close()
 
             } else {
                 isBuySuccess = true
-                GamePlatform.track("金币购买装扮: " + skinData.name)
+                GamePlatform._fn_aja("金币购买装扮: " + skinData.name)
             }
         } else if (type == GResType.diamond) {
-            if (playerDataStore.checkAndUseDiamonds(val) == false) {
+            if (playerDataStore._fn_bg(val) == false) {
                 this.close()
 
             } else {
                 isBuySuccess = true
-                GamePlatform.track("钻石购买装扮: " + skinData.name)
+                GamePlatform._fn_aja("钻石购买装扮: " + skinData.name)
             }
         } else if (type == GResType.tick) {
-            if (playerDataStore.checkAndUseStyleVoucher(val) == false) {
+            if (playerDataStore._fn_bl(val) == false) {
                 this.close()
 
             } else {
                 isBuySuccess = true
-                GamePlatform.track("装扮券购买装�? " + skinData.name)
+                GamePlatform._fn_aja("装扮券购买装�? " + skinData.name)
             }
         }
 
@@ -78,9 +78,9 @@ export class SceneSkinDetailController extends BaseView {
             this.close()
             this.emit(GD.event.showTip, { msg: "购买成功" })
 
-            SceneData.ins.setSceneSkinById(this.skinId, GSceneSkinState.gotted)
+            SceneData.ins._fn_agb(this.skinId, GSceneSkinState.gotted)
             this.emit(GD.event.clickDressItem, this.skinId)
-            UtilScene.setSceneItemAni(Const.SelSceneNode)
+            UtilScene._fn_afy(Const.SelSceneNode)
 
         }
     }
@@ -89,34 +89,34 @@ export class SceneSkinDetailController extends BaseView {
         super.show(args)
         if (args.skinId) {
             this.skinId = args.skinId
-            let skinData = TableDataService.ins().getTableValueByID(Const.Tables.scene_skin, this.skinId)
-            UtilScene.setSkinIcon(this.icon, skinData)
+            let skinData = TableDataService.ins()._fn_ly(Const.Tables.scene_skin, this.skinId)
+            UtilScene._fn_agh(this.icon, skinData)
             let itemId = skinData.res.split(",")[0]
-            let itemData = TableDataService.ins().getTableValueByID(Const.Tables.prop, itemId)
-            this.setSpriteFrame(this.resIcon, Const.resPath.icon + itemData.icon, undefined, 50)
+            let itemData = TableDataService.ins()._fn_ly(Const.Tables.prop, itemId)
+            this._fn_agk(this.resIcon, Const.resPath.icon + itemData.icon, undefined, 50)
             this.resVal.string = "x" + skinData.res.split(",")[1]
             this.dressVal.string = "+" + skinData.zb.split(",")[1]
             this.title.string = skinData.name
             this.desc.string = skinData.desc
 
             this.buyBtn.active = true
-            if (SceneData.ins.getSceneSkinById(this.skinId) == GSceneSkinState.gotted) {
+            if (SceneData.ins._fn_ky(this.skinId) == GSceneSkinState.gotted) {
                 this.buyBtn.active = false
             }
         } else {
             this.dressData = args.dressUpData
-            this.setSpriteFrame(this.icon, Const.resPath.roleIcon + this.dressData.icon, undefined, 200)
+            this._fn_agk(this.icon, Const.resPath.roleIcon + this.dressData.icon, undefined, 200)
 
             this.title.string = this.dressData.name
             this.desc.string = this.dressData.desc
             this.dressVal.string = "+" + this.dressData.changeZhi
             if (this.dressData.price != 0) {
                 let itemId = this.dressData.price[0][0]
-                let itemData = TableDataService.ins().getTableValueByID(Const.Tables.prop, itemId)
-                this.setSpriteFrame(this.resIcon, Const.resPath.icon + itemData.icon, undefined, 40)
+                let itemData = TableDataService.ins()._fn_ly(Const.Tables.prop, itemId)
+                this._fn_agk(this.resIcon, Const.resPath.icon + itemData.icon, undefined, 40)
                 this.resVal.string = "x" + this.dressData.price[0][1]
             }
-            if (this.dressData.price == 0 || playerDataStore.isAvatarLookOwned(this.dressData.id)) {
+            if (this.dressData.price == 0 || playerDataStore._fn_pq(this.dressData.id)) {
                 this.resIcon.node.active = false
                 this.resVal.string = "穿戴"
                 if (playerDataStore.avatarLookId == this.dressData.id) {
@@ -128,18 +128,18 @@ export class SceneSkinDetailController extends BaseView {
         }
     }
 
-    onClickDress() {
+    _fn_tx() {
         if (this.dressData == null) {
             return
         }
-        if (playerDataStore.isAvatarLookOwned(this.dressData.id) || this.dressData.price == 0) {
+        if (playerDataStore._fn_pq(this.dressData.id) || this.dressData.price == 0) {
             playerDataStore.avatarLookId = this.dressData.id
             this.emit(GD.event.updateDressUp)
-            this.popClose()
+            this._fn_xe()
         } else {
-            if (playerDataStore.checkAndUseProp(this.dressData.price[0])) {
-                playerDataStore.unlockAvatarLook(this.dressData.id)
-                GamePlatform.track("buy manager outfit id " + this.dressData.id)
+            if (playerDataStore._fn_bk(this.dressData.price[0])) {
+                playerDataStore._fn_aji(this.dressData.id)
+                GamePlatform._fn_aja("buy manager outfit id " + this.dressData.id)
                 playerDataStore.dressValue += this.dressData.changeZhi
                 this.emit(GD.event.updateDressUp)
                 this.buyBtn.active = true

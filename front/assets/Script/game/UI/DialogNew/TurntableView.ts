@@ -19,11 +19,11 @@ export class TurntableView extends BaseView {
     btnClose: Node = null;
 
     onLoad() {
-        this.bindButton(this.btnStart, (this.startTurn));
+        this.bindButton(this.btnStart, (this._fn_aik));
 
         this.bindButton(this.btnClose, this.close);
 
-        let turntableConfigs = TableDataService.ins().getTable(Const.Tables.new_turn);
+        let turntableConfigs = TableDataService.ins()._fn_lt(Const.Tables.new_turn);
 
         for (let rewardIndex = 0; rewardIndex < turntableConfigs.length; rewardIndex++) {
             const rewardConfig = turntableConfigs[rewardIndex];
@@ -32,14 +32,14 @@ export class TurntableView extends BaseView {
                 rewardCell = instantiate(this.turnBg.children[0])
                 rewardCell.parent = this.turnBg;
             }
-            let rewardPropConfig:ShopConfigRecord = TableDataService.ins().getTableValueByID(Const.Tables.new_prop, rewardConfig.circle_reward_id);
+            let rewardPropConfig:ShopConfigRecord = TableDataService.ins()._fn_ly(Const.Tables.new_prop, rewardConfig.circle_reward_id);
             if (rewardConfig.circle_rewards_num > 1){
                 rewardCell.getChildByName("nameLab").getComponent(Label).string = rewardConfig.circle_rewards_num + "";
             }else{
                 rewardCell.getChildByName("nameLab").getComponent(Label).string = rewardPropConfig.name;
             }
 
-            this.setSpriteFrame(rewardCell.getChildByName("icon").getComponent(Sprite), Const.resPath.icon + rewardPropConfig.icon, () => { }, 40)
+            this._fn_agk(rewardCell.getChildByName("icon").getComponent(Sprite), Const.resPath.icon + rewardPropConfig.icon, () => { }, 40)
 
             rewardCell.angle = -rewardIndex * 45;
         }
@@ -50,8 +50,8 @@ export class TurntableView extends BaseView {
     }
 
 
-    startTurn() {
-        GameHttpClient.getInstance().sendWheel((res:any)=>{
+    _fn_aik() {
+        GameHttpClient._fn_ho()._fn_aee((res:any)=>{
 
             let wheelResponse = res.res.data
 
@@ -71,7 +71,7 @@ export class TurntableView extends BaseView {
                     this.btnStart.active = true;
                     this.btnClose.active = true;
 
-                    GameHttpClient.getInstance().showReward(wheelResponse);
+                    GameHttpClient._fn_ho()._fn_ahp(wheelResponse);
                 })
                 .start();
         })

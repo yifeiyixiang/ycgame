@@ -58,30 +58,30 @@ export class FriendItemCellController extends BaseView {
         }
 
         if (this.avatar){
-            playerDataStore.replaceHead(this.avatar, this.friendData.avatar);
+            playerDataStore._fn_aan(this.avatar, this.friendData.avatar);
         }
 
     }
 
 
     onClickHandler(eve:any, str:string){
-        AudioPlaybackService.instance.playSound(Const.Audio.btn)
+        AudioPlaybackService.instance._fn_xc(Const.Audio.btn)
         let actionName = eve.target._name;
         if (actionName == "btnAdd"){
 
-            GameHttpClient.getInstance().getFriendAdd(this.friendData.userid);
+            GameHttpClient._fn_ho().getFriendAdd(this.friendData.userid);
         }
         else if (actionName == "btnReset"){
 
-            GameHttpClient.getInstance().getFriendRecommend();
+            GameHttpClient._fn_ho().getFriendRecommend();
         }
         else if (actionName == "btnAgree"){
 
-            GameHttpClient.getInstance().getFriendApplyaction(this.friendData.id, 1);
+            GameHttpClient._fn_ho().getFriendApplyaction(this.friendData.id, 1);
         }
         else if (actionName == "btnRefuse"){
 
-            GameHttpClient.getInstance().getFriendApplyaction(this.friendData.id, 2);
+            GameHttpClient._fn_ho().getFriendApplyaction(this.friendData.id, 2);
         }
 
     }

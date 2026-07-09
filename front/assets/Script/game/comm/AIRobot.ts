@@ -29,7 +29,7 @@ enum AIRobotStatus {
 
 class AIRobot {
     private static instance: AIRobot = null!;
-    public static getInstance(): AIRobot {
+    public static _fn_ho(): AIRobot {
         if (this.instance == null) {
             this.instance = new AIRobot();
         }
@@ -52,7 +52,7 @@ class AIRobot {
     textLayer: Node = null!;
     textItem: Node = null!;
 
-    public initRobot() {
+    public _fn_or() {
         this.canvasGame = find("Canvas")!.getComponent(GameCanvasController)!;
         this.broadcastUINode = find("Canvas2/broadcastLayer/ui")!;
         this.broadcastUINode.active = false;
@@ -66,7 +66,7 @@ class AIRobot {
 
         this.starCost = 0;
 
-        this.stopUpdate();
+        this._fn_ain();
 
         this.canvasGame.schedule(aiRobot.update, 2);
 
@@ -74,15 +74,15 @@ class AIRobot {
             aiRobot.aiRobotStatus = AIRobotStatus.enterMergeBoard;
         }, 3);
 
-        this.showBroadcast();
+        this._fn_ahc();
     }
 
-    public stopUpdate() {
+    public _fn_ain() {
         aiRobot.canvasGame.unschedule(aiRobot.update);
         aiRobot.aiRobotStatus = AIRobotStatus.idle;
     }
 
-    public openMergeBoardLayer() {
+    public _fn_wf() {
         find("Canvas/main")?.getComponent(main)?.openMergeBoard();
         aiRobot.canvasGame.scheduleOnce(() => {
             aiRobot.clickPos = null;
@@ -90,9 +90,9 @@ class AIRobot {
         }, 5);
     }
 
-    public getPropNum(id: number) {
+    public _fn_jo(id: number) {
         let num = 0;
-        UtilPub.for2Arr(mergeBoardStateStore.roomArr, (roomData: any) => {
+        UtilPub._fn_ex(mergeBoardStateStore.roomArr, (roomData: any) => {
             if (roomData.id == id) {
                 num++;
             }
@@ -100,15 +100,15 @@ class AIRobot {
         return num;
     }
 
-    public hasTaskDone() {
+    public _fn_ng() {
         let task = mergeBoardStateStore.taskArr[0];
-        if (aiRobot.getPropNum(task.propArr[0].id) > 0) {
+        if (aiRobot._fn_jo(task.propArr[0].id) > 0) {
             return true;
         }
         return false;
     }
 
-    public showBroadcast(info?: string) {
+    public _fn_ahc(info?: string) {
         if (!this.isRobot()) {
             return;
         }
@@ -134,30 +134,30 @@ class AIRobot {
                 }
             }).delay(6).to(1, { position: v3(-width, pos.y) }).call(() => {
                 this.broadcastUINode.active = false;
-                this.showBroadcast();
+                this._fn_ahc();
             }).start();
         }, 5 + Math.random() * 5);
     }
 
     update() {
         try {
-            aiRobot.updateLogic();
+            aiRobot._fn_ajm();
         } catch (e) { }
     }
 
-    updateLogic() {
+    _fn_ajm() {
         if (!aiRobot.isRobot()) {
-            aiRobot.stopUpdate();
+            aiRobot._fn_ain();
             return;
         }
         switch (aiRobot.aiRobotStatus) {
             case AIRobotStatus.clickNew:
                 if (aiRobot.clickPos == null) {
-                    aiRobot.clickPos = aiRobot.getClickNewPos();
+                    aiRobot.clickPos = aiRobot._fn_ge();
                 }
-                if (mergeBoardStateStore.getEmptyRoomPos() && aiRobot.clickPos && !mergeBoardStateStore.roomArr[aiRobot.clickPos.row][aiRobot.clickPos.col].cdSum) {
+                if (mergeBoardStateStore._fn_gz() && aiRobot.clickPos && !mergeBoardStateStore.roomArr[aiRobot.clickPos.row][aiRobot.clickPos.col].cdSum) {
 
-                    aiRobot.botTapBoardCell(aiRobot.clickPos.row, aiRobot.clickPos.col);
+                    aiRobot._fn_ao(aiRobot.clickPos.row, aiRobot.clickPos.col);
                     return;
                 }
 
@@ -166,7 +166,7 @@ class AIRobot {
                 aiRobot.aiRobotStatus = AIRobotStatus.boardMerge;
                 break;
             case AIRobotStatus.boardMerge:
-                if (aiRobot.hasTaskDone()) {
+                if (aiRobot._fn_ng()) {
                     aiRobot.aiRobotStatus = AIRobotStatus.taskDone;
                     return;
                 }
@@ -174,32 +174,32 @@ class AIRobot {
                 let retInfo = null;
                 while (true) {
                     searchId--;
-                    if (!aiRobot.isPropSameType(searchId, aiRobot.boardTargetId)) {
+                    if (!aiRobot._fn_qj(searchId, aiRobot.boardTargetId)) {
                         break;
                     }
-                    if (aiRobot.getPropNum(searchId) >= 2) {
-                        retInfo = aiRobot.searchCompoeId(searchId);
+                    if (aiRobot._fn_jo(searchId) >= 2) {
+                        retInfo = aiRobot._fn_add(searchId);
                         break;
                     }
                 }
                 if (retInfo) {
-                    aiRobot.botMergeBoardCells(retInfo.startPos.row, retInfo.startPos.col,
+                    aiRobot._fn_an(retInfo.startPos.row, retInfo.startPos.col,
                         retInfo.endPos.row, retInfo.endPos.col);
                 } else {
-                    aiRobot.stopUpdate();
+                    aiRobot._fn_ain();
                 }
                 break;
             case AIRobotStatus.taskDone:
-                aiRobot.botClaimBoardTask();
+                aiRobot._fn_am();
                 aiRobot.aiRobotStatus = AIRobotStatus.clcikBtnBuild;
                 break;
             case AIRobotStatus.clcikBtnBuild:
-                if (!UtilScene.isSceneItemCouldBeBuild()) {
+                if (!UtilScene._fn_qt()) {
 
                     aiRobot.aiRobotStatus = AIRobotStatus.clickNew;
                     return;
                 }
-                aiRobot.botTapBuildButton();
+                aiRobot._fn_ap();
                 aiRobot.aiRobotStatus = AIRobotStatus.goBuild;
                 break;
             case AIRobotStatus.goBuild:
@@ -234,7 +234,7 @@ class AIRobot {
                 break;
             case AIRobotStatus.enterMergeBoard:
                 aiRobot.aiRobotStatus = AIRobotStatus.idle;
-                aiRobot.openMergeBoardLayer();
+                aiRobot._fn_wf();
                 break;
             case AIRobotStatus.idle:
                 break;
@@ -243,33 +243,33 @@ class AIRobot {
         }
     }
 
-    public botTapBuildButton() {
-        let mergeBoardLayer = aiRobot.findMergeBoardLayer()!;
+    public _fn_ap() {
+        let mergeBoardLayer = aiRobot._fn_es()!;
         mergeBoardLayer.onClickBtnBuild();
     }
 
-    public botClaimBoardTask() {
-        let mergeBoardLayer = aiRobot.findMergeBoardLayer()!;
-        mergeBoardLayer.onClickBtnTaskDone(find("btnTaskDone", mergeBoardLayer.taskLayer.children[0])!.getComponent(Button)!);
+    public _fn_am() {
+        let mergeBoardLayer = aiRobot._fn_es()!;
+        mergeBoardLayer._fn_tp(find("btnTaskDone", mergeBoardLayer.taskLayer.children[0])!.getComponent(Button)!);
     }
 
-    public searchCompoeId(id: number) {
+    public _fn_add(id: number) {
         let ret: any = null;
         let arr: any = [];
-        UtilPub.for2Arr(mergeBoardStateStore.roomArr, (roomData: any, row: number, col: number) => {
+        UtilPub._fn_ex(mergeBoardStateStore.roomArr, (roomData: any, row: number, col: number) => {
             if (roomData.id == id) {
                 arr.push({ row: row, col: col });
             }
         });
         if (arr.length >= 2) {
             ret = {};
-            ret.startPos = UtilPub.getRandomItemByArr(arr, true);
-            ret.endPos = UtilPub.getRandomItemByArr(arr, true);
+            ret.startPos = UtilPub._fn_jv(arr, true);
+            ret.endPos = UtilPub._fn_jv(arr, true);
         }
         return ret;
     }
 
-    public getClickNewPos() {
+    public _fn_ge() {
         let arr = [[0, 0], [0, 1], [0, 2]];
         let pArr: any = [];
         for (let i in arr) {
@@ -283,24 +283,24 @@ class AIRobot {
             pArr.push({ row: row, col: col });
         }
         if (pArr.length > 0) {
-            return UtilPub.getRandomItemByArr(pArr);
+            return UtilPub._fn_jv(pArr);
         }
         return 0;
     }
 
-    public botTapBoardCell(row: number, col: number) {
-        let mergeBoardLayer = aiRobot.findMergeBoardLayer()!;
+    public _fn_ao(row: number, col: number) {
+        let mergeBoardLayer = aiRobot._fn_es()!;
         let roomItem = mergeBoardLayer.roomItemUIArr[row][col];
-        let touchEvent = aiRobot.getTouchEvent(roomItem);
+        let touchEvent = aiRobot._fn_mq(roomItem);
         mergeBoardLayer.roomListTouchStart(touchEvent);
         mergeBoardLayer.roomListTouchEnd(touchEvent);
     }
 
-    public botMergeBoardCells(startRow: number, startCol: number, endRow: number, endCol: number) {
-        let mergeBoardLayer = aiRobot.findMergeBoardLayer()!;
+    public _fn_an(startRow: number, startCol: number, endRow: number, endCol: number) {
+        let mergeBoardLayer = aiRobot._fn_es()!;
         let startRoomItem = mergeBoardLayer.roomItemUIArr[startRow][startCol];
         let endRoomItem = mergeBoardLayer.roomItemUIArr[endRow][endCol];
-        let touchEvent = aiRobot.getTouchEvent(startRoomItem);
+        let touchEvent = aiRobot._fn_mq(startRoomItem);
         mergeBoardLayer.roomListTouchStart(touchEvent);
         let roomItem = instantiate(startRoomItem);
         roomItem.parent = startRoomItem.parent;
@@ -315,17 +315,17 @@ class AIRobot {
             position: endRoomItem.position.clone()
         }, {
             onUpdate(target, ratio) {
-                let tEvent = aiRobot.getTouchEvent(roomItem);
+                let tEvent = aiRobot._fn_mq(roomItem);
                 mergeBoardLayer.roomListTouchMove(tEvent);
             }
         }).call(() => {
-            mergeBoardLayer.roomListTouchEnd(aiRobot.getTouchEvent(roomItem));
+            mergeBoardLayer.roomListTouchEnd(aiRobot._fn_mq(roomItem));
             roomItem.destroy();
         }).start();
     }
 
-    public getTouchEvent(node: Node) {
-        let pos = UtilPub.convertToWorldSpace(node);
+    public _fn_mq(node: Node) {
+        let pos = UtilPub._fn_dp(node);
         let touchEvent: any = {};
         touchEvent.getUILocation = () => {
             return v2(pos.x, pos.y);
@@ -333,13 +333,13 @@ class AIRobot {
         return touchEvent;
     }
 
-    public createTask() {
+    public _fn_dw() {
         let infoObj: any = {};
-        UtilPub.for2Arr(mergeBoardStateStore.roomArr, (roomData: any, row: number, col: number) => {
-            if (!mergeBoardStateStore.isRoomNormal(row, col)) {
+        UtilPub._fn_ex(mergeBoardStateStore.roomArr, (roomData: any, row: number, col: number) => {
+            if (!mergeBoardStateStore._fn_qn(row, col)) {
                 return;
             }
-            let propRow = TableDataService.ins().getTableValueByID(Const.Tables.prop, roomData.id);
+            let propRow = TableDataService.ins()._fn_ly(Const.Tables.prop, roomData.id);
             if (propRow.anc) {
                 return;
             }
@@ -352,7 +352,7 @@ class AIRobot {
         let idArr: any = [];
         for (let i in infoObj) {
             let id = parseInt(i);
-            let propRow = TableDataService.ins().getTableValueByID(Const.Tables.prop, id);
+            let propRow = TableDataService.ins()._fn_ly(Const.Tables.prop, id);
             let arr = infoObj[i];
             if (arr.length < 2) {
                 continue;
@@ -370,25 +370,25 @@ class AIRobot {
             for (let tmp in addLv) {
                 let add = addLv[tmp];
                 let id2 = id + add;
-                if (aiRobot.isPropSameType(propRow.id, id2)) {
+                if (aiRobot._fn_qj(propRow.id, id2)) {
                     idArr.push(id2);
                 }
             }
         }
         if (idArr.length <= 0) {
 
-            UtilPub.for2Arr(mergeBoardStateStore.roomArr, (roomData: any, row: number, col: number) => {
-                if (!mergeBoardStateStore.isRoomNormal(row, col)) {
+            UtilPub._fn_ex(mergeBoardStateStore.roomArr, (roomData: any, row: number, col: number) => {
+                if (!mergeBoardStateStore._fn_qn(row, col)) {
                     return;
                 }
-                let propRow = TableDataService.ins().getTableValueByID(Const.Tables.prop, roomData.id);
+                let propRow = TableDataService.ins()._fn_ly(Const.Tables.prop, roomData.id);
                 if (propRow.anc) {
                     return;
                 }
                 idArr.push(roomData.id);
             });
         }
-        let retId = UtilPub.getRandomItemByArr(idArr);
+        let retId = UtilPub._fn_jv(idArr);
 
         let starNum = 2;
         let rVal = Math.random();
@@ -403,16 +403,16 @@ class AIRobot {
         };
     }
 
-    public isPropSameType(id: number, id2: number) {
-        let propRow = TableDataService.ins().getTableValueByID(Const.Tables.prop, id);
-        let tmpRow = TableDataService.ins().getTableValueByID(Const.Tables.prop, id2);
+    public _fn_qj(id: number, id2: number) {
+        let propRow = TableDataService.ins()._fn_ly(Const.Tables.prop, id);
+        let tmpRow = TableDataService.ins()._fn_ly(Const.Tables.prop, id2);
         if (propRow && tmpRow && propRow.type == tmpRow.type && propRow.typeson == tmpRow.typeson) {
             return true;
         }
         return false;
     }
 
-    public findMergeBoardLayer(): MergeBoardLayer | null {
+    public _fn_es(): MergeBoardLayer | null {
         let mergeBoardLayer = find("Canvas/MergeBoardLayer");
         if (mergeBoardLayer) {
             return mergeBoardLayer.getComponent(MergeBoardLayer);
@@ -420,13 +420,13 @@ class AIRobot {
         return null;
     }
 
-    public addStarCost(num: number) {
+    public _fn_r(num: number) {
         if (aiRobot.isRobot()) {
             aiRobot.starCost += num;
             UtilPub.log("=====================", aiRobot.starCost, num);
             if (aiRobot.starCost >= 130) {
-                aiRobot.stopUpdate();
-                UtilScene.restartGame();
+                aiRobot._fn_ain();
+                UtilScene._fn_abw();
             }
         }
     }
@@ -437,7 +437,7 @@ class AIRobot {
 
 }
 
-const aiRobot = AIRobot.getInstance();
+const aiRobot = AIRobot._fn_ho();
 
 export { aiRobot };
 

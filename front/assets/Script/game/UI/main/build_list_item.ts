@@ -49,9 +49,9 @@ export class BuildListItemController extends BaseUiComponent {
         this.bindButton(this.gift, () => {
 
             if (this.roomId > 0) {
-                let roomData = TableDataService.ins().getTableValueByID(Const.Tables.scene_room, this.roomId)
-                let pos = UtilPub.convertToWorldSpace(this.gift)
-                UiLayerService.instance.showDialog(Const.Dialogs.RewardPopupItemController, { RewardItemRecord: roomData.resAll, pos: pos })
+                let roomData = TableDataService.ins()._fn_ly(Const.Tables.scene_room, this.roomId)
+                let pos = UtilPub._fn_dp(this.gift)
+                UiLayerService.instance._fn_ahg(Const.Dialogs.RewardPopupItemController, { RewardItemRecord: roomData.resAll, pos: pos })
             }
         })
 
@@ -59,9 +59,9 @@ export class BuildListItemController extends BaseUiComponent {
 
         this.bindButton(this.giftReceive, () => {
             if (this.roomId > 0) {
-                let roomData = TableDataService.ins().getTableValueByID(Const.Tables.scene_room, this.roomId)
-                UiLayerService.instance.showDialog(Const.Dialogs.RewardDialog, { reward: roomData.resAll })
-                SceneData.ins.setRoomReceiveInfoById(this.roomId, GSceneRoomReceiveState.received)
+                let roomData = TableDataService.ins()._fn_ly(Const.Tables.scene_room, this.roomId)
+                UiLayerService.instance._fn_ahg(Const.Dialogs.RewardDialog, { reward: roomData.resAll })
+                SceneData.ins._fn_afw(this.roomId, GSceneRoomReceiveState.received)
                 this.node.removeFromParent()
             }
         })
@@ -69,14 +69,14 @@ export class BuildListItemController extends BaseUiComponent {
 
     init(roomId: number) {
         this.roomId = roomId
-        let roomData = TableDataService.ins().getTableValueByID(Const.Tables.scene_room, roomId)
+        let roomData = TableDataService.ins()._fn_ly(Const.Tables.scene_room, roomId)
         this.roomNameLabel.string = roomData.name
         this.roomIntroLabel.string = roomData.desc
         this.giftReceive.active = false
-        this.setSpriteFrame(this.picture, Const.resPath.buildpicture + roomData.picture)
+        this._fn_agk(this.picture, Const.resPath.buildpicture + roomData.picture)
 
         this.bindButton(find("root/top", this.node)!, () => {
-            UiLayerService.instance.showDialog(Const.Dialogs.BuildInfoPanelController, { id: roomId })
+            UiLayerService.instance._fn_ahg(Const.Dialogs.BuildInfoPanelController, { id: roomId })
         })
 
 
@@ -85,24 +85,24 @@ export class BuildListItemController extends BaseUiComponent {
             this.mid.active = true
 
 
-            if (SceneData.ins.getRoomLockInfoById(roomId) == GSceneRoomState.unlock) {
+            if (SceneData.ins._fn_kk(roomId) == GSceneRoomState.unlock) {
                 this.bar.active = true
 
 
-                let roomItems = TableDataService.ins().getTableValuesByType2(Const.Tables.scene_item, "room", roomId + "", "eff", "1")
+                let roomItems = TableDataService.ins()._fn_mc(Const.Tables.scene_item, "room", roomId + "", "eff", "1")
                 roomItems.sort((a, b) => {
                     return a.stars.split(",")[1] - b.stars.split(",")[1]
                 })
 
 
-                let items = UtilScene.getNeedShowStarSceneItems(roomId)
+                let items = UtilScene._fn_il(roomId)
                 if (items.length > 0) {
                     let item = items[0]
 
 
-                    let skinData = TableDataService.ins().getTableValueByID(Const.Tables.scene_skin, item.skin)
-                    let unlockSkin = TableDataService.ins().getTableValueByID(Const.Tables.scene_skin, item.unlockSkin)
-                    UtilScene.setSkinIcon(this.icon, unlockSkin)
+                    let skinData = TableDataService.ins()._fn_ly(Const.Tables.scene_skin, item.skin)
+                    let unlockSkin = TableDataService.ins()._fn_ly(Const.Tables.scene_skin, item.unlockSkin)
+                    UtilScene._fn_agh(this.icon, unlockSkin)
 
 
                     this.expLabel.string = "+" + item.stars.split(",")[1] * UtilScene.ExpTimes
@@ -114,7 +114,7 @@ export class BuildListItemController extends BaseUiComponent {
                 }
 
 
-                let val = UtilScene.calcRoomCompletionRatio(roomId)
+                let val = UtilScene._fn_aw(roomId)
                 this.roomBar.progress = val
                 this.roomBarLabel.string = Math.round(val * 100) + "%"
                 if (val >= 1) {
@@ -128,10 +128,10 @@ export class BuildListItemController extends BaseUiComponent {
                 this.buildType = GBuildType.room
                 this.buildId = this.roomId
                 this.bar.active = false
-                let skinData = TableDataService.ins().getTableValuesByType(Const.Tables.scene_item, "room", roomData.id)[0]
+                let skinData = TableDataService.ins()._fn_mb(Const.Tables.scene_item, "room", roomData.id)[0]
                 UtilPub.log("-----skin---", roomData.id, skinData)
-                let unlockSkinData = TableDataService.ins().getTableValueByID(Const.Tables.scene_skin, skinData.unlockSkin)
-                UtilScene.setSkinIcon(this.icon, unlockSkinData)
+                let unlockSkinData = TableDataService.ins()._fn_ly(Const.Tables.scene_skin, skinData.unlockSkin)
+                UtilScene._fn_agh(this.icon, unlockSkinData)
 
 
                 this.expLabel.string = "+" + roomData.stars.split(",")[1] * UtilScene.ExpTimes
@@ -151,8 +151,8 @@ export class BuildListItemController extends BaseUiComponent {
 
     onClickBtnGo(){
 
-        mergeBoardStateStore.closeHandLayer();
-        UiLayerService.instance.hideDialog(Const.Dialogs.BuildListPanelController)
+        mergeBoardStateStore._fn_df();
+        UiLayerService.instance._fn_nk(Const.Dialogs.BuildListPanelController)
         this.emit(GD.event.goToBuildScene, this.buildId, this.buildType)
     }
 

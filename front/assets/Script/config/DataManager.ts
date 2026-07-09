@@ -2,13 +2,13 @@
 class DataManager{
     data: object  = {}
 
-    public getTable(tableName:string) {
+    public _fn_lt(tableName:string) {
 
         //@ts-ignore
         return this.data[tableName];
     }
 
-    public handleData (tableName:string, arr: string[]) {
+    public _fn_nf (tableName:string, arr: string[]) {
 
         let tips = arr[0].split(',');
 
@@ -20,7 +20,7 @@ class DataManager{
         let table: {[key: string]: object} = {};
         for (let i = 3; i < arr.length; i++) {
             let single = arr[i].split(/,/g);
-            let obj = this.singleData(names, types, single, tableName, single[0]);
+            let obj = this._fn_aic(names, types, single, tableName, single[0]);
             let key = single[0];
             table[key] = obj;
         }
@@ -31,7 +31,7 @@ class DataManager{
 
     }
 
-    private singleData(names:string[], types:string[], single: string[], tableName:string, taK:string) {
+    private _fn_aic(names:string[], types:string[], single: string[], tableName:string, taK:string) {
         let obj = {};
         for (let i = 0; i < single.length; i++) {
 
@@ -55,9 +55,9 @@ class DataManager{
         return obj;
     }
 
-    public GetTableByType(name : any, typename : any, type : any){
+    public _fn_lv(name : any, typename : any, type : any){
         let list = [];
-        let table = this.getTable(name);
+        let table = this._fn_lt(name);
         for(let i in table){
             //@ts-ignore
             if(table[i][`${typename}`] == type){
@@ -68,9 +68,9 @@ class DataManager{
         return list;
     }
 
-    public GetTableByID(name : string, id : Number){
+    public _fn_lu(name : string, id : Number){
         let tabeldata ;
-        let table = this.getTable(name);
+        let table = this._fn_lt(name);
         for(let i in table){
             //@ts-ignore
             if(table[i].id == id){

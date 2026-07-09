@@ -54,7 +54,7 @@ export class ShopItemCellController extends BaseView {
 
 
         if (this.shopData.icon){
-            this.setSpriteFrame(this.icon, Const.resPath.icon + this.shopData.icon, () => { }, 60)
+            this._fn_agk(this.icon, Const.resPath.icon + this.shopData.icon, () => { }, 60)
             this.icon.node.active = true;
         }else{
             this.icon.node.active = false;
@@ -73,7 +73,7 @@ export class ShopItemCellController extends BaseView {
             else if (this.shopData.sell_type == 2){
                 this.ad.active = true;
 
-                this.adCountLab.string = LanguageContentManager.getAdCountById(this.shopData.id) + "/" + this.shopData.sell_type_value;
+                this.adCountLab.string = LanguageContentManager._fn_fh(this.shopData.id) + "/" + this.shopData.sell_type_value;
             }
         }
         else{
@@ -85,15 +85,15 @@ export class ShopItemCellController extends BaseView {
 
 
     onClickHandler(eve:Event, str:string){
-        AudioPlaybackService.instance.playSound(Const.Audio.btn)
+        AudioPlaybackService.instance._fn_xc(Const.Audio.btn)
         if (str == "buy"){
-            GameHttpClient.getInstance().sendBuyProp(this.shopData?.id, this.shopData?.sell_type, ()=>{
-                this.toast("购买成功");
+            GameHttpClient._fn_ho()._fn_adn(this.shopData?.id, this.shopData?.sell_type, ()=>{
+                this._fn_aiu("购买成功");
             })
         }
         else if (str == "ad"){
-            GameHttpClient.getInstance().sendBuyProp(this.shopData?.id, this.shopData?.sell_type, ()=>{
-                this.toast("广告观看成功");
+            GameHttpClient._fn_ho()._fn_adn(this.shopData?.id, this.shopData?.sell_type, ()=>{
+                this._fn_aiu("广告观看成功");
             })
         }
 

@@ -49,13 +49,13 @@ export class BagItemCellController extends BaseView {
     itemConfig!:ShopConfigRecord;
 
     onLoad() {
-        this.bindButton(this.btnSell, this.onBtnSell);
+        this.bindButton(this.btnSell, this._fn_sn);
 
-        this.bindButton(this.btnDress, this.onbtnDress);
+        this.bindButton(this.btnDress, this._fn_sm);
 
-        this.bindButton(this.btnUndress, this.onbtnUndress);
+        this.bindButton(this.btnUndress, this._fn_so);
 
-        this.bindButton(this.btnUse, this.onbtnUse);
+        this.bindButton(this.btnUse, this._fn_sp);
     }
 
     refreshData(bagRecord:any){
@@ -65,7 +65,7 @@ export class BagItemCellController extends BaseView {
             return;
         }
 
-        this.itemConfig = TableDataService.ins().getTableValueByID(Const.Tables.new_prop, this.bagRecord.prop_id);
+        this.itemConfig = TableDataService.ins()._fn_ly(Const.Tables.new_prop, this.bagRecord.prop_id);
         if (!this.itemConfig){
             this.node.active = false;
             return;
@@ -73,7 +73,7 @@ export class BagItemCellController extends BaseView {
         this.nameLab.string = this.itemConfig.name;
 
         if (this.itemConfig.icon){
-            this.setSpriteFrame(this.icon, Const.resPath.icon + this.itemConfig.icon, () => { }, 60)
+            this._fn_agk(this.icon, Const.resPath.icon + this.itemConfig.icon, () => { }, 60)
             this.icon.node.active = true;
         }else{
             this.icon.node.active = false;
@@ -121,29 +121,29 @@ export class BagItemCellController extends BaseView {
 
 
     onClickHandler(eve:Event, str:string){
-        AudioPlaybackService.instance.playSound(Const.Audio.btn)
+        AudioPlaybackService.instance._fn_xc(Const.Audio.btn)
 
     }
 
-    onBtnSell(){
+    _fn_sn(){
         if (this.itemConfig.store_type == 2){
-            GameHttpClient.getInstance().sendSellBagItem(this.itemConfig.store_type, this.bagRecord.prop_id)
+            GameHttpClient._fn_ho()._fn_adx(this.itemConfig.store_type, this.bagRecord.prop_id)
         }else{
-            GameHttpClient.getInstance().sendSellBagItem(this.itemConfig.store_type, this.bagRecord.id)
+            GameHttpClient._fn_ho()._fn_adx(this.itemConfig.store_type, this.bagRecord.id)
         }
 
     }
-    onbtnDress(){
+    _fn_sm(){
 
     }
-    onbtnUndress(){
+    _fn_so(){
         if (this.itemConfig.store_type == 3){
-            GameHttpClient.getInstance().sendPetAction(6, 0, this.bagRecord.id, this.bagRecord.prop_id,"",()=>{
+            GameHttpClient._fn_ho()._fn_adt(6, 0, this.bagRecord.id, this.bagRecord.prop_id,"",()=>{
                 GameEventManager.eventTarget.emit(GameEventManager.EEventName.SHOW_TIP, "卸下成功");
             });
         }
     }
-    onbtnUse(){
+    _fn_sp(){
 
     }
 

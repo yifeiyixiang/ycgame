@@ -20,18 +20,18 @@ export class GMInputLayer extends BaseView {
     btnClose: Node = null!;
 
     start() {
-        this.bindButton(this.btnClose, this.onClickBtnClose);
-        this.bindButton(this.btnSure, this.onClickBtnSure);
+        this.bindButton(this.btnClose, this._fn_sz);
+        this.bindButton(this.btnSure, this._fn_to);
     }
 
     show(args: any) {
         super.show(args);
 
-        this.initUI();
+        this._fn_ph();
 
     }
 
-    initUI() {
+    _fn_ph() {
         if (aiRobot.isRobot()) {
             this.hintLabel.string = "当前是机器人";
         } else {
@@ -39,23 +39,23 @@ export class GMInputLayer extends BaseView {
         }
     }
 
-    onClickBtnClose() {
+    _fn_sz() {
         this.close();
     }
 
-    onClickBtnSure() {
+    _fn_to() {
         let str = this.editBox.string;
         UtilPub.log(str);
         switch (str) {
             case "tyq666":
 
-                GameStorageJSF.ins.setRobot(true);
-                UtilScene.restartGame();
+                GameStorageJSF.ins._fn_aft(true);
+                UtilScene._fn_abw();
                 break;
             case "666":
 
-                GameStorageJSF.ins.setRobot(false);
-                UtilScene.restartGame();
+                GameStorageJSF.ins._fn_aft(false);
+                UtilScene._fn_abw();
                 break;
             default:
                 break;

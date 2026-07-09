@@ -55,14 +55,14 @@ export class LoadingCanvasController extends BaseView {
     onLoad() {
         console.log("-----------loading 场景--加载游戏--onLoad---------")
         this.on(GD.event.loadAll, this.loadAll, this)
-        director.off(GNetCmd.GetRegionData.toString(), this.onMessageEvent);
-        director.off(GNetCmd.UniqueLogin.toString(), this.onMessageEvent);
-        director.off(GNetCmd.ReqWxSession.toString(), this.onMessageEvent);
+        director.off(GNetCmd.GetRegionData.toString(), this._fn_uw);
+        director.off(GNetCmd.UniqueLogin.toString(), this._fn_uw);
+        director.off(GNetCmd.ReqWxSession.toString(), this._fn_uw);
 
-        director.on(GNetCmd.GetRegionData.toString(), this.onMessageEvent);
-        director.on(GNetCmd.UniqueLogin.toString(), this.onMessageEvent);
-        director.on(GNetCmd.ReqWxSession.toString(), this.onMessageEvent);
-        this.bindButton(this.loginBtn, this.loginBtnHandler)
+        director.on(GNetCmd.GetRegionData.toString(), this._fn_uw);
+        director.on(GNetCmd.UniqueLogin.toString(), this._fn_uw);
+        director.on(GNetCmd.ReqWxSession.toString(), this._fn_uw);
+        this.bindButton(this.loginBtn, this._fn_ru)
 
         this.levebg!.active = false
 
@@ -73,13 +73,13 @@ export class LoadingCanvasController extends BaseView {
             this.levebg!.active = false
         })
 
-        this.bindButton(find("loading/page/login/loginGoogle", this.node)!, this.loginBtnGoogle)
+        this.bindButton(find("loading/page/login/loginGoogle", this.node)!, this._fn_rt)
         this.bindButton(find("loading/page/login/loginFaceBook", this.node)!, () => {
-            RewardVideoManager.LoginFacebook()
+            RewardVideoManager._fn_rw()
         })
 
         this.bindButton(find("loading/privacyLabel", this.node)!, () => {
-            UiLayerService.instance.showDialog(Const.Dialogs.PrivacyDialog)
+            UiLayerService.instance._fn_ahg(Const.Dialogs.PrivacyDialog)
         })
 
         game.on(Game.EVENT_HIDE, () => {
@@ -98,14 +98,14 @@ export class LoadingCanvasController extends BaseView {
         this.versionTxt.string = "版本号：" + Const.version
 
 
-        AudioPlaybackService.instance.initMusic()
-        CronCtrJSF.GetInstance().init()
+        AudioPlaybackService.instance._fn_oj()
+        CronCtrJSF._fn_hp().init()
 
 
         if (HTML5) {
-            this.account.string = ServerCtrJSF.GetInstance().Account
+            this.account.string = ServerCtrJSF._fn_hp().Account
         }
-        this.account.string = ServerCtrJSF.GetInstance().Account
+        this.account.string = ServerCtrJSF._fn_hp().Account
 
 
 
@@ -113,28 +113,28 @@ export class LoadingCanvasController extends BaseView {
         this.isEnterGame = false
         this.cnt = 0
         this.bar.progress = 0
-        this.loadPkg();
-        RewardVideoManager.initManager()
-        GamePlatform.checkWechatUpdate()
+        this._fn_rn();
+        RewardVideoManager._fn_oh()
+        GamePlatform._fn_co()
         if (NATIVE) {
             console.log(" Window.toastInfo")
 
             //@ts-ignore
             window.toastInfo = (str: string) => {
                 console.log("AppActivity toastInfo= ", str)
-                this.toast(str)
+                this._fn_aiu(str)
             }
 
             //@ts-ignore
             window.Login = (str: string) => {
 
                 console.log("AppActivity = ", str)
-                ServerCtrJSF.GetInstance().reqUniqueLoginByAccount(this.account.string.trim())
+                ServerCtrJSF._fn_hp()._fn_abk(this.account.string.trim())
             }
 
         }
 
-        GamePlatform.checkH5DownUrl()
+        GamePlatform._fn_bt()
     }
 
     start() {
@@ -166,7 +166,7 @@ export class LoadingCanvasController extends BaseView {
         console.log("-----------loading 场景--加载游戏--start---------")
 
         GamePlatform.init()
-        GamePlatform.track("进入登录")
+        GamePlatform._fn_aja("进入登录")
     }
 
     onEnable() {
@@ -174,13 +174,13 @@ export class LoadingCanvasController extends BaseView {
     }
 
 
-    loginBtnGoogle() {
+    _fn_rt() {
         console.log(" Window.loginBtnGoogle")
-        RewardVideoManager.LoginGoole()
+        RewardVideoManager._fn_ry()
     }
 
 
-    loginBtnHandler() {
+    _fn_ru() {
 
 
 
@@ -188,23 +188,23 @@ export class LoadingCanvasController extends BaseView {
 
 
 
-        if (ServerCtrJSF.GetInstance().isOkToDownload() == true) {
+        if (ServerCtrJSF._fn_hp()._fn_qe() == true) {
             Notifications.emit(GD.event.loadAll, () => {
-                ServerCtrJSF.GetInstance().isLoadAll = true
+                ServerCtrJSF._fn_hp().isLoadAll = true
             })
         } else {
-            ServerCtrJSF.GetInstance().isLoadAll = true
+            ServerCtrJSF._fn_hp().isLoadAll = true
         }
-        ServerCtrJSF.GetInstance().isLoadAll = true
-        ServerCtrJSF.GetInstance().isLogin = true;
+        ServerCtrJSF._fn_hp().isLoadAll = true
+        ServerCtrJSF._fn_hp().isLogin = true;
 
     }
 
-    onMessageEvent(value: any) {
-        ServerCtrJSF.GetInstance().loginHandler(value)
+    _fn_uw(value: any) {
+        ServerCtrJSF._fn_hp()._fn_rz(value)
     }
 
-    loadBundles() {
+    _fn_rf() {
 
         this.bar.progress = 0
         this.timeProgress = 1
@@ -217,31 +217,31 @@ export class LoadingCanvasController extends BaseView {
                 this.curProgress = this.bar.progress + per
                 this.cnt += 1
                 if (this.arr[i] == "d1audio") {
-                    UtilPub.loadAudio("d1audio").then(() => { this.cnt += 1 })
+                    UtilPub._fn_re("d1audio").then(() => { this.cnt += 1 })
                 } else if (this.arr[i] == "json") {
-                    TableDataService.ins().loadTable().then(() => { this.cnt += 1 })
+                    TableDataService.ins()._fn_rs().then(() => { this.cnt += 1 })
                 }
             })
         }
     }
 
-    async loadPkg() {
+    async _fn_rn() {
         this.arr = [...Const.bundlesAhead1]
 
 
 
         this.cnt = 0
-        this.loadBundles()
+        this._fn_rf()
     }
 
     loadAll(cb: Function) {
         this.arr = [...Const.bundlesAhead2, ...Const.bundlesGame]
-        this.loadBundles()
+        this._fn_rf()
         cb && cb()
     }
 
 
-    preloadSence() {
+    _fn_xn() {
         return new Promise<void>((resolve, reject) => {
             director.preloadScene('game', (err) => {
                 if (!err) {
@@ -253,7 +253,7 @@ export class LoadingCanvasController extends BaseView {
         })
     }
 
-    private enterGame() {
+    private _fn_en() {
 
         director.off(GNetCmd.GetRegionData.toString());
         director.off(GNetCmd.UniqueLogin.toString());
@@ -268,7 +268,7 @@ export class LoadingCanvasController extends BaseView {
         assetManager.loadBundle("scene", (err, bundle) => {
             if (err) return;
 
-                self.preloadSence().then(() => {
+                self._fn_xn().then(() => {
                 self.bar.progress = 1
                 self.scheduleOnce(() => {
                     director.loadScene("game");
@@ -294,11 +294,11 @@ export class LoadingCanvasController extends BaseView {
 
         try {
             if (WECHAT) {
-                clientAppId = GamePlatform.getWechatAppId();
-                const userInfo = await GamePlatform.requestWechatUserInfo();
+                clientAppId = GamePlatform._fn_mz();
+                const userInfo = await GamePlatform._fn_abj();
                 loginNickname = ((userInfo && (userInfo.nickName || userInfo.nickname)) || "").trim();
                 loginAvatar = ((userInfo && (userInfo.avatarUrl || userInfo.avatar)) || "").trim();
-                loginCode = await GamePlatform.requestWechatLoginCode();
+                loginCode = await GamePlatform._fn_abi();
             } else if (!loginCode) {
                 loginCode = "dev:" + (this.account.string.trim() || "preview");
                 loginNickname = (playerDataStore.roleName || "").trim();
@@ -307,11 +307,11 @@ export class LoadingCanvasController extends BaseView {
         } catch (err) {
             console.warn("wechat auth/login failed:", err);
             this.isStartLogin = false;
-            this.toast(WECHAT ? "wechat auth/login failed" : "login failed");
+            this._fn_aiu(WECHAT ? "wechat auth/login failed" : "login failed");
             return;
         }
 
-        GameHttpClient.getInstance().sendLogin(loginCode, loginNickname, loginAvatar, ()=>{
+        GameHttpClient._fn_ho()._fn_adq(loginCode, loginNickname, loginAvatar, ()=>{
             this.isCanEnter = true;
 
             find("loading/page/loginBtn2", this.node).active = false;
@@ -319,7 +319,7 @@ export class LoadingCanvasController extends BaseView {
             this.txt.node.active = true;
         }, (des:string)=>{
             this.isStartLogin = false;
-            this.toast(des)
+            this._fn_aiu(des)
         }, clientAppId, clientEnv);
     }
 
@@ -330,7 +330,7 @@ export class LoadingCanvasController extends BaseView {
             console.log("------全部资源加载完成------")
             this.isLoaded = false
 
-            UiLayerService.instance.showDialog(Const.Dialogs.FloatingTipPanelController)
+            UiLayerService.instance._fn_ahg(Const.Dialogs.FloatingTipPanelController)
 
 
 
@@ -338,10 +338,10 @@ export class LoadingCanvasController extends BaseView {
 
         }
 
-        if (this.isCanEnter && ServerCtrJSF.GetInstance().isLogin && ServerCtrJSF.GetInstance().isLoadAll && this.isEnterGame == false) {
+        if (this.isCanEnter && ServerCtrJSF._fn_hp().isLogin && ServerCtrJSF._fn_hp().isLoadAll && this.isEnterGame == false) {
             console.log("------进入游戏------")
             this.isEnterGame = true
-            this.enterGame()
+            this._fn_en()
         } else {
 
             this.calTime += deltaTime
@@ -350,7 +350,7 @@ export class LoadingCanvasController extends BaseView {
 
 
                     if (true|| WECHAT) {
-                        this.loginBtnHandler();
+                        this._fn_ru();
                     }
 
             }

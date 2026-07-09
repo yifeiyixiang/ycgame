@@ -21,8 +21,8 @@ export class FuBagReceiveLayer extends BaseView {
     _rewardList: any = []
 
     start() {
-        this.bindButton(this.btnSure, this.onClickBtnSure);
-        this.bindButton(this.fuBag, this.onClickFuBag);
+        this.bindButton(this.btnSure, this._fn_to);
+        this.bindButton(this.fuBag, this._fn_ua);
 
     }
 
@@ -38,32 +38,32 @@ export class FuBagReceiveLayer extends BaseView {
         }
     }
 
-    onClickPropItem(btn: Button) {
+    _fn_ue(btn: Button) {
         // @ts-ignore
         let propConfig = btn.node.propRow;
-        mergeBoardStateStore.openPropInfoLayer(propConfig.id);
+        mergeBoardStateStore._fn_wh(propConfig.id);
     }
 
-    onClickBtnSure() {
+    _fn_to() {
         for (let rewardIndex = 0; rewardIndex < this._rewardList.length; rewardIndex++) {
             const rewardEntry = this._rewardList[rewardIndex];
             console.log("prop : " + rewardEntry[0] + "  num: " + rewardEntry[1])
-            mergeBoardStateStore.addPropNum(rewardEntry[0], rewardEntry[1], this.node.getComponent(UITransform)!.convertToWorldSpaceAR(Vec3.ZERO))
+            mergeBoardStateStore._fn_m(rewardEntry[0], rewardEntry[1], this.node.getComponent(UITransform)!.convertToWorldSpaceAR(Vec3.ZERO))
         }
         this.close();
     }
 
-    onClickFuBag() {
+    _fn_ua() {
         let rewardItemNode = find("root/item" + this._curIndex, this.node)!
         rewardItemNode.active = true
 
-        let fuBagRewardList = TableDataService.ins().getTableValueByID(Const.Tables.fuBag, this.bagId).price
+        let fuBagRewardList = TableDataService.ins()._fn_ly(Const.Tables.fuBag, this.bagId).price
         let selectedReward = fuBagRewardList[Math.floor(fuBagRewardList.length * Math.random())]
         let propId = selectedReward[0]
         let rewardCount = selectedReward[1]
         this._rewardList.push(selectedReward)
-        let propConfig = TableDataService.ins().getTableValueByID(Const.Tables.prop, propId)
-        this.setSpriteFrame(find("icon", rewardItemNode)!.getComponent(Sprite)!, Const.resPath.icon + propConfig.icon, undefined, 100)
+        let propConfig = TableDataService.ins()._fn_ly(Const.Tables.prop, propId)
+        this._fn_agk(find("icon", rewardItemNode)!.getComponent(Sprite)!, Const.resPath.icon + propConfig.icon, undefined, 100)
         find("num", rewardItemNode)!.getComponent(Label)!.string = "x" + rewardCount
         tween(rewardItemNode).set({ scale: v3(0, 0, 0) }).to(0.2, { scale: v3(1.1, 1.1, 1.1) }).to(0.1, { scale: v3(1, 1, 1) }).call(() => {
 

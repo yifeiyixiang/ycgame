@@ -35,12 +35,12 @@ export class StoreSkinItemController extends BaseUiComponent {
     start() {
 
         this.bindButton(this.infoBtn, ()=>{
-            UiLayerService.instance.showDialog(Const.Dialogs.SceneSkinDetailController, { skinId: this.skinId })
+            UiLayerService.instance._fn_ahg(Const.Dialogs.SceneSkinDetailController, { skinId: this.skinId })
         })
 
 
         this.bindButton(this.buyBtn, ()=>{
-            UiLayerService.instance.showDialog(Const.Dialogs.SceneSkinDetailController, {skinId:this.skinId})
+            UiLayerService.instance._fn_ahg(Const.Dialogs.SceneSkinDetailController, {skinId:this.skinId})
         })
 
 
@@ -52,19 +52,19 @@ export class StoreSkinItemController extends BaseUiComponent {
     init(skinId:number, selId:number){
 
         this.skinId = skinId
-        this.updSel(selId)
+        this._fn_ajx(selId)
 
-        let skinData = TableDataService.ins().getTableValueByID(Const.Tables.scene_skin, skinId)
+        let skinData = TableDataService.ins()._fn_ly(Const.Tables.scene_skin, skinId)
         this.buyBtn.active = false
         this.gotted.active = false
         this.using.active = false
         this.dressNode.active = false
-        if(SceneData.ins.getSceneSkinById(this.skinId) == GSceneSkinState.noGotted){
+        if(SceneData.ins._fn_ky(this.skinId) == GSceneSkinState.noGotted){
 
             this.buyBtn.active = true
             let itemId = skinData.res.split(",")[0]
-            let itemData = TableDataService.ins().getTableValueByID(Const.Tables.prop, itemId)
-            this.setSpriteFrame(this.resIcon, Const.resPath.icon + itemData.icon)
+            let itemData = TableDataService.ins()._fn_ly(Const.Tables.prop, itemId)
+            this._fn_agk(this.resIcon, Const.resPath.icon + itemData.icon)
             this.resVal.string = "x"+skinData.res.split(",")[1]
 
             this.dressNode.active = true
@@ -72,20 +72,20 @@ export class StoreSkinItemController extends BaseUiComponent {
 
         }else{
 
-            let script = UtilScene.getSceneNodeScript(Const.SelSceneNode)
+            let script = UtilScene._fn_kw(Const.SelSceneNode)
             UtilPub.log("------皮肤ID---", script.id)
-            let data = SceneData.ins.getSceneItemById(script.id, script.type)!
+            let data = SceneData.ins._fn_ku(script.id, script.type)!
             if(this.skinId==data.skin){
                 this.using.active = true
             }else{
                 this.gotted.active = true
             }
         }
-        UtilScene.setSkinIcon(this.icon, skinData)
+        UtilScene._fn_agh(this.icon, skinData)
 
 
         this.newBirdIcon.active = false
-        let arr = TableDataService.ins().getTable(Const.Tables.scene_guest)
+        let arr = TableDataService.ins()._fn_lt(Const.Tables.scene_guest)
         for(let i=0;i<arr.length; i++){
             let row = arr[i]
             if (this.skinId == row.skin ){
@@ -96,7 +96,7 @@ export class StoreSkinItemController extends BaseUiComponent {
 
     }
 
-    updSel(selSkinId:number){
+    _fn_ajx(selSkinId:number){
         UtilPub.log("------显示选中---", selSkinId, this.skinId)
         this.selBg.active = selSkinId==this.skinId
         this.unselBg.active = !this.selBg.active

@@ -1,6 +1,6 @@
 import { ParticleSystem,Node } from "cc";
 export module ParticleEffectHelper{
-    export function Play(node:Node){
+    export function _fn_wv(node:Node){
         if(node==null || node.active==false ||node.isValid==false) return
         const arr = node.getComponentsInChildren(ParticleSystem);
         for(let a of arr){
@@ -11,7 +11,7 @@ export module ParticleEffectHelper{
 
         }
     }
-    export function Stop(node:Node){
+    export function _fn_ail(node:Node){
         if(node==null || node.active==false ||node.isValid==false) return
         const arr = node.getComponentsInChildren(ParticleSystem);
         for(let a of arr){

@@ -12,7 +12,7 @@ export class PrivacyDialog extends BaseView {
 
 
     start() {
-        this.bindButton(find("root/btnClose", this.node)!, this.popClose)
+        this.bindButton(find("root/btnClose", this.node)!, this._fn_xe)
 
     }
 

@@ -35,7 +35,7 @@ export class grid_wall extends BaseUiComponent {
         }
     }
 
-    clickGrid() {
+    _fn_dc() {
         UtilPub.log("------点击grid_wall格子-- x:", this.x, " y:", this.y)
     }
 }

@@ -19,7 +19,7 @@ export class UtilPub extends Component {
 
     public static isStartGame: boolean = false
 
-    public static randomString(len: number) {
+    public static _fn_yh(len: number) {
         len = len || 32;
         var $chars = 'ABCDEFGHJKMNPQRSTWXYZabcdefhijkmnprstwxyz2345678';
         var maxPos = $chars.length;
@@ -40,7 +40,7 @@ export class UtilPub extends Component {
 
 
 
-    public static insidePolygon(polygon: Array<Array<number>>, point: Array<number>) {
+    public static _fn_po(polygon: Array<Array<number>>, point: Array<number>) {
 
         var x = point[0], y = point[1];
         var inside = false;
@@ -58,9 +58,9 @@ export class UtilPub extends Component {
 
 
 
-    public static setNodePositionByOtherNode(node: Node, otherNode: Node) {
-        let pos = this.convertToWorldSpace(otherNode);
-        pos = this.convertToNodeSpace(node, pos);
+    public static _fn_afg(node: Node, otherNode: Node) {
+        let pos = this._fn_dp(otherNode);
+        pos = this._fn_do(node, pos);
         node.position = pos;
     }
 
@@ -69,7 +69,7 @@ export class UtilPub extends Component {
 
 
 
-    public static sortArr(arr: any, compareFunc: Function) {
+    public static _fn_aid(arr: any, compareFunc: Function) {
         if (!arr || arr.length <= 1) {
             return arr;
         }
@@ -92,7 +92,7 @@ export class UtilPub extends Component {
 
 
 
-    public static getRowsByWeightAndNum(arr: any, num: number, canRepeat?: boolean) {
+    public static _fn_kp(arr: any, num: number, canRepeat?: boolean) {
         if (!num) {
             num = 1;
         }
@@ -102,7 +102,7 @@ export class UtilPub extends Component {
             if (arr.length <= 0) {
                 break;
             }
-            var row = this.getRowByWeight(arr);
+            var row = this._fn_ko(arr);
             ret.push(row);
             if (!canRepeat) {
                 var index = arr.indexOf(row);
@@ -117,7 +117,7 @@ export class UtilPub extends Component {
 
 
 
-    public static getRowByWeight(arr: any, totalWeight?: number) {
+    public static _fn_ko(arr: any, totalWeight?: number) {
         if (!totalWeight) {
             totalWeight = 0;
             for (var i in arr) {
@@ -153,7 +153,7 @@ export class UtilPub extends Component {
 
 
 
-    public static getRandomItemByArr(arr: any, isRemove: boolean = false) {
+    public static _fn_jv(arr: any, isRemove: boolean = false) {
         if (!arr || arr.length <= 0) {
             return null;
         }
@@ -167,7 +167,7 @@ export class UtilPub extends Component {
     }
 
 
-    public static forArr(arr: any, cb: Function) {
+    public static _fn_ey(arr: any, cb: Function) {
         for (let i = 0, len = arr.length; i < len; i++) {
             if (cb(arr[i], i)) {
                 return;
@@ -175,7 +175,7 @@ export class UtilPub extends Component {
         }
     }
 
-    public static for2Arr(arr: any, cb: Function, isReverse: boolean = false) {
+    public static _fn_ex(arr: any, cb: Function, isReverse: boolean = false) {
         if (isReverse) {
             for (let i = arr.length - 1; i >= 0; i--) {
                 let tmpArr = arr[i];
@@ -202,7 +202,7 @@ export class UtilPub extends Component {
 
 
 
-    public static convertToWorldSpace(node: Node, isCenter?: boolean): Vec3 {
+    public static _fn_dp(node: Node, isCenter?: boolean): Vec3 {
         let transform = node.parent!.getComponent(UITransform);
 
         let pos = node.getPosition();
@@ -215,7 +215,7 @@ export class UtilPub extends Component {
         return transform!.convertToWorldSpaceAR(pos);
     }
 
-    public static convertToWorldSpaceWithPos(node: Node, pos: Vec3): Vec3 {
+    public static _fn_dq(node: Node, pos: Vec3): Vec3 {
         let transform = node.parent!.getComponent(UITransform);
         pos = transform!.convertToWorldSpaceAR(pos);
 
@@ -227,7 +227,7 @@ export class UtilPub extends Component {
 
 
 
-    public static convertToNodeSpace(node: Node, pos: Vec3): Vec3 {
+    public static _fn_do(node: Node, pos: Vec3): Vec3 {
         if (node.parent == null) {
             return Vec3.ZERO
         }
@@ -236,7 +236,7 @@ export class UtilPub extends Component {
         return transform!.convertToNodeSpaceAR(pos);
     }
 
-    public static IsEmptyObject(obj: any) {
+    public static _fn_pu(obj: any) {
         for (let key in obj) {
             return false
         }
@@ -266,7 +266,7 @@ export class UtilPub extends Component {
         return Number(num.toFixed(2))
     }
 
-    public static numToStr2(num: number) {
+    public static _fn_si(num: number) {
         if (num < 10) {
             return "0" + num
         } else {
@@ -274,7 +274,7 @@ export class UtilPub extends Component {
         }
     }
 
-    public static numToStr3(num: number) {
+    public static _fn_sj(num: number) {
         if (num < 10) {
             return "00" + num
         } else if (num < 100) {
@@ -304,9 +304,9 @@ export class UtilPub extends Component {
     }
 
 
-    public static loadAudio(bundleName: string) {
+    public static _fn_re(bundleName: string) {
         return new Promise<void>((resolve, reject) => {
-            ResourceLoaderService.loadResDirWithBundle(bundleName, "./", (err, res) => {
+            ResourceLoaderService._fn_rp(bundleName, "./", (err, res) => {
                 UtilPub.log("加载音乐数据----------", res.length)
                 for (let i = 0; i < res.length; i++) {
                     let audioClip = res[i] as AudioClip
@@ -318,16 +318,16 @@ export class UtilPub extends Component {
     }
 
 
-    public static loadConfig() {
+    public static _fn_rg() {
         return new Promise<void>((resolve, reject) => {
-            ResourceLoaderService.loadResDirWithBundle('config', "./", (err, res) => {
+            ResourceLoaderService._fn_rp('config', "./", (err, res) => {
 
 
 
                 for (let i = 0; i < res.length; i++) {
                     let textAsset = res[i] as TextAsset
                     let items = textAsset.text.split("\n");
-                    DataManager.handleData(textAsset.name, items);
+                    DataManager._fn_nf(textAsset.name, items);
                 }
                 resolve()
             })
@@ -335,9 +335,9 @@ export class UtilPub extends Component {
     }
 
 
-    public static loadPic() {
+    public static _fn_rm() {
         return new Promise<void>((resolve, reject) => {
-            ResourceLoaderService.loadResDirWithBundle('img', "./icons", (err, res) => {
+            ResourceLoaderService._fn_rp('img', "./icons", (err, res) => {
 
 
                 UtilPub.log("spriteFrames data----------", res.length)
@@ -351,7 +351,7 @@ export class UtilPub extends Component {
         })
     }
 
-    public static loadSpineSkeletonData(url: any, cb?: Function) {
+    public static _fn_rr(url: any, cb?: Function) {
         let bundleName = url.split("|")[0]
         let pathName = url.split("|")[1]
 
@@ -371,7 +371,7 @@ export class UtilPub extends Component {
         });
     }
 
-    public static getPic(pname: any, cb: Function) {
+    public static _fn_je(pname: any, cb: Function) {
 
 
 
@@ -379,7 +379,7 @@ export class UtilPub extends Component {
             let p = ResourceLoaderService.spriteFrames[pname]
             cb(p)
         } else {
-            ResourceLoaderService.loadResWithBundle(pname + "/spriteFrame", SpriteFrame, (err, sf) => {
+            ResourceLoaderService._fn_rq(pname + "/spriteFrame", SpriteFrame, (err, sf) => {
 
                 if (err) {
                     console.error("-----------not find pname", pname)
@@ -391,7 +391,7 @@ export class UtilPub extends Component {
         }
     }
 
-    public static getPic2(pname: any, cb: Function) {
+    public static _fn_jf(pname: any, cb: Function) {
 
 
 
@@ -399,7 +399,7 @@ export class UtilPub extends Component {
             let p = ResourceLoaderService.spriteFrames[pname]
             cb(p)
         } else {
-            ResourceLoaderService.loadResWithBundle(pname + "/spriteFrame", SpriteFrame, (err, sf) => {
+            ResourceLoaderService._fn_rq(pname + "/spriteFrame", SpriteFrame, (err, sf) => {
 
                 if (err) {
 
@@ -412,7 +412,7 @@ export class UtilPub extends Component {
         }
     }
 
-    public static getPrefab(prefabPath: string, cb: Function) {
+    public static _fn_jj(prefabPath: string, cb: Function) {
         let arr = prefabPath.split("/")
         let pname = arr[arr.length - 1]
 
@@ -420,7 +420,7 @@ export class UtilPub extends Component {
             let p = ResourceLoaderService.prefabs[pname]
             cb(p)
         } else {
-            ResourceLoaderService.loadResWithBundle(prefabPath, Prefab, (err, prefab) => {
+            ResourceLoaderService._fn_rq(prefabPath, Prefab, (err, prefab) => {
                 if (err) {
                     console.log("========loadResWithBundle error:", prefabPath, err.message);
                 }
@@ -451,7 +451,7 @@ export class UtilPub extends Component {
 
 
 
-    public static getBenchmarkLevel(): number {
+    public static _fn_fr(): number {
         // @ts-ignore
         if (window.wx) {
             //@ts-ignore
@@ -502,7 +502,7 @@ export class UtilPub extends Component {
 
 
 
-    public static numberJump(label: Label, oriVal: number, addVal: number, cnt: number, cb: Function, perTime: number = 0.1) {
+    public static _fn_sh(label: Label, oriVal: number, addVal: number, cnt: number, cb: Function, perTime: number = 0.1) {
         if (cnt <= 0) {
             cb && cb()
             return
@@ -510,17 +510,17 @@ export class UtilPub extends Component {
         label.string = Math.round(oriVal + Math.round(addVal / cnt)) + ""
         cnt--
         tween(label.node).delay(perTime).call(() => {
-            this.numberJump(label, oriVal, addVal, cnt, cb, perTime)
+            this._fn_sh(label, oriVal, addVal, cnt, cb, perTime)
         }).start()
     }
 
 
 
 
-    public static checkIsLowPhone() {
-        UtilPub.log("----判断低端机的性能等级", UtilPub.getBenchmarkLevel())
+    public static _fn_bx() {
+        UtilPub.log("----判断低端机的性能等级", UtilPub._fn_fr())
         let checkBenchmark = 22;
-        return UtilPub.getBenchmarkLevel() < checkBenchmark
+        return UtilPub._fn_fr() < checkBenchmark
     }
 
 
@@ -533,7 +533,7 @@ export class UtilPub extends Component {
 
 
 
-    public static Bezier2DShow(startNode: Node, endNode: Node, radio: number, deltaX: number, deltaY: number, duration: number, cb: Function) {
+    public static _fn_ab(startNode: Node, endNode: Node, radio: number, deltaX: number, deltaY: number, duration: number, cb: Function) {
         let e = endNode.getComponent(UITransform)!.convertToWorldSpaceAR(new Vec3(0, 0, 0))
         let eNode = startNode.parent!.getComponent(UITransform)!.convertToNodeSpaceAR(e)
 
@@ -542,15 +542,15 @@ export class UtilPub extends Component {
         let pArr = []
         let p1 = startNode.position
         let p2 = eNode
-        let cp = UtilPub.Bezier2DGetCtlPoint(p1, p2, radio, deltaX, deltaY)
+        let cp = UtilPub._fn_z(p1, p2, radio, deltaX, deltaY)
 
         for (let i = 0; i < 30; i++) {
-            let p = UtilPub.BezierTwo(i / 30, p1, cp, p2)
+            let p = UtilPub._fn_af(i / 30, p1, cp, p2)
             pArr.push(new Vec3(p[0], p[1], startNode.position.z))
 
         }
         pArr.push(eNode)
-        UtilPub.Bezier2DRun(pArr, startNode, 0, duration, cb)
+        UtilPub._fn_aa(pArr, startNode, 0, duration, cb)
     }
 
 
@@ -563,21 +563,21 @@ export class UtilPub extends Component {
 
 
 
-    public static Bezier2DShowPoint(startNode: Node, delta: Vec3, radio: number, deltaX: number, deltaY: number, duration: number, cb: Function) {
+    public static _fn_ac(startNode: Node, delta: Vec3, radio: number, deltaX: number, deltaY: number, duration: number, cb: Function) {
 
 
         let pArr = []
         let p1 = startNode.position
         let p2 = new Vec3(startNode.position.x + delta.x, startNode.position.y + delta.y, startNode.position.z + delta.z)
-        let cp = UtilPub.Bezier2DGetCtlPoint(p1, p2, radio, deltaX, deltaY)
+        let cp = UtilPub._fn_z(p1, p2, radio, deltaX, deltaY)
 
         for (let i = 0; i < 30; i++) {
-            let p = UtilPub.BezierTwo(i / 30, p1, cp, p2)
+            let p = UtilPub._fn_af(i / 30, p1, cp, p2)
             pArr.push(new Vec3(p[0], p[1], 0))
 
         }
         pArr.push(p2)
-        UtilPub.Bezier2DRun(pArr, startNode, 0, duration, cb)
+        UtilPub._fn_aa(pArr, startNode, 0, duration, cb)
     }
 
 
@@ -590,21 +590,21 @@ export class UtilPub extends Component {
 
 
 
-    public static Bezier3DShowPoint(startNode: Node, endPoint: Vec3, radio: number, deltaX: number, deltaY: number, duration: number, cb: Function) {
+    public static _fn_ad(startNode: Node, endPoint: Vec3, radio: number, deltaX: number, deltaY: number, duration: number, cb: Function) {
 
 
         let pArr = []
         let p1 = startNode.worldPosition
         let p2 = endPoint
-        let cp = UtilPub.Bezier2DGetCtlPoint(p1, p2, radio, deltaX, deltaY)
+        let cp = UtilPub._fn_z(p1, p2, radio, deltaX, deltaY)
 
         for (let i = 0; i < 30; i++) {
-            let p = UtilPub.BezierTwo(i / 30, p1, cp, p2)
+            let p = UtilPub._fn_af(i / 30, p1, cp, p2)
             pArr.push(new Vec3(p[0], p[1], 0))
             console.log("------通用贝塞尔接口------", p)
         }
         pArr.push(p2)
-        UtilPub.Bezier2DRun(pArr, startNode, 0, duration, cb)
+        UtilPub._fn_aa(pArr, startNode, 0, duration, cb)
     }
 
 
@@ -616,14 +616,14 @@ export class UtilPub extends Component {
 
 
 
-    public static Bezier2DRun(pArr: Vec3[], startNode: Node, i: number, duration: number, cb: Function) {
+    public static _fn_aa(pArr: Vec3[], startNode: Node, i: number, duration: number, cb: Function) {
         if (i > pArr.length) {
             cb && cb()
             return;
         }
         if (startNode == undefined) return
         tween(startNode).to(duration / pArr.length, { position: pArr[i] }).call(() => {
-            UtilPub.Bezier2DRun(pArr, startNode, i + 1, duration, cb)
+            UtilPub._fn_aa(pArr, startNode, i + 1, duration, cb)
         }).start()
     }
 
@@ -636,7 +636,7 @@ export class UtilPub extends Component {
 
 
 
-    public static Bezier2DGetCtlPoint(p1: any, p2: any, radio: any, deltaX: any, deltaY: any) {
+    public static _fn_z(p1: any, p2: any, radio: any, deltaX: any, deltaY: any) {
         return new Vec3((p1.x + p2.x) * radio + deltaX, (p1.y + p2.y) * radio + deltaY, 1)
     }
 
@@ -645,7 +645,7 @@ export class UtilPub extends Component {
 
 
 
-    public static BezierOne(t: number, p1: any, p2: any) {
+    public static _fn_ae(t: number, p1: any, p2: any) {
         const x1 = p1.x
         const x2 = p2.x
         const y1 = p1.y
@@ -663,7 +663,7 @@ export class UtilPub extends Component {
 
 
 
-    public static BezierTwo(t: number, p1: any, cp: any, p2: any) {
+    public static _fn_af(t: number, p1: any, cp: any, p2: any) {
         const x1 = p1.x
         const x2 = p2.x
         const y1 = p1.y
@@ -707,21 +707,21 @@ export class UtilPub extends Component {
 
 
 
-    public static ShakeCamera(target: Node, times: number = 8, range: number = 0.1) {
+    public static _fn_agu(target: Node, times: number = 8, range: number = 0.1) {
         let oriPos = target.position
-        UtilPub._ShakeCamera(target, new Vec3(oriPos.x, oriPos.y, oriPos.z), times, range)
+        UtilPub._fn_a(target, new Vec3(oriPos.x, oriPos.y, oriPos.z), times, range)
     }
 
-    private static _ShakeCamera(target: Node, oriPos: Vec3, times: number, range: number) {
-        let randOffsetX = UtilPub.ranInt(0, 1) == 1 ? range : -range
-        let randOffsetY = UtilPub.ranInt(0, 1) == 1 ? range : -range
-        let randOffsetZ = UtilPub.ranInt(0, 1) == 1 ? range : -range
+    private static _fn_a(target: Node, oriPos: Vec3, times: number, range: number) {
+        let randOffsetX = UtilPub._fn_ym(0, 1) == 1 ? range : -range
+        let randOffsetY = UtilPub._fn_ym(0, 1) == 1 ? range : -range
+        let randOffsetZ = UtilPub._fn_ym(0, 1) == 1 ? range : -range
         tween(target)
             .to(0.05, { position: new Vec3(oriPos.x + randOffsetX, oriPos.y + randOffsetY, oriPos.z + randOffsetZ) })
             .call(() => {
                 times--
                 if (times > 0) {
-                    UtilPub._ShakeCamera(target, oriPos, times, range)
+                    UtilPub._fn_a(target, oriPos, times, range)
                 } else {
                     target.setPosition(oriPos)
                 }
@@ -729,7 +729,7 @@ export class UtilPub extends Component {
     }
 
 
-    public static ranInt(min: number, max: number) {
+    public static _fn_ym(min: number, max: number) {
         if (min > max) {
             let tmp = min
             min = max
@@ -741,7 +741,7 @@ export class UtilPub extends Component {
     }
 
 
-    public static getObjKeysArr(obj: any[], key: string): any[] {
+    public static _fn_iq(obj: any[], key: string): any[] {
         let res = []
         for (let i = 0; i < obj.length; i++) {
             let row = obj[i]
@@ -752,42 +752,42 @@ export class UtilPub extends Component {
     }
 
 
-    public static ranInts(min: number, max: number, num: number) {
+    public static _fn_yn(min: number, max: number, num: number) {
         let arr = []
         for (let i = min; i < max; i++) {
             arr.push(i)
         }
         let res: number[] = []
-        UtilPub.getRandVal(arr, num, res)
+        UtilPub._fn_jw(arr, num, res)
         return res
     }
 
-    private static getRandVal(arr: number[], num: number, res: number[]) {
+    private static _fn_jw(arr: number[], num: number, res: number[]) {
 
 
 
-        UtilPub.shuffle(arr)
+        UtilPub._fn_aia(arr)
         let element = arr.shift()
         if (element) {
             res.push(element)
         }
         num -= 1
         if (num >= 0) {
-            this.getRandVal(arr, num, res)
+            this._fn_jw(arr, num, res)
         } else {
             return res
         }
     }
 
 
-    public static randInts(dataArr: any[], num: number) {
+    public static _fn_yd(dataArr: any[], num: number) {
         let res = []
         if (dataArr.length < num) {
             UtilPub.log("--------参数违规----!!!")
             return []
         }
         while (true) {
-            let idx = UtilPub.ranInt(0, dataArr.length - 1)
+            let idx = UtilPub._fn_ym(0, dataArr.length - 1)
             let isExist = res.find(e => e === idx)
             if (isExist == null) {
                 res.push(idx)
@@ -799,14 +799,14 @@ export class UtilPub extends Component {
     }
 
 
-    public static randIntsByWeight(dataArr: any[], num: number) {
+    public static _fn_ye(dataArr: any[], num: number) {
         let weightIds = []
         let res: number[] = []
         for (let i = 0; i < dataArr.length; i++) {
             weightIds.push(dataArr[i].weight)
         }
         while (true) {
-            let idx = UtilPub.randomWeights(weightIds)
+            let idx = UtilPub._fn_yj(weightIds)
             let isExist = res.find(e => e === idx)
             if (isExist == null) {
                 res.push(idx)
@@ -817,7 +817,7 @@ export class UtilPub extends Component {
         return res
     }
 
-    public static shuffle(array: number[]) {
+    public static _fn_aia(array: number[]) {
         var j, x, i;
         for (i = array.length; i; i--) {
             j = Math.floor(Math.random() * i);
@@ -828,7 +828,7 @@ export class UtilPub extends Component {
         return array;
     }
 
-    public static turnTo(cur: Node, target: Node, isAni: boolean = false, aniTween: Tween<any> = null!, cb?: Function) {
+    public static _fn_ajf(cur: Node, target: Node, isAni: boolean = false, aniTween: Tween<any> = null!, cb?: Function) {
         let oriX = cur.eulerAngles.x
         let oriZ = cur.eulerAngles.z
         let oriY = cur.eulerAngles.y
@@ -847,7 +847,7 @@ export class UtilPub extends Component {
         }
 
     }
-    public static turnToPos(cur: Node, target: Vec3, isAni: boolean = false, aniTween: Tween<any> = null!, cb?: Function) {
+    public static _fn_ajg(cur: Node, target: Vec3, isAni: boolean = false, aniTween: Tween<any> = null!, cb?: Function) {
         let oriX = cur.eulerAngles.x
         let oriZ = cur.eulerAngles.z
         let oriY = cur.eulerAngles.y
@@ -870,7 +870,7 @@ export class UtilPub extends Component {
 
 
 
-    public static getParam(row: any, lv: number) {
+    public static _fn_iu(row: any, lv: number) {
         let p = []
         for (let i = 1; i < 7; i++) {
             let val = row[`p${i}`]
@@ -886,7 +886,7 @@ export class UtilPub extends Component {
     }
 
 
-    public static formatDesc(desc: string, ...args: any) {
+    public static _fn_ez(desc: string, ...args: any) {
         let str = desc;
         let len = args.length;
         for (let i = 1; i < len + 1; i++) {
@@ -898,7 +898,7 @@ export class UtilPub extends Component {
         return str
     }
 
-    public static getDis(pos1: Vec3, pos2: Vec3) {
+    public static _fn_gu(pos1: Vec3, pos2: Vec3) {
         let xdiff = pos1.x - pos2.x;
         let ydiff = pos1.y - pos2.y;
         let zdiff = pos1.z - pos2.z
@@ -906,7 +906,7 @@ export class UtilPub extends Component {
         return dis;
     }
 
-    public static getDis2D(pos1: Vec3, pos2: Vec3) {
+    public static _fn_gv(pos1: Vec3, pos2: Vec3) {
         let xdiff = pos1.x - pos2.x;
         let ydiff = pos1.y - pos2.y;
         let dis = Math.pow((xdiff * xdiff + ydiff * ydiff), 0.5);
@@ -920,12 +920,12 @@ export class UtilPub extends Component {
      * @version 1.0
      * @return 返回idsArr中的id
      */
-    public static randomWeightsArrByArr(idsArr: any[], weightArr: number[]) {
+    public static _fn_yk(idsArr: any[], weightArr: number[]) {
         let totalWeight = 0;
         for (let i = 0; i < weightArr.length; i++) {
             totalWeight += weightArr[i];
         }
-        let ran = UtilPub.ranInt(1, totalWeight);
+        let ran = UtilPub._fn_ym(1, totalWeight);
         let calWeight = 0;
         for (let i = 0; i < weightArr.length; i++) {
             calWeight += weightArr[i];
@@ -937,12 +937,12 @@ export class UtilPub extends Component {
         return idsArr[Math.floor(Math.random() * (idsArr.length - 1))]
     }
 
-    public static randomWeights(weights: number[]) {
+    public static _fn_yj(weights: number[]) {
         let totalWeight = 0;
         for (let i = 0; i < weights.length; i++) {
             totalWeight += weights[i];
         }
-        let ran = UtilPub.ranInt(1, totalWeight);
+        let ran = UtilPub._fn_ym(1, totalWeight);
         for (let i = 0; i < weights.length; i++) {
             const weight = weights[i];
             if (ran <= weight) {
@@ -962,10 +962,10 @@ export class UtilPub extends Component {
 
 
 
-    public static loadOneRes(prefabName: string, parentNode: Node) {
+    public static _fn_rl(prefabName: string, parentNode: Node) {
         return new Promise<Node>((resolve, reject) => {
             if (parentNode.children.length == 0) {
-                ResourceLoaderService.loadResWithBundle(prefabName, Prefab, (err, prefab) => {
+                ResourceLoaderService._fn_rq(prefabName, Prefab, (err, prefab) => {
                     let item = NodePoolService.instance.getNode(prefab, parentNode)!
                     item.worldPosition = parentNode.worldPosition
                     resolve(item)
@@ -977,7 +977,7 @@ export class UtilPub extends Component {
     }
 
 
-    public static timerFormat(_time: number) {
+    public static _fn_air(_time: number) {
 
         let time = Math.round(_time);
         let t = Number(time);
@@ -997,7 +997,7 @@ export class UtilPub extends Component {
         }
     }
 
-    public static getTimeStr(d: number) {
+    public static _fn_mm(d: number) {
         var ret = "";
         if (d < 0) {
             d = 0;
@@ -1032,7 +1032,7 @@ export class UtilPub extends Component {
 
 
 
-    public static getDurationStr(duration: number) {
+    public static _fn_gw(duration: number) {
         if (duration < 0) {
             duration = 0;
         }
@@ -1060,7 +1060,7 @@ export class UtilPub extends Component {
 
 
 
-    public static getDurationStr2(duration: number) {
+    public static _fn_gx(duration: number) {
         if (duration < 0) {
             duration = 0;
         }
@@ -1083,7 +1083,7 @@ export class UtilPub extends Component {
         return str;
     }
 
-    public static breathScale(node: Node, s: number = 0.98) {
+    public static _fn_as(node: Node, s: number = 0.98) {
         let oriScale = node.scale
         return tween(node).repeatForever(
             tween()
@@ -1094,7 +1094,7 @@ export class UtilPub extends Component {
         ).start()
     }
 
-    public static shakeScale(node: Node, s: number = 1.2) {
+    public static _fn_agv(node: Node, s: number = 1.2) {
         let oriScale = node.scale
         return tween(node).repeatForever(
             tween()
@@ -1106,7 +1106,7 @@ export class UtilPub extends Component {
         ).start()
     }
 
-    public static breathOpacity(node: UIOpacity) {
+    public static _fn_ar(node: UIOpacity) {
         return tween(node).repeatForever(
             tween()
                 .to(0.5, { opacity: 50 })
@@ -1116,7 +1116,7 @@ export class UtilPub extends Component {
         ).start()
     }
 
-    public static breathFloat(node: Node, y: number = 1) {
+    public static _fn_aq(node: Node, y: number = 1) {
         return tween(node).repeatForever(
             tween()
                 .to(3, { position: v3(0, 15 + y, 0) })
@@ -1131,16 +1131,16 @@ export class UtilPub extends Component {
 
 
 
-    public static showSubNode(node: Node, idx: number) {
+    public static _fn_ahv(node: Node, idx: number) {
         for (let i = 0; i < node.children.length; i++) {
             node.children[i].active = (idx == i)
         }
     }
 
-    public static randPos(pos: Vec3, x: number, y: number, z: number) {
-        let r1 = MathRandom.getInstance().randomRange(-x * 100, x * 100) / 100
-        let r2 = MathRandom.getInstance().randomRange(-y * 100, y * 100) / 100
-        let r3 = MathRandom.getInstance().randomRange(-z * 100, z * 100) / 100
+    public static _fn_yl(pos: Vec3, x: number, y: number, z: number) {
+        let r1 = MathRandom._fn_ho()._fn_yg(-x * 100, x * 100) / 100
+        let r2 = MathRandom._fn_ho()._fn_yg(-y * 100, y * 100) / 100
+        let r3 = MathRandom._fn_ho()._fn_yg(-z * 100, z * 100) / 100
         pos.x += r1
         pos.y += r2
         pos.z += r3
@@ -1151,7 +1151,7 @@ export class UtilPub extends Component {
 
 
 
-    public static getBehindPoint(left: Vec3, mid: Vec3): Vec3 {
+    public static _fn_fq(left: Vec3, mid: Vec3): Vec3 {
         let vec = v3(0, 0, 0)
         vec.x = 2 * mid.x - left.x
         vec.y = 2 * mid.y - left.y
@@ -1160,17 +1160,17 @@ export class UtilPub extends Component {
     }
 
 
-    public static ExplodeMotion(node: Node, center: Vec3 = null!) {
+    public static _fn_ep(node: Node, center: Vec3 = null!) {
         let enemy = node.getChildByName("root")!
         let bottom = node.getChildByName("bottom")!
         enemy.eulerAngles = v3(0, 0, 0)
         let pos = enemy.getWorldPosition().clone()
         let nodePos = node.worldPosition
-        let h = MathRandom.getInstance().randomRange(20, 40) / 10
+        let h = MathRandom._fn_ho()._fn_yg(20, 40) / 10
         let t = 1 + (h / 4) / 3
         let delta = v3(0, 0, 0)
         if (center) {
-            let dis = MathUtil.getInstance().calcDistance3D(center, node.worldPosition)
+            let dis = MathUtil._fn_ho()._fn_av(center, node.worldPosition)
             Vec3.subtract(delta, node.worldPosition, center)
 
             let range = 2
@@ -1193,12 +1193,12 @@ export class UtilPub extends Component {
             .to(0.1, { worldPosition: v3(pos.x, (pos.y + h) * 0.1, pos.z) })
             .to(0.1, { worldPosition: v3(pos.x, 0, pos.z) })
             .start()
-        let randAngle1 = MathRandom.getInstance().randomRange(-360, 360)
-        let randAngle2 = MathRandom.getInstance().randomRange(-360, 360)
-        let randAngle3 = MathRandom.getInstance().randomRange(-360, 360)
-        let randAngle4 = MathRandom.getInstance().randomRange(-360, 360)
-        let randAngle5 = MathRandom.getInstance().randomRange(-360, 360)
-        let randAngle6 = MathRandom.getInstance().randomRange(-360, 360)
+        let randAngle1 = MathRandom._fn_ho()._fn_yg(-360, 360)
+        let randAngle2 = MathRandom._fn_ho()._fn_yg(-360, 360)
+        let randAngle3 = MathRandom._fn_ho()._fn_yg(-360, 360)
+        let randAngle4 = MathRandom._fn_ho()._fn_yg(-360, 360)
+        let randAngle5 = MathRandom._fn_ho()._fn_yg(-360, 360)
+        let randAngle6 = MathRandom._fn_ho()._fn_yg(-360, 360)
         tween(enemy)
             .to(1.5, { eulerAngles: v3(randAngle1, randAngle2, randAngle3) })
             .to(0.1, { eulerAngles: v3(0, randAngle2, 0) })
@@ -1226,12 +1226,12 @@ export class UtilPub extends Component {
 
 
 
-    public static GetPoints(sPos: Vec3, ePos: Vec3, cnt: number = 30): Vec3[] {
+    public static _fn_jh(sPos: Vec3, ePos: Vec3, cnt: number = 30): Vec3[] {
         let pArr = []
         let p1 = v2(sPos.x, sPos.z)
         let p2 = v2(ePos.x, sPos.z)
         for (let i = 0; i < cnt; i++) {
-            let p = UtilPub.BezierOne(i / cnt, p1, p2)
+            let p = UtilPub._fn_ae(i / cnt, p1, p2)
             pArr.push(v3(p[0], ePos.y, p[1]))
 
         }
@@ -1245,7 +1245,7 @@ export class UtilPub extends Component {
 
 
 
-    public static IsPointInNodeArea2D(node: Node, pos: Vec2) {
+    public static _fn_qi(node: Node, pos: Vec2) {
         const nodeUIT = node.getComponent(UITransform)!;
         let wordPos = nodeUIT.convertToWorldSpaceAR(new Vec3(0, 0, 0))
 
@@ -1265,7 +1265,7 @@ export class UtilPub extends Component {
 
 
 
-    public static IsPointInArea2D(pos: Vec3, wordPos: Vec3, width: number, height: number) {
+    public static _fn_qh(pos: Vec3, wordPos: Vec3, width: number, height: number) {
 
 
 
@@ -1280,7 +1280,7 @@ export class UtilPub extends Component {
         return false
     }
 
-    public static decimal2(num: number) {
+    public static _fn_ee(num: number) {
         return Math.floor(num * 100) / 100
     }
 
@@ -1294,7 +1294,7 @@ export class UtilPub extends Component {
 
 
 
-    public static FadePlane(duration: number, frame: number, cnt: number, pass: renderer.Pass, color: Color, meshNode: Node) {
+    public static _fn_er(duration: number, frame: number, cnt: number, pass: renderer.Pass, color: Color, meshNode: Node) {
 
 
         if (cnt <= 0) {
@@ -1311,18 +1311,18 @@ export class UtilPub extends Component {
             pass.setUniform(h, color)
             cnt -= 1
         }).delay(interval).call(() => {
-            UtilPub.FadePlane(duration, frame, cnt, pass, color, meshNode)
+            UtilPub._fn_er(duration, frame, cnt, pass, color, meshNode)
         }).start()
     }
 
 
-    public static cntDown(node: Node, sec: number, cbEach: Function, cbFinal: Function) {
+    public static _fn_dk(node: Node, sec: number, cbEach: Function, cbFinal: Function) {
         setTimeout(() => {
             if (node.active) {
                 if (sec > 0) {
                     sec -= 1
                     cbEach && cbEach(sec)
-                    this.cntDown(node, sec, cbEach, cbFinal)
+                    this._fn_dk(node, sec, cbEach, cbFinal)
                 } else {
 
                     cbFinal && cbFinal()
@@ -1331,7 +1331,7 @@ export class UtilPub extends Component {
         }, 1000)
     }
 
-    public static setCustomSize(node: Node, size: number) {
+    public static _fn_aer(node: Node, size: number) {
         let nodeH = node.getComponent(UITransform)?.height
         let nodeW = node.getComponent(UITransform)?.width
 
