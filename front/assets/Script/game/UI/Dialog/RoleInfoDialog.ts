@@ -76,26 +76,6 @@ export class RoleInfoDialog extends BaseView {
     onClickModifyBtn() {
         AudioPlaybackService.instance._fn_xc(Const.Audio.btn)
         UiLayerService.instance._fn_xw(Const.Dialogs.ModifyDailog)
-        return
-
-        if (this._isEditState) {
-            let str = this.nameEditBox.getComponent(EditBox)!.string
-            if (str == "") {
-                this._fn_aiu("名字不能为空")
-                return
-            }
-            playerDataStore.roleName = str
-            find("root/nameLabel", this.node)!.getComponent(Label)!.string = playerDataStore.roleName + ""
-            this.nameEditBox.active = false
-            this.nameLabel.active = true
-            this._isEditState = false
-        } else {
-            this._isEditState = true
-            this.nameEditBox.active = true
-            this.nameLabel.active = false
-            this.modifybtnLabel.getComponent(Label)!.string + "保存"
-            this.nameEditBox.getComponent(EditBox)!.string = playerDataStore.roleName
-        }
     }
 
 }

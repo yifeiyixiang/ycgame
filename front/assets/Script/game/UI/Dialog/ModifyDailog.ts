@@ -41,10 +41,10 @@ export class ModifyDailog extends BaseView {
             return
         }
 
-        GameHttpClient._fn_ho()._fn_adp(1, str, ()=>{
-            playerDataStore.roleName = str
+        GameHttpClient._fn_ho()._fn_adp(1, str, (res: any)=>{
+            playerDataStore.roleName = (res && res.res && res.res.data && res.res.data.userdata && res.res.data.userdata.nickname) || str
+            this._fn_xe()
         })
-        this._fn_xe()
 
     }
 
